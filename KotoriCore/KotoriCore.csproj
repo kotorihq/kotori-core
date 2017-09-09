@@ -2,10 +2,23 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <PackageId>kotori-core</PackageId>
+    <PackageVersion>0.0.1</PackageVersion>
+    <Authors>frohikey, kotori</Authors>
+    <PackageLicenseUrl>https://github.com/kotorihq/kotori-core/blob/master/LICENSE</PackageLicenseUrl>
+    <Owners>kotori</Owners>
+    <PackageProjectUrl>https://github.com/kotorihq/kotori-core</PackageProjectUrl>
+    <Summary>Kotori core library</Summary>
+    <PackageTags>kotori</PackageTags>
+    <Title>Kotori Core</Title>
+    <Description>Kotori core library</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Configuration\" />
   </ItemGroup>
   
+  <ItemGroup>
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.1.276" />
+  </ItemGroup>
 </Project>
