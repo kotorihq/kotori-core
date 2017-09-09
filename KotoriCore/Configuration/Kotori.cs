@@ -1,7 +1,22 @@
-﻿namespace KotoriCore.Configuration
+﻿using System.Collections.Generic;
+
+namespace KotoriCore.Configuration
 {
+    /// <summary>
+    /// Kotori main configuration.
+    /// </summary>
     public class Kotori
     {
+        /// <summary>
+        /// Gets or sets the instance.
+        /// </summary>
+        /// <value>The instance.</value>
         public string Instance { get; set; }
+
+        /// <summary>
+        /// Gets or sets the master keys.
+        /// </summary>
+        /// <value>The master keys.</value>
+        public IEnumerable<MasterKey> MasterKeys { get; set; }
     }
 }
