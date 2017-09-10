@@ -20,5 +20,6 @@
   
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Packaging" Version="0.1.276" />
+    <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.3.0" />
   </ItemGroup>
 </Project>
