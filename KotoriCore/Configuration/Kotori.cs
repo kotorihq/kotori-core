@@ -14,6 +14,12 @@ namespace KotoriCore.Configuration
         public string Instance { get; set; }
 
         /// <summary>
+        /// GEts or sets the version of kotori server.
+        /// </summary>
+        /// <value>The version.</value>
+        public string Version { get; set; }
+
+        /// <summary>
         /// Gets or sets the master keys.
         /// </summary>
         /// <value>The master keys.</value>
