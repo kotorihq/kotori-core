@@ -16,6 +16,15 @@
 
   <ItemGroup>
     <Folder Include="Configuration\" />
+    <Folder Include="Cqrs\" />
+    <Folder Include="Cqrs\CommandHandlers\" />
+    <Folder Include="Cqrs\Helpers\" />
+    <Folder Include="Cqrs\Commands\" />
+    <Folder Include="Cqrs\Domains\" />
+    <Folder Include="Cqrs\EventStore\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Cqrs\Events\" />
+    <Folder Include="Cqrs\Bus\" />
   </ItemGroup>
   
   <ItemGroup>
