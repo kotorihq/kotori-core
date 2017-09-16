@@ -24,5 +24,11 @@ namespace KotoriCore.Configuration
         /// </summary>
         /// <value>The master keys.</value>
         public IEnumerable<MasterKey> MasterKeys { get; set; }
+
+        /// <summary>
+        /// Gets or sets the document db connection string.
+        /// </summary>
+        /// <value>The document db.</value>
+        public DocumentDb DocumentDb { get; set; }
     }
 }
