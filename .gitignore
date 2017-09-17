@@ -1,7 +1,8 @@
 # Autosave files
 *~
-
 KotoriCore.userprefs
 KotoriCore/bin/
 KotoriCore/obj/
 /.vs/KotoriCore/v15
+KotoriCore.Tests/bin/
+KotoriCore.Tests/obj/
