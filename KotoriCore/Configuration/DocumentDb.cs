@@ -3,7 +3,7 @@
     /// <summary>
     /// Document Db connection string.
     /// </summary>
-    public class DocumentDb
+    public class DocumentDb : IDatabaseConfiguration
     {
         /// <summary>
         /// Gets or sets the end point.
