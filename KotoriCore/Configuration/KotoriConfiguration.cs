@@ -52,7 +52,10 @@ namespace KotoriCore.Configuration
             MasterKeys = configurationSection.GetSection("MasterKeys").GetChildren().Select(x => x.Get<MasterKey>());
 
             // database
-            Database = configuration.GetSection("Kotori:DocumentDb").Get<DocumentDb>();
+            Database = configuration.GetSection("Kotori:DocumentDb").Get<DocumentDbConfiguration>();
+
+            // bus
+            Bus = configuration.GetSection("Kotori:ServiceBus").Get<ServiceBusConfiguration>();
         }
 
         /// <summary>
