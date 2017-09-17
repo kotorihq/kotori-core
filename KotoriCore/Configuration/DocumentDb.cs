@@ -9,7 +9,7 @@
         /// Gets or sets the end point.
         /// </summary>
         /// <value>The end point.</value>
-        public string EndPoint { get; set; }
+        public string Endpoint { get; set; }
 
         /// <summary>
         /// Gets or sets the authorization key.
