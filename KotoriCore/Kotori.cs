@@ -1,4 +1,5 @@
 ﻿using KotoriCore.Configurations;
+using Microsoft.Extensions.Configuration;
 
 namespace KotoriCore
 {
@@ -27,6 +28,15 @@ namespace KotoriCore
         public Kotori(KotoriConfiguration configuration)
         {
             Configuration = configuration;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Kotori"/> class.
+        /// </summary>
+        /// <param name="configuration">Configuration.</param>
+        public Kotori(IConfiguration configuration)
+        {
+            Configuration = new KotoriConfiguration(configuration);
         }
     }
 }
