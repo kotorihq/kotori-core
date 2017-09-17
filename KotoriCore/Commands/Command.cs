@@ -1,4 +1,5 @@
-﻿using KotoriCore.Bus;
+﻿using System.Collections.Generic;
+using KotoriCore.Bus;
 using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
@@ -22,5 +23,10 @@ namespace KotoriCore.Commands
 		{
 			Priority = priority;
 		}
+
+        /// <summary>
+        /// Validate this instance.
+        /// </summary>
+        public abstract IEnumerable<ValidationResult> Validate();
     }
 }

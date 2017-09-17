@@ -3,7 +3,7 @@
     /// <summary>
     /// Master key.
     /// </summary>
-    public class MasterKey : Key
+    public class MasterKey : SimpleKey
     {
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Project key.
     /// </summary>
-    public class ProjectKey : Key
+    public class ProjectKey : SimpleKey
     {
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="T:KotoriCore.Configurations.ProjectKey"/> is readonly.

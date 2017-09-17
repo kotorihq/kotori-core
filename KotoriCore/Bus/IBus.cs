@@ -1,9 +1,9 @@
 ﻿namespace KotoriCore.Configurations
 {
     /// <summary>
-    /// Bus configuration.
+    /// Bus.
     /// </summary>
-    public interface IBusConfiguration
+    public interface IBus
     {
     }
 }

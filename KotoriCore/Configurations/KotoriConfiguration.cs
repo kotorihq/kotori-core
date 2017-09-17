@@ -37,7 +37,7 @@ namespace KotoriCore.Configurations
         /// Gets the bus.
         /// </summary>
         /// <value>The bus.</value>
-        public IBusConfiguration Bus { get; }
+        public IBus Bus { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Configurations.KotoriConfiguration"/> class.
@@ -66,7 +66,7 @@ namespace KotoriCore.Configurations
         /// <param name="masterKeys">Master keys.</param>
         /// <param name="database">Database.</param>
         /// <param name="bus">Bus.</param>
-        public KotoriConfiguration(string instance, string version, IEnumerable<MasterKey> masterKeys, IDatabaseConfiguration database, IBusConfiguration bus)
+        public KotoriConfiguration(string instance, string version, IEnumerable<MasterKey> masterKeys, IDatabaseConfiguration database, IBus bus)
         {
             Instance = instance;
             Version = version;

@@ -3,7 +3,7 @@
     /// <summary>
     /// Service bus configuration.
     /// </summary>
-    public class ServiceBusConfiguration : IBusConfiguration
+    public class ServiceBusConfiguration : IBus
     {
         /// <summary>
         /// Gets or sets the end point.

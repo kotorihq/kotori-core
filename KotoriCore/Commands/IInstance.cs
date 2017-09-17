@@ -1,4 +1,4 @@
-﻿namespace KotoriCore.Helpers
+﻿namespace KotoriCore.Commands
 {
     /// <summary>
     /// Entity has instance field.

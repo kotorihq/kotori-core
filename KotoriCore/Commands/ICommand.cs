@@ -1,4 +1,5 @@
-﻿using KotoriCore.Helpers;
+﻿using System.Collections.Generic;
+using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
@@ -8,5 +9,6 @@ namespace KotoriCore.Commands
     public interface ICommand
     {
         Enums.Priority Priority { get; }
+        IEnumerable<ValidationResult> Validate();
     }
 }
