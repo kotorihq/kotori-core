@@ -3,12 +3,7 @@
     /// <summary>
     /// Master key.
     /// </summary>
-    public class MasterKey
+    public class MasterKey : Key
     {
-        /// <summary>
-        /// Sets the key.
-        /// </summary>
-        /// <value>The key.</value>
-        public string Key { get; set; }
     }
 }
