@@ -12,26 +12,24 @@
         public string Message { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="T:KotoriCore.Helpers.ValidationResult"/> is valid.
+        /// Gets a value indicating whether this <see cref="T:KotoriCore.Helpers.ValidationResult"/> is valid.
         /// </summary>
         /// <value><c>true</c> if is valid; otherwise, <c>false</c>.</value>
-        public bool IsValid { get; set; }
+        public bool IsValid => string.IsNullOrEmpty(Message);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Helpers.ValidationResult"/> class.
+        /// </summary>
+        public ValidationResult(string message)
+        {
+            Message = message;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Helpers.ValidationResult"/> class.
         /// </summary>
         public ValidationResult()
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Helpers.ValidationResult"/> class.
-        /// </summary>
-        /// <param name="message">Message.</param>
-        public ValidationResult(string message, bool isValid)
-        {
-            Message = message;
-            IsValid = isValid;
         }
     }
 }

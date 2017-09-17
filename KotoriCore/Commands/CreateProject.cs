@@ -38,21 +38,21 @@ namespace KotoriCore.Commands
         public override IEnumerable<ValidationResult> Validate()
         {
             if (string.IsNullOrEmpty(Instance))
-                yield return new ValidationResult("Instance must be set.", false);
+                yield return new ValidationResult("Instance must be set.");
 
             if (string.IsNullOrEmpty(Name))
-                yield return new ValidationResult("Name must be set.", false);
+                yield return new ValidationResult("Name must be set.");
 
 			if (string.IsNullOrEmpty(Identifier))
-				yield return new ValidationResult("Identifier must be set.", false);
+				yield return new ValidationResult("Identifier must be set.");
 			else if (!Uri.IsWellFormedUriString(Identifier, UriKind.Relative))
-                yield return new ValidationResult("Identifier must be valid URI relative path.", false);
+                yield return new ValidationResult("Identifier must be valid URI relative path.");
 
             if (ProjectKeys == null ||
                ProjectKeys.Any(x => string.IsNullOrEmpty(x.Key)))
-                yield return new ValidationResult("All project keys must be set.", false);
+                yield return new ValidationResult("All project keys must be set.");
 
-            yield return new ValidationResult("Project has been created.", true);
+            yield return new ValidationResult();
         }
     }
 }

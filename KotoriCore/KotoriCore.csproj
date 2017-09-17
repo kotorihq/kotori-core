@@ -19,8 +19,13 @@
     <Folder Include="Exceptions\" />
     <Folder Include="Commands\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Entities\" />
+    <Folder Include="Domains\" />
     <Folder Include="Bus\" />
+    <Folder Include="Database\" />
+    <Folder Include="Database\DocumentDb\" />
+    <Folder Include="Bus\ServiceBus\" />
+    <Folder Include="Database\DocumentDb\Entities\" />
+    <Folder Include="Domains\" />
   </ItemGroup>
   
   <ItemGroup>
@@ -30,5 +35,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+    <PackageReference Include="Sushi2" Version="1.0.2" />
   </ItemGroup>
 </Project>
