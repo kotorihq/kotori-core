@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Configuration\" />
+    <Folder Include="Configurations\" />
     <Folder Include="Cqrs\" />
     <Folder Include="Cqrs\CommandHandlers\" />
     <Folder Include="Cqrs\Helpers\" />
