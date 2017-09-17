@@ -1,11 +1,12 @@
-﻿using KotoriCore.Helpers;
+﻿using KotoriCore.Bus;
+using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
     /// <summary>
     /// Base command.
     /// </summary>
-    public abstract class Command : ICommand
+    public abstract class Command : ICommand, IMessage
     {
         /// <summary>
         /// Gets the priority.

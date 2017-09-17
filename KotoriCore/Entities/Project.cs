@@ -7,7 +7,7 @@ namespace KotoriCore.Entities
     /// <summary>
     /// Project.
     /// </summary>
-	public class Project : BaseEntity, IInstance
+	public class Project : BaseEntity
 	{
 		const string _entity = "kotori/project";
 

@@ -1,4 +1,4 @@
-﻿namespace KotoriCore.Entities
+﻿namespace KotoriCore.Helpers
 {
     /// <summary>
     /// Entity has instance field.
@@ -6,9 +6,9 @@
     public interface IInstance
     {
         /// <summary>
-        /// Gets or sets the instance.
+        /// Gets the instance.
         /// </summary>
         /// <value>The instance.</value>
-        string Instance { get; set; }
+        string Instance { get; }
     }
 }
