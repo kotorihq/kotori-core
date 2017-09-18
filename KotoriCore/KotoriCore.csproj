@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>kotori-core</PackageId>
@@ -13,7 +12,6 @@
     <Title>Kotori Core</Title>
     <Description>Kotori core library</Description>
   </PropertyGroup>
-
   <ItemGroup>
     <Folder Include="Configurations\" />
     <Folder Include="Exceptions\" />
@@ -27,14 +25,13 @@
     <Folder Include="Database\DocumentDb\Entities\" />
     <Folder Include="Domains\" />
   </ItemGroup>
-  
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.3.0" />
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
-    <PackageReference Include="Oogi" Version="1.4.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-    <PackageReference Include="Sushi2" Version="1.0.2" />
+    <PackageReference Include="Oogi2" Version="1.0.0" />
+    <PackageReference Include="Sushi2" Version="1.0.4" />
   </ItemGroup>
 </Project>
