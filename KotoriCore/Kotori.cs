@@ -1,4 +1,8 @@
-﻿using KotoriCore.Configurations;
+﻿using System.Collections.Generic;
+using KotoriCore.Commands;
+using KotoriCore.Configurations;
+using KotoriCore.Database;
+using KotoriCore.Database.DocumentDb;
 using Microsoft.Extensions.Configuration;
 
 namespace KotoriCore
@@ -14,12 +18,7 @@ namespace KotoriCore
         /// <value>The configuration.</value>
         public KotoriConfiguration Configuration { get; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Kotori"/> class.
-        /// </summary>
-        public Kotori()
-        {
-        }
+        IDatabase _database { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Kotori"/> class.
@@ -28,15 +27,39 @@ namespace KotoriCore
         public Kotori(KotoriConfiguration configuration)
         {
             Configuration = configuration;
+
+            if (Configuration.Database is DocumentDbConfiguration documentDbConfiguration)
+            {
+                _database = new DocumentDb(documentDbConfiguration);
+            }
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Kotori"/> class.
         /// </summary>
         /// <param name="configuration">Configuration.</param>
-        public Kotori(IConfiguration configuration)
+        public Kotori(IConfiguration configuration) : this(new KotoriConfiguration(configuration))
         {
-            Configuration = new KotoriConfiguration(configuration);
+        }
+
+        public IEnumerable<CommandResult> Process(ICommand command) 
+        {
+            return Process(new List<ICommand> { command });
+        }
+
+        public IEnumerable<CommandResult> Process(IEnumerable<ICommand> commands)
+        {
+            if (commands == null)
+                throw new System.ArgumentNullException(nameof(commands));
+
+            var result = new List<CommandResult>();
+
+            foreach(var command in commands)
+            {
+                result.Add(_database.Handle(command));
+            }
+
+            return result;
         }
     }
 }
