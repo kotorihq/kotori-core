@@ -1,16 +1,13 @@
-﻿using Oogi;
-using KotoriCore.Configurations;
+﻿using KotoriCore.Configurations;
 using System.Collections.Generic;
+using Oogi2.Attributes;
 
 namespace KotoriCore.Database.DocumentDb.Entities
 {
-    public class Project : BaseEntity
+    [EntityType("entity", DocumentDb.ProjectEntity)]
+    public class Project 
     {
-		const string _entity = "kotori/project";
-
-		public override string Id { get; set; }
-		public override string Entity { get; set; } = _entity;
-
+		public string Id { get; set; }
         public string Instance { get; set; }
         public string Name { get; set; }
         public string Identifier { get; set; }
