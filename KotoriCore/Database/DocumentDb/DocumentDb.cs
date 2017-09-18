@@ -2,6 +2,7 @@
 using Oogi2;
 using KotoriCore.Helpers;
 using KotoriCore.Configurations;
+using KotoriCore.Database.DocumentDb.Entities;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -15,7 +16,7 @@ namespace KotoriCore.Database.DocumentDb
         public DocumentDb(DocumentDbConfiguration configuration)
         {
             _connection = new Connection(configuration.Endpoint, configuration.AuthorizationKey, configuration.Database, configuration.Collection);
-            _repoProject = new Repository<Entities.Project>(_connection);
+            _repoProject = new Repository<Project>(_connection);
         }
 
         public CommandResult Handle(ICommand command)
@@ -35,7 +36,10 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult Handle(CreateProject command)
         {
-            // TODO: implement
+            var prj = new Project(command.Instance, command.Name, command.Identifier, command.ProjectKeys);
+
+            _repoProject.Create(prj);
+
             return new CommandResult(); 
         }
     }

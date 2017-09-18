@@ -23,6 +23,7 @@
         /// <summary>
         /// Priorities.
         /// </summary>
+        /// <remarks>TODO: probaly not needed</remarks>
         public enum Priority
         {
             /// <summary>

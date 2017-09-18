@@ -25,5 +25,17 @@ namespace KotoriCore.Database.DocumentDb.Entities
 
             return dbProject;
         }
-    }
+
+        public Project()
+        {
+        }
+
+        public Project(string instance, string name, string identifier, IEnumerable<ProjectKey> projectKeys)
+        {
+            Instance = instance;
+            Name = name;
+            Identifier = identifier;
+            ProjectKeys = projectKeys ?? new List<ProjectKey>();
+        }
+}
 }
