@@ -3,14 +3,15 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>kotori-core</PackageId>
     <PackageVersion>0.0.1</PackageVersion>
-    <Authors>frohikey, kotori</Authors>
+    <Authors>frohikey</Authors>
     <PackageLicenseUrl>https://github.com/kotorihq/kotori-core/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>kotori</Owners>
     <PackageProjectUrl>https://github.com/kotorihq/kotori-core</PackageProjectUrl>
     <Summary>Kotori core library</Summary>
     <PackageTags>kotori</PackageTags>
     <Title>Kotori Core</Title>
-    <Description>Kotori core library</Description>
+    <Description>Kotori core library.</Description>
+    <Company>Goto10</Company>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Configurations\" />
