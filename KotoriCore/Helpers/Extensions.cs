@@ -13,7 +13,7 @@ namespace KotoriCore.Helpers
         /// <param name="validationResults">Validation results.</param>
         public static ValidationResult ToValidationResult(this IEnumerable<ValidationResult> validationResults)
         {
-            return new ValidationResult(validationResults.Select(x => x.Message).ToImplodedString(" "));
+            return new ValidationResult(validationResults.Where(z => !string.IsNullOrEmpty(z.Message)).Select(x => x.Message).ToImplodedString(" "));
         }
     }
 }

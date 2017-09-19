@@ -58,7 +58,7 @@ namespace KotoriCore
         public IEnumerable<CommandResult> Process(IEnumerable<ICommand> commands)
         {
             if (commands == null)
-                throw new System.ArgumentNullException(nameof(commands));
+                throw new ArgumentNullException(nameof(commands));
 
             var result = new List<CommandResult>();
 
