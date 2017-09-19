@@ -4,6 +4,7 @@ using KotoriCore.Configurations;
 using KotoriCore.Database;
 using KotoriCore.Database.DocumentDb;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace KotoriCore
 {
@@ -30,7 +31,14 @@ namespace KotoriCore
 
             if (Configuration.Database is DocumentDbConfiguration documentDbConfiguration)
             {
-                _database = new DocumentDb(documentDbConfiguration);
+                try
+                {
+                    _database = new DocumentDb(documentDbConfiguration);
+                }
+                catch(Exception ex)
+                {
+                    throw new Exceptions.KotoriException("Error initializing connection to DocumentDb. Message: " + ex.Message);
+                }                
             }
         }
 

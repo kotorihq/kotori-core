@@ -8,7 +8,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     public class DocumentDb : IDatabase
     {
-        Repository<Entities.Project> _repoProject;
+        Repository<Project> _repoProject;
         Connection _connection;
 
         public const string ProjectEntity = "kotori/project";
