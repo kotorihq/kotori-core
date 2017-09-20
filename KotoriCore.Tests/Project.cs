@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using KotoriCore.Commands;
 using KotoriCore.Exceptions;
 using Microsoft.Extensions.Configuration;
@@ -61,9 +62,25 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
+        public void CreateProjectDirectValidations()
+        {
+            var p = new CreateProject("dev", "aoba", "aoba/ main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
+            var vr = p.Validate().ToList();
+
+            Assert.AreEqual(2, vr.Count());
+            Assert.AreEqual("Identifier must be valid URI relative path.", vr[0].Message);
+            Assert.AreEqual("All project keys must be set.", vr[1].Message);
+
+            p = new CreateProject("dev", "aoba", "aoba-main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            vr = p.Validate().ToList();
+
+            Assert.AreEqual(0, vr.Count());
+        }
+
+        [TestMethod]
         public void CreateProject()
         {
-            _kotori.Process(new CreateProject("dev", "nenecchi", "nenecchi-main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            _kotori.Process(new CreateProject("dev", "nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
         }
     }
 }

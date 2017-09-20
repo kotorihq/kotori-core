@@ -29,7 +29,7 @@ namespace KotoriCore.Commands
             Instance = instance;
             Name = name;
             Identifier = identifier;
-            projectKeys = projectKeys ?? new List<ProjectKey>();
+            ProjectKeys = projectKeys ?? new List<ProjectKey>();
         }
 
         /// <summary>
@@ -49,11 +49,8 @@ namespace KotoriCore.Commands
             else if (!Regex.IsMatch(Identifier, Constants.IdentifierRegexp, RegexOptions.Singleline))
                 yield return new ValidationResult("Identifier must be valid URI relative path.");
 
-            if (ProjectKeys != null &&
-               ProjectKeys.Any(x => string.IsNullOrEmpty(x.Key)))
+            if (ProjectKeys?.Any(x => string.IsNullOrEmpty(x.Key)) == true)
                 yield return new ValidationResult("All project keys must be set.");
-
-            yield return new ValidationResult(null);
         }
     }
 }
