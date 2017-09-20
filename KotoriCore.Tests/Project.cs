@@ -56,8 +56,14 @@ namespace KotoriCore.Tests
             }
             catch (KotoriValidationException ex)
             {
-                Assert.AreEqual("Identifier must be valid URI relative path.", ex.Message);
+                Assert.AreEqual("All project keys must be set.", ex.Message);
             }
+        }
+
+        [TestMethod]
+        public void CreateProject()
+        {
+            _kotori.Process(new CreateProject("dev", "nenecchi", "nenecchi-main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
         }
     }
 }

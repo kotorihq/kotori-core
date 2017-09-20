@@ -13,7 +13,8 @@ namespace KotoriCore.Commands
     {
         public readonly string Name;
         public readonly string Identifier;
-        public IReadOnlyList<ProjectKey> ProjectKeys { get; set; }
+        // TODO: readonly collection
+        public IEnumerable<ProjectKey> ProjectKeys { get; set; }
         public string Instance { get; }
 
         /// <summary>
@@ -23,7 +24,7 @@ namespace KotoriCore.Commands
         /// <param name="name">Name.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="projectKeys">Project keys.</param>
-        public CreateProject(string instance, string name, string identifier, IReadOnlyList<ProjectKey> projectKeys) : base(Enums.Priority.DoItNow)
+        public CreateProject(string instance, string name, string identifier, IEnumerable<ProjectKey> projectKeys) : base(Enums.Priority.DoItNow)
         {
             Instance = instance;
             Name = name;
@@ -45,14 +46,14 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(Identifier))
                 yield return new ValidationResult("Identifier must be set.");
-            else if (!Regex.IsMatch(Identifier, Constants.IdentifierRegexp))
+            else if (!Regex.IsMatch(Identifier, Constants.IdentifierRegexp, RegexOptions.Singleline))
                 yield return new ValidationResult("Identifier must be valid URI relative path.");
 
             if (ProjectKeys != null &&
                ProjectKeys.Any(x => string.IsNullOrEmpty(x.Key)))
                 yield return new ValidationResult("All project keys must be set.");
 
-            yield return null;
+            yield return new ValidationResult(null);
         }
     }
 }

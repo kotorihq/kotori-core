@@ -23,6 +23,7 @@
     <Folder Include="Database\DocumentDb\" />
     <Folder Include="Database\DocumentDb\Entities\" />
     <Folder Include="Domains\" />
+    <Folder Include="Commands\Project\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.3.0" />

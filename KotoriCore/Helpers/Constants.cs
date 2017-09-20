@@ -8,6 +8,6 @@
         /// <summary>
         /// The identifier regexp.
         /// </summary>
-        public const string IdentifierRegexp = "^([a-z0-9\\-\\/]{,30})$";
+        public const string IdentifierRegexp = "^([a-zA-Z0-9\\-\\/]{1,30})$";
     }
 }
