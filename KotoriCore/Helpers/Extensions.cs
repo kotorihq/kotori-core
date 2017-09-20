@@ -1,19 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Sushi2;
-
-namespace KotoriCore.Helpers
+﻿namespace KotoriCore.Helpers
 {
+    // TODO: not needed (at least atm)
     public static class Extensions
     {
-        /// <summary>
-        /// Returns summarized validation result.
-        /// </summary>
-        /// <returns>The summarized validation result.</returns>
-        /// <param name="validationResults">Validation results.</param>
-        public static ValidationResult ToValidationResult(this IEnumerable<ValidationResult> validationResults)
-        {
-            return new ValidationResult(validationResults.Where(z => !string.IsNullOrEmpty(z.Message)).Select(x => x.Message).ToImplodedString(" "));
-        }
+        
     }
 }

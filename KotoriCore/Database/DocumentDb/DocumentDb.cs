@@ -1,8 +1,9 @@
 ﻿using KotoriCore.Commands;
 using Oogi2;
-using KotoriCore.Helpers;
 using KotoriCore.Configurations;
 using KotoriCore.Database.DocumentDb.Entities;
+using KotoriCore.Exceptions;
+using System;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -19,19 +20,33 @@ namespace KotoriCore.Database.DocumentDb
             _repoProject = new Repository<Project>(_connection);
         }
 
+        /// <summary>
+        /// Handles the specified command.
+        /// </summary>
+        /// <returns>Command result.</returns>
+        /// <param name="command">Command.</param>
         public CommandResult Handle(ICommand command)
         {
-            var result = new CommandResult
+            var message = $"DocumentDb failed when handling command {command.GetType()}.";
+            CommandResult result = null;
+
+            try
             {
-                Validation = command.Validate().ToValidationResult()
-            };
+                var validations = command.Validate();
 
-            if (!result.Validation.IsValid)
+                if (validations != null)
+                    throw new KotoriValidationException(validations);
+
+                if (command is CreateProject createProject) result = Handle(createProject);
+
                 return result;
-            
-            if (command is CreateProject createProject) result = Handle(createProject);
+            }
+            catch(Exception ex)
+            {
+                message += $" Message: {ex.Message}";
+            }
 
-            return result;
+            throw new KotoriException(message);
         }
 
         public CommandResult Handle(CreateProject command)
@@ -40,7 +55,7 @@ namespace KotoriCore.Database.DocumentDb
 
             _repoProject.Create(prj);
 
-            return new CommandResult(); 
+            return new CommandResult("Project has been created."); 
         }
     }
 }

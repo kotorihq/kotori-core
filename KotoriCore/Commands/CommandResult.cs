@@ -1,15 +1,7 @@
-﻿using KotoriCore.Helpers;
-
-namespace KotoriCore.Commands
+﻿namespace KotoriCore.Commands
 {
     public class CommandResult
     {
-        /// <summary>
-        /// Gets or sets the validation.
-        /// </summary>
-        /// <value>The validation.</value>
-        public ValidationResult Validation { get; set; }
-
         /// <summary>
         /// Gets or sets the message.
         /// </summary>
@@ -17,9 +9,12 @@ namespace KotoriCore.Commands
         public string Message { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="T:KotoriCore.Commands.CommandResult"/> is valid.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CommandResult"/> class.
         /// </summary>
-        /// <value><c>true</c> if is valid; otherwise, <c>false</c>.</value>
-        public bool IsValid { get; set; }
+        /// <param name="message">Message.</param>
+        public CommandResult(string message)
+        {
+            Message = message;
+        }
     }
 }
