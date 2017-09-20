@@ -5,6 +5,7 @@ using KotoriCore.Database;
 using KotoriCore.Database.DocumentDb;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 
 namespace KotoriCore
 {
@@ -40,6 +41,11 @@ namespace KotoriCore
                     throw new Exceptions.KotoriException("Error initializing connection to DocumentDb. Message: " + ex.Message);
                 }                
             }
+
+            if (_database == null)
+            {
+                throw new Exceptions.KotoriException("No database initialized.");
+            }
         }
 
         /// <summary>
@@ -50,11 +56,21 @@ namespace KotoriCore
         {
         }
 
-        public IEnumerable<CommandResult> Process(ICommand command) 
+        /// <summary>
+        /// Process the specified command.
+        /// </summary>
+        /// <returns>The process.</returns>
+        /// <param name="command">Command.</param>
+        public CommandResult Process(ICommand command) 
         {
-            return Process(new List<ICommand> { command });
+            return _database.Handle(command);
         }
 
+        /// <summary>
+        /// Process the specified commands.
+        /// </summary>
+        /// <returns>The process.</returns>
+        /// <param name="commands">Commands.</param>
         public IEnumerable<CommandResult> Process(IEnumerable<ICommand> commands)
         {
             if (commands == null)

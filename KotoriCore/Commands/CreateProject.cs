@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using KotoriCore.Configurations;
 using KotoriCore.Helpers;
 
@@ -45,10 +45,10 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(Identifier))
                 yield return new ValidationResult("Identifier must be set.");
-            else if (!Uri.IsWellFormedUriString(Identifier, UriKind.Relative))
+            else if (!Regex.IsMatch(Identifier, Constants.IdentifierRegexp))
                 yield return new ValidationResult("Identifier must be valid URI relative path.");
 
-            if (ProjectKeys == null ||
+            if (ProjectKeys != null &&
                ProjectKeys.Any(x => string.IsNullOrEmpty(x.Key)))
                 yield return new ValidationResult("All project keys must be set.");
 

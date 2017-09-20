@@ -7,9 +7,12 @@ using System;
 
 namespace KotoriCore.Database.DocumentDb
 {
+    /// <summary>
+    /// Document Db.
+    /// </summary>
     public class DocumentDb : IDatabase
     {
-        Repository<Project> _repoProject;
+        readonly Repository<Project> _repoProject;
         Connection _connection;
 
         public const string ProjectEntity = "kotori/project";
@@ -32,14 +35,19 @@ namespace KotoriCore.Database.DocumentDb
 
             try
             {
-                var validations = command.Validate();
+                var validationResults = command.Validate();
 
-                if (validations != null)
-                    throw new KotoriValidationException(validations);
+                if (validationResults != null)
+                    throw new KotoriValidationException(validationResults);
 
-                if (command is CreateProject createProject) result = Handle(createProject);
+                if (command is CreateProject createProject) 
+                    result = Handle(createProject);
 
                 return result;
+            }
+            catch(KotoriValidationException)
+            {
+                throw;
             }
             catch(Exception ex)
             {
