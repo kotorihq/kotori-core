@@ -34,12 +34,6 @@ namespace KotoriCore.Configurations
         public IDatabaseConfiguration Database { get; }
 
         /// <summary>
-        /// Gets the bus.
-        /// </summary>
-        /// <value>The bus.</value>
-        public IBus Bus { get; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Configurations.KotoriConfiguration"/> class.
         /// </summary>
         /// <param name="configuration">Configuration.</param>
@@ -53,9 +47,6 @@ namespace KotoriCore.Configurations
 
             // database
             Database = configuration.GetSection("Kotori:DocumentDb").Get<DocumentDbConfiguration>();
-
-            // bus
-            Bus = configuration.GetSection("Kotori:ServiceBus").Get<ServiceBusConfiguration>();
         }
 
         /// <summary>
@@ -65,14 +56,12 @@ namespace KotoriCore.Configurations
         /// <param name="version">Version.</param>
         /// <param name="masterKeys">Master keys.</param>
         /// <param name="database">Database.</param>
-        /// <param name="bus">Bus.</param>
-        public KotoriConfiguration(string instance, string version, IEnumerable<MasterKey> masterKeys, IDatabaseConfiguration database, IBus bus)
+        public KotoriConfiguration(string instance, string version, IEnumerable<MasterKey> masterKeys, IDatabaseConfiguration database)
         {
             Instance = instance;
             Version = version;
             MasterKeys = masterKeys;
             Database = database;
-            Bus = bus;
         }
     }
 }

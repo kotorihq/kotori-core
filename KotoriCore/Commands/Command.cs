@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using KotoriCore.Bus;
 using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
@@ -7,7 +6,7 @@ namespace KotoriCore.Commands
     /// <summary>
     /// Base command.
     /// </summary>
-    public abstract class Command : ICommand, IMessage
+    public abstract class Command : ICommand
     {
         /// <summary>
         /// Gets the priority.
