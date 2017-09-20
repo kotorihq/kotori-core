@@ -13,7 +13,7 @@ namespace KotoriCore.Commands
     {
         public readonly string Name;
         public readonly string Identifier;
-		public IReadOnlyList<ProjectKey> ProjectKeys { get; set; }
+        public IReadOnlyList<ProjectKey> ProjectKeys { get; set; }
         public string Instance { get; }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Validate this instance.
         /// </summary>
-        /// <returns>The validation results.</returns>
+        /// <returns>The validation results or null if everything is alright.</returns>
         public override IEnumerable<ValidationResult> Validate()
         {
             if (string.IsNullOrEmpty(Instance))
@@ -43,16 +43,16 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(Name))
                 yield return new ValidationResult("Name must be set.");
 
-			if (string.IsNullOrEmpty(Identifier))
-				yield return new ValidationResult("Identifier must be set.");
-			else if (!Uri.IsWellFormedUriString(Identifier, UriKind.Relative))
+            if (string.IsNullOrEmpty(Identifier))
+                yield return new ValidationResult("Identifier must be set.");
+            else if (!Uri.IsWellFormedUriString(Identifier, UriKind.Relative))
                 yield return new ValidationResult("Identifier must be valid URI relative path.");
 
             if (ProjectKeys == null ||
                ProjectKeys.Any(x => string.IsNullOrEmpty(x.Key)))
                 yield return new ValidationResult("All project keys must be set.");
 
-            yield return new ValidationResult();
+            yield return null;
         }
     }
 }

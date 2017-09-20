@@ -24,12 +24,5 @@
         {
             Message = message;
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Helpers.ValidationResult"/> class.
-        /// </summary>
-        public ValidationResult()
-        {
-        }
     }
 }

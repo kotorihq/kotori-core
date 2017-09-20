@@ -13,16 +13,16 @@ namespace KotoriCore.Commands
         /// Gets the priority.
         /// </summary>
         /// <value>The priority.</value>
-		public Enums.Priority Priority { get; }
+        public Enums.Priority Priority { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.Command"/> class.
         /// </summary>
         /// <param name="priority">Priority.</param>
-		protected Command(Enums.Priority priority)
-		{
-			Priority = priority;
-		}
+        protected Command(Enums.Priority priority)
+        {
+            Priority = priority;
+        }
 
         /// <summary>
         /// Validate this instance.

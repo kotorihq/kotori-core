@@ -10,11 +10,11 @@ namespace KotoriCore.Commands
         /// <value>The validation.</value>
         public ValidationResult Validation { get; set; }
 
-		/// <summary>
-		/// Gets or sets the message.
-		/// </summary>
-		/// <value>The message.</value>
-		public string Message { get; set; }
+        /// <summary>
+        /// Gets or sets the message.
+        /// </summary>
+        /// <value>The message.</value>
+        public string Message { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="T:KotoriCore.Commands.CommandResult"/> is valid.

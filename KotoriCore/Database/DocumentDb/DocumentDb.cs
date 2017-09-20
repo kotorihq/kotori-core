@@ -21,10 +21,10 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult Handle(ICommand command)
         {
-			var result = new CommandResult
-			{
-				Validation = command.Validate().ToValidationResult()
-			};
+            var result = new CommandResult
+            {
+                Validation = command.Validate().ToValidationResult()
+            };
 
             if (!result.Validation.IsValid)
                 return result;
