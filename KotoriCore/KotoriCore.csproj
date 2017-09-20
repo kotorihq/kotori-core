@@ -19,10 +19,8 @@
     <Folder Include="Commands\" />
     <Folder Include="Helpers\" />
     <Folder Include="Domains\" />
-    <Folder Include="Bus\" />
     <Folder Include="Database\" />
     <Folder Include="Database\DocumentDb\" />
-    <Folder Include="Bus\ServiceBus\" />
     <Folder Include="Database\DocumentDb\Entities\" />
     <Folder Include="Domains\" />
   </ItemGroup>
@@ -34,5 +32,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
     <PackageReference Include="Oogi2" Version="1.0.0" />
     <PackageReference Include="Sushi2" Version="1.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Bus\IBus.cs" />
+    <Compile Remove="Bus\IMessage.cs" />
+    <Compile Remove="Configurations\ServiceBusConfiguration.cs" />
   </ItemGroup>
 </Project>
