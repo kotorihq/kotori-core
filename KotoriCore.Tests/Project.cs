@@ -26,7 +26,7 @@ namespace KotoriCore.Tests
         }
 
         [TestCleanup]
-        public void Bye()
+        public void Cleanup()
         {
         }
 

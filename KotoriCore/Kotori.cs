@@ -60,7 +60,7 @@ namespace KotoriCore
         /// </summary>
         /// <returns>The process.</returns>
         /// <param name="command">Command.</param>
-        public CommandResult Process(ICommand command) 
+        public ICommandResult Process(ICommand command) 
         {
             return _database.Handle(command);
         }
@@ -70,12 +70,12 @@ namespace KotoriCore
         /// </summary>
         /// <returns>The process.</returns>
         /// <param name="commands">Commands.</param>
-        public IEnumerable<CommandResult> Process(IEnumerable<ICommand> commands)
+        public IEnumerable<ICommandResult> Process(IEnumerable<ICommand> commands)
         {
             if (commands == null)
                 throw new ArgumentNullException(nameof(commands));
 
-            var result = new List<CommandResult>();
+            var result = new List<ICommandResult>();
 
             foreach(var command in commands)
             {

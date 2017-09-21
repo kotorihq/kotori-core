@@ -1,11 +1,12 @@
 ﻿using KotoriCore.Commands;
+using System.Collections.Generic;
 
 namespace KotoriCore.Database
 {
     public interface IDatabase
     {
-        CommandResult Handle(ICommand command);
-
-        CommandResult Handle(CreateProject command);
+        ICommandResult Handle(ICommand command);
+        CommandResult<string> Handle(CreateProject command);
+        CommandResult<IEnumerable<Domains.Project>> Handle(GetProjects command);
     }
 }

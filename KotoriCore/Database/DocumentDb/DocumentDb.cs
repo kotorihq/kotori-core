@@ -4,6 +4,8 @@ using KotoriCore.Configurations;
 using KotoriCore.Database.DocumentDb.Entities;
 using KotoriCore.Exceptions;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -28,18 +30,20 @@ namespace KotoriCore.Database.DocumentDb
         /// </summary>
         /// <returns>Command result.</returns>
         /// <param name="command">Command.</param>
-        public CommandResult Handle(ICommand command)
+        public ICommandResult Handle(ICommand command)
         {
             var message = $"DocumentDb failed when handling command {command.GetType()}.";
-            CommandResult result = null;
+            ICommandResult result = null;
 
             try
             {
                 var validationResults = command.Validate();
 
-                if (validationResults != null)
+                if (validationResults != null &&
+                    validationResults.Any())
                     throw new KotoriValidationException(validationResults);
 
+                // TODO: check if identifier is uniqe
                 if (command is CreateProject createProject) 
                     result = Handle(createProject);
 
@@ -57,13 +61,18 @@ namespace KotoriCore.Database.DocumentDb
             throw new KotoriException(message);
         }
 
-        public CommandResult Handle(CreateProject command)
+        public CommandResult<string> Handle(CreateProject command)
         {
             var prj = new Project(command.Instance, command.Name, command.Identifier, command.ProjectKeys);
 
             _repoProject.Create(prj);
 
-            return new CommandResult("Project has been created."); 
+            return new CommandResult<string>("Project has been created."); 
+        }
+        
+        public CommandResult<IEnumerable<Domains.Project>> Handle(GetProjects command)
+        {
+            throw new NotImplementedException();
         }
     }
 }

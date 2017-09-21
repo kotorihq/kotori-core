@@ -1,20 +1,22 @@
-﻿namespace KotoriCore.Commands
-{
-    public class CommandResult
-    {
-        /// <summary>
-        /// Gets or sets the message.
-        /// </summary>
-        /// <value>The message.</value>
-        public string Message { get; set; }
+﻿using System;
+using System.Collections.Generic;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CommandResult"/> class.
-        /// </summary>
-        /// <param name="message">Message.</param>
+namespace KotoriCore.Commands
+{
+    public class CommandResult<T> : ICommandResult
+    {       
+        public string Message { get; set; }
+        public IEnumerable<T> Data { get; set; }
+        public Type ElementType => typeof(T);
+
         public CommandResult(string message)
         {
             Message = message;
         }
-    }
+
+        public CommandResult(IEnumerable<T> data)
+        {
+            Data = data;
+        }
+    }    
 }
