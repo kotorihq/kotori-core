@@ -14,7 +14,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// Gets or sets the identifier (documentdb pk).
         /// </summary>
         /// <value>The identifier (documentdb pk).</value>
-		public string Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Gets or sets the instance.
@@ -40,12 +40,12 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <value>The project keys.</value>
         public IEnumerable<ProjectKey> ProjectKeys { get; set; } = new List<ProjectKey>();
 
-		/// <summary>
-		/// Converts from <paramref name="project">project</paramref> to documentdb <see cref="T:KotoriCore.Database.DocumentDb.Entities.Project" />.
-		/// </summary>
-		/// <returns>The implicit.</returns>
-		/// <param name="project">Project.</param>
-		public static implicit operator Project(Domains.Project project)
+        /// <summary>
+        /// Converts from <paramref name="project">project</paramref> to documentdb <see cref="T:KotoriCore.Database.DocumentDb.Entities.Project" />.
+        /// </summary>
+        /// <returns>The implicit.</returns>
+        /// <param name="project">Project.</param>
+        public static implicit operator Project(Domains.Project project)
         {
             var dbProject = new Project
             {
@@ -79,5 +79,5 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Identifier = identifier;
             ProjectKeys = projectKeys ?? new List<ProjectKey>();
         }
-}
+    }
 }
