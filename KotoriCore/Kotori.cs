@@ -5,7 +5,6 @@ using KotoriCore.Database;
 using KotoriCore.Database.DocumentDb;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Linq;
 
 namespace KotoriCore
 {
