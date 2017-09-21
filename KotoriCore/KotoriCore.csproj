@@ -24,7 +24,6 @@
     <Folder Include="Database\DocumentDb\" />
     <Folder Include="Database\DocumentDb\Entities\" />
     <Folder Include="Domains\" />
-    <Folder Include="Domains\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.3.0" />
@@ -35,6 +34,7 @@
     <PackageReference Include="Oogi2" Version="1.0.0" />
     <PackageReference Include="Sushi2" Version="1.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.0.0" />
+    <PackageReference Include="kotori-core" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Bus\IBus.cs" />
