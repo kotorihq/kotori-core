@@ -17,10 +17,10 @@
     <Folder Include="Configurations\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Domains\" />
     <Folder Include="Database\" />
     <Folder Include="Database\DocumentDb\" />
     <Folder Include="Database\DocumentDb\Entities\" />
+    <Folder Include="Domains\" />
     <Folder Include="Domains\" />
   </ItemGroup>
   <ItemGroup>

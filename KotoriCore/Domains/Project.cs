@@ -24,5 +24,5 @@ namespace KotoriCore.Domains
             Identifier = identifier;
             ProjectKeys = projectKeys;
         }
-	}
+    }
 }

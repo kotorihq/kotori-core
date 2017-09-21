@@ -6,6 +6,7 @@ using KotoriCore.Exceptions;
 using System;
 using System.Linq;
 using Oogi2.Queries;
+using System.Collections.Generic;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -110,6 +111,27 @@ namespace KotoriCore.Database.DocumentDb
             var domainProjects = projects.Select(p => new Domains.Project(p.Instance, p.Name, p.Identifier, p.ProjectKeys));
 
             return new CommandResult<Domains.Project>(domainProjects);
+        }
+
+        public CommandResult<string> Handle(ProjectAddKey command)
+        {
+            var project = FindProjectById(command.Instance, command.ProjectId);
+
+            if (project == null)
+                throw new KotoriValidationException("Project does not exists.");
+
+            if (project.ProjectKeys == null)
+                project.ProjectKeys = new List<ProjectKey>();
+
+            var keys = project.ProjectKeys.ToList();
+
+            keys.Add(command.ProjectKey);
+
+            project.ProjectKeys = keys;
+
+            _repoProject.Replace(project);
+
+            return new CommandResult<string>("Project key has been added.");
         }
     }
 }

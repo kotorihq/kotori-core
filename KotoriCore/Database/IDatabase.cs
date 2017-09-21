@@ -7,5 +7,6 @@ namespace KotoriCore.Database
         ICommandResult Handle(ICommand command);
         CommandResult<string> Handle(CreateProject command);
         CommandResult<Domains.Project> Handle(GetProjects command);
+        CommandResult<string> Handle(ProjectAddKey command);
     }
 }
