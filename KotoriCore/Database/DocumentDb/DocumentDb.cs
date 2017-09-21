@@ -34,8 +34,8 @@ namespace KotoriCore.Database.DocumentDb
                     new
                     {
                         entity = ProjectEntity,
-                        instance,
-                        id
+                        instance = instance,
+                        id = id
                     }
             );
 
@@ -85,10 +85,10 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult<string> Handle(CreateProject command)
         {
-            var prj = new Project(command.Instance, command.Name, command.Identifier, command.ProjectKeys);
-
             if (FindProjectById(command.Instance, command.Identifier) != null)
                 throw new KotoriValidationException($"Project with identifier {command.Identifier} already exists.");
+
+            var prj = new Project(command.Instance, command.Name, command.Identifier, command.ProjectKeys);
 
             _repoProject.Create(prj);
 
