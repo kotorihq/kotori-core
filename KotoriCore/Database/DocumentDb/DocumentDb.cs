@@ -25,6 +25,24 @@ namespace KotoriCore.Database.DocumentDb
             _repoProject = new Repository<Project>(_connection);
         }
 
+        Project FindProjectById(string instance, string id)
+        {
+            var q = new DynamicQuery
+                (
+                    "select * from c where c.entity = @entity and c.instance = @instance and c.id = @id",
+                    new
+                    {
+                        entity = ProjectEntity,
+                        instance,
+                        id
+                    }
+            );
+
+            var project = _repoProject.GetFirstOrDefault(q);
+
+            return project;
+        }
+
         /// <summary>
         /// Handles the specified command.
         /// </summary>
@@ -67,7 +85,10 @@ namespace KotoriCore.Database.DocumentDb
         public CommandResult<string> Handle(CreateProject command)
         {
             var prj = new Project(command.Instance, command.Name, command.Identifier, command.ProjectKeys);
-            // TODO: check if identifier is uniqe
+
+            if (FindProjectById(command.Instance, command.Identifier) != null)
+                throw new KotoriValidationException($"Project with identifier {command.Identifier} already exists.");
+
             _repoProject.Create(prj);
 
             return new CommandResult<string>("Project has been created."); 
