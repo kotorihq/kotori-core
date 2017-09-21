@@ -1,5 +1,4 @@
 ﻿using KotoriCore.Commands;
-using System.Collections.Generic;
 
 namespace KotoriCore.Database
 {
@@ -7,6 +6,6 @@ namespace KotoriCore.Database
     {
         ICommandResult Handle(ICommand command);
         CommandResult<string> Handle(CreateProject command);
-        CommandResult<IEnumerable<Domains.Project>> Handle(GetProjects command);
+        CommandResult<Domains.Project> Handle(GetProjects command);
     }
 }

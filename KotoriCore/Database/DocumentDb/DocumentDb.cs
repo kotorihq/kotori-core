@@ -5,7 +5,7 @@ using KotoriCore.Database.DocumentDb.Entities;
 using KotoriCore.Exceptions;
 using System;
 using System.Linq;
-using System.Collections.Generic;
+using Oogi2.Queries;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -43,9 +43,12 @@ namespace KotoriCore.Database.DocumentDb
                     validationResults.Any())
                     throw new KotoriValidationException(validationResults);
 
-                // TODO: check if identifier is uniqe
-                if (command is CreateProject createProject) 
+                if (command is CreateProject createProject)
                     result = Handle(createProject);
+                else if (command is GetProjects getProjects)
+                    result = Handle(getProjects);
+                else
+                    throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
                 return result;
             }
@@ -64,15 +67,28 @@ namespace KotoriCore.Database.DocumentDb
         public CommandResult<string> Handle(CreateProject command)
         {
             var prj = new Project(command.Instance, command.Name, command.Identifier, command.ProjectKeys);
-
+            // TODO: check if identifier is uniqe
             _repoProject.Create(prj);
 
             return new CommandResult<string>("Project has been created."); 
         }
         
-        public CommandResult<IEnumerable<Domains.Project>> Handle(GetProjects command)
+        public CommandResult<Domains.Project> Handle(GetProjects command)
         {
-            throw new NotImplementedException();
+            var q = new DynamicQuery
+                (
+                    "select * from c where c.entity = @entity and c.instance = @instance",
+                    new
+                    {
+                        entity = ProjectEntity,
+                        instance = command.Instance
+                    }
+                );
+
+            var projects = _repoProject.GetList(q);
+            var domainProjects = projects.Select(p => new Domains.Project(p.Instance, p.Name, p.Identifier, p.ProjectKeys));
+
+            return new CommandResult<Domains.Project>(domainProjects);
         }
     }
 }

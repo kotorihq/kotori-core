@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace KotoriCore.Commands
 {
     public class CommandResult<T> : ICommandResult
-    {       
-        public string Message { get; set; }
-        public IEnumerable<T> Data { get; set; }
-        public Type ElementType => typeof(T);
+    {
+        IEnumerable<T> _data { get; set; }
+
+        public string Message { get; set; }        
+        public Type ElementType => typeof(T);        
+        public IEnumerable Data => _data;
 
         public CommandResult(string message)
         {
@@ -16,7 +19,7 @@ namespace KotoriCore.Commands
 
         public CommandResult(IEnumerable<T> data)
         {
-            Data = data;
+            _data = data;
         }
     }    
 }

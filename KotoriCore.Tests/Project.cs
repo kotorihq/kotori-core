@@ -5,6 +5,7 @@ using KotoriCore.Commands;
 using KotoriCore.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using KotoriCore.Helpers;
 
 namespace KotoriCore.Tests
 {
@@ -80,7 +81,14 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void CreateProject()
         {
-            _kotori.Process(new CreateProject("dev", "nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            var result = _kotori.Process(new CreateProject("dev", "nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+
+            Assert.AreEqual("Project has been created.", result.Message);
+
+            var results = _kotori.Process(new GetProjects("dev"));
+            var projects = results.ToDataList<Domains.Project>();
+
+            Assert.AreEqual(1, projects.Count());
         }
     }
 }
