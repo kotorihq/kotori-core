@@ -1,17 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+
     <PackageId>kotori-core</PackageId>
-    <PackageVersion>0.0.1</PackageVersion>
-    <Authors>frohikey</Authors>
+    <Title>kotori core</Title>
+    <Version>1.0.1</Version>
+    <Authors>frohikey</Authors>    
     <PackageLicenseUrl>https://github.com/kotorihq/kotori-core/blob/master/LICENSE</PackageLicenseUrl>
-    <Owners>kotori</Owners>
+    <Owners>Goto10</Owners>
     <PackageProjectUrl>https://github.com/kotorihq/kotori-core</PackageProjectUrl>
-    <Summary>Kotori core library</Summary>
-    <PackageTags>kotori</PackageTags>
-    <Title>Kotori Core</Title>
+    <Summary>Kotori core library.</Summary>
     <Description>Kotori core library.</Description>
+    <PackageTags>kotori</PackageTags>
+    <Copyright>Copyright (c) 2017 Goto10 s.r.o.</Copyright>
     <Company>Goto10</Company>
+    <RepositoryUrl>https://github.com/kotorihq/kotori-core</RepositoryUrl>  
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Configurations\" />
