@@ -21,6 +21,7 @@ namespace KotoriCore.Tests
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("AppSettings.json")
                 .AddUserSecrets("kotori-server")
+                .AddEnvironmentVariables()
                 .Build();
 
             _kotori = new Kotori(appSettings);
