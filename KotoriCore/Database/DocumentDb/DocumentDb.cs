@@ -26,24 +26,6 @@ namespace KotoriCore.Database.DocumentDb
             _repoProject = new Repository<Project>(_connection);
         }
 
-        Project FindProjectById(string instance, string id)
-        {
-            var q = new DynamicQuery
-                (
-                    "select * from c where c.entity = @entity and c.instance = @instance and c.id = @id",
-                    new
-                    {
-                        entity = ProjectEntity,
-                        instance = instance,
-                        id = id
-                    }
-            );
-
-            var project = _repoProject.GetFirstOrDefault(q);
-
-            return project;
-        }
-
         /// <summary>
         /// Handles the specified command.
         /// </summary>
@@ -132,6 +114,24 @@ namespace KotoriCore.Database.DocumentDb
             _repoProject.Replace(project);
 
             return new CommandResult<string>("Project key has been added.");
+        }
+
+        Project FindProjectById(string instance, string id)
+        {
+            var q = new DynamicQuery
+                (
+                    "select * from c where c.entity = @entity and c.instance = @instance and c.id = @id",
+                    new
+                    {
+                        entity = ProjectEntity,
+                        instance = instance,
+                        id = id
+                    }
+            );
+
+            var project = _repoProject.GetFirstOrDefault(q);
+
+            return project;
         }
     }
 }

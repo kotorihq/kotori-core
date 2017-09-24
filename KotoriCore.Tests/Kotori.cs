@@ -33,34 +33,24 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        public void CreateProjectValidationErrors()
+        [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
+        public void FailToCreateProjectFirst()
         {
-            try
-            {
-                _kotori.Process(new CreateProject("", "", "", null));
-            }
-            catch(KotoriValidationException ex)
-            {
-                Assert.AreEqual("Instance must be set. Name must be set. Identifier must be set.", ex.Message);
-            }
+            _kotori.Process(new CreateProject("", "", "", null));
+        }
 
-            try
-            {
-                _kotori.Process(new CreateProject("foo", "bar", "x x", null));
-            }
-            catch (KotoriValidationException ex)
-            {
-                Assert.AreEqual("Identifier must be valid URI relative path.", ex.Message);
-            }
+        [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
+        public void FailToCreateProjectSecond()
+        {
+            _kotori.Process(new CreateProject("foo", "bar", "x x", null));
+        }
 
-            try
-            {
-                _kotori.Process(new CreateProject("foo", "bar", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) }));
-            }
-            catch (KotoriValidationException ex)
-            {
-                Assert.AreEqual("All project keys must be set.", ex.Message);
-            }
+        [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
+        public void FailToCreateProjectBadKeys()
+        {
+            _kotori.Process(new CreateProject("foo", "bar", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) }));
         }
 
         [TestMethod]
