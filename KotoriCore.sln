@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KotoriCore", "KotoriCore\Ko
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KotoriCore.Tests", "KotoriCore.Tests\KotoriCore.Tests.csproj", "{78B4DADD-B02C-460A-8304-8001D2D59B1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KotoriCore.Cmd", "KotoriCore.Cmd\KotoriCore.Cmd.csproj", "{F6A0543C-6D78-4B7D-A7F6-97C07B14332A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{78B4DADD-B02C-460A-8304-8001D2D59B1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78B4DADD-B02C-460A-8304-8001D2D59B1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78B4DADD-B02C-460A-8304-8001D2D59B1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6A0543C-6D78-4B7D-A7F6-97C07B14332A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6A0543C-6D78-4B7D-A7F6-97C07B14332A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6A0543C-6D78-4B7D-A7F6-97C07B14332A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6A0543C-6D78-4B7D-A7F6-97C07B14332A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

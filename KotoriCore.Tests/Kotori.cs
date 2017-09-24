@@ -81,5 +81,17 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual(1, projects.Count());
         }
+
+        public void Main()
+        {
+            var result = _kotori.Process(new CreateProject("dev", "nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+
+            Assert.AreEqual("Project has been created.", result.Message);
+
+            var results = _kotori.Process(new GetProjects("dev"));
+            var projects = results.ToDataList<Domains.Project>();
+
+            Assert.AreEqual(1, projects.Count());
+        }
     }
 }
