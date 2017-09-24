@@ -1,9 +1,9 @@
 ﻿namespace KotoriCore.Configurations
 {
     /// <summary>
-    /// Database configuration.
+    /// Search configuration.
     /// </summary>
-    public interface IDatabaseConfiguration
+    public interface ISearchConfiguration
     {
     }
 }

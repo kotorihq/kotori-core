@@ -34,6 +34,12 @@ namespace KotoriCore.Configurations
         public IDatabaseConfiguration Database { get; }
 
         /// <summary>
+        /// Gets the search service.
+        /// </summary>
+        /// <value>The database.</value>
+        public ISearchConfiguration Search { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Configurations.KotoriConfiguration"/> class.
         /// </summary>
         /// <param name="configuration">Configuration.</param>
@@ -47,6 +53,9 @@ namespace KotoriCore.Configurations
 
             // database
             Database = configuration.GetSection("Kotori:DocumentDb").Get<DocumentDbConfiguration>();
+
+            // search service
+            Search = configuration.GetSection("Kotori:AzureSearch").Get<AzureSearchConfiguration>();
         }
 
         /// <summary>
@@ -56,12 +65,14 @@ namespace KotoriCore.Configurations
         /// <param name="version">Version.</param>
         /// <param name="masterKeys">Master keys.</param>
         /// <param name="database">Database.</param>
-        public KotoriConfiguration(string instance, string version, IEnumerable<MasterKey> masterKeys, IDatabaseConfiguration database)
+        /// <param name="search">Search service.</param>
+        public KotoriConfiguration(string instance, string version, IEnumerable<MasterKey> masterKeys, IDatabaseConfiguration database, ISearchConfiguration search)
         {
             Instance = instance;
             Version = version;
             MasterKeys = masterKeys;
             Database = database;
+            Search = search;
         }
     }
 }

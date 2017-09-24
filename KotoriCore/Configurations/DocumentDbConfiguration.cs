@@ -1,7 +1,7 @@
 ﻿namespace KotoriCore.Configurations
 {
     /// <summary>
-    /// Document Db connection string.
+    /// Document Db configuration.
     /// </summary>
     public class DocumentDbConfiguration : IDatabaseConfiguration
     {
