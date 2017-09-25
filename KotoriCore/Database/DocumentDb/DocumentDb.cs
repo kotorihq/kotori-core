@@ -120,12 +120,12 @@ namespace KotoriCore.Database.DocumentDb
         {
             var q = new DynamicQuery
                 (
-                    "select * from c where c.entity = @entity and c.instance = @instance and c.id = @id",
+                    "select * from c where c.entity = @entity and c.instance = @instance and c.identifier = @id",
                     new
                     {
                         entity = ProjectEntity,
-                        instance = instance,
-                        id = id
+                        instance,
+                        id
                     }
             );
 
