@@ -79,7 +79,7 @@ namespace KotoriCore.Database.DocumentDb
             return new CommandResult<string>("Project has been created."); 
         }
         
-        public CommandResult<Domains.Project> Handle(GetProjects command)
+        public CommandResult<Domains.SimpleProject> Handle(GetProjects command)
         {
             var q = new DynamicQuery
                 (
@@ -94,7 +94,7 @@ namespace KotoriCore.Database.DocumentDb
             var projects = _repoProject.GetList(q);
             var domainProjects = projects.Select(p => new Domains.Project(p.Instance, p.Name, p.Identifier, p.ProjectKeys));
 
-            return new CommandResult<Domains.Project>(domainProjects);
+            return new CommandResult<Domains.SimpleProject>(domainProjects.Select(d => new Domains.SimpleProject(d.Name, d.Identifier)));
         }
 
         public CommandResult<string> Handle(ProjectAddKey command)

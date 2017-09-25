@@ -41,24 +41,6 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public IEnumerable<ProjectKey> ProjectKeys { get; set; } = new List<ProjectKey>();
 
         /// <summary>
-        /// Converts from <paramref name="project">project</paramref> to documentdb <see cref="T:KotoriCore.Database.DocumentDb.Entities.Project" />.
-        /// </summary>
-        /// <returns>The implicit.</returns>
-        /// <param name="project">Project.</param>
-        public static implicit operator Project(Domains.Project project)
-        {
-            var dbProject = new Project
-            {
-                Instance = project.Instance,
-                Name = project.Name,
-                Identifier = project.Identifier,
-                ProjectKeys = project.ProjectKeys
-            };
-
-            return dbProject;
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.Project"/> class.
         /// </summary>
         public Project()
@@ -79,5 +61,17 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Identifier = identifier;
             ProjectKeys = projectKeys ?? new List<ProjectKey>();
         }
+
+        /// <summary>
+        /// Converts from <paramref name="project">project</paramref> to documentdb <see cref="T:KotoriCore.Database.DocumentDb.Entities.Project" />.
+        /// </summary>
+        /// <returns>The implicit.</returns>
+        /// <param name="project">Project.</param>
+        //public static implicit operator Project(Domains.Project project)
+        //{
+        //    var dbProject = new Project(project.Instance, project.Name, project.Identifier, project.ProjectKeys);
+
+        //    return dbProject;
+        //}
     }
 }

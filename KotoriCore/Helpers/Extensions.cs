@@ -14,7 +14,7 @@ namespace KotoriCore.Helpers
         /// <returns>The data list.</returns>
         /// <param name="result">The command result.</param>
         /// <typeparam name="T">The item in the collection type parameter.</typeparam>
-        public static IEnumerable<T> ToDataList<T>(this ICommandResult result)
+        public static IList<T> ToDataList<T>(this ICommandResult result)
         {
             if (result.Data == null)
                 return null;
