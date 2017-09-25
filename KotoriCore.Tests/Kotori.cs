@@ -93,7 +93,9 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual("Project has been deleted.", result.Message);
 
+            results = _kotori.Process(new GetProjects("dev"));
             projects = results.ToDataList<Domains.Project>();
+
             Assert.AreEqual(0, projects.Count());
         }
     }
