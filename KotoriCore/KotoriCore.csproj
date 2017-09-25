@@ -1,11 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-
     <PackageId>kotori-core</PackageId>
     <Title>kotori core</Title>
     <Version>1.0.1</Version>
-    <Authors>frohikey</Authors>    
+    <Authors>frohikey</Authors>
     <PackageLicenseUrl>https://github.com/kotorihq/kotori-core/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>Goto10</Owners>
     <PackageProjectUrl>https://github.com/kotorihq/kotori-core</PackageProjectUrl>
@@ -14,7 +13,7 @@
     <PackageTags>kotori</PackageTags>
     <Copyright>Copyright (c) 2017 Goto10 s.r.o.</Copyright>
     <Company>Goto10</Company>
-    <RepositoryUrl>https://github.com/kotorihq/kotori-core</RepositoryUrl>  
+    <RepositoryUrl>https://github.com/kotorihq/kotori-core</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Configurations\" />
@@ -34,7 +33,7 @@
     <PackageReference Include="Sushi2" Version="1.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.0.0" />
     <PackageReference Include="Shushu" Version="2.0.0" />
-    <PackageReference Include="Oogi2" Version="1.0.1" />
+    <PackageReference Include="Oogi2" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Bus\IBus.cs" />
