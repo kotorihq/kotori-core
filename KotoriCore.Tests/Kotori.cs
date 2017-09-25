@@ -30,6 +30,7 @@ namespace KotoriCore.Tests
         [TestCleanup]
         public void Cleanup()
         {
+            //_kotori.Process(new DeleteProject("dev", "nenecchi"));
         }
 
         [TestMethod]
@@ -54,6 +55,13 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException), "Project has been deleted even if it does not exist.")]
+        public void FailToDeleteProject()
+        {
+            _kotori.Process(new DeleteProject("dev", "nothing"));
+        }
+
+        [TestMethod]
         public void CreateProjectDirectValidations()
         {
             var p = new CreateProject("dev", "aoba", "aoba/ main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
@@ -70,7 +78,7 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        public void CreateProject()
+        public void CreateAndDeleteProject()
         {
             var result = _kotori.Process(new CreateProject("dev", "nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
 
@@ -80,18 +88,13 @@ namespace KotoriCore.Tests
             var projects = results.ToDataList<Domains.Project>();
 
             Assert.AreEqual(1, projects.Count());
-        }
 
-        public void Main()
-        {
-            var result = _kotori.Process(new CreateProject("dev", "nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            result = _kotori.Process(new DeleteProject("dev", "nenecchi/main"));
 
-            Assert.AreEqual("Project has been created.", result.Message);
+            Assert.AreEqual("Project has been deleted.", result.Message);
 
-            var results = _kotori.Process(new GetProjects("dev"));
-            var projects = results.ToDataList<Domains.Project>();
-
-            Assert.AreEqual(1, projects.Count());
+            projects = results.ToDataList<Domains.Project>();
+            Assert.AreEqual(0, projects.Count());
         }
     }
 }

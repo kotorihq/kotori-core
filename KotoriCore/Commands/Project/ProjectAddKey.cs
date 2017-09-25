@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using KotoriCore.Configurations;
 using KotoriCore.Helpers;
 
@@ -17,6 +16,7 @@ namespace KotoriCore.Commands
         {
             Instance = instance;
             ProjectId = projectId;
+            ProjectKey = projectKey;
         }
 
         public override IEnumerable<ValidationResult> Validate()

@@ -12,7 +12,7 @@ namespace KotoriCore.Commands
     public class CreateProject : Command, IInstance
     {
         public readonly string Name;
-        public readonly string Identifier;
+        public readonly string ProjectId;
         // TODO: readonly collection
         public IEnumerable<ProjectKey> ProjectKeys { get; set; }
         public string Instance { get; }
@@ -22,13 +22,13 @@ namespace KotoriCore.Commands
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="name">Name.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="projectId">Identifier.</param>
         /// <param name="projectKeys">Project keys.</param>
-        public CreateProject(string instance, string name, string identifier, IEnumerable<ProjectKey> projectKeys) : base(Enums.Priority.DoItNow)
+        public CreateProject(string instance, string name, string projectId, IEnumerable<ProjectKey> projectKeys) : base(Enums.Priority.DoItNow)
         {
             Instance = instance;
             Name = name;
-            Identifier = identifier;
+            ProjectId = projectId;
             ProjectKeys = projectKeys ?? new List<ProjectKey>();
         }
 
@@ -44,9 +44,9 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(Name))
                 yield return new ValidationResult("Name must be set.");
 
-            if (string.IsNullOrEmpty(Identifier))
+            if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Identifier must be set.");
-            else if (!Regex.IsMatch(Identifier, Constants.IdentifierRegexp, RegexOptions.Singleline))
+            else if (!Regex.IsMatch(ProjectId, Constants.IdentifierRegexp, RegexOptions.Singleline))
                 yield return new ValidationResult("Identifier must be valid URI relative path.");
 
             if (ProjectKeys?.Any(x => string.IsNullOrEmpty(x.Key)) == true)

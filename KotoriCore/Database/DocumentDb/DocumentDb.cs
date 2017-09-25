@@ -48,6 +48,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = Handle(createProject);
                 else if (command is GetProjects getProjects)
                     result = Handle(getProjects);
+                else if (command is DeleteProject deleteProject)
+                    result = Handle(deleteProject);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
@@ -67,10 +69,10 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult<string> Handle(CreateProject command)
         {
-            if (FindProjectById(command.Instance, command.Identifier) != null)
-                throw new KotoriValidationException($"Project with identifier {command.Identifier} already exists.");
+            if (FindProjectById(command.Instance, command.ProjectId) != null)
+                throw new KotoriValidationException($"Project with identifier {command.ProjectId} already exists.");
 
-            var prj = new Project(command.Instance, command.Name, command.Identifier, command.ProjectKeys);
+            var prj = new Project(command.Instance, command.Name, command.ProjectId, command.ProjectKeys);
 
             _repoProject.Create(prj);
 
@@ -114,6 +116,20 @@ namespace KotoriCore.Database.DocumentDb
             _repoProject.Replace(project);
 
             return new CommandResult<string>("Project key has been added.");
+        }
+
+        public CommandResult<string> Handle(DeleteProject command)
+        {
+            var project = FindProjectById(command.Instance, command.ProjectId);
+
+            if (project == null)
+                throw new KotoriValidationException("Project does not exists.");
+
+            // TODO: check if some data exists for a given project
+
+            _repoProject.Delete(project);
+
+            return new CommandResult<string>("Project has been deleted.");
         }
 
         Project FindProjectById(string instance, string id)
