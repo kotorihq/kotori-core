@@ -35,6 +35,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.0.0" />
     <PackageReference Include="Oogi2" Version="1.0.2" />
     <PackageReference Include="Shushu" Version="2.0.3" />
+    <PackageReference Include="YamlDotNet" Version="4.2.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Bus\IBus.cs" />
