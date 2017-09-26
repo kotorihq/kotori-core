@@ -10,12 +10,26 @@ namespace KotoriCore.Exceptions
     /// </summary>
     public class KotoriValidationException : KotoriException
     {
+        const string UnknownErrorMessage = "Unknown error.";
+
+        /// <summary>
+        /// Gets the messages.
+        /// </summary>
+        /// <value>The messages.</value>
+        public IEnumerable<string> Messages { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Exceptions.KotoriValidationException"/> class.
         /// </summary>
         /// <param name="validationResults">Validation results.</param>
-        public KotoriValidationException(IEnumerable<ValidationResult> validationResults) : base(validationResults?.Where(vr => vr != null && !vr.IsValid).Select(vr2 => vr2.Message).ToImplodedString(" ") ?? "Unknown error.")
+        public KotoriValidationException(IEnumerable<ValidationResult> validationResults) : base(validationResults?.Where(vr => vr != null && !vr.IsValid).Select(vr2 => vr2.Message).ToImplodedString(" ") ?? UnknownErrorMessage)
         {
+            var messages = validationResults?.Where(vr => vr != null && !vr.IsValid).Select(vr2 => vr2.Message);
+
+            if (!messages.Any())
+                Messages = new List<string> { UnknownErrorMessage };
+            else
+                Messages = messages;
         }
 
         /// <summary>
@@ -24,6 +38,7 @@ namespace KotoriCore.Exceptions
         /// <param name="message">Message.</param>
         public KotoriValidationException(string message) : base(message)
         {
+            Messages = new List<string> { message ?? UnknownErrorMessage };
         }
     }
 }
