@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using KotoriCore.Domains;
 using KotoriCore.Helpers;
 using Oogi2.Attributes;
@@ -27,6 +28,12 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public string Identifier { get; set; }
 
         /// <summary>
+        /// Gets or sets the project identifier.
+        /// </summary>
+        /// <value>The project identifier.</value>
+        public string ProjectId { get; set; }
+
+        /// <summary>
         /// Gets or sets the type of the document.
         /// </summary>
         /// <value>The type of the document.</value>
@@ -39,11 +46,17 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <remarks>Used for Elastic Search.</remarks>
         public List<DocumentTypeIndex> Indexes { get; set; }
 
-        /// <summary>
-        /// Gets or sets the path.
-        /// </summary>
-        /// <value>The path.</value>
-        public string Path { get; set; }
+        public DocumentType()
+        {
+        }
 
+        public DocumentType(string instance, string identifier, string projectId, Enums.DocumentType type, IList<DocumentTypeIndex> indexes)
+        {
+            Instance = instance;
+            Identifier = identifier;
+            ProjectId = projectId;
+            Type = type;
+            Indexes = indexes.ToList();
+        }
     }
 }

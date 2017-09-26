@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using KotoriCore.Helpers;
+using KotoriCore.Domains;
 
 namespace KotoriCore.Commands
 {
@@ -7,13 +8,17 @@ namespace KotoriCore.Commands
     {
         public string Instance { get; }
         public string ProjectId { get; }
-        public string Path { get; }
+        public string Identifier { get; }
+        public Enums.DocumentType Type { get; }
+        public IList<DocumentTypeIndex> Indexes { get; }
 
-        public UpsertDocumentType(string instance, string projectId, string path)
+        public UpsertDocumentType(string instance, string projectId, string identifier, Enums.DocumentType type, IList<DocumentTypeIndex> indexes)
         {
             Instance = instance;
             ProjectId = projectId;
-            Path = path;
+            Identifier = identifier;
+            Type = type;
+            Indexes = indexes ?? new List<DocumentTypeIndex>();
         }
 
         public override IEnumerable<ValidationResult> Validate()

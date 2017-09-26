@@ -16,6 +16,7 @@ namespace KotoriCore.Database.DocumentDb
     public class DocumentDb : IDatabase
     {
         readonly Repository<Project> _repoProject;
+        readonly Repository<DocumentType> _repoDocumentType;
         Connection _connection;
 
         public const string ProjectEntity = "kotori/project";
@@ -25,6 +26,7 @@ namespace KotoriCore.Database.DocumentDb
         {
             _connection = new Connection(configuration.Endpoint, configuration.AuthorizationKey, configuration.Database, configuration.Collection);
             _repoProject = new Repository<Project>(_connection);
+            _repoDocumentType = new Repository<DocumentType>(_connection);
         }
 
         /// <summary>
@@ -72,7 +74,7 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult<string> Handle(CreateProject command)
         {
-            if (FindProjectById(command.Instance, command.ProjectId) != null)
+            if (FindProject(command.Instance, command.ProjectId) != null)
                 throw new KotoriValidationException($"Project with identifier {command.ProjectId} already exists.");
 
             var prj = new Project(command.Instance, command.Name, command.ProjectId, command.ProjectKeys);
@@ -102,7 +104,7 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult<string> Handle(ProjectAddKey command)
         {
-            var project = FindProjectById(command.Instance, command.ProjectId);
+            var project = FindProject(command.Instance, command.ProjectId);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
@@ -123,7 +125,7 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult<string> Handle(DeleteProject command)
         {
-            var project = FindProjectById(command.Instance, command.ProjectId);
+            var project = FindProject(command.Instance, command.ProjectId);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
@@ -137,19 +139,26 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult<string> Handle(UpsertDocumentType command)
         {
-            var project = FindProjectById(command.Instance, command.ProjectId);
+            var project = FindProject(command.Instance, command.ProjectId);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
-            // TODO: check if some data exists for a given project
+            var documentType = FindDocumentType(command.Instance, command.ProjectId, command.Identifier);
 
-            _repoProject.Delete(project);
+            if (documentType == null)
+            {
+                var dt = new DocumentType(command.Instance, command.Identifier, command.ProjectId, command.Type, command.Indexes);
 
-            return new CommandResult<string>("Project has been deleted.");
+                _repoDocumentType.Create(dt);
+
+                return new CommandResult<string>("Project has been deleted.");    
+            }
+
+            return new CommandResult<string>("OK!");
         }
 
-        Project FindProjectById(string instance, string id)
+        Project FindProject(string instance, string id)
         {
             var q = new DynamicQuery
                 (
@@ -165,6 +174,24 @@ namespace KotoriCore.Database.DocumentDb
             var project = _repoProject.GetFirstOrDefault(q);
 
             return project;
+        }
+
+        DocumentType FindDocumentType(string instance, string projectId, string documentTypeId)
+        {
+            var q = new DynamicQuery
+                (
+                    "select * from c where c.entity = @entity and c.instance = @instance and c.projectId ",
+                    new
+                    {
+                        entity = DocumentTypeEntity,
+                        instance,
+                        id = documentTypeId
+                    }
+            );
+
+            var documentType = _repoDocumentType.GetFirstOrDefault(q);
+
+            return documentType;
         }
     }
 }

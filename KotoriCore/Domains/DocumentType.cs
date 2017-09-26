@@ -15,7 +15,7 @@ namespace KotoriCore.Domains
         /// Gets or sets the project identifier.
         /// </summary>
         /// <value>The project identifier.</value>
-        public string ProjectIdentifier { get; set; }
+        public string ProjectId { get; set; }
 
         /// <summary>
         /// Gets or sets the identifier.
@@ -35,11 +35,5 @@ namespace KotoriCore.Domains
         /// <value>The indexes.</value>
         /// <remarks>Used for Elastic Search.</remarks>
         public IList<DocumentTypeIndex> Indexes { get; set; }
-
-        /// <summary>
-        /// Gets or sets the path.
-        /// </summary>
-        /// <value>The path.</value>
-        public string Path { get; set; }
     }
 }
