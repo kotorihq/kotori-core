@@ -61,17 +61,5 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Identifier = identifier;
             ProjectKeys = projectKeys ?? new List<ProjectKey>();
         }
-
-        /// <summary>
-        /// Converts from <paramref name="project">project</paramref> to documentdb <see cref="T:KotoriCore.Database.DocumentDb.Entities.Project" />.
-        /// </summary>
-        /// <returns>The implicit.</returns>
-        /// <param name="project">Project.</param>
-        //public static implicit operator Project(Domains.Project project)
-        //{
-        //    var dbProject = new Project(project.Instance, project.Name, project.Identifier, project.ProjectKeys);
-
-        //    return dbProject;
-        //}
     }
 }

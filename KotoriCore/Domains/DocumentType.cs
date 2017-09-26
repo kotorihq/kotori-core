@@ -35,5 +35,11 @@ namespace KotoriCore.Domains
         /// <value>The indexes.</value>
         /// <remarks>Used for Elastic Search.</remarks>
         public IList<DocumentTypeIndex> Indexes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the path.
+        /// </summary>
+        /// <value>The path.</value>
+        public string Path { get; set; }
     }
 }

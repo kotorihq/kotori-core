@@ -18,5 +18,6 @@ namespace KotoriCore.Database
         CommandResult<Domains.SimpleProject> Handle(GetProjects command);
         CommandResult<string> Handle(ProjectAddKey command);
         CommandResult<string> Handle(DeleteProject command);
+        CommandResult<string> Handle(UpsertDocumentType command);
     }
 }

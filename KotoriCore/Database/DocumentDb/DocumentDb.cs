@@ -19,6 +19,7 @@ namespace KotoriCore.Database.DocumentDb
         Connection _connection;
 
         public const string ProjectEntity = "kotori/project";
+        public const string DocumentTypeEntity = "kotori/document-type";
 
         public DocumentDb(DocumentDbConfiguration configuration)
         {
@@ -50,6 +51,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = Handle(getProjects);
                 else if (command is DeleteProject deleteProject)
                     result = Handle(deleteProject);
+                else if (command is UpsertDocumentType upsertDocumentType)
+                    result = Handle(upsertDocumentType);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
@@ -102,7 +105,7 @@ namespace KotoriCore.Database.DocumentDb
             var project = FindProjectById(command.Instance, command.ProjectId);
 
             if (project == null)
-                throw new KotoriValidationException("Project does not exists.");
+                throw new KotoriValidationException("Project does not exist.");
 
             if (project.ProjectKeys == null)
                 project.ProjectKeys = new List<ProjectKey>();
@@ -123,7 +126,21 @@ namespace KotoriCore.Database.DocumentDb
             var project = FindProjectById(command.Instance, command.ProjectId);
 
             if (project == null)
-                throw new KotoriValidationException("Project does not exists.");
+                throw new KotoriValidationException("Project does not exist.");
+
+            // TODO: check if some data exists for a given project
+
+            _repoProject.Delete(project);
+
+            return new CommandResult<string>("Project has been deleted.");
+        }
+
+        public CommandResult<string> Handle(UpsertDocumentType command)
+        {
+            var project = FindProjectById(command.Instance, command.ProjectId);
+
+            if (project == null)
+                throw new KotoriValidationException("Project does not exist.");
 
             // TODO: check if some data exists for a given project
 
