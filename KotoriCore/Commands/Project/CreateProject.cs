@@ -24,7 +24,7 @@ namespace KotoriCore.Commands
         /// <param name="name">Name.</param>
         /// <param name="projectId">Identifier.</param>
         /// <param name="projectKeys">Project keys.</param>
-        public CreateProject(string instance, string name, string projectId, IEnumerable<ProjectKey> projectKeys) : base(Enums.Priority.DoItNow)
+        public CreateProject(string instance, string name, string projectId, IEnumerable<ProjectKey> projectKeys)
         {
             Instance = instance;
             Name = name;

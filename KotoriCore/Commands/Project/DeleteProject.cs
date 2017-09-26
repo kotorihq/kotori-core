@@ -17,7 +17,7 @@ namespace KotoriCore.Commands
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="identifier">Identifier.</param>
-        public DeleteProject(string instance, string identifier) : base(Enums.Priority.DoItNow)
+        public DeleteProject(string instance, string identifier)
         {
             Instance = instance;
             ProjectId = identifier;

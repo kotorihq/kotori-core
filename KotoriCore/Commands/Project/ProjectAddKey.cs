@@ -12,7 +12,7 @@ namespace KotoriCore.Commands
 
         public ProjectKey ProjectKey { get; }
 
-        public ProjectAddKey(string instance, string projectId, ProjectKey projectKey) : base(Enums.Priority.DoItNow)
+        public ProjectAddKey(string instance, string projectId, ProjectKey projectKey)
         {
             Instance = instance;
             ProjectId = projectId;
