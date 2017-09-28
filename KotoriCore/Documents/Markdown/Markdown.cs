@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using KotoriCore.Documents.Deserializers;
@@ -14,10 +15,13 @@ namespace KotoriCore.Documents
 
         public string Identifier { get; }
 
+        public string Hash { get; }
+
         public Markdown(string identifier, string content)
         {
             Identifier = identifier;
             _content = content;
+            Hash = HashTools.GetHash(content, HashTools.HashType.SHA1);
         }
 
         public IDocumentResult Process()

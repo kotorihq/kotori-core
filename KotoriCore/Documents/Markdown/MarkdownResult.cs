@@ -2,15 +2,45 @@
 
 namespace KotoriCore.Documents
 {
+    /// <summary>
+    /// Markdown result.
+    /// </summary>
     public class MarkdownResult : IDocumentResult
     {
-        public string Identifier { get; set; }
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        public string Identifier { get; internal set; }
 
-        public Enums.FrontMatterType FrontMatterType { get; set; }
-        public dynamic Meta { get; set; }
-        public string Content { get; set; }
-        public string Hash { get; }
+        /// <summary>
+        /// Gets or sets the type of the front matter.
+        /// </summary>
+        /// <value>The type of the front matter.</value>
+        public Enums.FrontMatterType FrontMatterType { get; internal set; }
 
+        /// <summary>
+        /// Gets or sets the meta.
+        /// </summary>
+        /// <value>The meta.</value>
+        public dynamic Meta { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets the content.
+        /// </summary>
+        /// <value>The content.</value>
+        public string Content { get; internal set; }
+
+        /// <summary>
+        /// Gets the hash.
+        /// </summary>
+        /// <value>The hash.</value>
+        public string Hash { get; internal set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Documents.MarkdownResult"/> class.
+        /// </summary>
+        /// <param name="identifier">Identifier.</param>
         public MarkdownResult(string identifier)
         {
             Identifier = identifier;
