@@ -15,6 +15,12 @@ namespace KotoriCore.Exceptions
         /// <value>The messages.</value>
         public IEnumerable<string> Messages { get; }
 
+        /// <summary>
+        /// Gets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        public string Identifier { get; }
+
         public KotoriDocumentException(IDocumentResult documentResult) : base(documentResult?.Messages.ToImplodedString(" ") ?? UnknownErrorMessage)
         {
             var messages = documentResult.Messages;
@@ -23,10 +29,13 @@ namespace KotoriCore.Exceptions
                 Messages = new List<string> { UnknownErrorMessage };
             else
                 Messages = messages;
+
+            Identifier = documentResult.Identifier;
         }
 
-        public KotoriDocumentException(string message) : base(message)
+        public KotoriDocumentException(string identifier, string message) : base(message)
         {
+            Identifier = identifier;
             Messages = new List<string> { message ?? UnknownErrorMessage };
         }
     }

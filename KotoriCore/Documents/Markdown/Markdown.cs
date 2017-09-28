@@ -1,7 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using KotoriCore.Exceptions;
+using Sushi2;
 
 namespace KotoriCore.Documents
 {
@@ -9,9 +10,17 @@ namespace KotoriCore.Documents
     {
         readonly string _content;
 
-        public Markdown(string content)
+        public string Identifier { get; }
+
+        public Markdown(string identifier, string content)
         {
+            Identifier = identifier;
             _content = content;
+        }
+
+        public IDocumentResult Process()
+        {
+            return AsyncTools.RunSync(ProcessAsync);
         }
 
         public async Task<IDocumentResult> ProcessAsync()
@@ -62,6 +71,11 @@ namespace KotoriCore.Documents
             }
 
             // check structure
+            if (frontMatterStart.HasValue &&
+               !frontMatterEnd.HasValue)
+            {
+                throw new KotoriDocumentException(Identifier, "Invalid front matter. There is a starting tag --- that is not closed.");
+            }
 
             // no front matter
             if (!frontMatterStart.HasValue &&
