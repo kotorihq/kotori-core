@@ -21,6 +21,7 @@ namespace KotoriCore.Database.DocumentDb
 
         public const string ProjectEntity = "kotori/project";
         public const string DocumentTypeEntity = "kotori/document-type";
+        public const string DocumentEntity = "kotori/document";
 
         public DocumentDb(DocumentDbConfiguration configuration)
         {
