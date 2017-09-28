@@ -5,7 +5,7 @@ namespace KotoriCore.Database
     /// <summary>
     /// Database interface.
     /// </summary>
-    public interface IDatabase
+    interface IDatabase
     {
         /// <summary>
         /// Handle the specified command.
@@ -18,7 +18,6 @@ namespace KotoriCore.Database
         CommandResult<Domains.SimpleProject> Handle(GetProjects command);
         CommandResult<string> Handle(ProjectAddKey command);
         CommandResult<string> Handle(DeleteProject command);
-        CommandResult<string> Handle(UpsertDocumentType command);
         CommandResult<string> Handle(UpsertDocument command);
     }
 }
