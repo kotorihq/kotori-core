@@ -25,7 +25,7 @@ namespace KotoriCore.Documents
 
         public async Task<IDocumentResult> ProcessAsync()
         {
-            var markDownResult = new MarkdownResult();
+            var markDownResult = new MarkdownResult(Identifier);
 
             var tr = new StringReader(_content);
 
@@ -83,6 +83,8 @@ namespace KotoriCore.Documents
             {
                 body.Append(_content);
             }
+
+            markDownResult.Content = body.ToString();
 
             return markDownResult;
         }

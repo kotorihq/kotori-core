@@ -11,7 +11,7 @@ namespace KotoriCore.Documents
         /// Gets the messages.
         /// </summary>
         /// <value>The messages.</value>
-        IList<string> Messages { get; }
+        //IList<string> Messages { get; }
 
         /// <summary>
         /// Gets the document identifier.

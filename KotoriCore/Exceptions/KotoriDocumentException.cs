@@ -5,15 +5,12 @@ using Sushi2;
 
 namespace KotoriCore.Exceptions
 {
+    /// <summary>
+    /// Kotori document exception.
+    /// </summary>
     public class KotoriDocumentException : KotoriException
     {
         const string UnknownErrorMessage = "Unknown error.";
-
-        /// <summary>
-        /// Gets the messages.
-        /// </summary>
-        /// <value>The messages.</value>
-        public IEnumerable<string> Messages { get; }
 
         /// <summary>
         /// Gets the identifier.
@@ -21,22 +18,14 @@ namespace KotoriCore.Exceptions
         /// <value>The identifier.</value>
         public string Identifier { get; }
 
-        public KotoriDocumentException(IDocumentResult documentResult) : base(documentResult?.Messages.ToImplodedString(" ") ?? UnknownErrorMessage)
-        {
-            var messages = documentResult.Messages;
-
-            if (!messages.Any())
-                Messages = new List<string> { UnknownErrorMessage };
-            else
-                Messages = messages;
-
-            Identifier = documentResult.Identifier;
-        }
-
-        public KotoriDocumentException(string identifier, string message) : base(message)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Exceptions.KotoriDocumentException"/> class.
+        /// </summary>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="message">Message.</param>
+        public KotoriDocumentException(string identifier, string message) : base(message ?? UnknownErrorMessage)
         {
             Identifier = identifier;
-            Messages = new List<string> { message ?? UnknownErrorMessage };
         }
     }
 }
