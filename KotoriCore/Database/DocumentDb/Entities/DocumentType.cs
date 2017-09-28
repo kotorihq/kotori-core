@@ -46,10 +46,21 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <remarks>Used for Elastic Search.</remarks>
         public List<DocumentTypeIndex> Indexes { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.DocumentType"/> class.
+        /// </summary>
         public DocumentType()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.DocumentType"/> class.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="type">Type.</param>
+        /// <param name="indexes">Indexes.</param>
         public DocumentType(string instance, string identifier, string projectId, Enums.DocumentType type, IList<DocumentTypeIndex> indexes)
         {
             Instance = instance;

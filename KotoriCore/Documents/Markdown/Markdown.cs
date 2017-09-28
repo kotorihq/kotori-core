@@ -4,11 +4,7 @@ using System.Threading.Tasks;
 using KotoriCore.Documents.Deserializers;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
-using Newtonsoft.Json;
 using Sushi2;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
-using YamlDotNet.Serialization.TypeResolvers;
 
 namespace KotoriCore.Documents
 {
@@ -104,7 +100,16 @@ namespace KotoriCore.Documents
                 des = new Json();
 
             if (des != null)
-                markDownResult.Meta = des.Deserialize(meta.ToString());
+            {
+                try
+                {
+                    markDownResult.Meta = des.Deserialize(meta.ToString());
+                }
+                catch
+                {
+                    throw new KotoriDocumentException(Identifier, "Document parsing error.");
+                }
+            }
 
             return markDownResult;
         }
