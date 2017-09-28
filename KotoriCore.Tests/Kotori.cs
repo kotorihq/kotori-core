@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace KotoriCore.Tests
 {
-    //[TestClass]
+    [TestClass]
     public class Project
     {
         Kotori _kotori;
@@ -82,26 +82,32 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        public void CreateAndDeleteProject()
+        public void Complex()
         {
-            var result = _kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            //var result = _kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
 
-            Assert.AreEqual("Project has been created.", result.Message);
+            //Assert.AreEqual("Project has been created.", result.Message);
 
-            var results = _kotori.Process(new GetProjects("dev"));
-            var projects = results.ToDataList<Domains.SimpleProject>();
+            //var results = _kotori.Process(new GetProjects("dev"));
+            //var projects = results.ToDataList<Domains.SimpleProject>();
 
-            Assert.AreEqual(1, projects.Count());
-            Assert.AreEqual("Nenecchi", projects[0].Name);
+            //Assert.AreEqual(1, projects.Count());
+            //Assert.AreEqual("Nenecchi", projects[0].Name);
 
-            result = _kotori.Process(new DeleteProject("dev", "nenecchi/main"));
+            //result = _kotori.Process(new DeleteProject("dev", "nenecchi/main"));
 
-            Assert.AreEqual("Project has been deleted.", result.Message);
+            //Assert.AreEqual("Project has been deleted.", result.Message);
 
-            results = _kotori.Process(new GetProjects("dev"));
-            projects = results.ToDataList<Domains.SimpleProject>();
+            //results = _kotori.Process(new GetProjects("dev"));
+            //projects = results.ToDataList<Domains.SimpleProject>();
 
-            Assert.AreEqual(0, projects.Count());
+            //Assert.AreEqual(0, projects.Count());
+
+            //_kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+
+            var c = File.ReadAllText("/Users/frohikey/Projects/KotoriHq/kotori-sample-data/_content/movie/matrix.md");
+
+            _kotori.Process(new UpsertDocument("dev", "nenecchi/main", "_content/movie/matrix.md", c));
         }
     }
 }

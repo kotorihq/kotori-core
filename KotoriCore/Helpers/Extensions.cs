@@ -1,5 +1,6 @@
 ﻿using KotoriCore.Commands;
 using System.Collections.Generic;
+using System;
 
 namespace KotoriCore.Helpers
 {    
@@ -37,10 +38,28 @@ namespace KotoriCore.Helpers
             if (string.IsNullOrEmpty(content))
                 return Enums.FrontMatterType.None;
 
-            if (content.Trim().StartsWith("{", System.StringComparison.Ordinal))
+            if (content.Trim().StartsWith("{", StringComparison.Ordinal))
                 return Enums.FrontMatterType.Json;
 
             return Enums.FrontMatterType.Yaml;
+        }
+
+        /// <summary>
+        /// Identify the type of the document.
+        /// </summary>
+        /// <returns>The document type.</returns>
+        /// <param name="identifier">Identifier.</param>
+        public static Enums.DocumentType? ToDocumentType(this Uri identifier)
+        {
+            if (identifier.Segments.Length < 1)
+                return null;
+
+            var t = identifier.Segments[0];
+
+            if (!Constants.DocumentTypes.ContainsKey(t))
+                return null;
+
+            return Constants.DocumentTypes[t];
         }
     }
 }

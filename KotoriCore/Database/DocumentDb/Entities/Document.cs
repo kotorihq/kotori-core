@@ -1,4 +1,5 @@
-﻿using Oogi2.Attributes;
+﻿using System;
+using Oogi2.Attributes;
 using Oogi2.Tokens;
 using Shushu.Attributes;
 
@@ -81,5 +82,26 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <value>The modification.</value>
         [PropertyMapping(Shushu.Enums.IndexField.Date1)]
         public Stamp Modification { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.Document"/> class.
+        /// </summary>
+        public Document()
+        {
+        }
+
+        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime date)
+        {
+            Instance = instance;
+            ProjectId = projectId;
+            Identifier = identifier;
+            DocumentTypeId = documentTypeId;
+            Hash = hash;
+            Slug = slug;
+            Meta = meta;
+            Content = content;
+            Date = new Stamp(date);
+            Modification = new Stamp();
+        }
     }
 }

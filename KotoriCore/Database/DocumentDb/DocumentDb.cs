@@ -1,13 +1,14 @@
 ﻿using KotoriCore.Commands;
 using Oogi2;
 using KotoriCore.Configurations;
-using KotoriCore.Database.DocumentDb.Entities;
 using KotoriCore.Exceptions;
 using System;
 using System.Linq;
 using Oogi2.Queries;
 using System.Collections.Generic;
 using KotoriCore.Domains;
+using KotoriCore.Helpers;
+using KotoriCore.Documents;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -18,6 +19,7 @@ namespace KotoriCore.Database.DocumentDb
     {
         readonly Repository<Entities.Project> _repoProject;
         readonly Repository<Entities.DocumentType> _repoDocumentType;
+        readonly Repository<Entities.Document> _repoDocument;
         Connection _connection;
 
         public const string ProjectEntity = "kotori/project";
@@ -29,6 +31,7 @@ namespace KotoriCore.Database.DocumentDb
             _connection = new Connection(configuration.Endpoint, configuration.AuthorizationKey, configuration.Database, configuration.Collection);
             _repoProject = new Repository<Entities.Project>(_connection);
             _repoDocumentType = new Repository<Entities.DocumentType>(_connection);
+            _repoDocument = new Repository<Entities.Document>(_connection);
         }
 
         /// <summary>
@@ -148,16 +151,28 @@ namespace KotoriCore.Database.DocumentDb
 
             var documentType = FindDocumentType(command.Instance, command.ProjectId, command.Identifier);
 
-            //if (documentType == null)
-            //{
-            //    var dt = new DocumentType(command.Instance, command.Identifier, command.ProjectId, command.Type, command.Indexes);
+            if (documentType.Type == Enums.DocumentType.Drafts ||
+                documentType.Type == Enums.DocumentType.Content)
+            {
+                var document = new Markdown(command.Identifier, command.Content);
+                var documentResult = document.Process() as MarkdownResult;
+                var d = new Entities.Document
+                (
+                    command.Instance,
+                    command.ProjectId,
+                    command.Identifier,
+                    command.DocumentTypeId,
+                    documentResult.Hash,
+                    command.Identifier, // TODO: MAKE SLUG
+                    documentResult.Meta,
+                    documentResult.Content,
+                    DateTime.Now // TODO: MAKE DATE
+                );
 
-            //    _repoDocumentType.Create(dt);
+                _repoDocument.Create(d);
+            }
 
-            //    return new CommandResult<string>("Project has been deleted.");
-            //}
-
-            return new CommandResult<string>("OK!");
+            return new CommandResult<string>("Document has been created.");
         }
 
         Entities.Project FindProject(string instance, string id)
@@ -182,7 +197,7 @@ namespace KotoriCore.Database.DocumentDb
         {
             var q = new DynamicQuery
                 (
-                    "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId c.identifier = @identifier",
+                    "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
                     new
                     {
                         entity = DocumentTypeEntity,
@@ -197,18 +212,18 @@ namespace KotoriCore.Database.DocumentDb
             return documentType;
         }
 
-        Entities.DocumentType UpsertDocumentType(string instance, string projectId, string documentTypeId)
+        Entities.DocumentType UpsertDocumentType(string instance, string projectId, Uri documentTypeId)
         {
             var project = FindProject(instance, projectId);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
-            var documentType = FindDocumentType(instance, projectId, documentTypeId);
+            var documentType = FindDocumentType(instance, projectId, documentTypeId.ToString());
 
             if (documentType == null)
             {
-                var dt = new Entities.DocumentType(instance, documentTypeId, projectId, Helpers.Enums.DocumentType.Content, new List<DocumentTypeIndex>());
+                var dt = new Entities.DocumentType(instance, documentTypeId.ToString(), projectId, documentTypeId.ToDocumentType().Value, new List<DocumentTypeIndex>());
 
                 dt = _repoDocumentType.Create(dt);
 
