@@ -59,14 +59,13 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// Gets or sets the meta.
         /// </summary>
         /// <value>The meta.</value>
-        [PropertyMapping(Shushu.Enums.IndexField.Text4)]
         public dynamic Meta { get; set; }
 
         /// <summary>
         /// Gets or sets the content.
         /// </summary>
         /// <value>The content.</value>
-        [PropertyMapping(Shushu.Enums.IndexField.Text5)]
+        [PropertyMapping(Shushu.Enums.IndexField.Text4)]
         public string Content { get; set; }
 
         /// <summary>

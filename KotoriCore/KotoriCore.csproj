@@ -27,6 +27,8 @@
     <Folder Include="Documents\" />
     <Folder Include="Documents\Markdown\" />
     <Folder Include="Documents\Deserializers\" />
+    <Folder Include="Search\" />
+    <Folder Include="Commands\Document\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.3.0" />

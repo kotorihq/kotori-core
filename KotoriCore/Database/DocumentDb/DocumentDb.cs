@@ -56,6 +56,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = Handle(deleteProject);
                 else if (command is UpsertDocumentType upsertDocumentType)
                     result = Handle(upsertDocumentType);
+                else if (command is UpsertDocument upsertDocument)
+                    result = Handle(upsertDocument);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
@@ -155,6 +157,27 @@ namespace KotoriCore.Database.DocumentDb
 
                 return new CommandResult<string>("Project has been deleted.");    
             }
+
+            return new CommandResult<string>("OK!");
+        }
+
+        public CommandResult<string> Handle(UpsertDocument command)
+        {
+            var project = FindProject(command.Instance, command.ProjectId);
+
+            if (project == null)
+                throw new KotoriValidationException("Project does not exist.");
+
+            var documentType = FindDocumentType(command.Instance, command.ProjectId, command.Identifier);
+
+            //if (documentType == null)
+            //{
+            //    var dt = new DocumentType(command.Instance, command.Identifier, command.ProjectId, command.Type, command.Indexes);
+
+            //    _repoDocumentType.Create(dt);
+
+            //    return new CommandResult<string>("Project has been deleted.");
+            //}
 
             return new CommandResult<string>("OK!");
         }
