@@ -26,6 +26,7 @@
     <Folder Include="Commands\DocumentType\" />
     <Folder Include="Documents\" />
     <Folder Include="Documents\Markdown\" />
+    <Folder Include="Documents\Deserializers\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.3.0" />
@@ -38,6 +39,7 @@
     <PackageReference Include="Oogi2" Version="1.0.2" />
     <PackageReference Include="Shushu" Version="2.0.3" />
     <PackageReference Include="YamlDotNet" Version="4.2.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Bus\IBus.cs" />

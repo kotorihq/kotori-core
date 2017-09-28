@@ -7,13 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using KotoriCore.Helpers;
 using YamlDotNet.Serialization;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Sushi2;
 
 namespace KotoriCore.Tests
 {
-    [TestClass]
+    //[TestClass]
     public class Project
     {
         Kotori _kotori;
@@ -104,28 +102,6 @@ namespace KotoriCore.Tests
             projects = results.ToDataList<Domains.SimpleProject>();
 
             Assert.AreEqual(0, projects.Count());
-        }
-
-        [TestMethod]
-        public void Test()
-        {
-            var content = @"
-name: Ami Kawashima (川嶋 亜美)
-height: 165 cm
-weight: 45 kg
-bwh: { b: 90, w: 58, h: 88 }";
-            var r = new StringReader(content);
-            var deserializer = new DeserializerBuilder().Build();
-            var yamlObject = deserializer.Deserialize(r);
-            var serializer = new SerializerBuilder()
-                .JsonCompatible()
-                .Build();
-
-            var json = serializer.Serialize(yamlObject);
-            dynamic d = JObject.Parse(json);
-
-            Assert.AreEqual("Ami Kawashima (川嶋 亜美)", d.name.ToString());
-            //Assert.AreEqual(58, d.bwh.w.ToInt32() ?? 0);
         }
     }
 }

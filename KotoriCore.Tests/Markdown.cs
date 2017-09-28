@@ -2,6 +2,7 @@
 using KotoriCore.Documents;
 using KotoriCore.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 
 namespace KotoriCore.Tests
 {
@@ -50,6 +51,65 @@ cowboy";
             Assert.IsNotNull(mdr);
             Assert.AreEqual(c, mdr.Content);
             Assert.AreEqual(Helpers.Enums.FrontMatterType.None, mdr.FrontMatterType);
+        }
+
+        [TestMethod]
+        public void MdWithFrontMatterYaml()
+        {
+            var c = @"hello
+space
+cowboy
+";
+            var m = @"name: gremlin
+age: 3
+fun: true
+bwh: { b: 90, w: 58, h: 88 }
+";
+            var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
+
+            var md = new Documents.Markdown("foo", all);
+
+            var result = md.Process();
+
+            var mdr = result as MarkdownResult;
+
+            Assert.IsNotNull(mdr);
+            Assert.AreEqual("test", mdr.Meta);
+            Assert.AreEqual("gremlin", ((JValue)mdr.Meta.name).Value);
+            Assert.AreEqual(3, ((JValue)mdr.Meta.age).Value);
+            Assert.AreEqual(88, ((JValue)mdr.Meta.bwh.h).Value);
+            Assert.AreEqual(true, ((JValue)mdr.Meta.fun).Value);
+            Assert.AreEqual(c, mdr.Content);
+            Assert.AreEqual(Helpers.Enums.FrontMatterType.Yaml, mdr.FrontMatterType);
+        }
+
+        [TestMethod]
+        public void MdWithFrontMatterJson()
+        {
+            var c = @"hello
+space
+cowboy
+";
+            var m = @"{ ""name"": ""gremlin"",
+""age"": 3,
+""fun"": true,
+""bwh"": { b: 90, w: 58, h: 88 } }
+";
+            var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
+
+            var md = new Documents.Markdown("foo", all);
+
+            var result = md.Process();
+
+            var mdr = result as MarkdownResult;
+
+            Assert.IsNotNull(mdr);
+            Assert.AreEqual("gremlin", ((JValue)mdr.Meta.name).Value);
+            Assert.AreEqual((Int64)3, ((JValue)mdr.Meta.age).Value);
+            Assert.AreEqual((Int64)88, ((JValue)mdr.Meta.bwh.h).Value);
+            Assert.AreEqual(true, ((JValue)mdr.Meta.fun).Value);
+            Assert.AreEqual(c, mdr.Content);
+            Assert.AreEqual(Helpers.Enums.FrontMatterType.Json, mdr.FrontMatterType);
         }
     }
 }

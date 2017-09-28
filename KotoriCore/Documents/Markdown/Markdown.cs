@@ -1,9 +1,14 @@
 ﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using KotoriCore.Documents.Deserializers;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
+using Newtonsoft.Json;
 using Sushi2;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Serialization.TypeResolvers;
 
 namespace KotoriCore.Documents
 {
@@ -38,7 +43,7 @@ namespace KotoriCore.Documents
             var meta = new StringBuilder();
             var body = new StringBuilder();
 
-            while((line = await tr.ReadLineAsync()) != null)
+            while ((line = await tr.ReadLineAsync()) != null)
             {
                 counter++;
 
@@ -49,7 +54,7 @@ namespace KotoriCore.Documents
                         frontMatterStart = counter;
                         continue;
                     }
-                   
+
                     if (!frontMatterEnd.HasValue)
                     {
                         frontMatterEnd = counter;
@@ -63,11 +68,12 @@ namespace KotoriCore.Documents
                 {
                     meta.AppendLine(line);
                 }
+
                 // push to body
                 else if (frontMatterStart.HasValue &&
                         frontMatterEnd.HasValue)
                 {
-                    body.AppendLine(line);;
+                    body.AppendLine(line);
                 }
             }
 
@@ -82,11 +88,23 @@ namespace KotoriCore.Documents
             if (!frontMatterStart.HasValue &&
                !frontMatterEnd.HasValue)
             {
-                body.Append(_content);
+                body = new StringBuilder(_content);
             }
 
             markDownResult.FrontMatterType = meta.ToString().ToFrontMatterType();
             markDownResult.Content = body.ToString();
+
+            IDeserializer des = null;
+
+            if (markDownResult.FrontMatterType == Enums.FrontMatterType.Yaml)
+
+                des = new Yaml();
+
+            if (markDownResult.FrontMatterType == Enums.FrontMatterType.Json)
+                des = new Json();
+
+            if (des != null)
+                markDownResult.Meta = des.Deserialize(meta.ToString());
 
             return markDownResult;
         }

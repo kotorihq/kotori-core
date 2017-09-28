@@ -7,7 +7,7 @@ namespace KotoriCore.Documents
         public string Identifier { get; set; }
 
         public Enums.FrontMatterType FrontMatterType { get; set; }
-        public object Meta { get; }
+        public dynamic Meta { get; set; }
         public string Content { get; set; }
         public string Hash { get; }
 
