@@ -61,9 +61,9 @@ space
 cowboy
 ";
             var m = @"name: gremlin
-age: 3
-fun: true
-bwh: { b: 90, w: 58, h: 88 }
+age: !!int 3
+fun: !!bool true
+bwh: { b: !!int 90, w: !!int 58, h: !!int 88 }
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
@@ -74,10 +74,9 @@ bwh: { b: 90, w: 58, h: 88 }
             var mdr = result as MarkdownResult;
 
             Assert.IsNotNull(mdr);
-            Assert.AreEqual("test", mdr.Meta);
             Assert.AreEqual("gremlin", ((JValue)mdr.Meta.name).Value);
-            Assert.AreEqual(3, ((JValue)mdr.Meta.age).Value);
-            Assert.AreEqual(88, ((JValue)mdr.Meta.bwh.h).Value);
+            Assert.AreEqual((Int64)3, ((JValue)mdr.Meta.age).Value);
+            Assert.AreEqual((Int64)88, ((JValue)mdr.Meta.bwh.h).Value);
             Assert.AreEqual(true, ((JValue)mdr.Meta.fun).Value);
             Assert.AreEqual(c, mdr.Content);
             Assert.AreEqual(Helpers.Enums.FrontMatterType.Yaml, mdr.FrontMatterType);
