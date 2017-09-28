@@ -38,5 +38,24 @@
             /// </summary>
             Data = 2
         }
+
+        /// <summary>
+        /// Front matter types.
+        /// </summary>
+        public enum FrontMatterType
+        {
+            /// <summary>
+            /// None.
+            /// </summary>
+            None = 0,
+            /// <summary>
+            /// Yaml.
+            /// </summary>
+            Yaml = 10,
+            /// <summary>
+            /// Json.
+            /// </summary>
+            Json = 20
+        }
     }
 }

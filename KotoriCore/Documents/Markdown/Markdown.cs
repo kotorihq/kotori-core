@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using KotoriCore.Exceptions;
+using KotoriCore.Helpers;
 using Sushi2;
 
 namespace KotoriCore.Documents
@@ -84,6 +85,7 @@ namespace KotoriCore.Documents
                 body.Append(_content);
             }
 
+            markDownResult.FrontMatterType = meta.ToString().ToFrontMatterType();
             markDownResult.Content = body.ToString();
 
             return markDownResult;

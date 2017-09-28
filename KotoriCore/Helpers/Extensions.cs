@@ -26,5 +26,21 @@ namespace KotoriCore.Helpers
 
             return r;
         }
+
+        /// <summary>
+        /// Identify the type of the front matter.
+        /// </summary>
+        /// <returns>The front matter type.</returns>
+        /// <param name="content">Content.</param>
+        public static Enums.FrontMatterType ToFrontMatterType(this string content)
+        {
+            if (string.IsNullOrEmpty(content))
+                return Enums.FrontMatterType.None;
+
+            if (content.Trim().StartsWith("{", System.StringComparison.Ordinal))
+                return Enums.FrontMatterType.Json;
+
+            return Enums.FrontMatterType.Yaml;
+        }
     }
 }

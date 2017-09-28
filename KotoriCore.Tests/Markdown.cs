@@ -49,6 +49,7 @@ cowboy";
 
             Assert.IsNotNull(mdr);
             Assert.AreEqual(c, mdr.Content);
+            Assert.AreEqual(Helpers.Enums.FrontMatterType.None, mdr.FrontMatterType);
         }
     }
 }

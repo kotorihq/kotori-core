@@ -1,9 +1,12 @@
-﻿namespace KotoriCore.Documents
+﻿using KotoriCore.Helpers;
+
+namespace KotoriCore.Documents
 {
     public class MarkdownResult : IDocumentResult
     {
         public string Identifier { get; set; }
 
+        public Enums.FrontMatterType FrontMatterType { get; set; }
         public object Meta { get; }
         public string Content { get; set; }
         public string Hash { get; }
