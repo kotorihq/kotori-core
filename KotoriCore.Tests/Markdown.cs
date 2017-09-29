@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace KotoriCore.Tests
 {
-    [TestClass]
+    //[TestClass]
     public class Markdown
     {
         [TestMethod]

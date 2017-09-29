@@ -51,15 +51,13 @@ namespace KotoriCore.Helpers
         /// <param name="identifier">Identifier.</param>
         public static Enums.DocumentType? ToDocumentType(this Uri identifier)
         {
-            if (identifier.Segments.Length < 1)
+            if (identifier.Host == null)
+                return null;
+            
+            if (!Constants.DocumentTypes.ContainsKey(identifier.Host))
                 return null;
 
-            var t = identifier.Segments[0];
-
-            if (!Constants.DocumentTypes.ContainsKey(t))
-                return null;
-
-            return Constants.DocumentTypes[t];
+            return Constants.DocumentTypes[identifier.Host];
         }
     }
 }

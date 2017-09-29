@@ -89,7 +89,7 @@ namespace KotoriCore.Database.DocumentDb
             return new CommandResult<string>("Project has been created."); 
         }
         
-        public CommandResult<Domains.SimpleProject> Handle(GetProjects command)
+        public CommandResult<SimpleProject> Handle(GetProjects command)
         {
             var q = new DynamicQuery
                 (
@@ -102,7 +102,7 @@ namespace KotoriCore.Database.DocumentDb
                 );
 
             var projects = _repoProject.GetList(q);
-            var domainProjects = projects.Select(p => new Domains.Project(p.Instance, p.Name, p.Identifier, p.ProjectKeys));
+            var domainProjects = projects.Select(p => new Project(p.Instance, p.Name, p.Identifier, p.ProjectKeys));
 
             return new CommandResult<SimpleProject>(domainProjects.Select(d => new SimpleProject(d.Name, d.Identifier)));
         }
@@ -149,7 +149,8 @@ namespace KotoriCore.Database.DocumentDb
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
-            var documentType = FindDocumentType(command.Instance, command.ProjectId, command.Identifier);
+            // TODO: validate uri
+            var documentType = UpsertDocumentType(command.Instance, command.ProjectId, new Uri(command.DocumentTypeId));
 
             if (documentType.Type == Enums.DocumentType.Drafts ||
                 documentType.Type == Enums.DocumentType.Content)

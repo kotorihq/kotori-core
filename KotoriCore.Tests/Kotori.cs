@@ -6,8 +6,7 @@ using KotoriCore.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using KotoriCore.Helpers;
-using YamlDotNet.Serialization;
-using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace KotoriCore.Tests
 {
@@ -29,43 +28,58 @@ namespace KotoriCore.Tests
 
             _kotori = new Kotori(appSettings);
             _basePath = appSettings["Kotori.Tests:SampleDataPath"];
+
+            try
+            {
+                _kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi/stable", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            }
+            catch
+            {
+            }
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            //_kotori.Process(new DeleteProject("dev", "nenecchi"));
+            try
+            {
+                _kotori.Process(new DeleteProject("dev", "nenecchi/stable"));
+                _kotori.Process(new DeleteProject("dev", "nenecchi/main"));
+            }
+            catch
+            {
+            }
         }
 
-        [TestMethod]
+        //[TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public void FailToCreateProjectFirst()
         {
             _kotori.Process(new CreateProject("", "", "", null));
         }
 
-        [TestMethod]
+        //[TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public void FailToCreateProjectSecond()
         {
             _kotori.Process(new CreateProject("foo", "bar", "x x", null));
         }
 
-        [TestMethod]
+        //[TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public void FailToCreateProjectBadKeys()
         {
             _kotori.Process(new CreateProject("foo", "bar", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) }));
         }
 
-        [TestMethod]
+        //[TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Project has been deleted even if it does not exist.")]
         public void FailToDeleteProject()
         {
             _kotori.Process(new DeleteProject("dev", "nothing"));
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void CreateProjectDirectValidations()
         {
             var p = new CreateProject("dev", "aoba", "aoba/ main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
@@ -84,30 +98,29 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void Complex()
         {
-            //var result = _kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            var result = _kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
 
-            //Assert.AreEqual("Project has been created.", result.Message);
+            Assert.AreEqual("Project has been created.", result.Message);
 
-            //var results = _kotori.Process(new GetProjects("dev"));
-            //var projects = results.ToDataList<Domains.SimpleProject>();
+            var results = _kotori.Process(new GetProjects("dev"));
+            var projects = results.ToDataList<Domains.SimpleProject>();
 
-            //Assert.AreEqual(1, projects.Count());
-            //Assert.AreEqual("Nenecchi", projects[0].Name);
+            Assert.AreEqual(2, projects.Count());
+            Assert.AreEqual("Nenecchi", projects[0].Name);
 
-            //result = _kotori.Process(new DeleteProject("dev", "nenecchi/main"));
+            result = _kotori.Process(new DeleteProject("dev", "nenecchi/main"));
 
-            //Assert.AreEqual("Project has been deleted.", result.Message);
+            Assert.AreEqual("Project has been deleted.", result.Message);
 
-            //results = _kotori.Process(new GetProjects("dev"));
-            //projects = results.ToDataList<Domains.SimpleProject>();
+            results = _kotori.Process(new GetProjects("dev"));
+            projects = results.ToDataList<Domains.SimpleProject>();
 
-            //Assert.AreEqual(0, projects.Count());
+            Assert.AreEqual(1, projects.Count());
 
-            //_kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            var wc = new WebClient();
+            var c = wc.DownloadString(@"https://raw.githubusercontent.com/kotorihq/kotori-sample-data/master/_content/movie/matrix.md");
 
-            var c = File.ReadAllText("/Users/frohikey/Projects/KotoriHq/kotori-sample-data/_content/movie/matrix.md");
-
-            _kotori.Process(new UpsertDocument("dev", "nenecchi/main", "_content/movie/matrix.md", c));
+            _kotori.Process(new UpsertDocument("dev", "nenecchi/stable", "_content/movie/matrix.md", c));
         }
     }
 }
