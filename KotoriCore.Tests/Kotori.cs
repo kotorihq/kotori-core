@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using KotoriCore.Helpers;
 using System.Net;
+using Oogi2;
+using Oogi2.Queries;
 
 namespace KotoriCore.Tests
 {
@@ -14,7 +16,7 @@ namespace KotoriCore.Tests
     public class Project
     {
         Kotori _kotori;
-        string _basePath;
+        Connection _con;
 
         [TestInitialize]
         public void Init()
@@ -27,7 +29,13 @@ namespace KotoriCore.Tests
                 .Build();
 
             _kotori = new Kotori(appSettings);
-            _basePath = appSettings["Kotori.Tests:SampleDataPath"];
+            _con = new Connection
+                (
+                    appSettings["Kotori:DocumentDb:Endpoint"], 
+                    appSettings["Kotori:DocumentDb:AuthorizationKey"], 
+                    appSettings["Kotori:DocumentDb:Database"], 
+                    appSettings["Kotori:DocumentDb:Collection"]
+                );
 
             try
             {
@@ -41,45 +49,52 @@ namespace KotoriCore.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            try
-            {
-                _kotori.Process(new DeleteProject("dev", "nenecchi/stable"));
-                _kotori.Process(new DeleteProject("dev", "nenecchi/main"));
-            }
-            catch
-            {
-            }
+            var repo = new Repository<dynamic>(_con);
+            var q = new DynamicQuery
+                (
+                    "select c.id Id from c where startswith(c.entity, @entity) and c.instance = @instance",
+                    new
+                    {
+                        entity = "kotori/",
+                        instance = "dev"
+                    }
+            );
+
+            var records = repo.GetList(q);
+
+            foreach (var record in records)
+                repo.Delete(record.id);
         }
 
-        //[TestMethod]
+        [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public void FailToCreateProjectFirst()
         {
             _kotori.Process(new CreateProject("", "", "", null));
         }
 
-        //[TestMethod]
+        [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public void FailToCreateProjectSecond()
         {
             _kotori.Process(new CreateProject("foo", "bar", "x x", null));
         }
 
-        //[TestMethod]
+        [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public void FailToCreateProjectBadKeys()
         {
             _kotori.Process(new CreateProject("foo", "bar", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) }));
         }
 
-        //[TestMethod]
+        [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Project has been deleted even if it does not exist.")]
         public void FailToDeleteProject()
         {
             _kotori.Process(new DeleteProject("dev", "nothing"));
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void CreateProjectDirectValidations()
         {
             var p = new CreateProject("dev", "aoba", "aoba/ main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
@@ -117,10 +132,15 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual(1, projects.Count());
 
-            var wc = new WebClient();
-            var c = wc.DownloadString(@"https://raw.githubusercontent.com/kotorihq/kotori-sample-data/master/_content/movie/matrix.md");
-
+            var c = GetContent("_content/movie/matrix.md");
             _kotori.Process(new UpsertDocument("dev", "nenecchi/stable", "_content/movie/matrix.md", c));
+        }
+
+        static string GetContent(string path)
+        {
+            var wc = new WebClient();
+            var content = wc.DownloadString($"https://raw.githubusercontent.com/kotorihq/kotori-sample-data/master/{path}");
+            return content;
         }
     }
 }
