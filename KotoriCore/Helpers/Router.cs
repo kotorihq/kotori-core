@@ -6,18 +6,37 @@ namespace KotoriCore.Helpers
     /// <summary>
     /// Router.
     /// </summary>
-    public static class Router
+    static class Router
     {
+        const string UriSchema = "kotori://";
+
         /// <summary>
         /// Convert id to kotori uri.
         /// </summary>
         /// <returns>The kotori URI.</returns>
         /// <param name="uri">URI.</param>
-        public static Uri ToKotoriUri(this string uri)
+        internal static Uri ToKotoriUri(this string uri)
         {
-            if (!Uri.TryCreate(uri, UriKind.Relative, out Uri result))
+            if (uri == null)
+                throw new KotoriValidationException("Identifier (null) is not valid URI string.");
+
+            // remove starting "slash"
+            while (uri.StartsWith("/", StringComparison.Ordinal) && uri.Length > 1)
             {
-                throw new KotoriValidationException("Identifier is not valid URI string.");
+                uri = uri.Substring(1);
+            }
+
+            // remove ending "slash"
+            while (uri.EndsWith("/", StringComparison.Ordinal) && uri.Length > 1)
+            {
+                uri = uri.Substring(1, uri.Length - 1);    
+            }
+
+            uri = UriSchema + uri;
+
+            if (!Uri.TryCreate(uri, UriKind.Absolute, out Uri result))
+            {
+                throw new KotoriValidationException($"Identifier {uri} is not valid URI string.");
             }
 
             return result;

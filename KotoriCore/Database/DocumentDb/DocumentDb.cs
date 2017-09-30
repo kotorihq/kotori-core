@@ -20,6 +20,7 @@ namespace KotoriCore.Database.DocumentDb
         readonly Repository<Entities.Project> _repoProject;
         readonly Repository<Entities.DocumentType> _repoDocumentType;
         readonly Repository<Entities.Document> _repoDocument;
+
         Connection _connection;
 
         public const string ProjectEntity = "kotori/project";
@@ -79,7 +80,9 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult<string> Handle(CreateProject command)
         {
-            if (FindProject(command.Instance, command.ProjectId) != null)
+            var projectUri = command.ProjectId.ToKotoriUri();
+
+            if (FindProject(command.Instance, projectUri) != null)
                 throw new KotoriValidationException($"Project with identifier {command.ProjectId} already exists.");
 
             var prj = new Entities.Project(command.Instance, command.Name, command.ProjectId, command.ProjectKeys);
@@ -109,7 +112,9 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult<string> Handle(ProjectAddKey command)
         {
-            var project = FindProject(command.Instance, command.ProjectId);
+            var projectUri = command.ProjectId.ToKotoriUri();
+
+            var project = FindProject(command.Instance, projectUri);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
@@ -130,7 +135,9 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult<string> Handle(DeleteProject command)
         {
-            var project = FindProject(command.Instance, command.ProjectId);
+            var projectUri = command.ProjectId.ToKotoriUri();
+
+            var project = FindProject(command.Instance, projectUri);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
@@ -144,13 +151,14 @@ namespace KotoriCore.Database.DocumentDb
 
         public CommandResult<string> Handle(UpsertDocument command)
         {
-            var project = FindProject(command.Instance, command.ProjectId);
+            var projectUri = command.ProjectId.ToKotoriUri();
+            var project = FindProject(command.Instance, projectUri);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
             // TODO: validate uri
-            var documentType = UpsertDocumentType(command.Instance, command.ProjectId, new Uri(command.DocumentTypeId));
+            var documentType = UpsertDocumentType(command.Instance, projectUri, new Uri(command.DocumentTypeId));
 
             if (documentType.Type == Enums.DocumentType.Drafts ||
                 documentType.Type == Enums.DocumentType.Content)
@@ -176,7 +184,7 @@ namespace KotoriCore.Database.DocumentDb
             return new CommandResult<string>("Document has been created.");
         }
 
-        Entities.Project FindProject(string instance, string id)
+        Entities.Project FindProject(string instance, Uri projectUri)
         {
             var q = new DynamicQuery
                 (
@@ -185,7 +193,7 @@ namespace KotoriCore.Database.DocumentDb
                     {
                         entity = ProjectEntity,
                         instance,
-                        id
+                        id = projectUri.ToString()
                     }
             );
 
@@ -194,7 +202,7 @@ namespace KotoriCore.Database.DocumentDb
             return project;
         }
 
-        Entities.DocumentType FindDocumentType(string instance, string projectId, string documentTypeId)
+        Entities.DocumentType FindDocumentType(string instance, Uri projectId, Uri documentTypeId)
         {
             var q = new DynamicQuery
                 (
@@ -213,18 +221,18 @@ namespace KotoriCore.Database.DocumentDb
             return documentType;
         }
 
-        Entities.DocumentType UpsertDocumentType(string instance, string projectId, Uri documentTypeId)
+        Entities.DocumentType UpsertDocumentType(string instance, Uri projectId, Uri documentTypeId)
         {
             var project = FindProject(instance, projectId);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
-            var documentType = FindDocumentType(instance, projectId, documentTypeId.ToString());
+            var documentType = FindDocumentType(instance, projectId, documentTypeId);
 
             if (documentType == null)
             {
-                var dt = new Entities.DocumentType(instance, documentTypeId.ToString(), projectId, documentTypeId.ToDocumentType().Value, new List<DocumentTypeIndex>());
+                var dt = new Entities.DocumentType(instance, documentTypeId.ToString(), projectId.ToString(), documentTypeId.ToDocumentType().Value, new List<DocumentTypeIndex>());
 
                 dt = _repoDocumentType.Create(dt);
 

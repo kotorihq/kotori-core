@@ -34,8 +34,6 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Identifier must be set.");
-            else if (!Regex.IsMatch(ProjectId, Constants.IdentifierRegexp, RegexOptions.Singleline))
-                yield return new ValidationResult("Identifier must be valid URI relative path.");
         }
     }
 }

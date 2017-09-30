@@ -13,7 +13,6 @@ namespace KotoriCore.Commands
     {
         public readonly string Name;
         public readonly string ProjectId;
-        // TODO: readonly collection
         public IEnumerable<ProjectKey> ProjectKeys { get; set; }
         public string Instance { get; }
 
@@ -43,11 +42,9 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(Name))
                 yield return new ValidationResult("Name must be set.");
-
+            
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Identifier must be set.");
-            else if (!Regex.IsMatch(ProjectId, Constants.IdentifierRegexp, RegexOptions.Singleline))
-                yield return new ValidationResult("Identifier must be valid URI relative path.");
 
             if (ProjectKeys?.Any(x => string.IsNullOrEmpty(x.Key)) == true)
                 yield return new ValidationResult("All project keys must be set.");
