@@ -49,21 +49,21 @@ namespace KotoriCore.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            var repo = new Repository<dynamic>(_con);
-            var q = new DynamicQuery
-                (
-                    "select c.id Id from c where startswith(c.entity, @entity) and c.instance = @instance",
-                    new
-                    {
-                        entity = "kotori/",
-                        instance = "dev"
-                    }
-            );
+            //var repo = new Repository(_con);
+            //var q = new DynamicQuery
+            //    (
+            //        "select c.id from c where startswith(c.entity, @entity) and c.instance = @instance",
+            //        new
+            //        {
+            //            entity = "kotori/",
+            //            instance = "dev"
+            //        }
+            //);
 
-            var records = repo.GetList(q);
+            //var records = repo.GetList(q);
 
-            foreach (var record in records)
-                repo.Delete(record.id);
+            //foreach (var record in records)
+                //repo.Delete(record);
         }
 
         [TestMethod]
@@ -100,9 +100,8 @@ namespace KotoriCore.Tests
             var p = new CreateProject("dev", "aoba", "aoba/ main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
             var vr = p.Validate().ToList();
 
-            Assert.AreEqual(2, vr.Count());
-            Assert.AreEqual("Identifier must be valid URI relative path.", vr[0].Message);
-            Assert.AreEqual("All project keys must be set.", vr[1].Message);
+            Assert.AreEqual(1, vr.Count());
+            Assert.AreEqual("All project keys must be set.", vr[0].Message);
 
             p = new CreateProject("dev", "aoba", "aoba-main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
             vr = p.Validate().ToList();

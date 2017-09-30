@@ -1,6 +1,7 @@
 ﻿using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace KotoriCore.Tests
 {
@@ -18,13 +19,13 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Bad formatted URI has been inappropriately validated as ok.")]
         public void RouterBad1()
         {
-            "čačačááá".ToKotoriUri();
+            "čačačááá\\\\".ToKotoriUri();
         }
 
         [TestMethod]
         public void RouterOk0()
         {
-            Assert.AreEqual("kotori://something-sweet/", "something-sweet".ToKotoriUri());
+            Assert.AreEqual(new Uri("kotori://something-sweet/"), "something-sweet".ToKotoriUri());
         }
     }
 }

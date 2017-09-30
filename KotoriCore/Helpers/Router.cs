@@ -41,5 +41,36 @@ namespace KotoriCore.Helpers
 
             return result;
         }
+
+        /// <summary>
+        /// Tos the kotori URI to identifier.
+        /// </summary>
+        /// <returns>The kotori identifier.</returns>
+        /// <param name="uri">URI.</param>
+        internal static string ToKotoriIdentifier(this Uri uri)
+        {
+            if (uri == null)
+                throw new KotoriValidationException("Identifier (null) is not valid URI string.");
+
+            // remove schema
+            var u = uri.ToString();
+
+            if (u.StartsWith(UriSchema, StringComparison.OrdinalIgnoreCase))
+                u = u.Substring(UriSchema.Length);
+
+            // remove starting "slash"
+            while (u.StartsWith("/", StringComparison.Ordinal) && u.Length > 1)
+            {
+                u = u.Substring(1);
+            }
+
+            // remove ending "slash"
+            while (u.EndsWith("/", StringComparison.Ordinal) && u.Length > 1)
+            {
+                u = u.Substring(1, u.Length - 1);
+            }
+
+            return u;
+        }
     }
 }

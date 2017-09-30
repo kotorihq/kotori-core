@@ -85,7 +85,7 @@ namespace KotoriCore.Database.DocumentDb
             if (FindProject(command.Instance, projectUri) != null)
                 throw new KotoriValidationException($"Project with identifier {command.ProjectId} already exists.");
 
-            var prj = new Entities.Project(command.Instance, command.Name, command.ProjectId, command.ProjectKeys);
+            var prj = new Entities.Project(command.Instance, command.Name, projectUri.ToString(), command.ProjectKeys);
 
             _repoProject.Create(prj);
 
@@ -199,6 +199,9 @@ namespace KotoriCore.Database.DocumentDb
 
             var project = _repoProject.GetFirstOrDefault(q);
 
+            if (project != null)
+                project.Identifier = project.Identifier.ToKotoriUri().ToKotoriIdentifier();
+            
             return project;
         }
 
@@ -211,8 +214,8 @@ namespace KotoriCore.Database.DocumentDb
                     {
                         entity = DocumentTypeEntity,
                         instance,
-                        projectId,
-                        identifier = documentTypeId
+                        projectId = projectId.ToString(),
+                        identifier = documentTypeId.ToString()
                     }
             );
 

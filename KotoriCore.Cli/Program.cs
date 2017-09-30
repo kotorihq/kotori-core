@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using KotoriCore.Commands;
 using KotoriCore.Helpers;
 using Microsoft.Extensions.Configuration;
 using Oogi2;
@@ -11,6 +13,13 @@ namespace KotoriCore.Cli
     {
         static Kotori _kotori;
         static Connection _con;
+
+        static string GetContent(string path)
+        {
+            var wc = new WebClient();
+            var content = wc.DownloadString($"https://raw.githubusercontent.com/kotorihq/kotori-sample-data/master/{path}");
+            return content;
+        }
 
         static void Main(string[] args)
         {
@@ -30,29 +39,28 @@ namespace KotoriCore.Cli
                     appSettings["Kotori:DocumentDb:Collection"]
                 );
 
+            var q = new DynamicQuery
+                (
+                    "select c.id from c where startswith(c.entity, @entity) and c.instance = @instance",
+                    new
+                    {
+                        entity = "kotori/",
+                        instance = "dev"
+                    }
+            );
+
+            var repo = new Oogi2.Repository(_con);
+            var records = repo.GetList(q);
+
+            foreach (var record in records)
+            repo.Delete(record);
+            
             // --
 
-            //var repo = new Repository<dynamic>(_con);
-            //var q = new DynamicQuery
-            //    (
-            //        "select c.id id from c where startswith(c.entity, @entity) and c.instance = @instance",
-            //        new
-            //        {
-            //            entity = "kotori/",
-            //            instance = "dev"
-            //        }
-            //);
+            var result = _kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi/stable", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
 
-            //var records = repo.GetList(q);
-
-            //foreach (var record in records)
-                //System.Console.WriteLine(record.id);
-
-            // --
-
-            var urls = new List<string> { "x", "x x" };
-            foreach (var url in urls)
-                System.Console.WriteLine(url.ToKotoriUri());
+            var c = GetContent("_content/movie/matrix.md");
+            _kotori.Process(new UpsertDocument("dev", "nenecchi/stable", "_content/movie/matrix.md", c));
         }
     }
 }
