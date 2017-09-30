@@ -8,3 +8,5 @@ KotoriCore.Tests/bin/
 KotoriCore.Tests/obj/
 KotoriCore.Cmd/bin/
 KotoriCore.Cmd/obj/
+KotoriCore.Cli/bin/
+KotoriCore.Cli/obj/
