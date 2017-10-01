@@ -27,14 +27,5 @@ namespace KotoriCore.Tests
         {
             Assert.AreEqual(new Uri("kotori://something-sweet/"), "something-sweet".ToKotoriUri());
         }
-
-        [TestMethod]
-        public void MarkdownHash()
-        {
-            var mr0 = new KotoriCore.Documents.MarkdownResult("xx") { Content = "x", Meta = "x" };
-            var mr1 = new KotoriCore.Documents.MarkdownResult("xx") { Content = "x", Meta = "x" };
-
-            Assert.AreEqual(mr0.ToHash(), mr1.ToHash());
-        }
     }
 }

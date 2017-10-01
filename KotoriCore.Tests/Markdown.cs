@@ -13,7 +13,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Invalid front matter was inappropriately accepted.")]
         public void InvalidFrontMatter()
         {
-            var md = new Documents.Markdown("foo",
+            var md = new Documents.Markdown("_content/foo/bar.md",
 @"---
 name: Ami Kawashima (川嶋 亜美)"
 );
@@ -25,7 +25,7 @@ name: Ami Kawashima (川嶋 亜美)"
         [ExpectedException(typeof(KotoriDocumentException), "Invalid front matter was inappropriately accepted.")]
         public void InvalidFrontMatter2()
         {
-            var md = new Documents.Markdown("foo",
+            var md = new Documents.Markdown("_content/foo/bar.md",
 @"---name: Ami Kawashima (川嶋 亜美)
 ---
 a"
@@ -40,11 +40,11 @@ a"
             var c = @"hello
 space
 cowboy";
-            var md = new Documents.Markdown("foo", c);
+            var md = new Documents.Markdown("_content/foo/bar.md", c);
 
             var result = md.Process();
 
-            Assert.AreEqual("foo", result.Identifier);
+            Assert.AreEqual("_content/foo/bar.md", result.Identifier);
 
             var mdr = result as MarkdownResult;
 
@@ -67,7 +67,7 @@ bwh: { b: !!int 90, w: !!int 58, h: !!int 88 }
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("foo", all);
+            var md = new Documents.Markdown("_content/foo/bar.md", all);
 
             var result = md.Process();
 
@@ -96,7 +96,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("foo", all);
+            var md = new Documents.Markdown("_content/foo/bar.md", all);
 
             var result = md.Process();
 

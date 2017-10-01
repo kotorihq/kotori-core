@@ -146,37 +146,44 @@ namespace KotoriCore.Documents
             var expando = new ExpandoObject();
             IDictionary<string, object> dictionary = expando;
 
-            var metaObj = JObject.FromObject(result.Meta);
-            Dictionary<string, object> meta = metaObj.ToObject<Dictionary<string, object>>();
+            JObject metaObj = null;
 
-            foreach(var key in meta.Keys)
+            if (result.Meta != null)
+                metaObj = JObject.FromObject(result.Meta);
+            
+            Dictionary<string, object> meta = metaObj?.ToObject<Dictionary<string, object>>();
+
+            if (meta != null)
             {
-                var dpt = key.ToDocumentPropertyType();
-
-                if (dpt == Enums.DocumentPropertyType.Invalid)
-                    throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is not recognized thus invalid.");
-
-                if (dpt == Enums.DocumentPropertyType.Date)
+                foreach (var key in meta.Keys)
                 {
-                    result.Date = Identifier.ToDateTime(meta[key].ToString());
-                }
+                    var dpt = key.ToDocumentPropertyType();
 
-                if (dpt == Enums.DocumentPropertyType.Slug)
-                {
-                    result.Slug = Identifier.ToSlug(meta[key].ToString());  
-                }
+                    if (dpt == Enums.DocumentPropertyType.Invalid)
+                        throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is not recognized thus invalid.");
 
-                if (dpt == Enums.DocumentPropertyType.UserDefined)
-                {
-                    var newKey = key.ToCamelCase();
-
-                    if (!dictionary.ContainsKey(newKey))
+                    if (dpt == Enums.DocumentPropertyType.Date)
                     {
-                        dictionary.Add(newKey, meta[key]);
+                        result.Date = Identifier.ToDateTime(meta[key].ToString());
                     }
-                    else
+
+                    if (dpt == Enums.DocumentPropertyType.Slug)
                     {
-                        throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is duplicated.");
+                        result.Slug = Identifier.ToSlug(meta[key].ToString());
+                    }
+
+                    if (dpt == Enums.DocumentPropertyType.UserDefined)
+                    {
+                        var newKey = key.ToCamelCase();
+
+                        if (!dictionary.ContainsKey(newKey))
+                        {
+                            dictionary.Add(newKey, meta[key]);
+                        }
+                        else
+                        {
+                            throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is duplicated.");
+                        }
                     }
                 }
             }

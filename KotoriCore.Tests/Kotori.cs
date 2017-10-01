@@ -37,6 +37,8 @@ namespace KotoriCore.Tests
                     appSettings["Kotori:DocumentDb:Collection"]
                 );
 
+            Cleanup();
+
             try
             {
                 _kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi/stable", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
@@ -49,21 +51,21 @@ namespace KotoriCore.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            //var repo = new Repository(_con);
-            //var q = new DynamicQuery
-            //    (
-            //        "select c.id from c where startswith(c.entity, @entity) and c.instance = @instance",
-            //        new
-            //        {
-            //            entity = "kotori/",
-            //            instance = "dev"
-            //        }
-            //);
+            var repo = new Repository(_con);
+            var q = new DynamicQuery
+                (
+                    "select c.id from c where startswith(c.entity, @entity) and c.instance = @instance",
+                    new
+                    {
+                        entity = "kotori/",
+                        instance = "dev"
+                    }
+            );
 
-            //var records = repo.GetList(q);
+            var records = repo.GetList(q);
 
-            //foreach (var record in records)
-                //repo.Delete(record);
+            foreach (var record in records)
+                repo.Delete(record);
         }
 
         [TestMethod]
