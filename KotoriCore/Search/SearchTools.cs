@@ -120,7 +120,9 @@ namespace KotoriCore.Search
                 };
 
             if (type == typeof(double?) ||
-               type == typeof(double))
+               type == typeof(double) ||
+                type == typeof(float?) ||
+                type == typeof(float))
                 return new List<Enums.IndexField>
                 {
                     Enums.IndexField.Double0,
