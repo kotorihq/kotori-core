@@ -262,8 +262,15 @@ namespace KotoriCore.Database.DocumentDb
 
                 return dt;
             }
+            else
+            {
+                var indexes = documentType.Indexes ?? new List<DocumentTypeIndex>();
+                documentType.Indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
 
-            return documentType;
+                _repoDocumentType.Replace(documentType);
+
+                return documentType;
+            }
         }
     }
 }
