@@ -157,7 +157,7 @@ namespace KotoriCore.Database.DocumentDb
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
-            var documentTypeUri = command.DocumentTypeId.ToKotoriUri();
+            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(true);
 
             var documentType = UpsertDocumentType(command.Instance, projectUri, documentTypeUri);
 
@@ -172,9 +172,9 @@ namespace KotoriCore.Database.DocumentDb
                 var d = new Entities.Document
                 (
                     command.Instance,
-                    command.ProjectId,
+                    projectUri.ToString(),
                     command.Identifier.ToKotoriUri().ToString(),
-                    command.DocumentTypeId,
+                    documentTypeUri.ToString(),
                     documentResult.Hash,
                     documentResult.Slug,
                     documentResult.Meta,

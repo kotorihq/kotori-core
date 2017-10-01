@@ -35,7 +35,6 @@ namespace KotoriCore.Helpers
                     throw new KotoriValidationException($"Identifier {uri} is not valid document type URI string.");
 
                 var dturi = result.Scheme + "://" + result.Host + result.Segments[0] + result.Segments[1];
-                dturi = dturi.RemoveTrailingSlashes(false, true);
                 result = new Uri(dturi);
             }
 
