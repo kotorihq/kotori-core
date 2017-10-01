@@ -57,5 +57,28 @@
             /// </summary>
             Json = 20
         }
+
+        /// <summary>
+        /// Document property types.
+        /// </summary>
+        internal enum DocumentPropertyType
+        {
+            /// <summary>
+            /// The user defined property.
+            /// </summary>
+            UserDefined = 0,
+            /// <summary>
+            /// The date.
+            /// </summary>
+            Date = 1,
+            /// <summary>
+            /// The slug.
+            /// </summary>
+            Slug = 2,
+            /// <summary>
+            /// The invalid property to be ignored.
+            /// </summary>
+            Invalid = 9
+        }
     }
 }

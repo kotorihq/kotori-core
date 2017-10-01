@@ -1,9 +1,12 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.Dynamic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using KotoriCore.Documents.Deserializers;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
+using Newtonsoft.Json.Linq;
 using Sushi2;
 
 namespace KotoriCore.Documents
@@ -132,7 +135,53 @@ namespace KotoriCore.Documents
 
             markdownResult.Hash = markdownResult.ToHash();
 
+            ProcessMeta(markdownResult);
+
             return markdownResult;
+        }
+
+        void ProcessMeta(MarkdownResult result)
+        {
+            var expando = new ExpandoObject();
+            IDictionary<string, object> dictionary = expando;
+
+            var metaObj = JObject.FromObject(result.Meta);
+            Dictionary<string, object> meta = metaObj.ToObject<Dictionary<string, object>>();
+
+            foreach(var key in meta.Keys)
+            {
+                var dpt = key.ToDocumentPropertyType();
+
+                if (dpt == Enums.DocumentPropertyType.Invalid)
+                    throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is not recognized thus invalid.");
+
+                if (dpt == Enums.DocumentPropertyType.Date)
+                {
+                    // TODO: implement    
+                }
+
+                if (dpt == Enums.DocumentPropertyType.Slug)
+                {
+                    // TODO: implement    
+                }
+
+                if (dpt == Enums.DocumentPropertyType.UserDefined)
+                {
+                    var newKey = key.ToCamelCase();
+
+                    if (!dictionary.ContainsKey(newKey))
+                    {
+                        dictionary.Add(newKey, meta[key]);
+                    }
+                    else
+                    {
+                        throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is duplicated.");
+                    }
+                }
+
+            }
+
+            result.Meta = expando;
         }
     }
 }

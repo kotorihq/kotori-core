@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using KotoriCore.Documents;
 using Sushi2;
+using Newtonsoft.Json.Serialization;
 
 namespace KotoriCore.Helpers
 {    
@@ -78,6 +79,17 @@ namespace KotoriCore.Helpers
                 (result.Slug);
 
             return HashTools.GetHash(c, HashTools.HashType.SHA1);
+        }
+
+        /// <summary>
+        /// Converts to the camel case property name.
+        /// </summary>
+        /// <returns>The camel case property name.</returns>
+        /// <param name="propertyName">Property name.</param>
+        internal static string ToCamelCase(this string propertyName)
+        {
+            var resolver = new CamelCasePropertyNamesContractResolver();
+            return resolver.GetResolvedPropertyName(propertyName);
         }
     }
 }

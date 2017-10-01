@@ -160,11 +160,13 @@ namespace KotoriCore.Database.DocumentDb
             // TODO: validate uri
             var documentType = UpsertDocumentType(command.Instance, projectUri, new Uri(command.DocumentTypeId));
 
+            IDocumentResult documentResult = null;
+
             if (documentType.Type == Enums.DocumentType.Drafts ||
                 documentType.Type == Enums.DocumentType.Content)
             {
                 var document = new Markdown(command.Identifier, command.Content);
-                var documentResult = document.Process() as MarkdownResult;
+                documentResult = document.Process();
 
                 var d = new Entities.Document
                 (
@@ -173,10 +175,10 @@ namespace KotoriCore.Database.DocumentDb
                     command.Identifier.ToKotoriUri().ToString(),
                     command.DocumentTypeId,
                     documentResult.Hash,
-                    command.Identifier, // TODO: MAKE SLUG
+                    documentResult.Slug,
                     documentResult.Meta,
                     documentResult.Content,
-                    DateTime.Now // TODO: MAKE DATE
+                    documentResult.Date
                 );
 
                 _repoDocument.Create(d);

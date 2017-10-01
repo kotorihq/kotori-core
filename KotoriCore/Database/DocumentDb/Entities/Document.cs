@@ -90,7 +90,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
         {
         }
 
-        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime date)
+        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime? date)
         {
             Instance = instance;
             ProjectId = projectId;
@@ -100,7 +100,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Slug = slug;
             Meta = meta;
             Content = content;
-            Date = new Stamp(date);
+            Date = date.HasValue ? new Stamp(date.Value) : null;
             Modification = new Stamp();
         }
     }
