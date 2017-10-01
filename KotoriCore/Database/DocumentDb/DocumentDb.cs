@@ -66,11 +66,11 @@ namespace KotoriCore.Database.DocumentDb
 
                 return result;
             }
-            catch(KotoriValidationException)
+            catch (KotoriValidationException)
             {
                 throw;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 message += $" Message: {ex.Message}";
             }
@@ -89,9 +89,9 @@ namespace KotoriCore.Database.DocumentDb
 
             _repoProject.Create(prj);
 
-            return new CommandResult<string>("Project has been created."); 
+            return new CommandResult<string>("Project has been created.");
         }
-        
+
         public CommandResult<SimpleProject> Handle(GetProjects command)
         {
             var q = new DynamicQuery
@@ -204,7 +204,7 @@ namespace KotoriCore.Database.DocumentDb
 
             if (project != null)
                 project.Identifier = project.Identifier.ToKotoriUri().ToKotoriIdentifier();
-            
+
             return project;
         }
 
@@ -238,7 +238,19 @@ namespace KotoriCore.Database.DocumentDb
 
             if (documentType == null)
             {
-                var dt = new Entities.DocumentType(instance, documentTypeId.ToString(), projectId.ToString(), documentTypeId.ToDocumentType().Value, new List<DocumentTypeIndex>());
+                var docType = documentTypeId.ToDocumentType();
+
+                if (docType == null)
+                    throw new KotoriException($"Document type could not be resolved for {documentTypeId}.");
+
+                var dt = new Entities.DocumentType
+                (
+                     instance,
+                     documentTypeId.ToString(),
+                     projectId.ToString(),
+                     documentTypeId.ToDocumentType().Value,
+                     new List<DocumentTypeIndex>()
+                );
 
                 dt = _repoDocumentType.Create(dt);
 
