@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Text;
@@ -162,7 +163,7 @@ namespace KotoriCore.Documents
 
                 if (dpt == Enums.DocumentPropertyType.Slug)
                 {
-                    // TODO: implement    
+                    result.Slug = Identifier.ToSlug(meta[key].ToString());  
                 }
 
                 if (dpt == Enums.DocumentPropertyType.UserDefined)
@@ -178,13 +179,18 @@ namespace KotoriCore.Documents
                         throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is duplicated.");
                     }
                 }
-
             }
 
             // no date, set today
             if (!result.Date.HasValue)
             {
-                
+                result.Date = DateTime.Now.Date;
+            }
+
+            // no slug, set from filename
+            if (result.Slug == null)
+            {
+                result.Slug = Identifier.ToSlug(null);
             }
 
             result.Meta = expando;
