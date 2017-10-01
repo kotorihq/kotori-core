@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using KotoriCore.Documents.Deserializers;
@@ -9,26 +8,43 @@ using Sushi2;
 
 namespace KotoriCore.Documents
 {
+    /// <summary>
+    /// Markdown.
+    /// </summary>
     public class Markdown : IDocument
     {
         readonly string _content;
 
+        /// <summary>
+        /// Gets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
         public string Identifier { get; }
 
-        public string Hash { get; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Documents.Markdown"/> class.
+        /// </summary>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="content">Content.</param>
         public Markdown(string identifier, string content)
         {
             Identifier = identifier;
             _content = content;
-            Hash = HashTools.GetHash(content, HashTools.HashType.SHA1);
         }
 
+        /// <summary>
+        /// Process this instance.
+        /// </summary>
+        /// <returns>The result.</returns>
         public IDocumentResult Process()
         {
             return AsyncTools.RunSync(ProcessAsync);
         }
 
+        /// <summary>
+        /// Process this instance.
+        /// </summary>
+        /// <returns>The result.</returns>
         public async Task<IDocumentResult> ProcessAsync()
         {
             var markdownResult = new MarkdownResult(Identifier);
@@ -97,7 +113,6 @@ namespace KotoriCore.Documents
             IDeserializer des = null;
 
             if (markdownResult.FrontMatterType == Enums.FrontMatterType.Yaml)
-
                 des = new Yaml();
 
             if (markdownResult.FrontMatterType == Enums.FrontMatterType.Json)
