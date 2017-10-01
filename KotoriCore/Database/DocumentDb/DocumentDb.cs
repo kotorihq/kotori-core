@@ -165,11 +165,12 @@ namespace KotoriCore.Database.DocumentDb
             {
                 var document = new Markdown(command.Identifier, command.Content);
                 var documentResult = document.Process() as MarkdownResult;
+
                 var d = new Entities.Document
                 (
                     command.Instance,
                     command.ProjectId,
-                    command.Identifier,
+                    command.Identifier.ToKotoriUri().ToString(),
                     command.DocumentTypeId,
                     documentResult.Hash,
                     command.Identifier, // TODO: MAKE SLUG

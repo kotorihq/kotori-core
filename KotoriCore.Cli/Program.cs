@@ -49,7 +49,7 @@ namespace KotoriCore.Cli
                     }
             );
 
-            var repo = new Oogi2.Repository(_con);
+            var repo = new Repository(_con);
             var records = repo.GetList(q);
 
             foreach (var record in records)

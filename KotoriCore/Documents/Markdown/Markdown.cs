@@ -31,7 +31,7 @@ namespace KotoriCore.Documents
 
         public async Task<IDocumentResult> ProcessAsync()
         {
-            var markDownResult = new MarkdownResult(Identifier);
+            var markdownResult = new MarkdownResult(Identifier);
 
             var tr = new StringReader(_content);
 
@@ -91,23 +91,23 @@ namespace KotoriCore.Documents
                 body = new StringBuilder(_content);
             }
 
-            markDownResult.FrontMatterType = meta.ToString().ToFrontMatterType();
-            markDownResult.Content = body.ToString();
+            markdownResult.FrontMatterType = meta.ToString().ToFrontMatterType();
+            markdownResult.Content = body.ToString();
 
             IDeserializer des = null;
 
-            if (markDownResult.FrontMatterType == Enums.FrontMatterType.Yaml)
+            if (markdownResult.FrontMatterType == Enums.FrontMatterType.Yaml)
 
                 des = new Yaml();
 
-            if (markDownResult.FrontMatterType == Enums.FrontMatterType.Json)
+            if (markdownResult.FrontMatterType == Enums.FrontMatterType.Json)
                 des = new Json();
 
             if (des != null)
             {
                 try
                 {
-                    markDownResult.Meta = des.Deserialize(meta.ToString());
+                    markdownResult.Meta = des.Deserialize(meta.ToString());
                 }
                 catch
                 {
@@ -115,7 +115,9 @@ namespace KotoriCore.Documents
                 }
             }
 
-            return markDownResult;
+            markdownResult.Hash = markdownResult.ToHash();
+
+            return markdownResult;
         }
     }
 }

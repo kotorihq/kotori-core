@@ -1,6 +1,8 @@
 ﻿using KotoriCore.Commands;
 using System.Collections.Generic;
 using System;
+using KotoriCore.Documents;
+using Sushi2;
 
 namespace KotoriCore.Helpers
 {    
@@ -58,6 +60,21 @@ namespace KotoriCore.Helpers
                 return null;
 
             return Constants.DocumentTypes[identifier.Host];
+        }
+
+        /// <summary>
+        /// Gets the hash.
+        /// </summary>
+        /// <returns>The hash.</returns>
+        /// <param name="result">Result.</param>
+        public static string ToHash(this MarkdownResult result)
+        {
+            if (result == null)
+                throw new ArgumentNullException(nameof(result));
+
+            var c = (result.Meta?.ToString() ?? string.Empty) + (result.Content?.ToString() ?? string.Empty);
+
+            return HashTools.GetHash(c, HashTools.HashType.SHA1);
         }
     }
 }
