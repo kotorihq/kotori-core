@@ -1,4 +1,5 @@
-﻿using KotoriCore.Helpers;
+﻿using System;
+using KotoriCore.Helpers;
 
 namespace KotoriCore.Documents
 {
@@ -26,9 +27,27 @@ namespace KotoriCore.Documents
         dynamic Meta { get; }
 
         /// <summary>
+        /// Gets or sets the content.
+        /// </summary>
+        /// <value>The content.</value>
+        string Content { get; }
+
+        /// <summary>
         /// Gets the hash.
         /// </summary>
         /// <value>The hash.</value>
         string Hash { get; }
+
+        /// <summary>
+        /// Gets the date.
+        /// </summary>
+        /// <value>The date.</value>
+        DateTime? Date { get; }
+
+        /// <summary>
+        /// Gets the slug.
+        /// </summary>
+        /// <value>The slug.</value>
+        string Slug { get; }
     }
 }

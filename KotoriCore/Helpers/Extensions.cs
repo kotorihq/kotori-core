@@ -67,12 +67,15 @@ namespace KotoriCore.Helpers
         /// </summary>
         /// <returns>The hash.</returns>
         /// <param name="result">Result.</param>
-        public static string ToHash(this MarkdownResult result)
+        public static string ToHash(this IDocumentResult result)
         {
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
 
-            var c = (result.Meta?.ToString() ?? string.Empty) + (result.Content?.ToString() ?? string.Empty);
+            var c = (result.Meta?.ToString() ?? string.Empty) + 
+                (result.Content?.ToString() ?? string.Empty) + 
+                (result.Date == null ? "(none)" : result.Date.Value.ToEpoch().ToString()) +
+                (result.Slug);
 
             return HashTools.GetHash(c, HashTools.HashType.SHA1);
         }

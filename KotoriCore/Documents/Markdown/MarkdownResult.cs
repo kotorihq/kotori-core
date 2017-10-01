@@ -1,4 +1,5 @@
-﻿using KotoriCore.Helpers;
+﻿using System;
+using KotoriCore.Helpers;
 
 namespace KotoriCore.Documents
 {
@@ -36,6 +37,18 @@ namespace KotoriCore.Documents
         /// </summary>
         /// <value>The hash.</value>
         public string Hash { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets the date.
+        /// </summary>
+        /// <value>The date.</value>
+        public DateTime? Date { get; internal set; }
+
+        /// <summary>
+        /// Gets the slug.
+        /// </summary>
+        /// <value>The slug.</value>
+        public string Slug { get; internal set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Documents.MarkdownResult"/> class.

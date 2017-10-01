@@ -57,10 +57,11 @@ namespace KotoriCore.Cli
             
             // --
 
-            var result = _kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi/stable", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            var result = _kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
 
-            var c = GetContent("_content/movie/matrix.md");
-            _kotori.Process(new UpsertDocument("dev", "nenecchi/stable", "_content/movie/matrix.md", c));
+            var id = "_content/movie/matrix.md";
+            var c = GetContent(id);
+            _kotori.Process(new UpsertDocument("dev", "nenecchi", id, c));
         }
     }
 }
