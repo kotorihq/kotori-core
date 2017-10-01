@@ -171,7 +171,11 @@ namespace KotoriCore.Database.DocumentDb
 
                 var documentType = UpsertDocumentType(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
 
-                var d = new Entities.Document
+                var d = FindDocument(command.Instance, command.Identifier.ToKotoriUri());
+                var isNew = d == null;
+                var id = d?.Id;
+
+                d = new Entities.Document
                 (
                     command.Instance,
                     projectUri.ToString(),
@@ -184,7 +188,16 @@ namespace KotoriCore.Database.DocumentDb
                     documentResult.Date
                 );
 
-                _repoDocument.Create(d);
+                if (isNew)
+                {
+                    _repoDocument.Create(d);
+                }
+                else
+                {
+                    d.Id = id;
+
+                    _repoDocument.Replace(d);
+                }
             }
 
             return new CommandResult<string>("Document has been created.");
@@ -228,6 +241,24 @@ namespace KotoriCore.Database.DocumentDb
             var documentType = _repoDocumentType.GetFirstOrDefault(q);
 
             return documentType;
+        }
+
+        Entities.Document FindDocument(string instance, Uri documentId)
+        {
+            var q = new DynamicQuery
+                (
+                    "select * from c where c.entity = @entity and c.instance = @instance and c.identifier = @identifier",
+                    new
+                    {
+                        entity = DocumentEntity,
+                        instance,
+                        identifier = documentId.ToString()
+                    }
+            );
+
+            var document = _repoDocument.GetFirstOrDefault(q);
+
+            return document;
         }
 
         Entities.DocumentType UpsertDocumentType(string instance, Uri projectId, Uri documentTypeId, dynamic meta)
