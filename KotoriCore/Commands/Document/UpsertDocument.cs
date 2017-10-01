@@ -19,8 +19,7 @@ namespace KotoriCore.Commands
         {
             Instance = instance;
             ProjectId = projectId;
-            // TODO
-            DocumentTypeId = "kotori://_content/movie";
+            DocumentTypeId = identifier;
             Identifier = identifier;
             Content = content;
         }

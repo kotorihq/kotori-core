@@ -91,5 +91,36 @@ namespace KotoriCore.Helpers
             var resolver = new CamelCasePropertyNamesContractResolver();
             return resolver.GetResolvedPropertyName(propertyName);
         }
+
+        /// <summary>
+        /// Removes the trailing slashes from the text.
+        /// </summary>
+        /// <returns>Clean up text.</returns>
+        /// <param name="text">Text.</param>
+        /// <param name="starting">If set to <c>true</c> starting slash will be removed.</param>
+        /// <param name="ending">If set to <c>true</c> ending slash will be removed.</param>
+        internal static string RemoveTrailingSlashes(this string text, bool starting, bool ending)
+        {
+            if (text == null)
+                throw new ArgumentNullException(nameof(text));
+            
+            if (starting)
+            {
+                while (text.StartsWith("/", StringComparison.Ordinal) && text.Length > 1)
+                {
+                    text = text.Substring(1);
+                }
+            }
+
+            if (ending)
+            {
+                while (text.EndsWith("/", StringComparison.Ordinal) && text.Length > 1)
+                {
+                    text = text.Substring(0, text.Length - 1);
+                }
+            }
+
+            return text;
+        }
     }
 }

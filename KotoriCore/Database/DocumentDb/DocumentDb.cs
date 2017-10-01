@@ -157,8 +157,9 @@ namespace KotoriCore.Database.DocumentDb
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
-            // TODO: validate uri
-            var documentType = UpsertDocumentType(command.Instance, projectUri, new Uri(command.DocumentTypeId));
+            var documentTypeUri = command.DocumentTypeId.ToKotoriUri();
+
+            var documentType = UpsertDocumentType(command.Instance, projectUri, documentTypeUri);
 
             IDocumentResult documentResult = null;
 

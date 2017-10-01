@@ -8,35 +8,35 @@ namespace KotoriCore.Helpers
     /// </summary>
     static class Router
     {
-        const string UriSchema = "kotori://";
+        const string UriScheme = "kotori://";
 
         /// <summary>
         /// Convert id to kotori uri.
         /// </summary>
         /// <returns>The kotori URI.</returns>
         /// <param name="uri">URI.</param>
-        internal static Uri ToKotoriUri(this string uri)
+        /// <param name="documenType">If set to <c>true</c> shorten it to document type part of URI only.</param>
+        internal static Uri ToKotoriUri(this string uri, bool documenType = false)
         {
             if (uri == null)
                 throw new KotoriValidationException("Identifier (null) is not valid URI string.");
 
-            // remove starting "slash"
-            while (uri.StartsWith("/", StringComparison.Ordinal) && uri.Length > 1)
-            {
-                uri = uri.Substring(1);
-            }
-
-            // remove ending "slash"
-            while (uri.EndsWith("/", StringComparison.Ordinal) && uri.Length > 1)
-            {
-                uri = uri.Substring(1, uri.Length - 1);    
-            }
-
-            uri = UriSchema + uri;
+            uri = uri.RemoveTrailingSlashes(true, true);
+            uri = UriScheme + uri;
 
             if (!Uri.TryCreate(uri, UriKind.Absolute, out Uri result))
             {
                 throw new KotoriValidationException($"Identifier {uri} is not valid URI string.");
+            }
+
+            if (documenType)
+            {
+                if (result.Segments.Length < 2)
+                    throw new KotoriValidationException($"Identifier {uri} is not valid document type URI string.");
+
+                var dturi = result.Scheme + "://" + result.Host + result.Segments[0] + result.Segments[1];
+                dturi = dturi.RemoveTrailingSlashes(false, true);
+                result = new Uri(dturi);
             }
 
             return result;
@@ -55,20 +55,10 @@ namespace KotoriCore.Helpers
             // remove schema
             var u = uri.ToString();
 
-            if (u.StartsWith(UriSchema, StringComparison.OrdinalIgnoreCase))
-                u = u.Substring(UriSchema.Length);
+            if (u.StartsWith(UriScheme, StringComparison.OrdinalIgnoreCase))
+                u = u.Substring(UriScheme.Length);
 
-            // remove starting "slash"
-            while (u.StartsWith("/", StringComparison.Ordinal) && u.Length > 1)
-            {
-                u = u.Substring(1);
-            }
-
-            // remove ending "slash"
-            while (u.EndsWith("/", StringComparison.Ordinal) && u.Length > 1)
-            {
-                u = u.Substring(1, u.Length - 1);
-            }
+            u = u.RemoveTrailingSlashes(true, true);
 
             return u;
         }
