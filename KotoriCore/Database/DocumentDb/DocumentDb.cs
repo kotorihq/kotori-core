@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using KotoriCore.Domains;
 using KotoriCore.Helpers;
 using KotoriCore.Documents;
+using KotoriCore.Search;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -158,16 +159,17 @@ namespace KotoriCore.Database.DocumentDb
                 throw new KotoriValidationException("Project does not exist.");
 
             var documentTypeUri = command.DocumentTypeId.ToKotoriUri(true);
-
-            var documentType = UpsertDocumentType(command.Instance, projectUri, documentTypeUri);
+            var docType = documentTypeUri.ToDocumentType();
 
             IDocumentResult documentResult = null;
 
-            if (documentType.Type == Enums.DocumentType.Drafts ||
-                documentType.Type == Enums.DocumentType.Content)
+            if (docType == Enums.DocumentType.Drafts ||
+                docType == Enums.DocumentType.Content)
             {
                 var document = new Markdown(command.Identifier, command.Content);
                 documentResult = document.Process();
+
+                var documentType = UpsertDocumentType(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
 
                 var d = new Entities.Document
                 (
@@ -228,7 +230,7 @@ namespace KotoriCore.Database.DocumentDb
             return documentType;
         }
 
-        Entities.DocumentType UpsertDocumentType(string instance, Uri projectId, Uri documentTypeId)
+        Entities.DocumentType UpsertDocumentType(string instance, Uri projectId, Uri documentTypeId, dynamic meta)
         {
             var project = FindProject(instance, projectId);
 
@@ -244,13 +246,16 @@ namespace KotoriCore.Database.DocumentDb
                 if (docType == null)
                     throw new KotoriException($"Document type could not be resolved for {documentTypeId}.");
 
+                var indexes = new List<DocumentTypeIndex>();
+                indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
+
                 var dt = new Entities.DocumentType
                 (
                      instance,
                      documentTypeId.ToString(),
                      projectId.ToString(),
                      documentTypeId.ToDocumentType().Value,
-                     new List<DocumentTypeIndex>()
+                     indexes
                 );
 
                 dt = _repoDocumentType.Create(dt);

@@ -1,12 +1,62 @@
 ﻿using System;
 using Shushu;
 using System.Collections.Generic;
+using KotoriCore.Domains;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+using KotoriCore.Exceptions;
 
 namespace KotoriCore.Search
 {
-    public static class SearchTools
+    static class SearchTools
     {
-        public static IList<Enums.IndexField> GetAvailableFieldsForType(Type type)
+        internal static IList<DocumentTypeIndex> GetUpdatedDocumentTypeIndexes(this IList<DocumentTypeIndex> indexes, dynamic meta)
+        {
+            var indexes2 = indexes.ToList();
+
+            var result = new List<DocumentTypeIndex>();
+            var metaObj = JObject.FromObject(meta);
+            Dictionary<string, object> meta2 = metaObj.ToObject<Dictionary<string, object>>();
+
+            foreach (var key in meta2.Keys)
+            {
+                var v = meta2[key];
+                var t = v.GetType();
+
+                var availables = t.GetAvailableFieldsForType();
+
+                // we cannot index this type
+                if (!availables.Any())
+                    continue;
+                
+                // key's been indexed already - check type compatibility
+                var ex = indexes2.FirstOrDefault(x => x.From.Equals(key, StringComparison.OrdinalIgnoreCase));
+
+                if (ex != null)
+                {
+                    if (availables.All(x => x != ex.To))
+                        throw new KotoriValidationException($"Meta property {key} cannot be mapped because it has been alreade mapped to {ex.To}");
+
+                    // we are ok for this key
+                    result.Add(ex);
+                    continue;
+                }
+
+                var aidx = availables.Where(x => indexes2.All(xx => xx.To != x));
+
+                // we are not lucky, no available free index
+                if (!aidx.Any())
+                {
+                    continue;
+                }
+
+                result.Add(new DocumentTypeIndex(key, aidx.First()));
+            }
+
+            return result;
+        }
+
+        internal static IList<Enums.IndexField> GetAvailableFieldsForType(this Type type)
         {
             if (type == typeof(string))
                 return new List<Enums.IndexField>
