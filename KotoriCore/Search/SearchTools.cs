@@ -23,7 +23,7 @@ namespace KotoriCore.Search
                 var v = meta2[key];
                 var t = v.GetType();
 
-                var availables = t.GetAvailableFieldsForType();
+                var availables = t.GetAvailableFieldsForType(v);
 
                 // we cannot index this type
                 if (!availables.Any())
@@ -56,7 +56,7 @@ namespace KotoriCore.Search
             return result;
         }
 
-        internal static IList<Enums.IndexField> GetAvailableFieldsForType(this Type type)
+        internal static IList<Enums.IndexField> GetAvailableFieldsForType(this Type type, object val)
         {
             if (type == typeof(string))
                 return new List<Enums.IndexField>
@@ -128,20 +128,31 @@ namespace KotoriCore.Search
                     Enums.IndexField.Double9,
                 };
 
-            if (type == typeof(IEnumerable<string>))
-                return new List<Enums.IndexField>
+            if (type == typeof(JArray))
+            {
+                if (val is JArray ar)
                 {
-                    Enums.IndexField.Tags0,
-                    Enums.IndexField.Tags1,
-                    Enums.IndexField.Tags2,
-                    Enums.IndexField.Tags3,
-                    Enums.IndexField.Tags4,
-                    Enums.IndexField.Tags5,
-                    Enums.IndexField.Tags6,
-                    Enums.IndexField.Tags7,
-                    Enums.IndexField.Tags8,
-                    Enums.IndexField.Tags9
-                };
+                    if (ar.Any())
+                    {
+                        if (ar.First().Type == JTokenType.String)
+                        {
+                            return new List<Enums.IndexField>
+                            {
+                                Enums.IndexField.Tags0,
+                                Enums.IndexField.Tags1,
+                                Enums.IndexField.Tags2,
+                                Enums.IndexField.Tags3,
+                                Enums.IndexField.Tags4,
+                                Enums.IndexField.Tags5,
+                                Enums.IndexField.Tags6,
+                                Enums.IndexField.Tags7,
+                                Enums.IndexField.Tags8,
+                                Enums.IndexField.Tags9
+                            };
+                        }
+                    }
+                }
+            }
 
             if (type == typeof(DateTime?) ||
                type == typeof(DateTime))
