@@ -157,7 +157,7 @@ namespace KotoriCore.Documents
 
                 if (dpt == Enums.DocumentPropertyType.Date)
                 {
-                    // TODO: implement    
+                    result.Date = Identifier.ToDateTime(meta[key].ToString());
                 }
 
                 if (dpt == Enums.DocumentPropertyType.Slug)
@@ -179,6 +179,12 @@ namespace KotoriCore.Documents
                     }
                 }
 
+            }
+
+            // no date, set today
+            if (!result.Date.HasValue)
+            {
+                
             }
 
             result.Meta = expando;

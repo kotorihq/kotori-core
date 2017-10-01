@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Text.RegularExpressions;
+using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
+using Sushi2;
 
 namespace KotoriCore.Documents
 {
@@ -34,12 +37,41 @@ namespace KotoriCore.Documents
         /// Gets date from filename prefix, $date propertry.
         /// </summary>
         /// <returns>The date time.</returns>
-        /// <param name="identification">Identification.</param>
+        /// <param name="identifier">Identifier.</param>
         /// <param name="date">Date.</param>
         /// <remarks>Always returns date, if none found then returns just current date.</remarks>
-        internal static DateTime ToDateTime(this string identification, string date)
+        internal static DateTime ToDateTime(this string identifier, string date)
         {
-            
+            var now = DateTime.Now.Date;
+            var dt = now;
+
+            var r = new Regex(@"^.*/(?<year>\d{4})-(?<month>\d{1,2})-(?<date>\d{1,2})-.*$", RegexOptions.Singleline);
+
+            var match = r.Match(identifier);
+
+            if (match.Success)
+            {
+                dt = new DateTime
+                (
+                    match.Groups["year"].Value.ToInt32() ?? now.Year,
+                    match.Groups["month"].Value.ToInt32() ?? now.Month,
+                    match.Groups["day"].Value.ToInt32() ?? now.Day
+                );
+            }
+
+            if (!string.IsNullOrEmpty(date))
+            {
+                if (DateTime.TryParse(date, out DateTime fullDate))
+                {
+                    dt = fullDate;
+                }
+                else
+                {
+                    throw new KotoriDocumentException(identifier, $"Date {date} could not be parsed.");
+                }
+            }
+
+            return dt;
         }
     }
 }
