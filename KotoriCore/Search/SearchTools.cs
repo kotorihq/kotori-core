@@ -42,7 +42,7 @@ namespace KotoriCore.Search
                     continue;
                 }
 
-                var aidx = availables.Where(x => indexes2.All(xx => xx.To != x));
+                var aidx = availables.Where(x => indexes2.All(xx => xx.To != x) && result.All(xx => xx.To != x));
 
                 // we are not lucky, no available free index
                 if (!aidx.Any())
