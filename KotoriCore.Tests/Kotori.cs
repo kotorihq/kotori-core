@@ -10,6 +10,7 @@ using System.Net;
 using Oogi2;
 using Oogi2.Queries;
 using System.Threading.Tasks;
+using Sushi2;
 
 namespace KotoriCore.Tests
 {
@@ -136,6 +137,10 @@ namespace KotoriCore.Tests
 
             var c = GetContent("_content/movie/matrix.md");
             await _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi/stable", "_content/movie/matrix.md", c));
+
+            var d = AsyncTools.RunSync(() => _kotori.GetDocumentAsync("dev", "nenecchi/main", "_content/movie/matrix.md"));
+
+            Assert.AreEqual("_content/movie/matrix.md", d.Identifier);
         }
 
         static string GetContent(string path)

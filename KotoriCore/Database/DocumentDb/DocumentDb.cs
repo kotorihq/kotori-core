@@ -63,6 +63,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(deleteProject);
                 else if (command is UpsertDocument upsertDocument)
                     result = await HandleAsync(upsertDocument);
+                else if (command is GetDocument getDocument)
+                    result = await HandleAsync(getDocument);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
@@ -151,6 +153,31 @@ namespace KotoriCore.Database.DocumentDb
             return new CommandResult<string>("Project has been deleted.");
         }
 
+        public async Task<CommandResult<SimpleDocument>> HandleAsync(GetDocument command)
+        {
+            var projectUri = command.ProjectId.ToKotoriUri();
+
+            var project = await FindProjectAsync(command.Instance, projectUri);
+
+            if (project == null)
+                throw new KotoriValidationException("Project does not exist.");
+            
+            var d = await FindDocumentAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
+
+            return new CommandResult<SimpleDocument>
+            (
+                new SimpleDocument
+                (
+                    d.Identifier,
+                    d.Slug,
+                    d.Meta,
+                    d.Content,
+                    d.Date.DateTime,
+                    d.Modified.DateTime
+                )
+            );
+        }
+
         public async Task<CommandResult<string>> HandleAsync(UpsertDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
@@ -159,7 +186,7 @@ namespace KotoriCore.Database.DocumentDb
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
-            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(true);
+            var documentTypeUri = command.Identifier.ToKotoriUri(true);
             var docType = documentTypeUri.ToDocumentType();
 
             IDocumentResult documentResult = null;
@@ -172,7 +199,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
 
-                var d = await FindDocumentAsync(command.Instance, command.Identifier.ToKotoriUri());
+                var d = await FindDocumentAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
                 var isNew = d == null;
                 var id = d?.Id;
 
@@ -244,15 +271,16 @@ namespace KotoriCore.Database.DocumentDb
             return documentType;
         }
 
-        async Task<Entities.Document> FindDocumentAsync(string instance, Uri documentId)
+        async Task<Entities.Document> FindDocumentAsync(string instance, Uri projectId, Uri documentId)
         {
             var q = new DynamicQuery
                 (
-                    "select * from c where c.entity = @entity and c.instance = @instance and c.identifier = @identifier",
+                    "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
                     new
                     {
                         entity = DocumentEntity,
                         instance,
+                        projectId,
                         identifier = documentId.ToString()
                     }
             );

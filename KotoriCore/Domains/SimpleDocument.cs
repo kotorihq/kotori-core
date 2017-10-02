@@ -2,41 +2,13 @@
 
 namespace KotoriCore.Domains
 {
-    /// <summary>
-    /// Document.
-    /// </summary>
-    public class Document
+    public class SimpleDocument
     {
-        /// <summary>
-        /// Gets or sets the instance.
-        /// </summary>
-        /// <value>The instance.</value>
-        public string Instance { get; set; }
-
-        /// <summary>
-        /// Gets or sets the project identifier.
-        /// </summary>
-        /// <value>The project identifier.</value>
-        public string ProjectId { get; set; }
-
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
         public string Identifier { get; set; }
-
-        /// <summary>
-        /// Gets or sets the document type identifier.
-        /// </summary>
-        /// <value>The document type identifier.</value>
-        // TODO: remove this property, not needed - document type can be determined from identifier
-        public string DocumentTypeId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the hash.
-        /// </summary>
-        /// <value>The hash.</value>
-        public string Hash { get; set; }
 
         /// <summary>
         /// Gets or sets the slug.
@@ -60,12 +32,38 @@ namespace KotoriCore.Domains
         /// Gets or sets the date.
         /// </summary>
         /// <value>The date.</value>
-        public DateTime? Date { get; set; }
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// Gets or sets the date of last modification.
         /// </summary>
         /// <value>The date of last modification.</value>
         public DateTime Modified { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocument"/> class.
+        /// </summary>
+        public SimpleDocument()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocument"/> class.
+        /// </summary>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="slug">Slug.</param>
+        /// <param name="meta">Meta.</param>
+        /// <param name="content">Content.</param>
+        /// <param name="date">Date.</param>
+        /// <param name="modified">Modified.</param>
+        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime date, DateTime modified)
+        {
+            Identifier = identifier;
+            Slug = slug;
+            Meta = meta;
+            Content = content;
+            Date = date;
+            Modified = modified;
+        }
     }
 }

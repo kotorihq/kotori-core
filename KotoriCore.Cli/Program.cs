@@ -7,6 +7,7 @@ using KotoriCore.Helpers;
 using Microsoft.Extensions.Configuration;
 using Oogi2;
 using Oogi2.Queries;
+using Sushi2;
 
 namespace KotoriCore.Cli
 {
@@ -54,30 +55,30 @@ namespace KotoriCore.Cli
             var records = repo.GetList(q);
 
             foreach (var record in records)
-            repo.Delete(record);
+                repo.Delete(record);
             
             // --
 
-            var result = _kotori.ProcessAsync(new CreateProject("dev", "Nenecchi", "nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            var result = AsyncTools.RunSync(() => _kotori.ProcessAsync(new CreateProject("dev", "Nenecchi", "nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") })));
 
             string id;
             string c;
 
             id = "_content/movie/matrix.md";
             c = GetContent(id);
-            _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c));
+            AsyncTools.RunSync(() => _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c)));
 
             id = "_content/tv/2017-05-06-flying-witch.md";
             c = GetContent(id);
-            _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c));
+            AsyncTools.RunSync(() => _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c)));
 
             id = "_content/tv/2017-08-12-flip-flappers.md";
             c = GetContent(id);
-            _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c));
+            AsyncTools.RunSync(() => _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c)));
 
             id = "_content/tv/2017-08-12-flip-flappers.md";
             c = GetContent(id);
-            _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c));
+            AsyncTools.RunSync(() => _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c)));
         }
     }
 }

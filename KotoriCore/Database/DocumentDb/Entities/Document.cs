@@ -81,7 +81,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// </summary>
         /// <value>The modification.</value>
         [PropertyMapping(Shushu.Enums.IndexField.Date1)]
-        public Stamp Modification { get; set; }
+        public Stamp Modified { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.Document"/> class.
@@ -101,7 +101,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Meta = meta;
             Content = content;
             Date = date.HasValue ? new Stamp(date.Value) : null;
-            Modification = new Stamp();
+            Modified = new Stamp();
         }
     }
 }

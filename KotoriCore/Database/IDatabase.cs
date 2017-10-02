@@ -20,5 +20,6 @@ namespace KotoriCore.Database
         Task<CommandResult<string>> HandleAsync(ProjectAddKey command);
         Task<CommandResult<string>> HandleAsync(DeleteProject command);
         Task<CommandResult<string>> HandleAsync(UpsertDocument command);
+        Task<CommandResult<Domains.SimpleDocument>> HandleAsync(GetDocument command);
     }
 }

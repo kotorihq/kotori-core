@@ -46,5 +46,14 @@ namespace KotoriCore.Commands
         {
             _data = data;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CommandResult`1"/> class.
+        /// </summary>
+        /// <param name="data">Data.</param>
+        public CommandResult(T data)
+        {
+            _data = new List<T> { data };
+        }
     }    
 }

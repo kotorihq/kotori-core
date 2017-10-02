@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Upsert document.
+    /// Get document.
     /// </summary>
-    public class UpsertDocument : Command, IInstance, IProject
+    public class GetDocument : Command, IInstance, IProject
     {
         /// <summary>
         /// Gets the instance.
@@ -27,24 +28,16 @@ namespace KotoriCore.Commands
         public string Identifier { get; }
 
         /// <summary>
-        /// Gets the content.
-        /// </summary>
-        /// <value>The content.</value>
-        public string Content { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocument"/> class.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetDocument"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
-        /// <param name="content">Content.</param>
-        public UpsertDocument(string instance, string projectId, string identifier, string content)
+        /// <param name="identifier">Document identifier.</param>
+        public GetDocument(string instance, string projectId, string identifier)
         {
             Instance = instance;
             ProjectId = projectId;
             Identifier = identifier;
-            Content = content;
         }
 
         /// <summary>

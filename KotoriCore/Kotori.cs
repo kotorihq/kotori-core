@@ -92,14 +92,27 @@ namespace KotoriCore
         {
             return await ProcessAsync(new DeleteProject(instance, identifier)) as DeleteProject;
         }
+
         /// <summary>
-        /// Get projects.
+        /// Gets projects.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <returns>Result.</returns>
         public async Task<GetProjects> GetProjectsAsync(string instance)
         {
             return await ProcessAsync(new GetProjects(instance)) as GetProjects;    
+        }
+
+        /// <summary>
+        /// Gets document.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Document identifier.</param>
+        public async Task<GetDocument> GetDocumentAsync(string instance, string projectId, string identifier)
+        {
+            return await ProcessAsync(new GetDocument(instance, projectId, identifier)) as GetDocument;
         }
 
         internal async Task<ICommandResult> ProcessAsync(ICommand command)
