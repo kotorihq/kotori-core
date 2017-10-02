@@ -5,6 +5,7 @@ using KotoriCore.Domains;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using KotoriCore.Exceptions;
+using System.Threading.Tasks;
 
 namespace KotoriCore.Search
 {

@@ -10,6 +10,7 @@ using KotoriCore.Domains;
 using KotoriCore.Helpers;
 using KotoriCore.Documents;
 using KotoriCore.Search;
+using System.Threading.Tasks;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -41,7 +42,7 @@ namespace KotoriCore.Database.DocumentDb
         /// </summary>
         /// <returns>Command result.</returns>
         /// <param name="command">Command.</param>
-        public ICommandResult Handle(ICommand command)
+        public async Task<ICommandResult> HandleAsync(ICommand command)
         {
             var message = $"DocumentDb failed when handling command {command.GetType()}.";
             ICommandResult result = null;
@@ -55,13 +56,13 @@ namespace KotoriCore.Database.DocumentDb
                     throw new KotoriValidationException(validationResults);
 
                 if (command is CreateProject createProject)
-                    result = Handle(createProject);
+                    result = await HandleAsync(createProject);
                 else if (command is GetProjects getProjects)
-                    result = Handle(getProjects);
+                    result = await HandleAsync(getProjects);
                 else if (command is DeleteProject deleteProject)
-                    result = Handle(deleteProject);
+                    result = await HandleAsync(deleteProject);
                 else if (command is UpsertDocument upsertDocument)
-                    result = Handle(upsertDocument);
+                    result = await HandleAsync(upsertDocument);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
@@ -79,21 +80,21 @@ namespace KotoriCore.Database.DocumentDb
             throw new KotoriException(message);
         }
 
-        public CommandResult<string> Handle(CreateProject command)
+        public async Task<CommandResult<string>> HandleAsync(CreateProject command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
 
-            if (FindProject(command.Instance, projectUri) != null)
+            if (await FindProjectAsync(command.Instance, projectUri) != null)
                 throw new KotoriValidationException($"Project with identifier {command.ProjectId} already exists.");
 
             var prj = new Entities.Project(command.Instance, command.Name, projectUri.ToString(), command.ProjectKeys);
 
-            _repoProject.Create(prj);
+            await _repoProject.CreateAsync(prj);
 
             return new CommandResult<string>("Project has been created.");
         }
 
-        public CommandResult<SimpleProject> Handle(GetProjects command)
+        public async Task<CommandResult<SimpleProject>> HandleAsync(GetProjects command)
         {
             var q = new DynamicQuery
                 (
@@ -105,17 +106,17 @@ namespace KotoriCore.Database.DocumentDb
                     }
                 );
 
-            var projects = _repoProject.GetList(q);
+            var projects = await _repoProject.GetListAsync(q);
             var domainProjects = projects.Select(p => new Project(p.Instance, p.Name, p.Identifier, p.ProjectKeys));
 
             return new CommandResult<SimpleProject>(domainProjects.Select(d => new SimpleProject(d.Name, d.Identifier)));
         }
 
-        public CommandResult<string> Handle(ProjectAddKey command)
+        public async Task<CommandResult<string>> HandleAsync(ProjectAddKey command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
 
-            var project = FindProject(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
@@ -129,31 +130,31 @@ namespace KotoriCore.Database.DocumentDb
 
             project.ProjectKeys = keys;
 
-            _repoProject.Replace(project);
+            await _repoProject.ReplaceAsync(project);
 
             return new CommandResult<string>("Project key has been added.");
         }
 
-        public CommandResult<string> Handle(DeleteProject command)
+        public async Task<CommandResult<string>> HandleAsync(DeleteProject command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
 
-            var project = FindProject(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
             // TODO: check if some data exists for a given project
 
-            _repoProject.Delete(project);
+            await _repoProject.DeleteAsync(project);
 
             return new CommandResult<string>("Project has been deleted.");
         }
 
-        public CommandResult<string> Handle(UpsertDocument command)
+        public async Task<CommandResult<string>> HandleAsync(UpsertDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
-            var project = FindProject(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
@@ -169,9 +170,9 @@ namespace KotoriCore.Database.DocumentDb
                 var document = new Markdown(command.Identifier, command.Content);
                 documentResult = document.Process();
 
-                var documentType = UpsertDocumentType(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
+                var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
 
-                var d = FindDocument(command.Instance, command.Identifier.ToKotoriUri());
+                var d = await FindDocumentAsync(command.Instance, command.Identifier.ToKotoriUri());
                 var isNew = d == null;
                 var id = d?.Id;
 
@@ -190,20 +191,22 @@ namespace KotoriCore.Database.DocumentDb
 
                 if (isNew)
                 {
-                    _repoDocument.Create(d);
+                    await _repoDocument.CreateAsync(d);
+                    return new CommandResult<string>("Document has been created.");
                 }
                 else
                 {
                     d.Id = id;
 
-                    _repoDocument.Replace(d);
+                    await _repoDocument.ReplaceAsync(d);
+                    return new CommandResult<string>("Document has been replaces.");
                 }
             }
 
-            return new CommandResult<string>("Document has been created.");
+            throw new KotoriException("Unknown document type.");
         }
 
-        Entities.Project FindProject(string instance, Uri projectUri)
+        async Task<Entities.Project> FindProjectAsync(string instance, Uri projectUri)
         {
             var q = new DynamicQuery
                 (
@@ -216,7 +219,7 @@ namespace KotoriCore.Database.DocumentDb
                     }
             );
 
-            var project = _repoProject.GetFirstOrDefault(q);
+            var project = await _repoProject.GetFirstOrDefaultAsync(q);
 
             if (project != null)
                 project.Identifier = project.Identifier.ToKotoriUri().ToKotoriIdentifier();
@@ -224,7 +227,7 @@ namespace KotoriCore.Database.DocumentDb
             return project;
         }
 
-        Entities.DocumentType FindDocumentType(string instance, Uri projectId, Uri documentTypeId)
+        async Task<Entities.DocumentType> FindDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId)
         {
             var q = new DynamicQuery
                 (
@@ -238,12 +241,12 @@ namespace KotoriCore.Database.DocumentDb
                     }
             );
 
-            var documentType = _repoDocumentType.GetFirstOrDefault(q);
+            var documentType = await _repoDocumentType.GetFirstOrDefaultAsync(q);
 
             return documentType;
         }
 
-        Entities.Document FindDocument(string instance, Uri documentId)
+        async Task<Entities.Document> FindDocumentAsync(string instance, Uri documentId)
         {
             var q = new DynamicQuery
                 (
@@ -256,19 +259,19 @@ namespace KotoriCore.Database.DocumentDb
                     }
             );
 
-            var document = _repoDocument.GetFirstOrDefault(q);
+            var document = await _repoDocument.GetFirstOrDefaultAsync(q);
 
             return document;
         }
 
-        Entities.DocumentType UpsertDocumentType(string instance, Uri projectId, Uri documentTypeId, dynamic meta)
+        async Task<Entities.DocumentType> UpsertDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId, dynamic meta)
         {
-            var project = FindProject(instance, projectId);
+            var project = await FindProjectAsync(instance, projectId);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
-            var documentType = FindDocumentType(instance, projectId, documentTypeId);
+            var documentType = await FindDocumentTypeAsync(instance, projectId, documentTypeId);
 
             if (documentType == null)
             {
@@ -289,7 +292,7 @@ namespace KotoriCore.Database.DocumentDb
                      indexes
                 );
 
-                dt = _repoDocumentType.Create(dt);
+                dt = await _repoDocumentType.CreateAsync(dt);
 
                 return dt;
             }
@@ -298,7 +301,7 @@ namespace KotoriCore.Database.DocumentDb
                 var indexes = documentType.Indexes ?? new List<DocumentTypeIndex>();
                 documentType.Indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
 
-                _repoDocumentType.Replace(documentType);
+                await _repoDocumentType.ReplaceAsync(documentType);
 
                 return documentType;
             }

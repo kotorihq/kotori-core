@@ -1,4 +1,5 @@
-﻿using KotoriCore.Commands;
+﻿using System.Threading.Tasks;
+using KotoriCore.Commands;
 
 namespace KotoriCore.Database
 {
@@ -12,12 +13,12 @@ namespace KotoriCore.Database
         /// </summary>
         /// <returns>The command result.</returns>
         /// <param name="command">Command.</param>
-        ICommandResult Handle(ICommand command);
+        Task<ICommandResult> HandleAsync(ICommand command);
 
-        CommandResult<string> Handle(CreateProject command);
-        CommandResult<Domains.SimpleProject> Handle(GetProjects command);
-        CommandResult<string> Handle(ProjectAddKey command);
-        CommandResult<string> Handle(DeleteProject command);
-        CommandResult<string> Handle(UpsertDocument command);
+        Task<CommandResult<string>> HandleAsync(CreateProject command);
+        Task<CommandResult<Domains.SimpleProject>> HandleAsync(GetProjects command);
+        Task<CommandResult<string>> HandleAsync(ProjectAddKey command);
+        Task<CommandResult<string>> HandleAsync(DeleteProject command);
+        Task<CommandResult<string>> HandleAsync(UpsertDocument command);
     }
 }

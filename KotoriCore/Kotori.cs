@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using KotoriCore.Commands;
+﻿using KotoriCore.Commands;
 using KotoriCore.Configurations;
 using KotoriCore.Database;
 using KotoriCore.Database.DocumentDb;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Threading.Tasks;
 
 namespace KotoriCore
 {
@@ -60,29 +60,9 @@ namespace KotoriCore
         /// </summary>
         /// <returns>The process.</returns>
         /// <param name="command">Command.</param>
-        public ICommandResult Process(ICommand command) 
+        public async Task<ICommandResult> ProcessAsync(ICommand command) 
         {
-            return _database.Handle(command);
-        }
-
-        /// <summary>
-        /// Process the specified commands.
-        /// </summary>
-        /// <returns>The process.</returns>
-        /// <param name="commands">Commands.</param>
-        public IEnumerable<ICommandResult> Process(IEnumerable<ICommand> commands)
-        {
-            if (commands == null)
-                throw new ArgumentNullException(nameof(commands));
-
-            var result = new List<ICommandResult>();
-
-            foreach(var command in commands)
-            {
-                result.Add(_database.Handle(command));
-            }
-
-            return result;
+            return await _database.HandleAsync(command);
         }
     }
 }

@@ -58,26 +58,26 @@ namespace KotoriCore.Cli
             
             // --
 
-            var result = _kotori.Process(new CreateProject("dev", "Nenecchi", "nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            var result = _kotori.ProcessAsync(new CreateProject("dev", "Nenecchi", "nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
 
             string id;
             string c;
 
             id = "_content/movie/matrix.md";
             c = GetContent(id);
-            _kotori.Process(new UpsertDocument("dev", "nenecchi", id, c));
+            _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c));
 
             id = "_content/tv/2017-05-06-flying-witch.md";
             c = GetContent(id);
-            _kotori.Process(new UpsertDocument("dev", "nenecchi", id, c));
+            _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c));
 
             id = "_content/tv/2017-08-12-flip-flappers.md";
             c = GetContent(id);
-            _kotori.Process(new UpsertDocument("dev", "nenecchi", id, c));
+            _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c));
 
             id = "_content/tv/2017-08-12-flip-flappers.md";
             c = GetContent(id);
-            _kotori.Process(new UpsertDocument("dev", "nenecchi", id, c));
+            _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c));
         }
     }
 }
