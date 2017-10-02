@@ -83,7 +83,7 @@ namespace KotoriCore.Search
                     Enums.IndexField.Text16,
                     Enums.IndexField.Text17,
                     Enums.IndexField.Text18,
-                    Enums.IndexField.Text19,
+                    Enums.IndexField.Text19
                 };
 
             if (type == typeof(int?) ||
@@ -135,7 +135,7 @@ namespace KotoriCore.Search
                     Enums.IndexField.Double6,
                     Enums.IndexField.Double7,
                     Enums.IndexField.Double8,
-                    Enums.IndexField.Double9,
+                    Enums.IndexField.Double9
                 };
 
             if (type == typeof(JArray))

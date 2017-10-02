@@ -194,13 +194,11 @@ namespace KotoriCore.Database.DocumentDb
                     await _repoDocument.CreateAsync(d);
                     return new CommandResult<string>("Document has been created.");
                 }
-                else
-                {
-                    d.Id = id;
+               
+                d.Id = id;
 
-                    await _repoDocument.ReplaceAsync(d);
-                    return new CommandResult<string>("Document has been replaces.");
-                }
+                await _repoDocument.ReplaceAsync(d);
+                return new CommandResult<string>("Document has been replaces.");
             }
 
             throw new KotoriException("Unknown document type.");
