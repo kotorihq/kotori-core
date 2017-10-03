@@ -6,6 +6,9 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using KotoriCore.Domains;
+using System.Linq;
+using Sushi2;
 
 namespace KotoriCore
 {
@@ -64,9 +67,22 @@ namespace KotoriCore
         /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public async Task<UpsertDocument> UpsertDocumentAsync(string instance, string projectId, string identifier, string content)
+        public string UpsertDocument(string instance, string projectId, string identifier, string content)
         {
-            return await ProcessAsync(new UpsertDocument(instance, projectId, identifier, content)) as UpsertDocument;
+            return AsyncTools.RunSync(() => UpsertDocumentAsync(instance, projectId, identifier, content));
+        }
+
+        /// <summary>
+        /// Upserts document.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="content">Content.</param>
+        /// <returns>Result.</returns>
+        public async Task<string> UpsertDocumentAsync(string instance, string projectId, string identifier, string content)
+        {
+            return (await ProcessAsync(new UpsertDocument(instance, projectId, identifier, content)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -77,9 +93,22 @@ namespace KotoriCore
         /// <param name="projectId">Identifier.</param>
         /// <param name="projectKeys">Project keys.</param>
         /// <returns>Result.</returns>
-        public async Task<CreateProject> CreateProjectAsync(string instance, string name, string projectId, IEnumerable<ProjectKey> projectKeys)
+        public string CreateProject(string instance, string name, string projectId, IEnumerable<ProjectKey> projectKeys)
         {
-            return await ProcessAsync(new CreateProject(instance, name, projectId, projectKeys)) as CreateProject;
+            return AsyncTools.RunSync(() => CreateProjectAsync(instance, name, projectId, projectKeys));
+        }
+
+        /// <summary>
+        /// Creates project.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="name">Name.</param>
+        /// <param name="projectId">Identifier.</param>
+        /// <param name="projectKeys">Project keys.</param>
+        /// <returns>Result.</returns>
+        public async Task<string> CreateProjectAsync(string instance, string name, string projectId, IEnumerable<ProjectKey> projectKeys)
+        {
+            return (await ProcessAsync(new CreateProject(instance, name, projectId, projectKeys)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -88,9 +117,20 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="identifier">Identifier.</param>
         /// <returns>Result.</returns>
-        public async Task<DeleteProject> DeleteProjectAsync(string instance, string identifier)
+        public string DeleteProject(string instance, string identifier)
         {
-            return await ProcessAsync(new DeleteProject(instance, identifier)) as DeleteProject;
+            return AsyncTools.RunSync(() => DeleteProjectAsync(instance, identifier));
+        }
+
+        /// <summary>
+        /// Deletes project.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <returns>Result.</returns>
+        public async Task<string> DeleteProjectAsync(string instance, string identifier)
+        {
+            return (await ProcessAsync(new DeleteProject(instance, identifier)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -98,9 +138,22 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <returns>Result.</returns>
-        public async Task<GetProjects> GetProjectsAsync(string instance)
+        public IEnumerable<SimpleProject> GetProjects(string instance)
         {
-            return await ProcessAsync(new GetProjects(instance)) as GetProjects;    
+            return AsyncTools.RunSync(() => GetProjectsAsync((instance)));
+        }
+
+        /// <summary>
+        /// Gets projects.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <returns>Result.</returns>
+        public async Task<IEnumerable<SimpleProject>> GetProjectsAsync(string instance)
+        {
+            var result = await ProcessAsync(new GetProjects(instance));
+            var projects = result.Data as IEnumerable<SimpleProject>;
+
+            return projects;
         }
 
         /// <summary>
@@ -110,12 +163,24 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Document identifier.</param>
-        public async Task<GetDocument> GetDocumentAsync(string instance, string projectId, string identifier)
+        public SimpleDocument GetDocument(string instance, string projectId, string identifier)
         {
-            return await ProcessAsync(new GetDocument(instance, projectId, identifier)) as GetDocument;
+            return AsyncTools.RunSync(() => GetDocumentAsync(instance, projectId, identifier));
         }
 
-        internal async Task<ICommandResult> ProcessAsync(ICommand command)
+        /// <summary>
+        /// Gets document.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Document identifier.</param>
+        public async Task<SimpleDocument> GetDocumentAsync(string instance, string projectId, string identifier)
+        {
+            return (await ProcessAsync(new GetDocument(instance, projectId, identifier)) as CommandResult<SimpleDocument>)?.Record;
+        }
+
+         async Task<ICommandResult> ProcessAsync(ICommand command)
         {
             return await _database.HandleAsync(command);
         }

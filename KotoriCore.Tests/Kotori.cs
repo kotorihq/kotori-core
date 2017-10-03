@@ -11,6 +11,8 @@ using Oogi2;
 using Oogi2.Queries;
 using System.Threading.Tasks;
 using Sushi2;
+using Newtonsoft.Json.Linq;
+using System;
 
 namespace KotoriCore.Tests
 {
@@ -43,7 +45,7 @@ namespace KotoriCore.Tests
 
             try
             {
-                await _kotori.ProcessAsync(new CreateProject("dev", "Nenecchi", "nenecchi/stable", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+                await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi/stable", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
             }
             catch
             {
@@ -74,28 +76,28 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public async Task FailToCreateProjectFirst()
         {
-            await _kotori.ProcessAsync(new CreateProject("", "", "", null));
+            await _kotori.CreateProjectAsync("", "", "", null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public async Task FailToCreateProjectSecond()
         {
-            await _kotori.ProcessAsync(new CreateProject("foo", "bar", "x x", null));
+            await _kotori.CreateProjectAsync("foo", "bar", "x x", null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public async Task FailToCreateProjectBadKeys()
         {
-            await _kotori.ProcessAsync(new CreateProject("foo", "bar", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) }));
+            await _kotori.CreateProjectAsync("foo", "bar", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Project has been deleted even if it does not exist.")]
         public async Task FailToDeleteProject()
         {
-            await _kotori.ProcessAsync(new DeleteProject("dev", "nothing"));
+            await _kotori.DeleteProjectAsync("dev", "nothing");
         }
 
         [TestMethod]
@@ -116,31 +118,34 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task Complex()
         {
-            var result = await _kotori.ProcessAsync(new CreateProject("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") }));
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
 
-            Assert.AreEqual("Project has been created.", result.Message);
+            Assert.AreEqual("Project has been created.", result);
 
-            var results = await _kotori.ProcessAsync(new GetProjects("dev"));
-            var projects = results.ToDataList<Domains.SimpleProject>();
+            var projects = await _kotori.GetProjectsAsync("dev");
 
             Assert.AreEqual(2, projects.Count());
-            Assert.AreEqual("Nenecchi", projects[0].Name);
+            Assert.AreEqual("Nenecchi", projects.First().Name);
 
-            result = await _kotori.ProcessAsync(new DeleteProject("dev", "nenecchi/main"));
+            result = await _kotori.DeleteProjectAsync("dev", "nenecchi/main");
 
-            Assert.AreEqual("Project has been deleted.", result.Message);
+            Assert.AreEqual("Project has been deleted.", result);
 
-            results = await _kotori.ProcessAsync(new GetProjects("dev"));
-            projects = results.ToDataList<Domains.SimpleProject>();
+            projects = await _kotori.GetProjectsAsync("dev");
 
             Assert.AreEqual(1, projects.Count());
 
             var c = GetContent("_content/movie/matrix.md");
-            await _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi/stable", "_content/movie/matrix.md", c));
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi/stable", "_content/movie/matrix.md", c);
 
-            var d = AsyncTools.RunSync(() => _kotori.GetDocumentAsync("dev", "nenecchi/main", "_content/movie/matrix.md"));
+            var d = await _kotori.GetDocumentAsync("dev", "nenecchi/stable", "_content/movie/matrix.md");
 
             Assert.AreEqual("_content/movie/matrix.md", d.Identifier);
+            Assert.AreEqual("matrix", d.Slug);
+            //Assert.AreEqual(new JObject(), (d.Meta as JObject));
+            Assert.AreEqual(c.Substring(c.LastIndexOf("---") + 4) + Environment.NewLine, d.Content);
+            Assert.AreEqual(new DateTime(2017, 3, 3), d.Date);
+            Assert.IsNotNull(d.Modified);
         }
 
         static string GetContent(string path)

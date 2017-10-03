@@ -10,6 +10,7 @@ namespace KotoriCore.Commands
     public class CommandResult<T> : ICommandResult
     {
         IEnumerable<T> _data { get; set; }
+        T _record { get; set; }
 
         /// <summary>
         /// Gets or sets the message.
@@ -22,6 +23,12 @@ namespace KotoriCore.Commands
         /// </summary>
         /// <value>The type of the element.</value>
         public Type ElementType => typeof(T);        
+
+        /// <summary>
+        /// Gets the record.
+        /// </summary>
+        /// <value>The record.</value>
+        public T Record => _record;
 
         /// <summary>
         /// Gets the data.
@@ -50,10 +57,10 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CommandResult`1"/> class.
         /// </summary>
-        /// <param name="data">Data.</param>
-        public CommandResult(T data)
+        /// <param name="record">Record.</param>
+        public CommandResult(T record)
         {
-            _data = new List<T> { data };
+            _record = record;
         }
     }    
 }

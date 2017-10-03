@@ -59,26 +59,31 @@ namespace KotoriCore.Cli
             
             // --
 
-            var result = AsyncTools.RunSync(() => _kotori.ProcessAsync(new CreateProject("dev", "Nenecchi", "nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") })));
+            var result = _kotori.CreateProject("dev", "Nenecchi", "nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+
+            var projects = _kotori.GetProjects("dev");
 
             string id;
             string c;
 
             id = "_content/movie/matrix.md";
             c = GetContent(id);
-            AsyncTools.RunSync(() => _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c)));
+            _kotori.UpsertDocument("dev", "nenecchi", id, c);
 
             id = "_content/tv/2017-05-06-flying-witch.md";
             c = GetContent(id);
-            AsyncTools.RunSync(() => _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c)));
+            _kotori.UpsertDocument("dev", "nenecchi", id, c);
 
             id = "_content/tv/2017-08-12-flip-flappers.md";
             c = GetContent(id);
-            AsyncTools.RunSync(() => _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c)));
+            _kotori.UpsertDocument("dev", "nenecchi", id, c);
 
             id = "_content/tv/2017-08-12-flip-flappers.md";
             c = GetContent(id);
-            AsyncTools.RunSync(() => _kotori.ProcessAsync(new UpsertDocument("dev", "nenecchi", id, c)));
+            _kotori.UpsertDocument("dev", "nenecchi", id, c);
+
+            var d = _kotori.GetDocument("dev", "nenecchi", "_content/tv/2017-08-12-flip-flappers.md");
+            System.Console.WriteLine(d);
         }
     }
 }

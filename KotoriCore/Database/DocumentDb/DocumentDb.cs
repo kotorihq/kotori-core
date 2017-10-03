@@ -168,7 +168,7 @@ namespace KotoriCore.Database.DocumentDb
             (
                 new SimpleDocument
                 (
-                    d.Identifier,
+                    new Uri(d.Identifier).ToKotoriIdentifier(),
                     d.Slug,
                     d.Meta,
                     d.Content,
@@ -255,15 +255,15 @@ namespace KotoriCore.Database.DocumentDb
         async Task<Entities.DocumentType> FindDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId)
         {
             var q = new DynamicQuery
-                (
-                    "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
-                    new
-                    {
-                        entity = DocumentTypeEntity,
-                        instance,
-                        projectId = projectId.ToString(),
-                        identifier = documentTypeId.ToString()
-                    }
+            (
+                "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
+                new
+                {
+                    entity = DocumentTypeEntity,
+                    instance,
+                    projectId = projectId.ToString(),
+                    identifier = documentTypeId.ToString()
+                }
             );
 
             var documentType = await _repoDocumentType.GetFirstOrDefaultAsync(q);
@@ -274,15 +274,15 @@ namespace KotoriCore.Database.DocumentDb
         async Task<Entities.Document> FindDocumentAsync(string instance, Uri projectId, Uri documentId)
         {
             var q = new DynamicQuery
-                (
-                    "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
-                    new
-                    {
-                        entity = DocumentEntity,
-                        instance,
-                        projectId,
-                        identifier = documentId.ToString()
-                    }
+            (
+                "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
+                new
+                {
+                    entity = DocumentEntity,
+                    instance,
+                    projectId = projectId.ToString(),
+                    identifier = documentId.ToString()
+                }
             );
 
             var document = await _repoDocument.GetFirstOrDefaultAsync(q);
