@@ -3,7 +3,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>kotori-core</PackageId>
     <Title>kotori core</Title>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Authors>frohikey</Authors>
     <PackageLicenseUrl>https://github.com/kotorihq/kotori-core/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>Goto10</Owners>
@@ -14,6 +14,7 @@
     <Copyright>Copyright (c) 2017 Goto10 s.r.o.</Copyright>
     <Company>Goto10</Company>
     <RepositoryUrl>https://github.com/kotorihq/kotori-core</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/kotorihq/kotori-core/master/KotoriCore/kotori-icon.png</PackageIconUrl>    
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Configurations\" />
