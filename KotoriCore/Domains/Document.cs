@@ -57,10 +57,10 @@ namespace KotoriCore.Domains
         public string Content { get; set; }
 
         /// <summary>
-        /// Gets or sets the date.
+        /// Gets or sets the date of creation.
         /// </summary>
-        /// <value>The date.</value>
-        public DateTime? Date { get; set; }
+        /// <value>The date of creation.</value>
+        public DateTime? Created { get; set; }
 
         /// <summary>
         /// Gets or sets the date of last modification.

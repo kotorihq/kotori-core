@@ -73,6 +73,10 @@ namespace KotoriCore.Database.DocumentDb
 
                 return result;
             }
+            catch (KotoriDocumentException)
+            {
+                throw;
+            }
             catch (KotoriValidationException)
             {
                 throw;

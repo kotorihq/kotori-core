@@ -5,12 +5,10 @@ using KotoriCore.Commands;
 using KotoriCore.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using KotoriCore.Helpers;
 using System.Net;
 using Oogi2;
 using Oogi2.Queries;
 using System.Threading.Tasks;
-using Sushi2;
 using Newtonsoft.Json.Linq;
 using System;
 
@@ -153,6 +151,17 @@ namespace KotoriCore.Tests
             Assert.AreEqual(c.Substring(c.LastIndexOf("---") + 4).Trim(), d.Content.Trim());
             Assert.AreEqual(new DateTime(2017, 3, 3), d.Date);
             Assert.IsNotNull(d.Modified);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Dupe slug was inappropriately validated as ok.")]
+        public async Task DupeSlugs()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dupe", null);
+
+            var c = GetContent("_content/movie/matrix.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi/stable", "_content/movie2/matrix.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi/stable", "_content/movie3/matrix.md", c);
         }
 
         static string GetContent(string path)
