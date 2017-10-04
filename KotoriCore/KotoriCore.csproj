@@ -29,6 +29,7 @@
     <Folder Include="Documents\Deserializers\" />
     <Folder Include="Search\" />
     <Folder Include="Commands\Document\" />
+    <Folder Include="Database\DocumentDb\Commands\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.3.0" />
