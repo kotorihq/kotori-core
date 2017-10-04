@@ -142,8 +142,15 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual("_content/movie/matrix.md", d.Identifier);
             Assert.AreEqual("matrix", d.Slug);
-            //Assert.AreEqual(new JObject(), (d.Meta as JObject));
-            Assert.AreEqual(c.Substring(c.LastIndexOf("---") + 4) + Environment.NewLine, d.Content);
+
+            var meta = (d.Meta as JObject);
+
+            Assert.AreEqual(4, meta.PropertyValues().LongCount());
+            Assert.AreEqual("The Matrix", meta.Property("title").Value);
+            Assert.AreEqual(10, meta.Property("rating").Value);
+            Assert.AreEqual(1999, meta.Property("from").Value);
+            Assert.AreEqual("http://www.imdb.com/title/tt5621006", meta.Property("imdb").Value);
+            Assert.AreEqual(c.Substring(c.LastIndexOf("---") + 4).Trim(), d.Content.Trim());
             Assert.AreEqual(new DateTime(2017, 3, 3), d.Date);
             Assert.IsNotNull(d.Modified);
         }
