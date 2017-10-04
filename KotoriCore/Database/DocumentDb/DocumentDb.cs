@@ -17,7 +17,7 @@ namespace KotoriCore.Database.DocumentDb
     /// <summary>
     /// Document Db.
     /// </summary>
-    public class DocumentDb : IDatabase
+    class DocumentDb : IDatabase
     {
         readonly Repository<Entities.Project> _repoProject;
         readonly Repository<Entities.DocumentType> _repoDocumentType;
@@ -25,9 +25,9 @@ namespace KotoriCore.Database.DocumentDb
 
         Connection _connection;
 
-        public const string ProjectEntity = "kotori/project";
-        public const string DocumentTypeEntity = "kotori/document-type";
-        public const string DocumentEntity = "kotori/document";
+        internal const string ProjectEntity = "kotori/project";
+        internal const string DocumentTypeEntity = "kotori/document-type";
+        internal const string DocumentEntity = "kotori/document";
 
         public DocumentDb(DocumentDbConfiguration configuration)
         {
@@ -42,7 +42,7 @@ namespace KotoriCore.Database.DocumentDb
         /// </summary>
         /// <returns>Command result.</returns>
         /// <param name="command">Command.</param>
-        public async Task<ICommandResult> HandleAsync(ICommand command)
+        async Task<ICommandResult> IDatabase.HandleAsync(ICommand command)
         {
             var message = $"DocumentDb failed when handling command {command.GetType()}.";
             ICommandResult result = null;
@@ -82,7 +82,7 @@ namespace KotoriCore.Database.DocumentDb
             throw new KotoriException(message);
         }
 
-        public async Task<CommandResult<string>> HandleAsync(CreateProject command)
+        async Task<CommandResult<string>> HandleAsync(CreateProject command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
 
@@ -96,7 +96,7 @@ namespace KotoriCore.Database.DocumentDb
             return new CommandResult<string>("Project has been created.");
         }
 
-        public async Task<CommandResult<SimpleProject>> HandleAsync(GetProjects command)
+        async Task<CommandResult<SimpleProject>> HandleAsync(GetProjects command)
         {
             var q = new DynamicQuery
                 (
@@ -114,7 +114,7 @@ namespace KotoriCore.Database.DocumentDb
             return new CommandResult<SimpleProject>(domainProjects.Select(d => new SimpleProject(d.Name, d.Identifier)));
         }
 
-        public async Task<CommandResult<string>> HandleAsync(ProjectAddKey command)
+        async Task<CommandResult<string>> HandleAsync(ProjectAddKey command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
 
@@ -137,7 +137,7 @@ namespace KotoriCore.Database.DocumentDb
             return new CommandResult<string>("Project key has been added.");
         }
 
-        public async Task<CommandResult<string>> HandleAsync(DeleteProject command)
+        async Task<CommandResult<string>> HandleAsync(DeleteProject command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
 
@@ -153,7 +153,7 @@ namespace KotoriCore.Database.DocumentDb
             return new CommandResult<string>("Project has been deleted.");
         }
 
-        public async Task<CommandResult<SimpleDocument>> HandleAsync(GetDocument command)
+        async Task<CommandResult<SimpleDocument>> HandleAsync(GetDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
 
@@ -178,7 +178,7 @@ namespace KotoriCore.Database.DocumentDb
             );
         }
 
-        public async Task<CommandResult<string>> HandleAsync(UpsertDocument command)
+        async Task<CommandResult<string>> HandleAsync(UpsertDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
             var project = await FindProjectAsync(command.Instance, projectUri);
@@ -229,6 +229,49 @@ namespace KotoriCore.Database.DocumentDb
             }
 
             throw new KotoriException("Unknown document type.");
+        }
+
+        async Task<Entities.DocumentType> UpsertDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId, dynamic meta)
+        {
+            var project = await FindProjectAsync(instance, projectId);
+
+            if (project == null)
+                throw new KotoriValidationException("Project does not exist.");
+
+            var documentType = await FindDocumentTypeAsync(instance, projectId, documentTypeId);
+
+            if (documentType == null)
+            {
+                var docType = documentTypeId.ToDocumentType();
+
+                if (docType == null)
+                    throw new KotoriException($"Document type could not be resolved for {documentTypeId}.");
+
+                var indexes = new List<DocumentTypeIndex>();
+                indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
+
+                var dt = new Entities.DocumentType
+                (
+                     instance,
+                     documentTypeId.ToString(),
+                     projectId.ToString(),
+                     documentTypeId.ToDocumentType().Value,
+                     indexes
+                );
+
+                dt = await _repoDocumentType.CreateAsync(dt);
+
+                return dt;
+            }
+            else
+            {
+                var indexes = documentType.Indexes ?? new List<DocumentTypeIndex>();
+                documentType.Indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
+
+                await _repoDocumentType.ReplaceAsync(documentType);
+
+                return documentType;
+            }
         }
 
         async Task<Entities.Project> FindProjectAsync(string instance, Uri projectUri)
@@ -288,49 +331,6 @@ namespace KotoriCore.Database.DocumentDb
             var document = await _repoDocument.GetFirstOrDefaultAsync(q);
 
             return document;
-        }
-
-        async Task<Entities.DocumentType> UpsertDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId, dynamic meta)
-        {
-            var project = await FindProjectAsync(instance, projectId);
-
-            if (project == null)
-                throw new KotoriValidationException("Project does not exist.");
-
-            var documentType = await FindDocumentTypeAsync(instance, projectId, documentTypeId);
-
-            if (documentType == null)
-            {
-                var docType = documentTypeId.ToDocumentType();
-
-                if (docType == null)
-                    throw new KotoriException($"Document type could not be resolved for {documentTypeId}.");
-
-                var indexes = new List<DocumentTypeIndex>();
-                indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
-
-                var dt = new Entities.DocumentType
-                (
-                     instance,
-                     documentTypeId.ToString(),
-                     projectId.ToString(),
-                     documentTypeId.ToDocumentType().Value,
-                     indexes
-                );
-
-                dt = await _repoDocumentType.CreateAsync(dt);
-
-                return dt;
-            }
-            else
-            {
-                var indexes = documentType.Indexes ?? new List<DocumentTypeIndex>();
-                documentType.Indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
-
-                await _repoDocumentType.ReplaceAsync(documentType);
-
-                return documentType;
-            }
         }
     }
 }
