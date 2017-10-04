@@ -5,10 +5,6 @@ using KotoriCore.Exceptions;
 using System;
 using System.Linq;
 using Oogi2.Queries;
-using System.Collections.Generic;
-using KotoriCore.Domains;
-using KotoriCore.Helpers;
-using KotoriCore.Search;
 using System.Threading.Tasks;
 
 namespace KotoriCore.Database.DocumentDb
@@ -68,6 +64,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(upsertDocument);
                 else if (command is GetDocument getDocument)
                     result = await HandleAsync(getDocument);
+                else if (command is FindDocuments findDocuments)
+                    result = await HandleAsync(findDocuments);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 

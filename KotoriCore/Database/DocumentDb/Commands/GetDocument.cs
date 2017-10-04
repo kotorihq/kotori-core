@@ -28,7 +28,7 @@ namespace KotoriCore.Database.DocumentDb
                     d.Slug,
                     d.Meta,
                     d.Content,
-                    d.Date.DateTime,
+                    d.Created.DateTime,
                     d.Modified.DateTime
                 )
             );

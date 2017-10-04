@@ -50,7 +50,7 @@ namespace KotoriCore.Tests
             }
         }
 
-        [TestCleanup]
+        //[TestCleanup]
         public void Cleanup()
         {
             var repo = new Repository(_con);
@@ -160,8 +160,22 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dupe", null);
 
             var c = GetContent("_content/movie/matrix.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi/stable", "_content/movie2/matrix.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi/stable", "_content/movie3/matrix.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dupe", "_content/movie2/matrix.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dupe", "_content/movie3/matrix.md", c);
+        }
+
+        [TestMethod]
+        public async Task FindDocuments()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-find", null);
+
+            var c = GetContent("_content/tv/2017-05-06-flying-witch.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-05-06-flying-witch.md", c);
+
+            c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c);
+
+            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null);
         }
 
         static string GetContent(string path)

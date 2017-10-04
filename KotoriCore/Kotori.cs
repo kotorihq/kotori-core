@@ -180,7 +180,42 @@ namespace KotoriCore
             return (await ProcessAsync(new GetDocument(instance, projectId, identifier)) as CommandResult<SimpleDocument>)?.Record;
         }
 
-         async Task<ICommandResult> ProcessAsync(ICommand command)
+        /// <summary>
+        /// Finds the documents.
+        /// </summary>
+        /// <returns>The documents.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="top">Top.</param>
+        /// <param name="select">Select.</param>
+        /// <param name="filter">Filter.</param>
+        /// <param name="orderBy">Order by.</param>
+        public IEnumerable<SimpleDocument> FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy)
+        {
+            return AsyncTools.RunSync(() => FindDocumentsAsync(instance, projectId, documentTypeId, top, select, filter, orderBy));
+        }
+
+        /// <summary>
+        /// Finds the documents.
+        /// </summary>
+        /// <returns>The documents.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="top">Top.</param>
+        /// <param name="select">Select.</param>
+        /// <param name="filter">Filter.</param>
+        /// <param name="orderBy">Order by.</param>
+        public async Task<IEnumerable<SimpleDocument>> FindDocumentsAsync(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy)
+        {
+            var result = await ProcessAsync(new FindDocuments(instance, projectId, documentTypeId, top, select, filter, orderBy)) as CommandResult<SimpleDocument>;
+            var documents = result.Data as IEnumerable<SimpleDocument>;
+
+            return documents;
+        }
+
+        async Task<ICommandResult> ProcessAsync(ICommand command)
         {
             return await _database.HandleAsync(command);
         }

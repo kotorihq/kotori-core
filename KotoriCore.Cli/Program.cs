@@ -41,6 +41,10 @@ namespace KotoriCore.Cli
                     appSettings["Kotori:DocumentDb:Collection"]
                 );
 
+            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv/", null, null, null, null);
+            return;
+            // !!!!!!!!!!
+
             var q = new DynamicQuery
                 (
                     "select c.id from c where startswith(c.entity, @entity) and c.instance = @instance",
@@ -58,6 +62,8 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
             
             // --
+
+
 
             var result = _kotori.CreateProject("dev", "Nenecchi", "nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
 
