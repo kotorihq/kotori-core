@@ -74,7 +74,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// </summary>
         /// <value>The date.</value>
         [PropertyMapping(Shushu.Enums.IndexField.Date0)]
-        public Stamp Created { get; set; }
+        public Stamp Date { get; set; }
 
         /// <summary>
         /// Gets or sets the modification.
@@ -90,7 +90,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
         {
         }
 
-        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime? created)
+        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime? date)
         {
             Instance = instance;
             ProjectId = projectId;
@@ -100,7 +100,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Slug = slug;
             Meta = meta;
             Content = content;
-            Created = created.HasValue ? new Stamp(created.Value) : null;
+            Date = date.HasValue ? new Stamp(date.Value) : null;
             Modified = new Stamp();
         }
     }
