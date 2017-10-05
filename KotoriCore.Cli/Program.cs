@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using KotoriCore.Commands;
@@ -41,7 +42,23 @@ namespace KotoriCore.Cli
                     appSettings["Kotori:DocumentDb:Collection"]
                 );
 
+
+            var cxxx = @"hello";
+            var m = @"{ ""name"": ""gremlin"",
+""age"": 3,
+""fun"": true,
+""bwh"": { b: 90, w: 58, h: 88 } }
+";
+            var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + cxxx;
+
+            var md = new Markdown("_content/foo/.2016-03-04-bar.md", all);
+
+            var resultx = md.Process();
+
+            var mdr = resultx as MarkdownResult;
+
             return;
+
             // !!!!!!!!!!
 
             var q = new DynamicQuery

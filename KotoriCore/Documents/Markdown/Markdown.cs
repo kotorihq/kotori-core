@@ -135,6 +135,7 @@ namespace KotoriCore.Documents
             }
 
             markdownResult.Hash = markdownResult.ToHash();
+            markdownResult.Date = markdownResult.Identifier.ToDateTime(null);
 
             ProcessMeta(markdownResult);
 

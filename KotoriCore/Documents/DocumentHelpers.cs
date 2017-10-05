@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
@@ -45,7 +46,8 @@ namespace KotoriCore.Documents
             var now = DateTime.Now.Date;
             var dt = now;
 
-            var r = new Regex(@"^.*/(?<year>\d{4})-(?<month>\d{1,2})-(?<date>\d{1,2})-.*$", RegexOptions.Singleline);
+            var prefix = "[" + (Constants.DraftPrefixes.Select(pr => pr.Replace(".", @"\."))).ToImplodedString("") + "]";
+            var r = new Regex(@"^.*/" + prefix + @"?(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})-.*$", RegexOptions.Singleline);
 
             var match = r.Match(identifier);
 

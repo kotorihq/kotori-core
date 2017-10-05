@@ -6,6 +6,9 @@ using Newtonsoft.Json.Linq;
 
 namespace KotoriCore.Tests
 {
+    // TODO: test slugs
+    // TODO: test invalid meta fields $foo or something
+    // TODO: totally empty file
     [TestClass]
     public class Markdown
     {
@@ -109,6 +112,87 @@ cowboy
             Assert.AreEqual(true, ((JValue)mdr.Meta.fun).Value);
             Assert.AreEqual(c, mdr.Content);
             Assert.AreEqual(Helpers.Enums.FrontMatterType.Json, mdr.FrontMatterType);
+        }
+
+        [TestMethod]
+        public void NoDate()
+        {
+            var c = @"hello";
+            var m = @"{ ""name"": ""gremlin"",
+""age"": 3,
+""fun"": true,
+""bwh"": { b: 90, w: 58, h: 88 } }
+";
+            var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
+
+            var md = new Documents.Markdown("_content/foo/bar.md", all);
+
+            var result = md.Process();
+
+            var mdr = result as MarkdownResult;
+
+            Assert.AreEqual(DateTime.Now.Date, mdr.Date);
+        }
+
+        [TestMethod]
+        public void DateInMeta()
+        {
+            var c = @"hello";
+            var m = @"{ ""name"": ""gremlin"",
+""age"": 3,
+""fun"": true,
+""$date"": ""2011-11-23"",
+""bwh"": { b: 90, w: 58, h: 88 } }
+";
+            var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
+
+            var md = new Documents.Markdown("_content/foo/2016-03-04-bar.md", all);
+
+            var result = md.Process();
+
+            var mdr = result as MarkdownResult;
+
+            Assert.AreEqual(new DateTime(2011, 11, 23).Date, mdr.Date);
+        }
+
+        [TestMethod]
+        public void DateInIdentifier()
+        {
+            var c = @"hello";
+            var m = @"{ ""name"": ""gremlin"",
+""age"": 3,
+""fun"": true,
+""bwh"": { b: 90, w: 58, h: 88 } }
+";
+            var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
+
+            var md = new Documents.Markdown("_content/foo/2016-03-04-bar.md", all);
+
+            var result = md.Process();
+
+            var mdr = result as MarkdownResult;
+
+            Assert.AreEqual(new DateTime(2016, 03, 04).Date, mdr.Date);
+        }
+
+        [TestMethod]
+        public void DateInDraft()
+        {
+            var c = @"hello";
+            var m = @"{ ""name"": ""gremlin"",
+""age"": 3,
+""fun"": true,
+""bwh"": { b: 90, w: 58, h: 88 } }
+";
+            var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
+
+            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", all);
+
+            var result = md.Process();
+
+            var mdr = result as MarkdownResult;
+
+            Assert.AreEqual(new DateTime(2016, 03, 04).Date, mdr.Date);
         }
     }
 }
