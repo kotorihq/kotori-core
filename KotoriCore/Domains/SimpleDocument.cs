@@ -32,13 +32,13 @@ namespace KotoriCore.Domains
         /// Gets or sets the date.
         /// </summary>
         /// <value>The date.</value>
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
         /// <summary>
         /// Gets or sets the date of last modification.
         /// </summary>
         /// <value>The date of last modification.</value>
-        public DateTime Modified { get; set; }
+        public DateTime? Modified { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocument"/> class.
@@ -56,7 +56,7 @@ namespace KotoriCore.Domains
         /// <param name="content">Content.</param>
         /// <param name="date">Date.</param>
         /// <param name="modified">Modified.</param>
-        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime date, DateTime modified)
+        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime? date, DateTime? modified)
         {
             Identifier = identifier;
             Slug = slug;

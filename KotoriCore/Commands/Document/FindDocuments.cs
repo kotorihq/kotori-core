@@ -58,6 +58,8 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(select))
                 Select = "*";
+            else
+                Select = select;
 
             Top = top;
             Filter = filter;

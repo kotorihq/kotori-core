@@ -176,6 +176,22 @@ namespace KotoriCore.Tests
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null);
+
+            Assert.AreEqual(2, docs.Count());
+            Assert.AreEqual("_content/tv/2017-05-06-flying-witch.md", docs.ToList()[0].Identifier);
+            Assert.AreEqual("_content/tv/2017-08-12-flip-flappers.md", docs.ToList()[1].Identifier);
+
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, null);
+            Assert.AreEqual(1, docs.Count());
+
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, "c.slug", null, "c.meta.rating asc");
+            Assert.AreEqual(1, docs.Count());
+            Assert.AreEqual(null, docs.First().Identifier);
+            Assert.AreEqual("flip-flappers", docs.First().Slug);
+
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null);
+            Assert.AreEqual(1, docs.Count());
+            Assert.AreEqual("flip-flappers", docs.First().Slug);
         }
 
         static string GetContent(string path)

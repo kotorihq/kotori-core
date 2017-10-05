@@ -16,9 +16,9 @@ namespace KotoriCore.Database.DocumentDb.Helpers
             sql += " (c.entity = '" +
                 DocumentDb.DocumentEntity +
                 "' and c.projectId = '" +
-                project.ToString() +
+                project +
                 "' and c.documentTypeId = '" +
-                documentType.ToString() +
+                documentType +
                 "' and c.instance = '" +
                 instance +
                 "')";
