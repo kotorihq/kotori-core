@@ -84,13 +84,33 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public Stamp Modified { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this
+        /// <see cref="T:KotoriCore.Database.DocumentDb.Entities.Document"/> is draft.
+        /// </summary>
+        /// <value><c>true</c> if draft; otherwise, <c>false</c>.</value>
+        public bool Draft { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.Document"/> class.
         /// </summary>
         public Document()
         {
         }
 
-        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime? date)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.Document"/> class.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="hash">Hash.</param>
+        /// <param name="slug">Slug.</param>
+        /// <param name="meta">Meta.</param>
+        /// <param name="content">Content.</param>
+        /// <param name="date">Date.</param>
+        /// <param name="draft">If set to <c>true</c> draft.</param>
+        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime? date, bool draft)
         {
             Instance = instance;
             ProjectId = projectId;

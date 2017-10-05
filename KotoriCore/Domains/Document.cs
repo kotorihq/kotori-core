@@ -67,5 +67,11 @@ namespace KotoriCore.Domains
         /// </summary>
         /// <value>The date of last modification.</value>
         public DateTime Modified { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:KotoriCore.Domains.Document"/> is draft.
+        /// </summary>
+        /// <value><c>true</c> if draft; otherwise, <c>false</c>.</value>
+        public bool Draft { get; set; }
     }
 }

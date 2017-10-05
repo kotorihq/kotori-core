@@ -27,5 +27,14 @@ namespace KotoriCore.Tests
         {
             Assert.AreEqual(new Uri("kotori://something-sweet/"), "something-sweet".ToKotoriUri());
         }
+
+        [TestMethod]
+        public void Drafts()
+        {
+            Assert.AreEqual(false, Router.ToDraftFlag(new Uri("kotori://_content/tv/2017-08-12-flip-flappers.md")));
+            Assert.AreEqual(true, Router.ToDraftFlag(new Uri("kotori://_content/tv/_2017-08-12-flip-flappers.md")));
+            Assert.AreEqual(true, Router.ToDraftFlag(new Uri("kotori://_content/tv/.2017-08-12-flip-flappers.md")));
+            Assert.AreEqual(true, Router.ToDraftFlag(new Uri("kotori://_content/tv/.2017-08-12-flip-flappers.md/")));
+        }
     }
 }

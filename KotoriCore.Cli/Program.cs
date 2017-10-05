@@ -41,7 +41,6 @@ namespace KotoriCore.Cli
                     appSettings["Kotori:DocumentDb:Collection"]
                 );
 
-            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv/", null, null, "c.meta.rating = 8", null);
             return;
             // !!!!!!!!!!
 

@@ -41,6 +41,12 @@ namespace KotoriCore.Domains
         public DateTime? Modified { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:KotoriCore.Domains.SimpleDocument"/> is draft.
+        /// </summary>
+        /// <value><c>true</c> if draft; otherwise, <c>false</c>.</value>
+        public bool? Draft { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocument"/> class.
         /// </summary>
         public SimpleDocument()
@@ -56,7 +62,8 @@ namespace KotoriCore.Domains
         /// <param name="content">Content.</param>
         /// <param name="date">Date.</param>
         /// <param name="modified">Modified.</param>
-        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime? date, DateTime? modified)
+        /// <param name="draft">If set to <c>true</c> draft.</param>
+        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime? date, DateTime? modified, bool? draft)
         {
             Identifier = identifier;
             Slug = slug;
@@ -64,6 +71,7 @@ namespace KotoriCore.Domains
             Content = content;
             Date = date;
             Modified = modified;
+            Draft = draft;
         }
     }
 }

@@ -37,7 +37,8 @@ namespace KotoriCore.Database.DocumentDb
                     d.Meta,
                     d.Content,
                     d.Date?.DateTime,
-                    d.Modified?.DateTime
+                    d.Modified?.DateTime,
+                    d.Draft
                 ));
 
             return new CommandResult<SimpleDocument>(simpleDocuments);

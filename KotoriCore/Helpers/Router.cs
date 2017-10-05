@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using KotoriCore.Exceptions;
 
 namespace KotoriCore.Helpers
@@ -11,7 +12,7 @@ namespace KotoriCore.Helpers
         const string UriScheme = "kotori://";
 
         /// <summary>
-        /// Convert id to kotori uri.
+        /// Converts id to kotori uri.
         /// </summary>
         /// <returns>The kotori URI.</returns>
         /// <param name="uri">URI.</param>
@@ -46,7 +47,7 @@ namespace KotoriCore.Helpers
         }
 
         /// <summary>
-        /// Tos the kotori URI to identifier.
+        /// Converts the kotori URI to identifier.
         /// </summary>
         /// <returns>The kotori identifier.</returns>
         /// <param name="uri">URI.</param>
@@ -64,6 +65,26 @@ namespace KotoriCore.Helpers
             u = u.RemoveTrailingSlashes(true, true);
 
             return u;
+        }
+
+        /// <summary>
+        /// Converts the identifier to draft flag.
+        /// </summary>
+        /// <returns>The draft flag.</returns>
+        /// <param name="identifier">The identifier.</param>
+        internal static bool ToDraftFlag(this Uri identifier)
+        {
+            string filename = identifier.Segments[identifier.Segments.Length - 1];
+
+            if (filename != null)
+            {
+                if (Constants.DraftPrefixes.Any(prefix => filename.StartsWith(prefix, StringComparison.Ordinal)))
+                    return true;
+
+                return false;
+            }
+
+            throw new KotoriException($"Flag draft cannot be determinded from {identifier}.");
         }
     }
 }
