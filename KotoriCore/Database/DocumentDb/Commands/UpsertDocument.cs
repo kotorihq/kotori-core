@@ -21,8 +21,7 @@ namespace KotoriCore.Database.DocumentDb
 
             IDocumentResult documentResult = null;
 
-            if (docType == Enums.DocumentType.Drafts ||
-                docType == Enums.DocumentType.Content)
+            if (docType == Enums.DocumentType.Content)
             {
                 var document = new Markdown(command.Identifier, command.Content);
                 documentResult = document.Process();

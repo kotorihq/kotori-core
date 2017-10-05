@@ -26,17 +26,13 @@
         public enum DocumentType
         {
             /// <summary>
-            /// The drafts.
-            /// </summary>
-            Drafts = 0,
-            /// <summary>
             /// The content.
             /// </summary>
-            Content = 1,
+            Content = 0,
             /// <summary>
             /// The data.
             /// </summary>
-            Data = 2
+            Data = 1
         }
 
         /// <summary>
