@@ -13,7 +13,7 @@ namespace KotoriCore.Helpers
     public static class Extensions
     {
         /// <summary>
-        /// Convers comman result to the data list.
+        /// Convers common result to the data list.
         /// </summary>
         /// <returns>The data list.</returns>
         /// <param name="result">The command result.</param>
