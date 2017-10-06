@@ -3,10 +3,7 @@ using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
-    /// <summary>
-    /// Get document.
-    /// </summary>
-    public class FindDocuments : Command
+    public class CountDocuments : Command
     {
         /// <summary>
         /// Gets the instance.
@@ -27,53 +24,24 @@ namespace KotoriCore.Commands
         public string DocumentTypeId { get; }
 
         /// <summary>
-        /// Gets the selected fields.
-        /// </summary>
-        /// <value>The selected fields.</value>
-        public string Select { get; }
-
-        /// <summary>
-        /// Gets the top (number of documents).
-        /// </summary>
-        /// <value>The top (number of documents).</value>
-        public int? Top { get; }
-
-        /// <summary>
         /// Gets the filter (where condition(s)).
         /// </summary>
         /// <value>The filter (where condition(s)).</value>
         public string Filter { get; }
 
         /// <summary>
-        /// Gets the order by.
-        /// </summary>
-        /// <value>The order by.</value>
-        public string OrderBy { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.FindDocuments"/> class.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.Document.CountDocuments"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        /// <param name="top">Top.</param>
-        /// <param name="select">Select.</param>
         /// <param name="filter">Filter.</param>
-        /// <param name="orderBy">Order by.</param>
-        public FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy)
+        public CountDocuments(string instance, string projectId, string documentTypeId, string filter)
         {
             Instance = instance;
             ProjectId = projectId;
             DocumentTypeId = documentTypeId;
-
-            if (string.IsNullOrEmpty(select))
-                Select = "*";
-            else
-                Select = select;
-
-            Top = top;
             Filter = filter;
-            OrderBy = orderBy;
         }
 
         /// <summary>
@@ -82,8 +50,14 @@ namespace KotoriCore.Commands
         /// <returns>The validation results.</returns>
         public override IEnumerable<ValidationResult> Validate()
         {
-            // TODO
-            return null;
+            if (string.IsNullOrEmpty(Instance))
+                yield return new ValidationResult("Instance must be set.");
+
+            if (string.IsNullOrEmpty(ProjectId))
+                yield return new ValidationResult("Project Id must be set.");
+
+            if (string.IsNullOrEmpty(DocumentTypeId))
+                yield return new ValidationResult("Document type must be set.");
         }
     }
 }

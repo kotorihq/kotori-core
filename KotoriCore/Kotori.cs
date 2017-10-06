@@ -239,6 +239,32 @@ namespace KotoriCore
             return (await ProcessAsync(new DeleteDocument(instance, projectId, identifier)) as CommandResult<string>)?.Message;
         }
 
+        /// <summary>
+        /// Counts the documents.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="filter">Document filter.</param>
+        public long CountDocuments(string instance, string projectId, string documentTypeId, string filter)
+        {
+            return AsyncTools.RunSync(() => CountDocumentsAsync(instance, projectId, documentTypeId, filter));
+        }
+
+        /// <summary>
+        /// Counts the documents.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="filter">Document filter.</param>
+        public async Task<long> CountDocumentsAsync(string instance, string projectId, string documentTypeId, string filter)
+        {
+            var result = await ProcessAsync(new CountDocuments(instance, projectId, documentTypeId, filter)) as CommandResult<long>;
+
+            return result.Record;
+        }
+
         async Task<ICommandResult> ProcessAsync(ICommand command)
         {
             return await _database.HandleAsync(command);

@@ -243,6 +243,25 @@ namespace KotoriCore.Tests
             _kotori.DeleteDocument("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witchxxx.md");
         }
 
+        [TestMethod]
+        public async Task CountDocuments()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-count", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flip-flappers.md", c);
+
+            c = GetContent("_content/tv/2017-05-06-flying-witch.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flying-witch.md", c);
+
+            var docs = _kotori.CountDocuments("dev", "nenecchi-count", "_content/tv/", null);
+
+            Assert.AreEqual(2, docs);
+
+            var docs2 = _kotori.CountDocuments("dev", "nenecchi-count", "_content/tv/", "c.meta.rating in (8)");
+            Assert.AreEqual(1, docs2);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

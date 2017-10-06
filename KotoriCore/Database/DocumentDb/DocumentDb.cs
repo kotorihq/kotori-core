@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using Oogi2.Queries;
 using System.Threading.Tasks;
+using static KotoriCore.Database.DocumentDb.Helpers.DocumentDbHelpers;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -17,6 +18,7 @@ namespace KotoriCore.Database.DocumentDb
         readonly Repository<Entities.Project> _repoProject;
         readonly Repository<Entities.DocumentType> _repoDocumentType;
         readonly Repository<Entities.Document> _repoDocument;
+        readonly Repository<Count> _repoDocumentCount;
 
         Connection _connection;
 
@@ -34,6 +36,7 @@ namespace KotoriCore.Database.DocumentDb
             _repoProject = new Repository<Entities.Project>(_connection);
             _repoDocumentType = new Repository<Entities.DocumentType>(_connection);
             _repoDocument = new Repository<Entities.Document>(_connection);
+            _repoDocumentCount = new Repository<Count>(_connection);
         }
 
         /// <summary>
@@ -68,6 +71,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(findDocuments);
                 else if (command is DeleteDocument deleteDocument)
                     result = await HandleAsync(deleteDocument);
+                else if (command is CountDocuments countDocuments)
+                    result = await HandleAsync(countDocuments);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 

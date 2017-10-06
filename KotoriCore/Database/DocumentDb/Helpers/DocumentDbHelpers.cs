@@ -8,6 +8,14 @@ namespace KotoriCore.Database.DocumentDb.Helpers
     static class DocumentDbHelpers
     {
         /// <summary>
+        /// Helper class for count sql command.
+        /// </summary>
+        internal class Count
+        {
+            public long Number { get; set; }
+        }
+
+        /// <summary>
         /// Creates the dynamic query.
         /// </summary>
         /// <returns>The dynamic query.</returns>
