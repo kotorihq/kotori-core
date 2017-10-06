@@ -37,7 +37,7 @@ namespace KotoriCore.Helpers
 
                 var dturi = result.Scheme + "://" + result.Host + result.Segments[0] + result.Segments[1];
 
-                if (!dturi.EndsWith("/"))
+                if (!dturi.EndsWith("/", StringComparison.Ordinal))
                     dturi += "/";
                 
                 result = new Uri(dturi);

@@ -6,7 +6,7 @@ namespace KotoriCore.Commands
     /// <summary>
     /// Get projects.
     /// </summary>
-    public class GetProjects : Command, IInstance
+    public class GetProjects : Command
     {   
         /// <summary>
         /// Gets the instance.

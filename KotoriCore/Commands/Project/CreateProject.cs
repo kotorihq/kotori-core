@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using KotoriCore.Configurations;
 using KotoriCore.Helpers;
 
@@ -10,7 +8,7 @@ namespace KotoriCore.Commands
     /// <summary>
     /// Create project.
     /// </summary>
-    public class CreateProject : Command, IInstance
+    public class CreateProject : Command
     {
         public readonly string Name;
         public readonly string ProjectId;

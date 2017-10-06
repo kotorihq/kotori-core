@@ -210,6 +210,39 @@ namespace KotoriCore.Tests
             Assert.AreEqual("Document saving skipped. Hash is the same one as in database.", resulthash);
         }
 
+        [TestMethod]
+        public async Task DeleteDocument()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-del", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flip-flappers.md", c);
+
+            c = GetContent("_content/tv/2017-05-06-flying-witch.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witch.md", c);
+
+            var docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null);
+
+            Assert.AreEqual(2, docs.Count());
+
+            var resd2 = _kotori.DeleteDocument("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witch.md");
+
+            Assert.AreEqual("Document has been deleted.", resd2);
+
+            docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null);
+
+            Assert.AreEqual(1, docs.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Delete command was inappropriately allowed.")]
+        public async Task DeleteDocumentThatDoesntExist()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-del2", null);
+
+            _kotori.DeleteDocument("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witchxxx.md");
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

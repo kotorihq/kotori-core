@@ -3,48 +3,37 @@ using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
-    /// <summary>
-    /// Upsert document.
-    /// </summary>
-    public class UpsertDocument : Command
+    public class DeleteDocument : Command
     {
         /// <summary>
         /// Gets the instance.
         /// </summary>
         /// <value>The instance.</value>
-        public string Instance { get; }
+        public readonly string Instance;
 
         /// <summary>
         /// Gets the project identifier.
         /// </summary>
         /// <value>The project identifier.</value>
-        public string ProjectId { get; }
+        public readonly string ProjectId;
 
         /// <summary>
         /// Gets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        public string Identifier { get; }
+        public readonly string Identifier;
 
         /// <summary>
-        /// Gets the content.
-        /// </summary>
-        /// <value>The content.</value>
-        public string Content { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocument"/> class.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.DeleteDocument"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
-        /// <param name="content">Content.</param>
-        public UpsertDocument(string instance, string projectId, string identifier, string content)
+        public DeleteDocument(string instance, string projectId, string identifier)
         {
             Instance = instance;
             ProjectId = projectId;
             Identifier = identifier;
-            Content = content;
         }
 
         /// <summary>
@@ -53,8 +42,14 @@ namespace KotoriCore.Commands
         /// <returns>The validation results.</returns>
         public override IEnumerable<ValidationResult> Validate()
         {
-            // TODO
-            return null;
+            if (string.IsNullOrEmpty(Instance))
+                yield return new ValidationResult("Instance must be set.");
+
+            if (string.IsNullOrEmpty(ProjectId))
+                yield return new ValidationResult("Project Id must be set.");
+
+            if (string.IsNullOrEmpty(Identifier))
+                yield return new ValidationResult("Identifier must be set.");
         }
     }
 }

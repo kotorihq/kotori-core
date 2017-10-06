@@ -215,6 +215,30 @@ namespace KotoriCore
             return documents;
         }
 
+        /// <summary>
+        /// Deletes the document.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Document identifier.</param>
+        public string DeleteDocument(string instance, string projectId, string identifier)
+        {
+            return AsyncTools.RunSync(() => DeleteDocumentAsync(instance, projectId, identifier));
+        }
+
+        /// <summary>
+        /// Deletes the document.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Document identifier.</param>
+        public async Task<string> DeleteDocumentAsync(string instance, string projectId, string identifier)
+        {
+            return (await ProcessAsync(new DeleteDocument(instance, projectId, identifier)) as CommandResult<string>)?.Message;
+        }
+
         async Task<ICommandResult> ProcessAsync(ICommand command)
         {
             return await _database.HandleAsync(command);

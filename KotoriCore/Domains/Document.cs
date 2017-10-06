@@ -29,7 +29,6 @@ namespace KotoriCore.Domains
         /// Gets or sets the document type identifier.
         /// </summary>
         /// <value>The document type identifier.</value>
-        // TODO: remove this property, not needed - document type can be determined from identifier
         public string DocumentTypeId { get; set; }
 
         /// <summary>

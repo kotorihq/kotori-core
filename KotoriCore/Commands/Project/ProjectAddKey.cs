@@ -4,7 +4,7 @@ using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
-    public class ProjectAddKey : Command, IInstance, IProject
+    public class ProjectAddKey : Command
     {
         public string Instance { get; }
 

@@ -60,7 +60,7 @@ namespace KotoriCore.Tests
 
             var indexes2 = Search.SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta).ToList();
 
-            //Assert.AreEqual(3, indexes2.Count);
+            Assert.AreEqual(3, indexes2.Count);
             Assert.AreEqual("born", indexes2[0].From);
             Assert.AreEqual(Shushu.Enums.IndexField.Date2, indexes2[0].To);
             Assert.AreEqual("pi", indexes2[1].From);
