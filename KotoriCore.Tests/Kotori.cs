@@ -50,7 +50,7 @@ namespace KotoriCore.Tests
             }
         }
 
-        //[TestCleanup]
+        [TestCleanup]
         public void Cleanup()
         {
             var repo = new Repository(_con);
@@ -192,6 +192,22 @@ namespace KotoriCore.Tests
             docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual("flip-flappers", docs.First().Slug);
+        }
+
+        [TestMethod]
+        public async Task SameHash()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-hash", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witch.md", c);
+
+            var resultok = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c);
+
+            Assert.AreEqual("Document has been created.", resultok);
+
+            var resulthash = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c);
+            Assert.AreEqual("Document saving skipped. Hash is the same one as in database.", resulthash);
         }
 
         static string GetContent(string path)

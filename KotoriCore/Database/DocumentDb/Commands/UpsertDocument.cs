@@ -26,16 +26,24 @@ namespace KotoriCore.Database.DocumentDb
                 var document = new Markdown(command.Identifier, command.Content);
                 documentResult = document.Process();
 
-                var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, documentResult.Slug);
+                var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, documentResult.Slug, command.Identifier.ToKotoriUri());
 
                 if (slug != null)
                     throw new KotoriDocumentException(command.Identifier, $"Slug {documentResult.Slug} is already being used for another document.");
-
+                
                 var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
 
                 var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
                 var isNew = d == null;
                 var id = d?.Id;
+
+                if (!isNew)
+                {
+                    if (d.Hash.Equals(documentResult.Hash))
+                    {
+                        return new CommandResult<string>("Document saving skipped. Hash is the same one as in database.");
+                    }
+                }
 
                 d = new Entities.Document
                 (
@@ -61,6 +69,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 await _repoDocument.ReplaceAsync(d);
                 return new CommandResult<string>("Document has been replaces.");
+
             }
 
             throw new KotoriException("Unknown document type.");

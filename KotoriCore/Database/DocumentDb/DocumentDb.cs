@@ -106,17 +106,18 @@ namespace KotoriCore.Database.DocumentDb
             return document;
         }
 
-        async Task<Entities.Document> FindDocumentBySlugAsync(string instance, Uri projectId, string slug)
+        async Task<Entities.Document> FindDocumentBySlugAsync(string instance, Uri projectId, string slug, Uri documentId)
         {
             var q = new DynamicQuery
             (
-                "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.slug = @slug",
+                "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.slug = @slug and c.identifier <> @documentId",
                 new
                 {
                     entity = DocumentEntity,
                     instance,
                     projectId = projectId.ToString(),
-                    slug
+                    slug,
+                    documentId = documentId.ToString()
                 }
             );
 
