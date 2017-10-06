@@ -6,9 +6,6 @@ using Newtonsoft.Json.Linq;
 
 namespace KotoriCore.Tests
 {
-    // TODO: test slugs
-    // TODO: test invalid meta fields $foo or something
-    // TODO: totally empty file
     [TestClass]
     public class Markdown
     {
