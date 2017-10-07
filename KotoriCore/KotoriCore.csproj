@@ -31,6 +31,7 @@
     <Folder Include="Commands\Document\" />
     <Folder Include="Database\DocumentDb\Commands\" />
     <Folder Include="Database\DocumentDb\Helpers\" />
+    <Folder Include="Commands\DocumentType\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.3.0" />

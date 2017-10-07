@@ -11,7 +11,7 @@ namespace KotoriCore.Commands
     public class CreateProject : Command
     {
         public readonly string Name;
-        public readonly string ProjectId;
+        public readonly string Identifier;
         public IEnumerable<ProjectKey> ProjectKeys { get; set; }
         public string Instance { get; }
 
@@ -20,13 +20,13 @@ namespace KotoriCore.Commands
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="name">Name.</param>
-        /// <param name="projectId">Identifier.</param>
+        /// <param name="identifier">Identifier.</param>
         /// <param name="projectKeys">Project keys.</param>
-        public CreateProject(string instance, string name, string projectId, IEnumerable<ProjectKey> projectKeys)
+        public CreateProject(string instance, string name, string identifier, IEnumerable<ProjectKey> projectKeys)
         {
             Instance = instance;
             Name = name;
-            ProjectId = projectId;
+            Identifier = identifier;
             ProjectKeys = projectKeys ?? new List<ProjectKey>();
         }
 
@@ -42,7 +42,7 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(Name))
                 yield return new ValidationResult("Name must be set.");
             
-            if (string.IsNullOrEmpty(ProjectId))
+            if (string.IsNullOrEmpty(Identifier))
                 yield return new ValidationResult("Identifier must be set.");
 
             if (ProjectKeys?.Any(x => string.IsNullOrEmpty(x.Key)) == true)

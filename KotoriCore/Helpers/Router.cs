@@ -12,7 +12,7 @@ namespace KotoriCore.Helpers
         const string UriScheme = "kotori://";
 
         /// <summary>
-        /// Converts id to kotori uri.
+        /// Converts id to kotori URI.
         /// </summary>
         /// <returns>The kotori URI.</returns>
         /// <param name="uri">URI.</param>
@@ -51,12 +51,12 @@ namespace KotoriCore.Helpers
         /// </summary>
         /// <returns>The kotori identifier.</returns>
         /// <param name="uri">URI.</param>
-        internal static string ToKotoriIdentifier(this Uri uri)
+        /// <param name="documenType">If set to <c>true</c> shorten it to document type part of URI only.</param>
+        internal static string ToKotoriIdentifier(this Uri uri, bool documenType = false)
         {
             if (uri == null)
                 throw new KotoriValidationException("Identifier (null) is not valid URI string.");
-
-            // remove schema
+            
             var u = uri.ToString();
 
             if (u.StartsWith(UriScheme, StringComparison.OrdinalIgnoreCase))
@@ -64,6 +64,9 @@ namespace KotoriCore.Helpers
 
             u = u.RemoveTrailingSlashes(true, true);
 
+            if (documenType)
+                u += "/";
+            
             return u;
         }
 

@@ -9,10 +9,10 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(CreateProject command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri();
+            var projectUri = command.Identifier.ToKotoriUri();
 
             if (await FindProjectAsync(command.Instance, projectUri) != null)
-                throw new KotoriValidationException($"Project with identifier {command.ProjectId} already exists.");
+                throw new KotoriValidationException($"Project with identifier {command.Identifier} already exists.");
 
             var prj = new Entities.Project(command.Instance, command.Name, projectUri.ToString(), command.ProjectKeys);
 

@@ -304,6 +304,33 @@ namespace KotoriCore.Tests
             await _kotori.GetDocumentAsync("dev", "nenecchi-dn", "_content/tv/2217-05-06-flip-flappers.md");
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentTypeException), "Get non-existent document type inappropriately processed.")]
+        public async Task GetDocumentTypeBadId()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dty", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dty", "_content/tv/2117-05-06-flip-flappers.md", c);
+
+            var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty", "_content/tvx/");
+        }
+
+        [TestMethod]
+        public async Task GetDocumentType()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dty2", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dty2", "_content/tv/2117-05-06-flip-flappers.md", c);
+
+            var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty2", "_content/tv");
+
+            Assert.AreEqual(Helpers.Enums.DocumentType.Content, dt.Type);
+            Assert.AreEqual("_content/tv/", dt.Identifier);
+        }
+
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

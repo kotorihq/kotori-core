@@ -273,6 +273,30 @@ namespace KotoriCore
             return result.Record;
         }
 
+        /// <summary>
+        /// Gets the document type.
+        /// </summary>
+        /// <returns>The document type.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        public SimpleDocumentType GetDocumentType(string instance, string projectId, string identifier)
+        {
+            return AsyncTools.RunSync(() => GetDocumentTypeAsync(instance, projectId, identifier));
+        }
+
+        /// <summary>
+        /// Gets the document type.
+        /// </summary>
+        /// <returns>The document type.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        public async Task<SimpleDocumentType> GetDocumentTypeAsync(string instance, string projectId, string identifier)
+        {
+            return (await ProcessAsync(new GetDocumentType(instance, projectId, identifier)) as CommandResult<SimpleDocumentType>)?.Record;
+        }
+
         async Task<ICommandResult> ProcessAsync(ICommand command)
         {
             return await _database.HandleAsync(command);

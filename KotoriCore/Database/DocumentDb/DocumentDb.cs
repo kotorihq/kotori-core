@@ -73,12 +73,18 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(deleteDocument);
                 else if (command is CountDocuments countDocuments)
                     result = await HandleAsync(countDocuments);
+                else if (command is GetDocumentType getDocumentType)
+                    result = await HandleAsync(getDocumentType);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
                 return result;
             }
             catch (KotoriDocumentException)
+            {
+                throw;
+            }
+            catch (KotoriDocumentTypeException)
             {
                 throw;
             }
@@ -131,6 +137,25 @@ namespace KotoriCore.Database.DocumentDb
             var document = await _repoDocument.GetFirstOrDefaultAsync(q);
 
             return document;
+        }
+
+        async Task<Entities.DocumentType> FindDocumentTypeByIdAsync(string instance, Uri projectId, Uri documentTypeId)
+        {
+            var q = new DynamicQuery
+            (
+                "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
+                new
+                {
+                    entity = DocumentTypeEntity,
+                    instance,
+                    projectId = projectId.ToString(),
+                    identifier = documentTypeId.ToString()
+                }
+            );
+
+            var documentType = await _repoDocumentType.GetFirstOrDefaultAsync(q);
+
+            return documentType;
         }
     }
 }
