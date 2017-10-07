@@ -330,6 +330,14 @@ namespace KotoriCore.Tests
             Assert.AreEqual("_content/tv/", dt.Identifier);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException), "Null document inappropriately processed.")]
+        public async Task CreateInvalidDocument()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "inv", null);
+
+            await _kotori.UpsertDocumentAsync("dev", "inv", "_content/tv/2117-05-06-flip-flappers.md", null);
+        }
 
         static string GetContent(string path)
         {
