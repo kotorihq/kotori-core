@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
+using KotoriCore.Documents;
 using KotoriCore.Domains;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
@@ -24,7 +25,7 @@ namespace KotoriCore.Database.DocumentDb
                     new Uri(d.Identifier).ToKotoriIdentifier(),
                     d.Slug,
                     d.Meta,
-                    d.Content,
+                    DocumentHelpers.PostProcessedContent(d.Content, d.Meta),
                     d.Date.DateTime,
                     d.Modified.DateTime,
                     d.Draft

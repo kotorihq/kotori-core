@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
+using Newtonsoft.Json.Linq;
 using Sushi2;
 
 namespace KotoriCore.Documents
@@ -103,6 +105,30 @@ namespace KotoriCore.Documents
                 throw new KotoriDocumentException(identifier, $"Slug could not be determined for {identifier}.");
 
             return sl;
+        }
+
+        /// <summary>
+        /// Post processes the content.
+        /// </summary>
+        /// <returns>The post processed content.</returns>
+        /// <param name="content">Content.</param>
+        /// <param name="meta">Meta.</param>
+        internal static string PostProcessedContent(string content, dynamic meta)
+        {
+            if (string.IsNullOrEmpty(content) ||
+                meta == null)
+                return content;
+
+            JObject metaObj = JObject.FromObject(meta);
+
+            Dictionary<string, object> meta2 = metaObj?.ToObject<Dictionary<string, object>>();
+
+            foreach (var key in meta2.Keys)
+            {
+                content = content.Replace("{{" + key + "}}", meta2[key].ToString());
+            }
+
+            return content;
         }
     }
 }

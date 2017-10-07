@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Documents;
 using KotoriCore.Helpers;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 using Oogi2;
 using Oogi2.Queries;
 using Sushi2;
@@ -66,21 +68,14 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
 
             // --- put stuff here --
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "doctypesd", null);
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            var c = GetContent("_content/movie/matrix.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi/main", "_content/movie/matrix.md", c);
+            var d = await _kotori.GetDocumentAsync("dev", "nenecchi/main", "_content/movie/matrix.md");
+            var meta = (d.Meta as JObject);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "doctypesd", "_content/tv/2007-05-06-flip-flappers.md", c);
-
-            var dt0 = await _kotori.GetDocumentTypesAsync("dev", "doctypesd");
-
-            var docs = await _kotori.FindDocumentsAsync("dev", "doctypesd", "_content/tv", null, null, null, null, true, true, null);
-
-            foreach (var d in docs)
-                await _kotori.DeleteDocumentAsync("dev", "doctypesd", d.Identifier);
-
-            await _kotori.DeleteDocumentTypeAsync("dev", "doctypesd", "_content/tv");
-
-            var dt1 = await _kotori.GetDocumentTypesAsync("dev", "doctypesd");
+            //Assert.AreEqual(4, meta.PropertyValues().LongCount());
+            System.Console.WriteLine("ok");
         }
     }
 }

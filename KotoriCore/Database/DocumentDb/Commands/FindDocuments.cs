@@ -6,6 +6,7 @@ using KotoriCore.Helpers;
 using KotoriCore.Database.DocumentDb.Helpers;
 using System.Linq;
 using System.Collections.Generic;
+using KotoriCore.Documents;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -44,7 +45,7 @@ namespace KotoriCore.Database.DocumentDb
                     d.Identifier != null ? new Uri(d.Identifier).ToKotoriIdentifier() : null,
                     d.Slug,
                     d.Meta,
-                    d.Content,
+                    DocumentHelpers.PostProcessedContent(d.Content, d.Meta),
                     d.Date?.DateTime,
                     d.Modified?.DateTime,
                     d.Draft

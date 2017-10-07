@@ -148,8 +148,8 @@ namespace KotoriCore.Tests
             Assert.AreEqual(10, meta.Property("rating").Value);
             Assert.AreEqual(1999, meta.Property("from").Value);
             Assert.AreEqual("http://www.imdb.com/title/tt5621006", meta.Property("imdb").Value);
-            Assert.AreEqual(c.Substring(c.LastIndexOf("---") + 4).Trim(), d.Content.Trim());
             Assert.AreEqual(new DateTime(2017, 3, 3), d.Date);
+            Assert.IsTrue(d.Content.IndexOf("## 0101000010101010010101 and btw rating is 10 for The Matrix") != -1);
             Assert.IsNotNull(d.Modified);
         }
 
