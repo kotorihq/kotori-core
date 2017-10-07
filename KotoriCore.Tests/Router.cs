@@ -2,6 +2,7 @@
 using KotoriCore.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using KotoriCore.Documents;
 
 namespace KotoriCore.Tests
 {
@@ -35,6 +36,16 @@ namespace KotoriCore.Tests
             Assert.AreEqual(true, Router.ToDraftFlag(new Uri("kotori://_content/tv/_2017-08-12-flip-flappers.md")));
             Assert.AreEqual(true, Router.ToDraftFlag(new Uri("kotori://_content/tv/.2017-08-12-flip-flappers.md")));
             Assert.AreEqual(true, Router.ToDraftFlag(new Uri("kotori://_content/tv/.2017-08-12-flip-flappers.md/")));
+        }
+
+        [TestMethod]
+        public void Slugs()
+        {
+            Assert.AreEqual("matrix", "_content/movie/matrix".ToSlug(null));
+            Assert.AreEqual("matrix", "_content/movie/matrix.md".ToSlug(null));
+            Assert.AreEqual("the-matrix", "_content/movie/matrix".ToSlug("the-matrix"));
+            Assert.AreEqual("matrix", "_content/movie/.matrix".ToSlug(null));
+            Assert.AreEqual("the-matrix", "_content/movie/.matrix".ToSlug("the-matrix"));
         }
     }
 }

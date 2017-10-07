@@ -446,6 +446,20 @@ namespace KotoriCore.Tests
             Assert.IsTrue(projects.All(x => x.Identifier != "immortal3"));
         }
 
+        [TestMethod]
+        public async Task Draft()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "slugdraft", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+
+            var c = GetContent("_content/movie/matrix.md");
+            await _kotori.UpsertDocumentAsync("dev", "slugdraft", "_content/movie/.matrix.md", c);
+
+            var d = await _kotori.GetDocumentAsync("dev", "slugdraft", "_content/movie/.matrix.md");
+
+            Assert.AreEqual("_content/movie/.matrix.md", d.Identifier);
+            Assert.AreEqual("matrix", d.Slug);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();
