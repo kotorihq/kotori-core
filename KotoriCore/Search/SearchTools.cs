@@ -69,8 +69,6 @@ namespace KotoriCore.Search
             if (type == typeof(string))
                 return new List<Enums.IndexField>
                 {
-                    Enums.IndexField.Text5,
-                    Enums.IndexField.Text6,
                     Enums.IndexField.Text7,
                     Enums.IndexField.Text8,
                     Enums.IndexField.Text9,
@@ -108,7 +106,6 @@ namespace KotoriCore.Search
                type == typeof(bool))
                 return new List<Enums.IndexField>
                 {
-                    Enums.IndexField.Flag0,
                     Enums.IndexField.Flag1,
                     Enums.IndexField.Flag2,
                     Enums.IndexField.Flag3,

@@ -70,7 +70,7 @@ namespace KotoriCore.Cli
             // --- put stuff here --
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
             var c = GetContent("_content/movie/matrix.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi/main", "_content/movie/matrix.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi/main", "_content/movie/matrix.md", c, null);
             var d = await _kotori.GetDocumentAsync("dev", "nenecchi/main", "_content/movie/matrix.md");
             var meta = (d.Meta as JObject);
 

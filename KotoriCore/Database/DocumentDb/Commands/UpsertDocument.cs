@@ -56,7 +56,8 @@ namespace KotoriCore.Database.DocumentDb
                     documentResult.Meta,
                     documentResult.Content,
                     documentResult.Date,
-                    command.Identifier.ToKotoriUri().ToDraftFlag()
+                    command.Identifier.ToKotoriUri().ToDraftFlag(),
+                    command.Source
                 );
 
                 if (isNew)

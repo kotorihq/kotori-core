@@ -28,7 +28,8 @@ namespace KotoriCore.Database.DocumentDb
                     DocumentHelpers.PostProcessedContent(d.Content, d.Meta),
                     d.Date.DateTime,
                     d.Modified.DateTime,
-                    d.Draft
+                    d.Draft,
+                    d.Source
                 )
             );
         }

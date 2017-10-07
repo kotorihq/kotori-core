@@ -10,14 +10,12 @@ namespace KotoriCore.Domains
         /// <summary>
         /// Gets the identifier.
         /// </summary>
-        /// <value>The identifier.</value>
-        public string Identifier { get; }
+        public readonly string Identifier;
 
         /// <summary>
         /// Gets the type.
         /// </summary>
-        /// <value>The type.</value>
-        public string Type { get; }
+        public readonly string Type;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocumentType"/> class.

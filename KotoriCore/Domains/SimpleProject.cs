@@ -8,14 +8,13 @@
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
-        /// <value>The name.</value>
-        public string Name { get; set; }
+        public readonly string Name;
 
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        public string Identifier { get; set; }
+        public readonly string Identifier;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.SimpleProject"/> class.

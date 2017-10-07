@@ -134,7 +134,7 @@ namespace KotoriCore.Tests
             Assert.AreEqual(1, projects.Count());
 
             var c = GetContent("_content/movie/matrix.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi/stable", "_content/movie/matrix.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi/stable", "_content/movie/matrix.md", c, null);
 
             var d = await _kotori.GetDocumentAsync("dev", "nenecchi/stable", "_content/movie/matrix.md");
 
@@ -160,8 +160,8 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dupe", null);
 
             var c = GetContent("_content/movie/matrix.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dupe", "_content/movie2/matrix.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dupe", "_content/movie3/matrix.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dupe", "_content/movie2/matrix.md", c, null);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dupe", "_content/movie3/matrix.md", c, null);
         }
 
         [TestMethod]
@@ -170,12 +170,12 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-find", null);
 
             var c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-05-06-flying-witch.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-05-06-flying-witch.md", c, "tests");
 
             c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c, "tests");
 
-            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null, false, false, null);
+            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.source = 'tests'", null, false, false, null);
 
             Assert.AreEqual(2, docs.Count());
             Assert.AreEqual("_content/tv/2017-05-06-flying-witch.md", docs.ToList()[0].Identifier);
@@ -210,13 +210,13 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-hash", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witch.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witch.md", c, null);
 
-            var resultok = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c);
+            var resultok = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c, null);
 
             Assert.AreEqual("Document has been created.", resultok);
 
-            var resulthash = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c);
+            var resulthash = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c, null);
             Assert.AreEqual("Document saving skipped. Hash is the same one as in database.", resulthash);
         }
 
@@ -226,10 +226,10 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-del", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flip-flappers.md", c, null);
 
             c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witch.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witch.md", c, null);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null, false, false, null);
 
@@ -259,10 +259,10 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-count", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flip-flappers.md", c, null);
 
             c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flying-witch.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flying-witch.md", c, null);
 
             var docs = _kotori.CountDocuments("dev", "nenecchi-count", "_content/tv/", null, false, false);
 
@@ -278,10 +278,10 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-drafts", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md", c, null);
 
             c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/.2017-05-06-flying-witch.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/.2017-05-06-flying-witch.md", c, null);
 
             var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md");
             Assert.AreEqual(false, futureDoc.Draft);
@@ -309,7 +309,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dn", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dn", "_content/tv/2117-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dn", "_content/tv/2117-05-06-flip-flappers.md", c, null);
 
             await _kotori.GetDocumentAsync("dev", "nenecchi-dn", "_content/tv/2217-05-06-flip-flappers.md");
         }
@@ -321,7 +321,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dty", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dty", "_content/tv/2117-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dty", "_content/tv/2117-05-06-flip-flappers.md", c, null);
 
             var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty", "_content/tvx/");
         }
@@ -332,7 +332,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dty2", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dty2", "_content/tv/2117-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dty2", "_content/tv/2117-05-06-flip-flappers.md", c, null);
 
             var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty2", "_content/tv");
 
@@ -346,7 +346,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "inv", null);
 
-            await _kotori.UpsertDocumentAsync("dev", "inv", "_content/tv/2117-05-06-flip-flappers.md", null);
+            await _kotori.UpsertDocumentAsync("dev", "inv", "_content/tv/2117-05-06-flip-flappers.md", null, null);
         }
 
         [TestMethod]
@@ -355,10 +355,10 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "doctypes", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/2007-05-06-flip-flappers.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/_2007-05-07-flip-flappers2.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv2/2007-05-06-aflip-flappers.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv3/2007-05-06-bflip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/2007-05-06-flip-flappers.md", c, null);
+            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/_2007-05-07-flip-flappers2.md", c, null);
+            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv2/2007-05-06-aflip-flappers.md", c, null);
+            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv3/2007-05-06-bflip-flappers.md", c, null);
 
             var docTypes = await _kotori.GetDocumentTypesAsync("dev", "doctypes");
 
@@ -373,7 +373,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "doctypesd", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "doctypesd", "_content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "doctypesd", "_content/tv/2007-05-06-flip-flappers.md", c, null);
 
             var dt0 = await _kotori.GetDocumentTypesAsync("dev", "doctypesd");
 
@@ -398,7 +398,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "immortal", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "immortal", "_content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "immortal", "_content/tv/2007-05-06-flip-flappers.md", c, null);
             await _kotori.DeleteProjectAsync("dev", "immortal");
         }
 
@@ -409,7 +409,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "immortal2", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "immortal2", "_content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "immortal2", "_content/tv/2007-05-06-flip-flappers.md", c, null);
             await _kotori.DeleteDocumentTypeAsync("dev", "immortal2", "_content/tv");
         }
 
@@ -423,7 +423,7 @@ namespace KotoriCore.Tests
             Assert.IsTrue(projects2.Any(x => x.Identifier == "immortal3"));
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "immortal3", "_content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "immortal3", "_content/tv/2007-05-06-flip-flappers.md", c, null);
 
             var documents = await _kotori.FindDocumentsAsync("dev", "immortal3", "_content/tv", null, null, null, null, true, true, null);
 
@@ -452,7 +452,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "slugdraft", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
 
             var c = GetContent("_content/movie/matrix.md");
-            await _kotori.UpsertDocumentAsync("dev", "slugdraft", "_content/movie/.matrix.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "slugdraft", "_content/movie/.matrix.md", c, null);
 
             var d = await _kotori.GetDocumentAsync("dev", "slugdraft", "_content/movie/.matrix.md");
 

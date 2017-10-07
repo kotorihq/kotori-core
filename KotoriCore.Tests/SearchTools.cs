@@ -66,7 +66,7 @@ namespace KotoriCore.Tests
             Assert.AreEqual("pi", indexes2[1].From);
             Assert.AreEqual(Shushu.Enums.IndexField.Double0, indexes2[1].To);
             Assert.AreEqual("clever", indexes2[2].From);
-            Assert.AreEqual(Shushu.Enums.IndexField.Flag0, indexes2[2].To);
+            Assert.AreEqual(Shushu.Enums.IndexField.Flag1, indexes2[2].To);
         }
     }
 }

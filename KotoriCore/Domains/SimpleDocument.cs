@@ -2,49 +2,51 @@
 
 namespace KotoriCore.Domains
 {
+    /// <summary>
+    /// Simple document.
+    /// </summary>
     public class SimpleDocument
     {
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>
-        /// <value>The identifier.</value>
-        public string Identifier { get; set; }
+        public readonly string Identifier;
 
         /// <summary>
         /// Gets or sets the slug.
         /// </summary>
-        /// <value>The slug.</value>
-        public string Slug { get; set; }
+        public readonly string Slug;
 
         /// <summary>
         /// Gets or sets the meta.
         /// </summary>
-        /// <value>The meta.</value>
-        public dynamic Meta { get; set; }
+        public readonly dynamic Meta;
 
         /// <summary>
         /// Gets or sets the content.
         /// </summary>
-        /// <value>The content.</value>
-        public string Content { get; set; }
+        public readonly string Content;
 
         /// <summary>
         /// Gets or sets the date.
         /// </summary>
-        /// <value>The date.</value>
-        public DateTime? Date { get; set; }
+        public readonly DateTime? Date;
 
         /// <summary>
         /// Gets or sets the date of last modification.
         /// </summary>
-        /// <value>The date of last modification.</value>
-        public DateTime? Modified { get; set; }
+        public readonly DateTime? Modified;
 
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="T:KotoriCore.Domains.SimpleDocument"/> is draft.
         /// </summary>
         /// <value><c>true</c> if draft; otherwise, <c>false</c>.</value>
-        public bool? Draft { get; set; }
+        public readonly bool? Draft;
+
+        /// <summary>
+        /// Gets or sets the source.
+        /// </summary>
+        public readonly string Source;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocument"/> class.
@@ -56,7 +58,8 @@ namespace KotoriCore.Domains
         /// <param name="date">Date.</param>
         /// <param name="modified">Modified.</param>
         /// <param name="draft">If set to <c>true</c> draft.</param>
-        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime? date, DateTime? modified, bool? draft)
+        /// <param name="source">Source.</param>
+        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime? date, DateTime? modified, bool? draft, string source)
         {
             Identifier = identifier;
             Slug = slug;
@@ -65,6 +68,7 @@ namespace KotoriCore.Domains
             Date = date;
             Modified = modified;
             Draft = draft;
+            Source = source;
         }
     }
 }

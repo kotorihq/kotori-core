@@ -11,26 +11,27 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <value>The instance.</value>
         public readonly string Instance;
 
         /// <summary>
         /// Gets the project identifier.
         /// </summary>
-        /// <value>The project identifier.</value>
         public readonly string ProjectId;
 
         /// <summary>
         /// Gets the identifier.
         /// </summary>
-        /// <value>The identifier.</value>
         public readonly string Identifier;
 
         /// <summary>
         /// Gets the content.
         /// </summary>
-        /// <value>The content.</value>
         public readonly string Content;
+
+        /// <summary>
+        /// The source.
+        /// </summary>
+        public readonly string Source;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocument"/> class.
@@ -39,12 +40,14 @@ namespace KotoriCore.Commands
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
-        public UpsertDocument(string instance, string projectId, string identifier, string content)
+        /// <param name="source">Source.</param>
+        public UpsertDocument(string instance, string projectId, string identifier, string content, string source)
         {
             Instance = instance;
             ProjectId = projectId;
             Identifier = identifier;
             Content = content;
+            Source = source;
         }
 
         /// <summary>
