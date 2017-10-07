@@ -53,8 +53,17 @@ namespace KotoriCore.Commands
         /// <returns>The validation results.</returns>
         public override IEnumerable<ValidationResult> Validate()
         {
-            // TODO
-            return null;
+            if (string.IsNullOrEmpty(Instance))
+                yield return new ValidationResult("Instance must be set.");
+
+            if (string.IsNullOrEmpty(ProjectId))
+                yield return new ValidationResult("Project Id must be set.");
+
+            if (string.IsNullOrEmpty(Identifier))
+                yield return new ValidationResult("Identifier must be set.");
+
+            if (string.IsNullOrEmpty(Content))
+                yield return new ValidationResult("Content must be set.");
         }
     }
 }
