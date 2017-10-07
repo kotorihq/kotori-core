@@ -381,6 +381,60 @@ namespace KotoriCore.Tests
             Assert.AreEqual(0, dt1.Count());
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriProjectException), "Non deletable project inappropriately allowed to be deleted.")]
+        public async Task ProjectDeleteFail()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "immortal", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "immortal", "_content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.DeleteProjectAsync("dev", "immortal");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentTypeException), "Non deletable project inappropriately allowed to be deleted.")]
+        public async Task ProjectDeleteFail2()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "immortal2", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "immortal2", "_content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.DeleteDocumentTypeAsync("dev", "immortal2", "_content/tv");
+        }
+
+        [TestMethod]
+        public async Task ProjectDelete()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "immortal3", null);
+
+            var projects2 = _kotori.GetProjects("dev");
+            Assert.IsTrue(projects2.Any(x => x.Identifier == "immortal3"));
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "immortal3", "_content/tv/2007-05-06-flip-flappers.md", c);
+
+            var documents = await _kotori.FindDocumentsAsync("dev", "immortal3", "_content/tv", null, null, null, null, true, true);
+
+            foreach(var d in documents)
+            {
+                _kotori.DeleteDocument("dev", "immortal3", d.Identifier);
+            }
+
+            var documentTypes = _kotori.GetDocumentTypes("dev", "immortal3");
+
+            foreach(var dt in documentTypes)
+            {
+                _kotori.DeleteDocumentType("dev", "immortal3", dt.Identifier);
+            }
+
+            _kotori.DeleteProject("dev", "immortal3");
+
+            var projects = _kotori.GetProjects("dev");
+
+            Assert.IsTrue(projects.All(x => x.Identifier != "immortal3"));
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

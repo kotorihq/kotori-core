@@ -2,6 +2,9 @@
 using KotoriCore.Commands;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
+using System.Linq;
+using System.Collections.Generic;
+using KotoriCore.Domains;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -16,8 +19,11 @@ namespace KotoriCore.Database.DocumentDb
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
-            // TODO: check if some data exists for a given project
+            var documentTypes = (await HandleAsync(new GetDocumentTypes(command.Instance, command.Identifier))).Data as IEnumerable<SimpleDocumentType>;
 
+            if (documentTypes.Any())
+                throw new KotoriProjectException(command.Identifier, "Project contains document types.");
+            
             await _repoProject.DeleteAsync(project);
 
             return new CommandResult<string>("Project has been deleted.");

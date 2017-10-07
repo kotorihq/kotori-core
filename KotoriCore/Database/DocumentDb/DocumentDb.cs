@@ -96,6 +96,10 @@ namespace KotoriCore.Database.DocumentDb
             {
                 throw;
             }
+            catch(KotoriProjectException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 message += $" Message: {ex.Message}";
