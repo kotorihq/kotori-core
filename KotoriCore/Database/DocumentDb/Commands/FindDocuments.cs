@@ -14,18 +14,8 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<SimpleDocument>> HandleAsync(FindDocuments command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
-
-            var project = await FindProjectAsync(command.Instance, projectUri);
-
-            if (project == null)
-                throw new KotoriValidationException("Project does not exist.");
-
             var documentTypeUri = command.DocumentTypeId.ToKotoriUri(true);
-            var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
-
-            if (documentType == null)
-                throw new KotoriValidationException("Document type does not exist.");
-
+         
             var sql = DocumentDbHelpers.CreateDynamicQuery
             (
                 command.Instance, 
