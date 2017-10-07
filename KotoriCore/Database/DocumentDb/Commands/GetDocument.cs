@@ -12,12 +12,6 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<SimpleDocument>> HandleAsync(GetDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
-
-            var project = await FindProjectAsync(command.Instance, projectUri);
-
-            if (project == null)
-                throw new KotoriValidationException("Project does not exist.");
-
             var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
 
             if (d == null)
