@@ -175,23 +175,33 @@ namespace KotoriCore.Tests
             c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c);
 
-            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null, false, false);
+            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null, false, false, null);
 
             Assert.AreEqual(2, docs.Count());
             Assert.AreEqual("_content/tv/2017-05-06-flying-witch.md", docs.ToList()[0].Identifier);
             Assert.AreEqual("_content/tv/2017-08-12-flip-flappers.md", docs.ToList()[1].Identifier);
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, null, false, false);
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, null, false, false, null);
             Assert.AreEqual(1, docs.Count());
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, "c.slug", null, "c.meta.rating asc", false, false);
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, "c.slug", null, "c.meta.rating asc", false, false, null);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual(null, docs.First().Identifier);
             Assert.AreEqual("flip-flappers", docs.First().Slug);
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null, false, false);
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null, false, false, null);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual("flip-flappers", docs.First().Slug);
+
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null, false, false, 3);
+            Assert.AreEqual(0, docs.Count());
+
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 1);
+            Assert.AreEqual(1, docs.Count());
+            Assert.AreEqual("flying-witch-2016", docs.First().Slug);
+
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 2);
+            Assert.AreEqual(0, docs.Count());
         }
 
         [TestMethod]
@@ -221,7 +231,7 @@ namespace KotoriCore.Tests
             c = GetContent("_content/tv/2017-05-06-flying-witch.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witch.md", c);
 
-            var docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null, false, false);
+            var docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null, false, false, null);
 
             Assert.AreEqual(2, docs.Count());
 
@@ -229,7 +239,7 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual("Document has been deleted.", resd2);
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null, false, false);
+            docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null, false, false, null);
 
             Assert.AreEqual(1, docs.Count());
         }
@@ -369,7 +379,7 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual(1, dt0.Count());
 
-            var docs = await _kotori.FindDocumentsAsync("dev", "doctypesd", "_content/tv", null, null, null, null, true, true);
+            var docs = await _kotori.FindDocumentsAsync("dev", "doctypesd", "_content/tv", null, null, null, null, true, true, null);
 
             foreach (var d in docs)
                 Assert.AreEqual("Document has been deleted.", await _kotori.DeleteDocumentAsync("dev", "doctypesd", d.Identifier));
@@ -415,7 +425,7 @@ namespace KotoriCore.Tests
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "immortal3", "_content/tv/2007-05-06-flip-flappers.md", c);
 
-            var documents = await _kotori.FindDocumentsAsync("dev", "immortal3", "_content/tv", null, null, null, null, true, true);
+            var documents = await _kotori.FindDocumentsAsync("dev", "immortal3", "_content/tv", null, null, null, null, true, true, null);
 
             foreach(var d in documents)
             {

@@ -192,9 +192,10 @@ namespace KotoriCore
         /// <param name="orderBy">Order by.</param>
         /// <param name="drafts">If set to <c>true</c> returns drafts.</param>
         /// <param name="future">If set to <c>true</c> returns future.</param>
-        public IEnumerable<SimpleDocument> FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future)
+        /// <param name="skip">Skip.</param>
+        public IEnumerable<SimpleDocument> FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip)
         {
-            return AsyncTools.RunSync(() => FindDocumentsAsync(instance, projectId, documentTypeId, top, select, filter, orderBy, drafts, future));
+            return AsyncTools.RunSync(() => FindDocumentsAsync(instance, projectId, documentTypeId, top, select, filter, orderBy, drafts, future, skip));
         }
 
         /// <summary>
@@ -210,9 +211,10 @@ namespace KotoriCore
         /// <param name="orderBy">Order by.</param>
         /// <param name="drafts">If set to <c>true</c> returns drafts.</param>
         /// <param name="future">If set to <c>true</c> returns future.</param>
-        public async Task<IEnumerable<SimpleDocument>> FindDocumentsAsync(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future)
+        /// <param name="skip">Skip.</param>
+        public async Task<IEnumerable<SimpleDocument>> FindDocumentsAsync(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip)
         {
-            var result = await ProcessAsync(new FindDocuments(instance, projectId, documentTypeId, top, select, filter, orderBy, drafts, future)) as CommandResult<SimpleDocument>;
+            var result = await ProcessAsync(new FindDocuments(instance, projectId, documentTypeId, top, select, filter, orderBy, drafts, future, skip)) as CommandResult<SimpleDocument>;
             var documents = result.Data as IEnumerable<SimpleDocument>;
 
             return documents;

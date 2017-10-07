@@ -5,6 +5,7 @@ using KotoriCore.Domains;
 using KotoriCore.Helpers;
 using KotoriCore.Database.DocumentDb.Helpers;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -14,13 +15,21 @@ namespace KotoriCore.Database.DocumentDb
         {
             var projectUri = command.ProjectId.ToKotoriUri();
             var documentTypeUri = command.DocumentTypeId.ToKotoriUri(true);
-         
+
+            var top = command.Top;
+
+            if (command.Skip.HasValue &&
+               command.Top.HasValue)
+            {
+                top = command.Skip.Value + command.Top.Value;
+            }
+
             var sql = DocumentDbHelpers.CreateDynamicQuery
             (
                 command.Instance, 
                 projectUri, 
                 documentTypeUri, 
-                command.Top, 
+                top, 
                 command.Select, 
                 command.Filter, 
                 command.OrderBy, 
@@ -40,6 +49,19 @@ namespace KotoriCore.Database.DocumentDb
                     d.Modified?.DateTime,
                     d.Draft
                 ));
+
+            if (command.Skip.HasValue)
+            {
+                var skip = command.Skip.Value;
+
+                if (skip >= simpleDocuments.Count()) 
+                    return new CommandResult<SimpleDocument>(new List<SimpleDocument>());
+
+                if (top.HasValue)
+                    simpleDocuments = simpleDocuments.Skip(skip).Take(top.Value);
+                else
+                    simpleDocuments = simpleDocuments.Skip(skip);
+            }
 
             return new CommandResult<SimpleDocument>(simpleDocuments);
         }

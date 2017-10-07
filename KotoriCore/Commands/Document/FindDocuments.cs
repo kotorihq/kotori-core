@@ -11,43 +11,36 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <value>The instance.</value>
         public readonly string Instance;
 
         /// <summary>
         /// Gets the project identifier.
         /// </summary>
-        /// <value>The project identifier.</value>
         public readonly string ProjectId;
 
         /// <summary>
         /// Gets the document type identifier.
         /// </summary>
-        /// <value>The document type identifier.</value>
         public readonly string DocumentTypeId;
 
         /// <summary>
         /// Gets the selected fields.
         /// </summary>
-        /// <value>The selected fields.</value>
         public readonly string Select;
 
         /// <summary>
         /// Gets the top (number of documents).
         /// </summary>
-        /// <value>The top (number of documents).</value>
         public readonly int? Top;
 
         /// <summary>
         /// Gets the filter (where condition(s)).
         /// </summary>
-        /// <value>The filter (where condition(s)).</value>
         public readonly string Filter;
 
         /// <summary>
         /// Gets the order by.
         /// </summary>
-        /// <value>The order by.</value>
         public readonly string OrderBy;
 
         /// <summary>
@@ -63,6 +56,11 @@ namespace KotoriCore.Commands
         public readonly bool Future;
 
         /// <summary>
+        /// The skip.
+        /// </summary>
+        public readonly int? Skip;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.FindDocuments"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
@@ -72,7 +70,7 @@ namespace KotoriCore.Commands
         /// <param name="select">Select.</param>
         /// <param name="filter">Filter.</param>
         /// <param name="orderBy">Order by.</param>
-        public FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future)
+        public FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip)
         {
             Instance = instance;
             ProjectId = projectId;
@@ -88,6 +86,7 @@ namespace KotoriCore.Commands
             OrderBy = orderBy;
             Drafts = drafts;
             Future = future;
+            Skip = skip;
         }
 
         /// <summary>

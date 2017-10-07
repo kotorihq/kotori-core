@@ -73,7 +73,7 @@ namespace KotoriCore.Cli
 
             var dt0 = await _kotori.GetDocumentTypesAsync("dev", "doctypesd");
 
-            var docs = await _kotori.FindDocumentsAsync("dev", "doctypesd", "_content/tv", null, null, null, null, true, true);
+            var docs = await _kotori.FindDocumentsAsync("dev", "doctypesd", "_content/tv", null, null, null, null, true, true, null);
 
             foreach (var d in docs)
                 await _kotori.DeleteDocumentAsync("dev", "doctypesd", d.Identifier);
