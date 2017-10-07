@@ -46,6 +46,7 @@ namespace KotoriCore.Tests
             Assert.AreEqual("the-matrix", "_content/movie/matrix".ToSlug("the-matrix"));
             Assert.AreEqual("matrix", "_content/movie/.matrix".ToSlug(null));
             Assert.AreEqual("the-matrix", "_content/movie/.matrix".ToSlug("the-matrix"));
+            Assert.AreEqual("matrix", "_content/movie/sci-fi/.matrix".ToSlug(null));
         }
     }
 }
