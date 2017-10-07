@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Domains;
+using KotoriCore.Helpers;
 using Oogi2.Queries;
 
 namespace KotoriCore.Database.DocumentDb
@@ -21,7 +23,7 @@ namespace KotoriCore.Database.DocumentDb
                 );
 
             var projects = await _repoProject.GetListAsync(q);
-            var simpleProjects = projects.Select(p => new SimpleProject(p.Name, p.Identifier));
+            var simpleProjects = projects.Select(p => new SimpleProject(p.Name, new Uri(p.Identifier).ToKotoriIdentifier()));
 
             return new CommandResult<SimpleProject>(simpleProjects);
         }

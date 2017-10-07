@@ -409,6 +409,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "immortal3", null);
 
             var projects2 = _kotori.GetProjects("dev");
+
             Assert.IsTrue(projects2.Any(x => x.Identifier == "immortal3"));
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
