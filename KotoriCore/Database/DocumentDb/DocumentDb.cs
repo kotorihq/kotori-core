@@ -77,6 +77,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(getDocumentType);
                 else if (command is GetDocumentTypes getDocumentTypes)
                     result = await HandleAsync(getDocumentTypes);
+                else if (command is DeleteDocumentType deleteDocumentType)
+                    result = await HandleAsync(deleteDocumentType);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 

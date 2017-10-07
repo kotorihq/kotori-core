@@ -353,6 +353,32 @@ namespace KotoriCore.Tests
             var docTypes = await _kotori.GetDocumentTypesAsync("dev", "doctypes");
 
             Assert.AreEqual(3, docTypes.Count());
+            Assert.AreEqual("content", docTypes.First().Type);
+            Assert.AreEqual("_content/tv/", docTypes.First().Identifier);
+        }
+
+        [TestMethod]
+        public async Task DocumentTypesDelete()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "doctypesd", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "doctypesd", "_content/tv/2007-05-06-flip-flappers.md", c);
+
+            var dt0 = await _kotori.GetDocumentTypesAsync("dev", "doctypesd");
+
+            Assert.AreEqual(1, dt0.Count());
+
+            var docs = await _kotori.FindDocumentsAsync("dev", "doctypesd", "_content/tv", null, null, null, null, true, true);
+
+            foreach (var d in docs)
+                Assert.AreEqual("Document has been deleted.", await _kotori.DeleteDocumentAsync("dev", "doctypesd", d.Identifier));
+
+            await _kotori.DeleteDocumentTypeAsync("dev", "doctypesd", "_content/tv");
+
+            var dt1 = await _kotori.GetDocumentTypesAsync("dev", "doctypesd");
+
+            Assert.AreEqual(0, dt1.Count());
         }
 
         static string GetContent(string path)

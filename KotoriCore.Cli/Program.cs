@@ -66,15 +66,21 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
 
             // --- put stuff here --
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "doctypes", null);
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "doctypesd", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/2007-05-06-flip-flappers.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/_2007-05-07-flip-flappers.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv2/2007-05-06-aflip-flappers.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv3/2007-05-06-bflip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "doctypesd", "_content/tv/2007-05-06-flip-flappers.md", c);
 
-            var docTypes = await _kotori.GetDocumentTypesAsync("dev", "doctypes");
+            var dt0 = await _kotori.GetDocumentTypesAsync("dev", "doctypesd");
+
+            var docs = await _kotori.FindDocumentsAsync("dev", "doctypesd", "_content/tv", null, null, null, null, true, true);
+
+            foreach (var d in docs)
+                await _kotori.DeleteDocumentAsync("dev", "doctypesd", d.Identifier);
+
+            await _kotori.DeleteDocumentTypeAsync("dev", "doctypesd", "_content/tv");
+
+            var dt1 = await _kotori.GetDocumentTypesAsync("dev", "doctypesd");
         }
     }
 }

@@ -321,6 +321,30 @@ namespace KotoriCore
             return documentTypes;
         }
 
+        /// <summary>
+        /// Deletes the document type.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Document type identifier.</param>
+        public string DeleteDocumentType(string instance, string projectId, string identifier)
+        {
+            return AsyncTools.RunSync(() => DeleteDocumentTypeAsync(instance, projectId, identifier));
+        }
+
+        /// <summary>
+        /// Deletes the document type.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Document type identifier.</param>
+        public async Task<string> DeleteDocumentTypeAsync(string instance, string projectId, string identifier)
+        {
+            return (await ProcessAsync(new DeleteDocumentType(instance, projectId, identifier)) as CommandResult<string>)?.Message;
+        }
+
         async Task<ICommandResult> ProcessAsync(ICommand command)
         {
             return await _database.HandleAsync(command);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Domains;
@@ -23,7 +24,7 @@ namespace KotoriCore.Database.DocumentDb
                 );
 
             var documentTypes = await _repoDocumentType.GetListAsync(q);
-            var simpleDocumentTypes = documentTypes.Select(p => new SimpleDocumentType(p.Identifier.ToKotoriUri().ToKotoriIdentifier(true), p.Type));
+            var simpleDocumentTypes = documentTypes.Select(p => new SimpleDocumentType(new Uri(p.Identifier).ToKotoriIdentifier(true), p.Type));
 
             return new CommandResult<SimpleDocumentType>(simpleDocumentTypes);
         }
