@@ -51,6 +51,18 @@ namespace KotoriCore.Commands
         public string OrderBy { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.CountDocuments"/> returns drafts.
+        /// </summary>
+        /// <value><c>true</c> if include drafts; otherwise, <c>false</c>.</value>
+        public bool Drafts { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.CountDocuments"/> returns future.
+        /// </summary>
+        /// <value><c>true</c> if include future; otherwise, <c>false</c>.</value>
+        public bool Future { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.FindDocuments"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
@@ -60,7 +72,7 @@ namespace KotoriCore.Commands
         /// <param name="select">Select.</param>
         /// <param name="filter">Filter.</param>
         /// <param name="orderBy">Order by.</param>
-        public FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy)
+        public FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future)
         {
             Instance = instance;
             ProjectId = projectId;
@@ -74,6 +86,8 @@ namespace KotoriCore.Commands
             Top = top;
             Filter = filter;
             OrderBy = orderBy;
+            Drafts = drafts;
+            Future = future;
         }
 
         /// <summary>

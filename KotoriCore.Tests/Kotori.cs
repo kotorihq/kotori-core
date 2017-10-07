@@ -175,21 +175,21 @@ namespace KotoriCore.Tests
             c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c);
 
-            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null);
+            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null, false, false);
 
             Assert.AreEqual(2, docs.Count());
             Assert.AreEqual("_content/tv/2017-05-06-flying-witch.md", docs.ToList()[0].Identifier);
             Assert.AreEqual("_content/tv/2017-08-12-flip-flappers.md", docs.ToList()[1].Identifier);
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, null);
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, null, false, false);
             Assert.AreEqual(1, docs.Count());
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, "c.slug", null, "c.meta.rating asc");
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, "c.slug", null, "c.meta.rating asc", false, false);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual(null, docs.First().Identifier);
             Assert.AreEqual("flip-flappers", docs.First().Slug);
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null);
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null, false, false);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual("flip-flappers", docs.First().Slug);
         }
@@ -221,7 +221,7 @@ namespace KotoriCore.Tests
             c = GetContent("_content/tv/2017-05-06-flying-witch.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witch.md", c);
 
-            var docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null);
+            var docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null, false, false);
 
             Assert.AreEqual(2, docs.Count());
 
@@ -229,7 +229,7 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual("Document has been deleted.", resd2);
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null);
+            docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null, false, false);
 
             Assert.AreEqual(1, docs.Count());
         }
@@ -254,12 +254,54 @@ namespace KotoriCore.Tests
             c = GetContent("_content/tv/2017-05-06-flying-witch.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flying-witch.md", c);
 
-            var docs = _kotori.CountDocuments("dev", "nenecchi-count", "_content/tv/", null);
+            var docs = _kotori.CountDocuments("dev", "nenecchi-count", "_content/tv/", null, false, false);
 
             Assert.AreEqual(2, docs);
 
-            var docs2 = _kotori.CountDocuments("dev", "nenecchi-count", "_content/tv/", "c.meta.rating in (8)");
+            var docs2 = _kotori.CountDocuments("dev", "nenecchi-count", "_content/tv/", "c.meta.rating in (8)", false, false);
             Assert.AreEqual(1, docs2);
+        }
+
+        [TestMethod]
+        public async Task Drafts()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-drafts", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md", c);
+
+            c = GetContent("_content/tv/2017-05-06-flying-witch.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/.2017-05-06-flying-witch.md", c);
+
+            var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md");
+            Assert.AreEqual(false, futureDoc.Draft);
+
+            var draftDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/.2017-05-06-flying-witch.md");
+            Assert.AreEqual(true, draftDoc.Draft);
+
+            var count0 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, false, false);
+            Assert.AreEqual(0, count0);
+
+            var count1 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, true, false);
+            Assert.AreEqual(1, count1);
+
+            var count2 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, false, true);
+            Assert.AreEqual(1, count2);
+
+            var count3 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, true, true);
+            Assert.AreEqual(2, count3);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Get non-existent document inappropriately processed.")]
+        public async Task GetDocumentBadId()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dn", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dn", "_content/tv/2117-05-06-flip-flappers.md", c);
+
+            await _kotori.GetDocumentAsync("dev", "nenecchi-dn", "_content/tv/2217-05-06-flip-flappers.md");
         }
 
         static string GetContent(string path)

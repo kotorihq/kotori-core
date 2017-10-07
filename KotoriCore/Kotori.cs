@@ -191,9 +191,11 @@ namespace KotoriCore
         /// <param name="select">Select.</param>
         /// <param name="filter">Filter.</param>
         /// <param name="orderBy">Order by.</param>
-        public IEnumerable<SimpleDocument> FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy)
+        /// <param name="drafts">If set to <c>true</c> returns drafts.</param>
+        /// <param name="future">If set to <c>true</c> returns future.</param>
+        public IEnumerable<SimpleDocument> FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future)
         {
-            return AsyncTools.RunSync(() => FindDocumentsAsync(instance, projectId, documentTypeId, top, select, filter, orderBy));
+            return AsyncTools.RunSync(() => FindDocumentsAsync(instance, projectId, documentTypeId, top, select, filter, orderBy, drafts, future));
         }
 
         /// <summary>
@@ -207,9 +209,11 @@ namespace KotoriCore
         /// <param name="select">Select.</param>
         /// <param name="filter">Filter.</param>
         /// <param name="orderBy">Order by.</param>
-        public async Task<IEnumerable<SimpleDocument>> FindDocumentsAsync(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy)
+        /// <param name="drafts">If set to <c>true</c> returns drafts.</param>
+        /// <param name="future">If set to <c>true</c> returns future.</param>
+        public async Task<IEnumerable<SimpleDocument>> FindDocumentsAsync(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future)
         {
-            var result = await ProcessAsync(new FindDocuments(instance, projectId, documentTypeId, top, select, filter, orderBy)) as CommandResult<SimpleDocument>;
+            var result = await ProcessAsync(new FindDocuments(instance, projectId, documentTypeId, top, select, filter, orderBy, drafts, future)) as CommandResult<SimpleDocument>;
             var documents = result.Data as IEnumerable<SimpleDocument>;
 
             return documents;
@@ -246,9 +250,11 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="filter">Document filter.</param>
-        public long CountDocuments(string instance, string projectId, string documentTypeId, string filter)
+        /// <param name="drafts">If set to <c>true</c> returns drafts.</param>
+        /// <param name="future">If set to <c>true</c> returns future.</param>
+        public long CountDocuments(string instance, string projectId, string documentTypeId, string filter, bool drafts, bool future)
         {
-            return AsyncTools.RunSync(() => CountDocumentsAsync(instance, projectId, documentTypeId, filter));
+            return AsyncTools.RunSync(() => CountDocumentsAsync(instance, projectId, documentTypeId, filter, drafts, future));
         }
 
         /// <summary>
@@ -258,9 +264,11 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="filter">Document filter.</param>
-        public async Task<long> CountDocumentsAsync(string instance, string projectId, string documentTypeId, string filter)
+        /// <param name="drafts">If set to <c>true</c> returns drafts.</param>
+        /// <param name="future">If set to <c>true</c> returns future.</param>
+        public async Task<long> CountDocumentsAsync(string instance, string projectId, string documentTypeId, string filter, bool drafts, bool future)
         {
-            var result = await ProcessAsync(new CountDocuments(instance, projectId, documentTypeId, filter)) as CommandResult<long>;
+            var result = await ProcessAsync(new CountDocuments(instance, projectId, documentTypeId, filter, drafts, future)) as CommandResult<long>;
 
             return result.Record;
         }

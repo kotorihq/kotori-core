@@ -122,6 +122,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Content = content;
             Date = date.HasValue ? new Stamp(date.Value) : null;
             Modified = new Stamp();
+            Draft = draft;
         }
     }
 }

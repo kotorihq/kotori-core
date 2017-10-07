@@ -20,6 +20,9 @@ namespace KotoriCore.Database.DocumentDb
 
             var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
 
+            if (d == null)
+                throw new KotoriDocumentException(command.Identifier, "Document not found.");
+            
             return new CommandResult<SimpleDocument>
             (
                 new SimpleDocument

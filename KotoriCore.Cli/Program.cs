@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Documents;
 using KotoriCore.Helpers;
@@ -26,6 +27,11 @@ namespace KotoriCore.Cli
 
         static void Main(string[] args)
         {
+            AsyncTools.RunSync(DoIt);
+        }
+
+        static async Task DoIt()
+        {
             var appSettings = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("AppSettings.json")
@@ -43,24 +49,7 @@ namespace KotoriCore.Cli
                 );
 
 
-            var cxxx = @"hello";
-            var m = @"{ ""name"": ""gremlin"",
-""age"": 3,
-""fun"": true,
-""bwh"": { b: 90, w: 58, h: 88 } }
-";
-            var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + cxxx;
-
-            var md = new Markdown("_content/foo/.2016-03-04-bar.md", all);
-
-            var resultx = md.Process();
-
-            var mdr = resultx as MarkdownResult;
-
-            return;
-
-            // !!!!!!!!!!
-
+            var repo = new Repository(_con);
             var q = new DynamicQuery
                 (
                     "select c.id from c where startswith(c.entity, @entity) and c.instance = @instance",
@@ -71,41 +60,29 @@ namespace KotoriCore.Cli
                     }
             );
 
-            var repo = new Repository(_con);
             var records = repo.GetList(q);
 
             foreach (var record in records)
                 repo.Delete(record);
-            
-            // --
 
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-drafts", null);
 
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2117-05-06-flip-flappers.md", c);
 
-            var result = _kotori.CreateProject("dev", "Nenecchi", "nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            c = GetContent("_content/tv/2017-05-06-flying-witch.md");
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/.2017-05-06-flying-witch.md", c);
 
-            var projects = _kotori.GetProjects("dev");
+            var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2117-05-06-flip-flappers.md");
+            var draftDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/.2017-05-06-flying-witch.md");
 
-            string id;
-            string c;
+            var count0 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, false, false);
 
-            id = "_content/movie/matrix.md";
-            c = GetContent(id);
-            _kotori.UpsertDocument("dev", "nenecchi", id, c);
+            var count1 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, true, false);
 
-            id = "_content/tv/2017-05-06-flying-witch.md";
-            c = GetContent(id);
-            _kotori.UpsertDocument("dev", "nenecchi", id, c);
+            var count2 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, false, true);
 
-            id = "_content/tv/2017-08-12-flip-flappers.md";
-            c = GetContent(id);
-            _kotori.UpsertDocument("dev", "nenecchi", id, c);
-
-            id = "_content/tv/2017-08-12-flip-flappers.md";
-            c = GetContent(id);
-            _kotori.UpsertDocument("dev", "nenecchi", id, c);
-
-            var d = _kotori.GetDocument("dev", "nenecchi", "_content/tv/2017-08-12-flip-flappers.md");
-            System.Console.WriteLine(d);
+            var count3 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, true, true);
         }
     }
 }

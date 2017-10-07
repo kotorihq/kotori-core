@@ -26,7 +26,18 @@ namespace KotoriCore.Database.DocumentDb
             if (documentType == null)
                 throw new KotoriValidationException("Document type does not exist.");
 
-            var sql = DocumentDbHelpers.CreateDynamicQuery(command.Instance, projectUri, documentTypeUri, command.Top, command.Select, command.Filter, command.OrderBy);
+            var sql = DocumentDbHelpers.CreateDynamicQuery
+            (
+                command.Instance, 
+                projectUri, 
+                documentTypeUri, 
+                command.Top, 
+                command.Select, 
+                command.Filter, 
+                command.OrderBy, 
+                command.Drafts, 
+                command.Future
+            );
 
             var documents = await _repoDocument.GetListAsync(sql);
 

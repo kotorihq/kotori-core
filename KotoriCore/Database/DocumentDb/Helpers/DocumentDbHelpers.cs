@@ -1,4 +1,5 @@
 ﻿using System;
+using Sushi2;
 
 namespace KotoriCore.Database.DocumentDb.Helpers
 {
@@ -26,7 +27,9 @@ namespace KotoriCore.Database.DocumentDb.Helpers
         /// <param name="select">Select.</param>
         /// <param name="filter">Filter.</param>
         /// <param name="orderBy">Order by.</param>
-        internal static string CreateDynamicQuery(string instance, Uri project, Uri documentType, int? top, string select, string filter, string orderBy)
+        /// <param name="drafts">If <c>true</c> then show drafts.</param>
+        /// <param name="future">If <c>true</c> then show future.</param>
+        internal static string CreateDynamicQuery(string instance, Uri project, Uri documentType, int? top, string select, string filter, string orderBy, bool drafts, bool future)
         {
             var sql = "select ";
 
@@ -43,7 +46,15 @@ namespace KotoriCore.Database.DocumentDb.Helpers
                 documentType +
                 "' and c.instance = '" +
                 instance +
-                "')";
+                "'";
+
+            if (!drafts)
+                sql += " and c.draft = false ";
+
+            if (!future)
+                sql += " and c.date.epoch <= " + DateTime.Now.ToEpoch();
+            
+            sql += ") ";
 
             if (filter != null)
                 sql += " and (" + filter + ")";
