@@ -4,9 +4,9 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Get document type.
+    /// Get document types.
     /// </summary>
-    public class GetDocumentType : Command
+    public class GetDocumentTypes : Command
     {
         /// <summary>
         /// Gets the instance.
@@ -21,22 +21,14 @@ namespace KotoriCore.Commands
         public string ProjectId { get; }
 
         /// <summary>
-        /// Gets the identifier.
-        /// </summary>
-        /// <value>The identifier.</value>
-        public string Identifier { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetDocumentType"/> class.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetDocumentTypes"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Document identifier.</param>
-        public GetDocumentType(string instance, string projectId, string identifier)
+        public GetDocumentTypes(string instance, string projectId)
         {
             Instance = instance;
             ProjectId = projectId;
-            Identifier = identifier;
         }
 
         /// <summary>
@@ -50,9 +42,6 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Project Id must be set.");
-
-            if (string.IsNullOrEmpty(Identifier))
-                yield return new ValidationResult("Identifier must be set.");
         }
     }
 }

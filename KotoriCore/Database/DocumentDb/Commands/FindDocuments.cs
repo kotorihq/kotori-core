@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Domains;
-using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 using KotoriCore.Database.DocumentDb.Helpers;
 using System.Linq;

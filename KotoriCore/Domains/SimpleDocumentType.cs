@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using KotoriCore.Helpers;
+﻿using KotoriCore.Helpers;
 
 namespace KotoriCore.Domains
 {
@@ -9,16 +8,16 @@ namespace KotoriCore.Domains
     public class SimpleDocumentType
     {
         /// <summary>
-        /// Gets or sets the identifier.
+        /// Gets the identifier.
         /// </summary>
         /// <value>The identifier.</value>
-        public string Identifier { get; set; }
+        public string Identifier { get; }
 
         /// <summary>
-        /// Gets or sets the document typr.
+        /// Gets the type.
         /// </summary>
-        /// <value>The document type.</value>
-        public Enums.DocumentType Type { get; set; }
+        /// <value>The type.</value>
+        public string Type { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocumentType"/> class.
@@ -35,7 +34,7 @@ namespace KotoriCore.Domains
         public SimpleDocumentType(string identifier, Enums.DocumentType type)
         {
             Identifier = identifier;
-            Type = type;
+            Type = type.ToString().ToLower();
         }
 }
 }

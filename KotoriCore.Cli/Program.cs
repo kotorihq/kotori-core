@@ -65,24 +65,16 @@ namespace KotoriCore.Cli
             foreach (var record in records)
                 repo.Delete(record);
 
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-drafts", null);
+            // --- put stuff here --
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "doctypes", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2117-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/_2007-05-07-flip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv2/2007-05-06-aflip-flappers.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv3/2007-05-06-bflip-flappers.md", c);
 
-            c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/.2017-05-06-flying-witch.md", c);
-
-            var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2117-05-06-flip-flappers.md");
-            var draftDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/.2017-05-06-flying-witch.md");
-
-            var count0 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, false, false);
-
-            var count1 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, true, false);
-
-            var count2 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, false, true);
-
-            var count3 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, true, true);
+            var docTypes = await _kotori.GetDocumentTypesAsync("dev", "doctypes");
         }
     }
 }

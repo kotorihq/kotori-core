@@ -7,7 +7,6 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using KotoriCore.Domains;
-using System.Linq;
 using Sushi2;
 
 namespace KotoriCore
@@ -295,6 +294,31 @@ namespace KotoriCore
         public async Task<SimpleDocumentType> GetDocumentTypeAsync(string instance, string projectId, string identifier)
         {
             return (await ProcessAsync(new GetDocumentType(instance, projectId, identifier)) as CommandResult<SimpleDocumentType>)?.Record;
+        }
+
+        /// <summary>
+        /// Gets document types.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <returns>Result.</returns>
+        public IEnumerable<SimpleDocumentType> GetDocumentTypes(string instance, string projectId)
+        {
+            return AsyncTools.RunSync(() => GetDocumentTypesAsync(instance, projectId));
+        }
+
+        /// <summary>
+        /// Gets document types.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <returns>Result.</returns>
+        public async Task<IEnumerable<SimpleDocumentType>> GetDocumentTypesAsync(string instance, string projectId)
+        {
+            var result = await ProcessAsync(new GetDocumentTypes(instance, projectId));
+            var documentTypes = result.Data as IEnumerable<SimpleDocumentType>;
+
+            return documentTypes;
         }
 
         async Task<ICommandResult> ProcessAsync(ICommand command)
