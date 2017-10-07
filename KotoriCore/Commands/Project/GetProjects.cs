@@ -4,15 +4,15 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Get projects.
+    /// Get projects command.
     /// </summary>
     public class GetProjects : Command
-    {   
+    {
         /// <summary>
         /// Gets the instance.
         /// </summary>
         /// <value>The instance.</value>
-        public string Instance { get; }
+        public readonly string Instance;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetProjects"/> class.
@@ -24,13 +24,13 @@ namespace KotoriCore.Commands
         }
 
         /// <summary>
-        /// Validate.
+        /// Validate the command.
         /// </summary>
         /// <returns>The validation result.</returns>
-        /// <remarks>Not needed in this case.</remarks>
         public override IEnumerable<ValidationResult> Validate()
         {
-            return null;
+            if (string.IsNullOrEmpty(Instance))
+                yield return new ValidationResult("Instance must be set.");
         }
     }
 }
