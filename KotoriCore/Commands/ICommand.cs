@@ -9,7 +9,7 @@ namespace KotoriCore.Commands
     public interface ICommand
     {
         /// <summary>
-        /// Validate this instance.
+        /// Validates the command.
         /// </summary>
         /// <returns>The validation result.</returns>
         IEnumerable<ValidationResult> Validate();

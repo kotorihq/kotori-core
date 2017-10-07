@@ -49,7 +49,7 @@ namespace KotoriCore.Commands
                 yield return new ValidationResult("Instance must be set.");
 
             if (string.IsNullOrEmpty(ProjectId))
-                yield return new ValidationResult("Project id must be set.");
+                yield return new ValidationResult("Project Id must be set.");
 
             if (string.IsNullOrEmpty(Identifier))
                 yield return new ValidationResult("Identifier must be set.");
