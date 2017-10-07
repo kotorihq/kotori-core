@@ -21,9 +21,9 @@ namespace KotoriCore.Database.DocumentDb
                 );
 
             var projects = await _repoProject.GetListAsync(q);
-            var domainProjects = projects.Select(p => new Project(p.Instance, p.Name, p.Identifier, p.ProjectKeys));
+            var simpleProjects = projects.Select(p => new SimpleProject(p.Name, p.Identifier));
 
-            return new CommandResult<SimpleProject>(domainProjects.Select(d => new SimpleProject(d.Name, d.Identifier)));
+            return new CommandResult<SimpleProject>(simpleProjects);
         }
     }
 }
