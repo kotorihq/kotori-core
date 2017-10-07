@@ -49,13 +49,6 @@ namespace KotoriCore.Domains
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocument"/> class.
         /// </summary>
-        public SimpleDocument()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocument"/> class.
-        /// </summary>
         /// <param name="identifier">Identifier.</param>
         /// <param name="slug">Slug.</param>
         /// <param name="meta">Meta.</param>

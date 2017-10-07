@@ -20,13 +20,6 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.SimpleProject"/> class.
         /// </summary>
-        public SimpleProject()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.SimpleProject"/> class.
-        /// </summary>
         /// <param name="name">Name.</param>
         /// <param name="identifier">Identifier.</param>
         public SimpleProject(string name, string identifier)

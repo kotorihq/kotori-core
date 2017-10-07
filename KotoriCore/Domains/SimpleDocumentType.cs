@@ -22,13 +22,6 @@ namespace KotoriCore.Domains
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocumentType"/> class.
         /// </summary>
-        public SimpleDocumentType()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocumentType"/> class.
-        /// </summary>
         /// <param name="identifier">Identifier.</param>
         /// <param name="type">Document type.</param>
         public SimpleDocumentType(string identifier, Enums.DocumentType type)
