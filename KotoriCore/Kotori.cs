@@ -94,7 +94,7 @@ namespace KotoriCore
         /// <param name="projectId">Identifier.</param>
         /// <param name="projectKeys">Project keys.</param>
         /// <returns>Result.</returns>
-        public string CreateProject(string instance, string name, string projectId, IEnumerable<ProjectKey> projectKeys)
+        public string CreateProject(string instance, string name, string projectId, IEnumerable<Configurations.ProjectKey> projectKeys)
         {
             return AsyncTools.RunSync(() => CreateProjectAsync(instance, name, projectId, projectKeys));
         }
@@ -107,7 +107,7 @@ namespace KotoriCore
         /// <param name="projectId">Identifier.</param>
         /// <param name="projectKeys">Project keys.</param>
         /// <returns>Result.</returns>
-        public async Task<string> CreateProjectAsync(string instance, string name, string projectId, IEnumerable<ProjectKey> projectKeys)
+        public async Task<string> CreateProjectAsync(string instance, string name, string projectId, IEnumerable<Configurations.ProjectKey> projectKeys)
         {
             return (await ProcessAsync(new CreateProject(instance, name, projectId, projectKeys)) as CommandResult<string>)?.Message;
         }
@@ -369,6 +369,31 @@ namespace KotoriCore
         public async Task<SimpleProject> GetProjectAsync(string instance, string identifier)
         {
             return (await ProcessAsync(new GetProject(instance, identifier)) as CommandResult<SimpleProject>)?.Record;
+        }
+
+        /// <summary>
+        /// Gets project keys.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <returns>Result.</returns>
+        public IEnumerable<Domains.ProjectKey> GetProjectKeys(string instance, string identifier)
+        {
+            return AsyncTools.RunSync(() => GetProjectKeysAsync(instance, identifier));
+        }
+
+        /// <summary>
+        /// Gets project keys.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <returns>Result.</returns>
+        public async Task<IEnumerable<Domains.ProjectKey>> GetProjectKeysAsync(string instance, string identifier)
+        {
+            var result = await ProcessAsync(new GetProjectKeys(instance, identifier));
+            var projectKeys = result.Data as IEnumerable<Domains.ProjectKey>;
+
+            return projectKeys;
         }
 
         async Task<ICommandResult> ProcessAsync(ICommand command)

@@ -470,6 +470,20 @@ namespace KotoriCore.Tests
             Assert.AreEqual("fantomas", project.Identifier);
         }
 
+        [TestMethod]
+        public async Task GetProjectKeys()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "rude", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene"), new Configurations.ProjectKey("aoba", true) });
+            Assert.AreEqual("Project has been created.", result);
+            var projectKeys = _kotori.GetProjectKeys("dev", "rude");
+
+            Assert.AreEqual(2, projectKeys.Count());
+            Assert.AreEqual("sakura-nene", projectKeys.First().Key);
+            Assert.IsFalse(projectKeys.First().IsReadonly);
+            Assert.AreEqual("aoba", projectKeys.Last().Key);
+            Assert.IsTrue(projectKeys.Last().IsReadonly);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

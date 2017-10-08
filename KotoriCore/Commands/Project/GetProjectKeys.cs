@@ -3,7 +3,7 @@ using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
-    public class GetProject : Command
+    public class GetProjectKeys : Command
     {
         /// <summary>
         /// Gets the instance.
@@ -16,11 +16,11 @@ namespace KotoriCore.Commands
         public readonly string Identifier;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetProject"/> class.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetProjectKeys"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="identifier">Identifier.</param>
-        public GetProject(string instance, string identifier)
+        public GetProjectKeys(string instance, string identifier)
         {
             Instance = instance;
             Identifier = identifier;
@@ -34,7 +34,7 @@ namespace KotoriCore.Commands
         {
             if (string.IsNullOrEmpty(Instance))
                 yield return new ValidationResult("Instance must be set.");
-            
+
             if (string.IsNullOrEmpty(Identifier))
                 yield return new ValidationResult("Identifier must be set.");
         }

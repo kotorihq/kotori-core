@@ -14,6 +14,13 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Configurations.ProjectKey"/> class.
         /// </summary>
+        public ProjectKey()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Configurations.ProjectKey"/> class.
+        /// </summary>
         /// <param name="key">Key.</param>
         /// <param name="isReadonly">If set to <c>true</c> is readonly.</param>
         public ProjectKey(string key, bool isReadonly = false)
