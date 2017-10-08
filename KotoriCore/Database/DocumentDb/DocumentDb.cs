@@ -7,6 +7,7 @@ using System.Linq;
 using Oogi2.Queries;
 using System.Threading.Tasks;
 using static KotoriCore.Database.DocumentDb.Helpers.DocumentDbHelpers;
+using KotoriCore.Helpers;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -30,7 +31,7 @@ namespace KotoriCore.Database.DocumentDb
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.DocumentDb"/> class.
         /// </summary>
         /// <param name="configuration">Configuration.</param>
-        public DocumentDb(DocumentDbConfiguration configuration)
+        internal DocumentDb(DocumentDbConfiguration configuration)
         {
             _connection = new Connection(configuration.Endpoint, configuration.AuthorizationKey, configuration.Database, configuration.Collection);
             _repoProject = new Repository<Entities.Project>(_connection);
@@ -79,6 +80,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(getDocumentTypes);
                 else if (command is DeleteDocumentType deleteDocumentType)
                     result = await HandleAsync(deleteDocumentType);
+                else if (command is GetProject getProject)
+                    result = await HandleAsync(getProject);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
@@ -164,6 +167,27 @@ namespace KotoriCore.Database.DocumentDb
             var documentType = await _repoDocumentType.GetFirstOrDefaultAsync(q);
 
             return documentType;
+        }
+
+        async Task<Entities.Project> FindProjectAsync(string instance, Uri projectUri)
+        {
+            var q = new DynamicQuery
+                (
+                    "select * from c where c.entity = @entity and c.instance = @instance and c.identifier = @id",
+                    new
+                    {
+                        entity = ProjectEntity,
+                        instance,
+                        id = projectUri.ToString()
+                    }
+            );
+
+            var project = await _repoProject.GetFirstOrDefaultAsync(q);
+
+            if (project != null)
+                project.Identifier = new Uri(project.Identifier).ToKotoriIdentifier();
+
+            return project;
         }
     }
 }

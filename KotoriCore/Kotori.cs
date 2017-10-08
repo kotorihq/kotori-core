@@ -349,6 +349,28 @@ namespace KotoriCore
             return (await ProcessAsync(new DeleteDocumentType(instance, projectId, identifier)) as CommandResult<string>)?.Message;
         }
 
+        /// <summary>
+        /// Gets project.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="identifier">Document identifier.</param>
+        public SimpleProject GetProject(string instance, string identifier)
+        {
+            return AsyncTools.RunSync(() => GetProjectAsync(instance, identifier));
+        }
+
+        /// <summary>
+        /// Gets project.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="identifier">Document identifier.</param>
+        public async Task<SimpleProject> GetProjectAsync(string instance, string identifier)
+        {
+            return (await ProcessAsync(new GetProject(instance, identifier)) as CommandResult<SimpleProject>)?.Record;
+        }
+
         async Task<ICommandResult> ProcessAsync(ICommand command)
         {
             return await _database.HandleAsync(command);

@@ -460,6 +460,16 @@ namespace KotoriCore.Tests
             Assert.AreEqual("matrix", d.Slug);
         }
 
+        [TestMethod]
+        public async Task GetProject()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "fantomas", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            Assert.AreEqual("Project has been created.", result);
+            var project = _kotori.GetProject("dev", "fantomas");
+
+            Assert.AreEqual("fantomas", project.Identifier);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();
