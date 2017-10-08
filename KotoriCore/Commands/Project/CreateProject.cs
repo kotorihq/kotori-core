@@ -10,10 +10,25 @@ namespace KotoriCore.Commands
     /// </summary>
     public class CreateProject : Command
     {
+        /// <summary>
+        /// The name.
+        /// </summary>
         public readonly string Name;
+
+        /// <summary>
+        /// The identifier.
+        /// </summary>
         public readonly string Identifier;
-        public IEnumerable<ProjectKey> ProjectKeys { get; set; }
-        public string Instance { get; }
+
+        /// <summary>
+        /// Gets or sets the project keys.
+        /// </summary>
+        public readonly IEnumerable<ProjectKey> ProjectKeys;
+
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        public readonly string Instance;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CreateProject"/> class.
@@ -33,7 +48,7 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Validate this instance.
         /// </summary>
-        /// <returns>The validation results or null if everything is alright.</returns>
+        /// <returns>The validation results.</returns>
         public override IEnumerable<ValidationResult> Validate()
         {
             if (string.IsNullOrEmpty(Instance))

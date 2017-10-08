@@ -484,6 +484,43 @@ namespace KotoriCore.Tests
             Assert.IsTrue(projectKeys.Last().IsReadonly);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriProjectException), "Non existent project was inappropriately accepted.")]
+        public void GetProjectKeysFail()
+        {
+            var projectKeys = _kotori.GetProjectKeys("dev", "rudex-fail");
+        }
+
+        [TestMethod]
+        public async Task UpdateProject()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "raw", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene"), new Configurations.ProjectKey("aoba", true) });
+            Assert.AreEqual("Project has been created.", result);
+
+            var first = _kotori.GetProject("dev", "raw");
+
+            Assert.AreEqual("Nenecchi", first.Name);
+
+            _kotori.UpdateProject("dev", "raw", "Aoba");
+
+            first = _kotori.GetProject("dev", "raw");
+
+            Assert.AreEqual("Aoba", first.Name);
+
+            _kotori.UpdateProject("dev", "raw", null);
+
+            first = _kotori.GetProject("dev", "raw");
+
+            Assert.AreEqual("Aoba", first.Name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriProjectException), "Non existent project was inappropriately accepted.")]
+        public void UpdateProjectFail()
+        {
+            var projectKeys = _kotori.UpdateProject("dev", "rudex-fail", "Hehe");
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

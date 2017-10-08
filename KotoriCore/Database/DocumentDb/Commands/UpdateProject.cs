@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using KotoriCore.Commands;
-using KotoriCore.Domains;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 
@@ -8,7 +7,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<SimpleProject>> HandleAsync(GetProject command)
+        async Task<CommandResult<string>> HandleAsync(UpdateProject command)
         {
             var projectUri = command.Identifier.ToKotoriUri();
             var p = await FindProjectAsync(command.Instance, projectUri);
@@ -16,14 +15,12 @@ namespace KotoriCore.Database.DocumentDb
             if (p == null)
                 throw new KotoriProjectException(command.Identifier, "Project not found.");
 
-            return new CommandResult<SimpleProject>
-            (
-                new SimpleProject
-                (
-                    p.Name,
-                    p.Identifier
-                )
-            );
+            if (!string.IsNullOrEmpty(command.Name))
+                p.Name = command.Name;
+
+            await _repoProject.ReplaceAsync(p);
+
+            return new CommandResult<string>("Project has been updated.");
         }
     }
 }
