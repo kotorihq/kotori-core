@@ -18,6 +18,8 @@ namespace KotoriCore.Database.DocumentDb
             if (!string.IsNullOrEmpty(command.Name))
                 p.Name = command.Name;
 
+            p.Identifier = p.Identifier.ToKotoriUri().ToString();
+
             await _repoProject.ReplaceAsync(p);
 
             return new CommandResult<string>("Project has been updated.");
