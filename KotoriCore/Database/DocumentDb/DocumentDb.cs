@@ -90,6 +90,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(createProjectKey);
                 else if (command is UpdateProjectKey updateProjectKey)
                     result = await HandleAsync(updateProjectKey);
+                else if (command is DeleteProjectKey deleteProjectKey)
+                    result = await HandleAsync(deleteProjectKey);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 

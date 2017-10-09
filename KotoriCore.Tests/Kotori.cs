@@ -569,6 +569,15 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException), "Non existent key was inappropriately accepted for deletion.")]
+        public void DeleteProjectKeyFail()
+        {
+            var result = _kotori.CreateProject("dev", "delprok", "foo", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("xxx") });
+
+            _kotori.DeleteProjectKey("dev", "delprok", "oh-ah-la-la-la");
+        }
+
+        [TestMethod]
         public void CreateProjectKeys()
         {
             var result = _kotori.CreateProject("dev", "cpkeys", "Foobar", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("aaa", true), new Configurations.ProjectKey("bbb", false) });
@@ -593,6 +602,16 @@ namespace KotoriCore.Tests
             keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
 
             Assert.AreEqual(false, keys[0].IsReadonly);
+
+            _kotori.DeleteProjectKey("dev", "cpkeys", "ccc");
+
+            keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
+
+            Assert.AreEqual(3, keys.Count());
+
+            Assert.AreEqual("aaa", keys[0].Key);
+            Assert.AreEqual("bbb", keys[1].Key);
+            Assert.AreEqual("ddd", keys[2].Key);
         }
 
         static string GetContent(string path)
