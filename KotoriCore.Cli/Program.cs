@@ -69,7 +69,7 @@ namespace KotoriCore.Cli
 
             // --- put stuff here --
 
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "fantomas", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            var result = await _kotori.CreateProjectAsync("dev", "fantomas", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
             var project = _kotori.GetProject("dev", "fantomas");
         }
     }

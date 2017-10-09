@@ -43,7 +43,7 @@ namespace KotoriCore.Tests
 
             try
             {
-                await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi/stable", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+                await _kotori.CreateProjectAsync("dev", "nenecchi/stable", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
             }
             catch
             {
@@ -81,14 +81,14 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public async Task FailToCreateProjectSecond()
         {
-            await _kotori.CreateProjectAsync("foo", "bar", "x x", null);
+            await _kotori.CreateProjectAsync("foo", "x x", "bar", null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public async Task FailToCreateProjectBadKeys()
         {
-            await _kotori.CreateProjectAsync("foo", "bar", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
+            await _kotori.CreateProjectAsync("foo", "aoba", "bar", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
         }
 
         [TestMethod]
@@ -101,13 +101,13 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void CreateProjectDirectValidations()
         {
-            var p = new CreateProject("dev", "aoba", "aoba/ main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
+            var p = new CreateProject("dev", "aoba/ main", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
             var vr = p.Validate().ToList();
 
             Assert.AreEqual(1, vr.Count());
             Assert.AreEqual("All project keys must be set.", vr[0].Message);
 
-            p = new CreateProject("dev", "aoba", "aoba-main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            p = new CreateProject("dev", "aoba-main", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
             vr = p.Validate().ToList();
 
             Assert.AreEqual(0, vr.Count());
@@ -116,7 +116,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task Complex()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi/main", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi/main", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
 
             Assert.AreEqual("Project has been created.", result);
 
@@ -157,7 +157,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Dupe slug was inappropriately validated as ok.")]
         public async Task DupeSlugs()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dupe", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dupe", "Nenecchi", null);
 
             var c = GetContent("_content/movie/matrix.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-dupe", "_content/movie2/matrix.md", c, null);
@@ -167,7 +167,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task FindDocuments()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-find", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-05-06-flying-witch.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-05-06-flying-witch.md", c, "tests");
@@ -207,7 +207,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task SameHash()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-hash", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-hash", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witch.md", c, null);
@@ -223,7 +223,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task DeleteDocument()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-del", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flip-flappers.md", c, null);
@@ -248,7 +248,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Delete command was inappropriately allowed.")]
         public async Task DeleteDocumentThatDoesntExist()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-del2", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del2", "Nenecchi", null);
 
             _kotori.DeleteDocument("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witchxxx.md");
         }
@@ -256,7 +256,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task CountDocuments()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-count", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-count", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flip-flappers.md", c, null);
@@ -275,7 +275,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task Drafts()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-drafts", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-drafts", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md", c, null);
@@ -306,7 +306,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Get non-existent document inappropriately processed.")]
         public async Task GetDocumentBadId()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dn", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dn", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-dn", "_content/tv/2117-05-06-flip-flappers.md", c, null);
@@ -318,7 +318,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentTypeException), "Get non-existent document type inappropriately processed.")]
         public async Task GetDocumentTypeBadId()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dty", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-dty", "_content/tv/2117-05-06-flip-flappers.md", c, null);
@@ -329,7 +329,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task GetDocumentType()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "nenecchi-dty2", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty2", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-dty2", "_content/tv/2117-05-06-flip-flappers.md", c, null);
@@ -344,7 +344,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Null document inappropriately processed.")]
         public async Task CreateInvalidDocument()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "inv", null);
+            var result = await _kotori.CreateProjectAsync("dev", "inv", "Nenecchi", null);
 
             await _kotori.UpsertDocumentAsync("dev", "inv", "_content/tv/2117-05-06-flip-flappers.md", null, null);
         }
@@ -352,7 +352,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task DocumentTypes()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "doctypes", null);
+            var result = await _kotori.CreateProjectAsync("dev", "doctypes", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/2007-05-06-flip-flappers.md", c, null);
@@ -370,7 +370,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task DocumentTypesDelete()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "doctypesd", null);
+            var result = await _kotori.CreateProjectAsync("dev", "doctypesd", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "doctypesd", "_content/tv/2007-05-06-flip-flappers.md", c, null);
@@ -395,7 +395,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriProjectException), "Non deletable project inappropriately allowed to be deleted.")]
         public async Task ProjectDeleteFail()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "immortal", null);
+            var result = await _kotori.CreateProjectAsync("dev", "immortal", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "immortal", "_content/tv/2007-05-06-flip-flappers.md", c, null);
@@ -406,7 +406,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentTypeException), "Non deletable project inappropriately allowed to be deleted.")]
         public async Task ProjectDeleteFail2()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "immortal2", null);
+            var result = await _kotori.CreateProjectAsync("dev", "immortal2", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "immortal2", "_content/tv/2007-05-06-flip-flappers.md", c, null);
@@ -416,7 +416,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task ProjectDelete()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "immortal3", null);
+            var result = await _kotori.CreateProjectAsync("dev", "immortal3", "Nenecchi", null);
 
             var projects2 = _kotori.GetProjects("dev");
 
@@ -449,7 +449,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task Draft()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "slugdraft", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            var result = await _kotori.CreateProjectAsync("dev", "slugdraft", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
 
             var c = GetContent("_content/movie/matrix.md");
             await _kotori.UpsertDocumentAsync("dev", "slugdraft", "_content/movie/.matrix.md", c, null);
@@ -463,7 +463,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task GetProject()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "fantomas", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            var result = await _kotori.CreateProjectAsync("dev", "fantomas", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
             Assert.AreEqual("Project has been created.", result);
             var project = _kotori.GetProject("dev", "fantomas");
 
@@ -473,7 +473,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task GetProjectKeys()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "rude", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene"), new Configurations.ProjectKey("aoba", true) });
+            var result = await _kotori.CreateProjectAsync("dev", "rude", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene"), new Configurations.ProjectKey("aoba", true) });
             Assert.AreEqual("Project has been created.", result);
             var projectKeys = _kotori.GetProjectKeys("dev", "rude");
 
@@ -494,7 +494,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task UpdateProject()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "Nenecchi", "raw", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene"), new Configurations.ProjectKey("aoba", true) });
+            var result = await _kotori.CreateProjectAsync("dev", "raw", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene"), new Configurations.ProjectKey("aoba", true) });
             Assert.AreEqual("Project has been created.", result);
 
             var first = _kotori.GetProject("dev", "raw");

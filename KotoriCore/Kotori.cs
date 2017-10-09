@@ -90,26 +90,26 @@ namespace KotoriCore
         /// Creates project.
         /// </summary>
         /// <param name="instance">Instance.</param>
+        /// <param name="identifier">Identifier.</param>
         /// <param name="name">Name.</param>
-        /// <param name="projectId">Identifier.</param>
         /// <param name="projectKeys">Project keys.</param>
         /// <returns>Result.</returns>
-        public string CreateProject(string instance, string name, string projectId, IEnumerable<Configurations.ProjectKey> projectKeys)
+        public string CreateProject(string instance, string identifier, string name, IEnumerable<Configurations.ProjectKey> projectKeys)
         {
-            return AsyncTools.RunSync(() => CreateProjectAsync(instance, name, projectId, projectKeys));
+            return AsyncTools.RunSync(() => CreateProjectAsync(instance, identifier, name, projectKeys));
         }
 
         /// <summary>
         /// Creates project.
         /// </summary>
         /// <param name="instance">Instance.</param>
+        /// <param name="identifier">Identifier.</param>
         /// <param name="name">Name.</param>
-        /// <param name="projectId">Identifier.</param>
         /// <param name="projectKeys">Project keys.</param>
         /// <returns>Result.</returns>
-        public async Task<string> CreateProjectAsync(string instance, string name, string projectId, IEnumerable<Configurations.ProjectKey> projectKeys)
+        public async Task<string> CreateProjectAsync(string instance, string identifier, string name, IEnumerable<Configurations.ProjectKey> projectKeys)
         {
-            return (await ProcessAsync(new CreateProject(instance, name, projectId, projectKeys)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new CreateProject(instance, identifier, name, projectKeys)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>

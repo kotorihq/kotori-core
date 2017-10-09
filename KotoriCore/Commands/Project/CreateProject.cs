@@ -34,10 +34,10 @@ namespace KotoriCore.Commands
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CreateProject"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
-        /// <param name="name">Name.</param>
         /// <param name="identifier">Identifier.</param>
+        /// <param name="name">Name.</param>
         /// <param name="projectKeys">Project keys.</param>
-        public CreateProject(string instance, string name, string identifier, IEnumerable<ProjectKey> projectKeys)
+        public CreateProject(string instance, string identifier, string name, IEnumerable<ProjectKey> projectKeys)
         {
             Instance = instance;
             Name = name;
