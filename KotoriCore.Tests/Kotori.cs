@@ -560,6 +560,15 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException), "Non existent key was inappropriately accepted.")]
+        public void UpdateProjectKeyFail()
+        {
+            var result = _kotori.CreateProject("dev", "cpkf2", "foo", null);
+
+            _kotori.UpdateProjectKey("dev", "cpkf2", new Configurations.ProjectKey("bar", true));
+        }
+
+        [TestMethod]
         public void CreateProjectKeys()
         {
             var result = _kotori.CreateProject("dev", "cpkeys", "Foobar", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("aaa", true), new Configurations.ProjectKey("bbb", false) });
@@ -578,6 +587,12 @@ namespace KotoriCore.Tests
             Assert.AreEqual(true, keys[2].IsReadonly);
             Assert.AreEqual("ddd", keys[3].Key);
             Assert.AreEqual(false, keys[3].IsReadonly);
+
+            _kotori.UpdateProjectKey("dev", "cpkeys", new Configurations.ProjectKey("aaa", false));
+
+            keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
+
+            Assert.AreEqual(false, keys[0].IsReadonly);
         }
 
         static string GetContent(string path)
