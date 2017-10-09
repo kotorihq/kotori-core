@@ -25,7 +25,7 @@ namespace KotoriCore.Database.DocumentDb
                     new Uri(d.Identifier).ToKotoriIdentifier(),
                     d.Slug,
                     d.Meta,
-                    DocumentHelpers.PostProcessedContent(d.Content, d.Meta),
+                    DocumentHelpers.PostProcessedContent(d.Content, d.Meta, command.Format),
                     d.Date.DateTime,
                     d.Modified.DateTime,
                     d.Draft,

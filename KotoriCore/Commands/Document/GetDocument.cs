@@ -27,13 +27,20 @@ namespace KotoriCore.Commands
         public readonly string Identifier;
 
         /// <summary>
+        /// The format.
+        /// </summary>
+        public readonly Enums.DocumentFormat Format;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetDocument"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Document identifier.</param>
-        public GetDocument(string instance, string projectId, string identifier)
+        /// <param name="format">Format.</param>
+        public GetDocument(string instance, string projectId, string identifier, Enums.DocumentFormat format)
         {
+            Format = format;
             Instance = instance;
             ProjectId = projectId;
             Identifier = identifier;

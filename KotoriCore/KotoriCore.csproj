@@ -45,6 +45,7 @@
     <PackageReference Include="YamlDotNet" Version="4.2.2" />
     <PackageReference Include="Shushu" Version="2.0.5" />
     <PackageReference Include="Oogi2" Version="1.2.2" />
+    <PackageReference Include="CommonMark.NET" Version="0.15.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Bus\IBus.cs" />

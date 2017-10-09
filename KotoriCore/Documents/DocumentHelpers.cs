@@ -114,7 +114,8 @@ namespace KotoriCore.Documents
         /// <returns>The post processed content.</returns>
         /// <param name="content">Content.</param>
         /// <param name="meta">Meta.</param>
-        internal static string PostProcessedContent(string content, dynamic meta)
+        /// <param name="format">Format.</param>
+        internal static string PostProcessedContent(string content, dynamic meta, Enums.DocumentFormat format)
         {
             if (string.IsNullOrEmpty(content) ||
                 meta == null)
@@ -129,6 +130,9 @@ namespace KotoriCore.Documents
                 content = content.Replace("{{" + key + "}}", meta2[key].ToString());
             }
 
+            if (format == Enums.DocumentFormat.Html)
+                content = content.ToHtml();
+            
             return content;
         }
     }

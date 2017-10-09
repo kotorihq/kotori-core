@@ -80,5 +80,20 @@
             /// </summary>
             ReadonlyProject = 2
         }
+
+        /// <summary>
+        /// Document format.
+        /// </summary>
+        public enum DocumentFormat
+        {
+            /// <summary>
+            /// The markdown.
+            /// </summary>
+            Markdown = 0,
+            /// <summary>
+            /// The html.
+            /// </summary>
+            Html = 1
+        }
     }
 }

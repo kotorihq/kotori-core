@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using KotoriCore.Domains;
 using Sushi2;
+using KotoriCore.Helpers;
 
 namespace KotoriCore
 {
@@ -164,9 +165,10 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Document identifier.</param>
-        public SimpleDocument GetDocument(string instance, string projectId, string identifier)
+        /// <param name="format">Format.</param>
+        public SimpleDocument GetDocument(string instance, string projectId, string identifier, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
-            return AsyncTools.RunSync(() => GetDocumentAsync(instance, projectId, identifier));
+            return AsyncTools.RunSync(() => GetDocumentAsync(instance, projectId, identifier, format));
         }
 
         /// <summary>
@@ -176,9 +178,10 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Document identifier.</param>
-        public async Task<SimpleDocument> GetDocumentAsync(string instance, string projectId, string identifier)
+        /// <param name="format">Format.</param>
+        public async Task<SimpleDocument> GetDocumentAsync(string instance, string projectId, string identifier, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
-            return (await ProcessAsync(new GetDocument(instance, projectId, identifier)) as CommandResult<SimpleDocument>)?.Record;
+            return (await ProcessAsync(new GetDocument(instance, projectId, identifier, format)) as CommandResult<SimpleDocument>)?.Record;
         }
 
         /// <summary>
@@ -195,9 +198,10 @@ namespace KotoriCore
         /// <param name="drafts">If set to <c>true</c> returns drafts.</param>
         /// <param name="future">If set to <c>true</c> returns future.</param>
         /// <param name="skip">Skip.</param>
-        public IEnumerable<SimpleDocument> FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip)
+        /// <param name="format">Format.</param>
+        public IEnumerable<SimpleDocument> FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
-            return AsyncTools.RunSync(() => FindDocumentsAsync(instance, projectId, documentTypeId, top, select, filter, orderBy, drafts, future, skip));
+            return AsyncTools.RunSync(() => FindDocumentsAsync(instance, projectId, documentTypeId, top, select, filter, orderBy, drafts, future, skip, format));
         }
 
         /// <summary>
@@ -214,9 +218,10 @@ namespace KotoriCore
         /// <param name="drafts">If set to <c>true</c> returns drafts.</param>
         /// <param name="future">If set to <c>true</c> returns future.</param>
         /// <param name="skip">Skip.</param>
-        public async Task<IEnumerable<SimpleDocument>> FindDocumentsAsync(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip)
+        /// <param name="format">Format</param>
+        public async Task<IEnumerable<SimpleDocument>> FindDocumentsAsync(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
-            var result = await ProcessAsync(new FindDocuments(instance, projectId, documentTypeId, top, select, filter, orderBy, drafts, future, skip)) as CommandResult<SimpleDocument>;
+            var result = await ProcessAsync(new FindDocuments(instance, projectId, documentTypeId, top, select, filter, orderBy, drafts, future, skip, format)) as CommandResult<SimpleDocument>;
             var documents = result.Data as IEnumerable<SimpleDocument>;
 
             return documents;

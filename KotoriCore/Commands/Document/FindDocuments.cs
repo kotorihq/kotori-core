@@ -61,6 +61,11 @@ namespace KotoriCore.Commands
         public readonly int? Skip;
 
         /// <summary>
+        /// Gets the format.
+        /// </summary>
+        public readonly Enums.DocumentFormat Format;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.FindDocuments"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
@@ -70,8 +75,13 @@ namespace KotoriCore.Commands
         /// <param name="select">Select.</param>
         /// <param name="filter">Filter.</param>
         /// <param name="orderBy">Order by.</param>
-        public FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip)
+        /// <param name="format">Format.</param>
+        /// <param name="skip">Skip.</param>
+        /// <param name="drafts">Drafts.</param>
+        /// <param name="future">Future.</param>
+        public FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format)
         {
+            Format = format;
             Instance = instance;
             ProjectId = projectId;
             DocumentTypeId = documentTypeId;

@@ -521,6 +521,25 @@ namespace KotoriCore.Tests
             var projectKeys = _kotori.UpdateProject("dev", "rudex-fail", "Hehe");
         }
 
+        [TestMethod]
+        public void DocumentFormat()
+        {
+            var result = _kotori.CreateProject("dev", "weformat", "WF", null);
+
+            _kotori.UpsertDocument("dev", "weformat", "_content/tv/rakosnicek.md", "hello *space* **cowboy**!", "test");
+
+            var d = _kotori.GetDocument("dev", "weformat", "_content/tv/rakosnicek.md");
+            Assert.AreEqual("test", d.Source);
+            Assert.AreEqual("hello *space* **cowboy**!", d.Content);
+
+            var d2 = _kotori.GetDocument("dev", "weformat", "_content/tv/rakosnicek.md", Helpers.Enums.DocumentFormat.Html);
+            Assert.AreEqual("<p>hello <em>space</em> <strong>cowboy</strong>!</p>" + Environment.NewLine, d2.Content);
+
+            var docs = _kotori.FindDocuments("dev", "weformat", "_content/tv", null, null, null, null, false, false, null, Helpers.Enums.DocumentFormat.Html);
+            Assert.AreEqual(1, docs.Count());
+            Assert.AreEqual("<p>hello <em>space</em> <strong>cowboy</strong>!</p>" + Environment.NewLine, docs.First().Content);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();
