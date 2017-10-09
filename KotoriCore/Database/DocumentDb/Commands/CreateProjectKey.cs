@@ -10,7 +10,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(ProjectAddKey command)
+        async Task<CommandResult<string>> HandleAsync(CreateProjectKey command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
 
@@ -24,8 +24,12 @@ namespace KotoriCore.Database.DocumentDb
 
             var keys = project.ProjectKeys.ToList();
 
+            if (keys.Any(key => key.Key == command.ProjectKey.Key))
+                throw new KotoriValidationException("Project key already exists.");
+            
             keys.Add(command.ProjectKey);
 
+            project.Identifier = project.Identifier.ToKotoriUri().ToString();
             project.ProjectKeys = keys;
 
             await _repoProject.ReplaceAsync(project);

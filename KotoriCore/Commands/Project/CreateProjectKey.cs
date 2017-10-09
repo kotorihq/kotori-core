@@ -5,9 +5,9 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Project add key command.
+    /// Create project key command.
     /// </summary>
-    public class ProjectAddKey : Command
+    public class CreateProjectKey : Command
     {
         /// <summary>
         /// Gets the instance.
@@ -30,7 +30,7 @@ namespace KotoriCore.Commands
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="projectKey">Project key.</param>
-        public ProjectAddKey(string instance, string projectId, ProjectKey projectKey)
+        public CreateProjectKey(string instance, string projectId, ProjectKey projectKey)
         {
             Instance = instance;
             ProjectId = projectId;

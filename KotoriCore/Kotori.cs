@@ -425,6 +425,30 @@ namespace KotoriCore
             return (await ProcessAsync(new UpdateProject(instance, projectId, name)) as CommandResult<string>)?.Message;
         }
 
+        /// <summary>
+        /// Creates the project key.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="projectKey">Project key.</param>
+        public string CreateProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey)
+        {
+            return AsyncTools.RunSync(() => CreateProjectKeyAsync(instance, projectId, projectKey));
+        }
+
+        /// <summary>
+        /// Creates the project key.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="projectKey">Project key.</param>
+        public async Task<string> CreateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey)
+        {
+            return (await ProcessAsync(new CreateProjectKey(instance, projectId, projectKey)) as CommandResult<string>)?.Message;
+        }
+
         async Task<ICommandResult> ProcessAsync(ICommand command)
         {
             return await _database.HandleAsync(command);

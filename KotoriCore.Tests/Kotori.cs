@@ -540,6 +540,46 @@ namespace KotoriCore.Tests
             Assert.AreEqual("<p>hello <em>space</em> <strong>cowboy</strong>!</p>" + Environment.NewLine, docs.First().Content);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException), "Null project key was inappropriately accepted.")]
+        public void CreateProjectKeyFail0()
+        {
+            var result = _kotori.CreateProject("dev", "cpkf0", "foo", null);
+
+            _kotori.CreateProjectKey("dev", "cpkf0", new Configurations.ProjectKey(null));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException), "Duplicate key was inappropriately accepted.")]
+        public void CreateProjectKeyFail1()
+        {
+            var result = _kotori.CreateProject("dev", "cpkf1", "foo", null);
+
+            _kotori.CreateProjectKey("dev", "cpkf1", new Configurations.ProjectKey("bar"));
+            _kotori.CreateProjectKey("dev", "cpkf1", new Configurations.ProjectKey("bar"));
+        }
+
+        [TestMethod]
+        public void CreateProjectKeys()
+        {
+            var result = _kotori.CreateProject("dev", "cpkeys", "Foobar", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("aaa", true), new Configurations.ProjectKey("bbb", false) });
+
+            _kotori.CreateProjectKey("dev", "cpkeys", new Configurations.ProjectKey("ccc", true));
+            _kotori.CreateProjectKey("dev", "cpkeys", new Configurations.ProjectKey("ddd", false));
+
+            var keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
+
+            Assert.AreEqual(4, keys.Count);
+            Assert.AreEqual("aaa", keys[0].Key);
+            Assert.AreEqual(true, keys[0].IsReadonly);
+            Assert.AreEqual("bbb", keys[1].Key);
+            Assert.AreEqual(false, keys[1].IsReadonly);
+            Assert.AreEqual("ccc", keys[2].Key);
+            Assert.AreEqual(true, keys[2].IsReadonly);
+            Assert.AreEqual("ddd", keys[3].Key);
+            Assert.AreEqual(false, keys[3].IsReadonly);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();
