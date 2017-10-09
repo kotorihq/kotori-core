@@ -3,6 +3,9 @@ using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
+    /// <summary>
+    /// Get project command.
+    /// </summary>
     public class GetProject : Command
     {
         /// <summary>

@@ -8,38 +8,34 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <value>The instance.</value>
-        public string Instance { get; }
+        public readonly string Instance;
 
         /// <summary>
         /// Gets the project identifier.
         /// </summary>
-        /// <value>The project identifier.</value>
-        public string ProjectId { get; }
+        public readonly string ProjectId;
 
         /// <summary>
         /// Gets the document type identifier.
         /// </summary>
-        /// <value>The document type identifier.</value>
-        public string DocumentTypeId { get; }
+        public readonly string DocumentTypeId;
 
         /// <summary>
         /// Gets the filter (where condition(s)).
         /// </summary>
-        /// <value>The filter (where condition(s)).</value>
-        public string Filter { get; }
+        public readonly string Filter;
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.CountDocuments"/> returns drafts.
         /// </summary>
         /// <value><c>true</c> if include drafts; otherwise, <c>false</c>.</value>
-        public bool Drafts { get; }
+        public readonly bool Drafts;
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.CountDocuments"/> returns future.
         /// </summary>
         /// <value><c>true</c> if include future; otherwise, <c>false</c>.</value>
-        public bool Future { get; }
+        public readonly bool Future;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.Document.CountDocuments"/> class.

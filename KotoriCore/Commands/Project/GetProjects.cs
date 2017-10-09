@@ -11,7 +11,6 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <value>The instance.</value>
         public readonly string Instance;
 
         /// <summary>
@@ -24,7 +23,7 @@ namespace KotoriCore.Commands
         }
 
         /// <summary>
-        /// Validate the command.
+        /// Validates the command.
         /// </summary>
         /// <returns>The validation result.</returns>
         public override IEnumerable<ValidationResult> Validate()

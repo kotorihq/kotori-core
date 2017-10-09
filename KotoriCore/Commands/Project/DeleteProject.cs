@@ -4,11 +4,18 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Delete project.
+    /// Delete project command.
     /// </summary>
     public class DeleteProject : Command
     {
+        /// <summary>
+        /// The identifier.
+        /// </summary>
         public readonly string Identifier;
+
+        /// <summary>
+        /// The instance.
+        /// </summary>
         public readonly string Instance;
 
         /// <summary>
@@ -23,9 +30,9 @@ namespace KotoriCore.Commands
         }
 
         /// <summary>
-        /// Validate this instance.
+        /// Validates the command.
         /// </summary>
-        /// <returns>The validation results or null if everything is alright.</returns>
+        /// <returns>The validation results.</returns>
         public override IEnumerable<ValidationResult> Validate()
         {
             if (string.IsNullOrEmpty(Instance))

@@ -46,7 +46,7 @@ namespace KotoriCore.Commands
         }
 
         /// <summary>
-        /// Validate this instance.
+        /// Validates the command.
         /// </summary>
         /// <returns>The validation results.</returns>
         public override IEnumerable<ValidationResult> Validate()

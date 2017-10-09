@@ -3,6 +3,9 @@ using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
+    /// <summary>
+    /// Update project command.
+    /// </summary>
     public class UpdateProject : Command
     {
         /// <summary>
@@ -32,7 +35,7 @@ namespace KotoriCore.Commands
         }
 
         /// <summary>
-        /// Validate this instance.
+        /// Validates the command.
         /// </summary>
         /// <returns>The validation results.</returns>
         public override IEnumerable<ValidationResult> Validate()

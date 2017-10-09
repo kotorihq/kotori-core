@@ -12,19 +12,16 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <value>The instance.</value>
         public readonly string Instance;
 
         /// <summary>
         /// Gets the project identifier.
         /// </summary>
-        /// <value>The project identifier.</value>
         public readonly string ProjectId;
 
         /// <summary>
         /// Gets the project key.
         /// </summary>
-        /// <value>The project key.</value>
         public readonly ProjectKey ProjectKey;
 
         /// <summary>
@@ -41,7 +38,7 @@ namespace KotoriCore.Commands
         }
 
         /// <summary>
-        /// Validate this instance.
+        /// Validates the command.
         /// </summary>
         /// <returns>The validate result.</returns>
         public override IEnumerable<ValidationResult> Validate()

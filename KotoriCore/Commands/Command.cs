@@ -9,7 +9,7 @@ namespace KotoriCore.Commands
     public abstract class Command : ICommand
     {
         /// <summary>
-        /// Validate this instance.
+        /// Validates the command.
         /// </summary>
         public abstract IEnumerable<ValidationResult> Validate();
     }

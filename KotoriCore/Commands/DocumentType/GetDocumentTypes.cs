@@ -11,14 +11,12 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <value>The instance.</value>
-        public string Instance { get; }
+        public readonly string Instance;
 
         /// <summary>
         /// Gets the project identifier.
         /// </summary>
-        /// <value>The project identifier.</value>
-        public string ProjectId { get; }
+        public readonly string ProjectId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetDocumentTypes"/> class.
