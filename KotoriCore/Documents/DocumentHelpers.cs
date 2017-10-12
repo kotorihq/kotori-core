@@ -35,6 +35,9 @@ namespace KotoriCore.Documents
             if (property.Equals("$slug", StringComparison.OrdinalIgnoreCase))
                 return Enums.DocumentPropertyType.Slug;
 
+            if (property.Equals("$source", StringComparison.OrdinalIgnoreCase))
+                return Enums.DocumentPropertyType.Source;
+
             return Enums.DocumentPropertyType.Invalid;
         }
 

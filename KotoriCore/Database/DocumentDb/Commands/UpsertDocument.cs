@@ -41,7 +41,7 @@ namespace KotoriCore.Database.DocumentDb
                 {
                     if (d.Hash.Equals(documentResult.Hash))
                     {
-                        return new CommandResult<string>("Document saving skipped. Hash is the same one as in database.");
+                        return new CommandResult<string>("Document saving skipped. Hash is the same one as in the database.");
                     }
                 }
 
@@ -57,7 +57,7 @@ namespace KotoriCore.Database.DocumentDb
                     documentResult.Content,
                     documentResult.Date,
                     command.Identifier.ToKotoriUri().ToDraftFlag(),
-                    command.Source
+                    documentResult.Source
                 );
 
                 if (isNew)

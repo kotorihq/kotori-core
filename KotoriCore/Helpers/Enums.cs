@@ -57,9 +57,13 @@
             /// </summary>
             Slug = 2,
             /// <summary>
+            /// The source.
+            /// </summary>
+            Source = 3,
+            /// <summary>
             /// The invalid property to be ignored.
             /// </summary>
-            Invalid = 9
+            Invalid = 999
         }
 
         /// <summary>

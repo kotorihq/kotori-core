@@ -49,5 +49,11 @@ namespace KotoriCore.Documents
         /// </summary>
         /// <value>The slug.</value>
         string Slug { get; }
+
+        /// <summary>
+        /// Gets the source.
+        /// </summary>
+        /// <value>The source.</value>
+        string Source { get; }
     }
 }

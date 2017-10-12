@@ -3,6 +3,9 @@ using KotoriCore.Helpers;
 
 namespace KotoriCore.Domains
 {
+    /// <summary>
+    /// Document type.
+    /// </summary>
     public class DocumentType
     {
         /// <summary>

@@ -29,25 +29,18 @@ namespace KotoriCore.Commands
         public readonly string Content;
 
         /// <summary>
-        /// The source.
-        /// </summary>
-        public readonly string Source;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocument"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
-        /// <param name="source">Source.</param>
-        public UpsertDocument(string instance, string projectId, string identifier, string content, string source)
+        public UpsertDocument(string instance, string projectId, string identifier, string content)
         {
             Instance = instance;
             ProjectId = projectId;
             Identifier = identifier;
             Content = content;
-            Source = source;
         }
 
         /// <summary>

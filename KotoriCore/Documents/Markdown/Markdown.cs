@@ -173,6 +173,11 @@ namespace KotoriCore.Documents
                         result.Slug = Identifier.ToSlug(meta[key].ToString());
                     }
 
+                    if (dpt == Enums.DocumentPropertyType.Source)
+                    {
+                        result.Source = meta[key].ToString();
+                    }
+
                     if (dpt == Enums.DocumentPropertyType.UserDefined)
                     {
                         var newKey = key.ToCamelCase();

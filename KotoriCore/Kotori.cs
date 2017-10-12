@@ -66,11 +66,10 @@ namespace KotoriCore
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
-        /// <param name="source">Source.</param>
         /// <returns>Result.</returns>
-        public string UpsertDocument(string instance, string projectId, string identifier, string content, string source)
+        public string UpsertDocument(string instance, string projectId, string identifier, string content)
         {
-            return AsyncTools.RunSync(() => UpsertDocumentAsync(instance, projectId, identifier, content, source));
+            return AsyncTools.RunSync(() => UpsertDocumentAsync(instance, projectId, identifier, content));
         }
 
         /// <summary>
@@ -80,11 +79,10 @@ namespace KotoriCore
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
-        /// <param name="source">Source.</param>
         /// <returns>Result.</returns>
-        public async Task<string> UpsertDocumentAsync(string instance, string projectId, string identifier, string content, string source)
+        public async Task<string> UpsertDocumentAsync(string instance, string projectId, string identifier, string content)
         {
-            return (await ProcessAsync(new UpsertDocument(instance, projectId, identifier, content, source)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocument(instance, projectId, identifier, content)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
