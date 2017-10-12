@@ -495,6 +495,20 @@ namespace KotoriCore
             return (await ProcessAsync(new DeleteProjectKey(instance, projectId, projectKey)) as CommandResult<string>)?.Message;
         }
 
+        /// <summary>
+        /// Updates document.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="meta">Meta.</param>
+        /// <param name="content">Content.</param>
+        /// <returns>Result.</returns>
+        public async Task<string> UpsertDocumentAsync(string instance, string projectId, string identifier, Dictionary<string, object> meta, string content)
+        {
+            return (await ProcessAsync(new UpdateDocument(instance, projectId, identifier, meta, content)) as CommandResult<string>)?.Message;
+        }
+
         async Task<ICommandResult> ProcessAsync(ICommand command)
         {
             return await _database.HandleAsync(command);

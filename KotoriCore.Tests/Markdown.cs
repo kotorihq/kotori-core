@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using KotoriCore.Documents;
 using KotoriCore.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -190,6 +191,38 @@ cowboy
             var mdr = result as MarkdownResult;
 
             Assert.AreEqual(new DateTime(2016, 03, 04).Date, mdr.Date);
+        }
+
+        [TestMethod]
+        public void ConstructDocument()
+        {
+            var c = Documents.Markdown.ConstructDocument(null, null);
+            Assert.AreEqual(null, c);
+
+            c = Documents.Markdown.ConstructDocument(new Dictionary<string, object>
+            { { "title", "yahaha" }, { "iq", 333 }, { "tags", new List<string> { "sci-fi", "drama" }}}
+            , null);
+            Assert.AreEqual(@"---
+title: yahaha
+iq: 333
+tags:
+- sci-fi
+- drama
+---
+", c);
+
+            c = Documents.Markdown.ConstructDocument(new Dictionary<string, object>
+            { { "title", "yahaha" }, { "iq", 333 }, { "yes", true }}
+            , "hello!");
+            Assert.AreEqual(@"---
+title: yahaha
+iq: 333
+yes: true
+---
+hello!", c);
+
+            c = Documents.Markdown.ConstructDocument(null, "hello!");
+            Assert.AreEqual(@"hello!", c);
         }
     }
 }

@@ -8,14 +8,16 @@ using KotoriCore.Documents.Deserializers;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 using Sushi2;
+using YamlDotNet.Serialization;
 
 namespace KotoriCore.Documents
 {
     /// <summary>
     /// Markdown.
     /// </summary>
-    public class Markdown : IDocument
+    class Markdown : IDocument
     {
         readonly string _content;
 
@@ -142,6 +144,7 @@ namespace KotoriCore.Documents
             return markdownResult;
         }
 
+
         void ProcessMeta(MarkdownResult result)
         {
             var expando = new ExpandoObject();
@@ -207,6 +210,39 @@ namespace KotoriCore.Documents
             }
 
             result.Meta = expando;
+        }
+
+        /// <summary>
+        /// Constructs the content.
+        /// </summary>
+        /// <returns>The content.</returns>
+        /// <param name="meta">Meta.</param>
+        /// <param name="content">Content.</param>
+        internal static string ConstructDocument(Dictionary<string, object> meta, string content)
+        {
+            if (meta == null &&
+                content == null)
+                return null;
+
+            var result = string.Empty;
+
+            if (meta != null &&
+                meta.Any())
+            {
+                result += "---" + Environment.NewLine;
+
+                var serializer = new SerializerBuilder().Build();
+                var yaml = serializer.Serialize(meta);
+
+                result += yaml;
+
+                result += "---" + Environment.NewLine;
+            }
+
+            if (content != null)
+                result += content;
+            
+            return result;
         }
     }
 }
