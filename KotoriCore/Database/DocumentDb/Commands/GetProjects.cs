@@ -22,7 +22,7 @@ namespace KotoriCore.Database.DocumentDb
                     }
                 );
 
-            var projects = await _repoProject.GetListAsync(q);
+            var projects = await GetProjectsAsync(q);
             var simpleProjects = projects.Select(p => new SimpleProject(p.Name, new Uri(p.Identifier).ToKotoriIdentifier()));
 
             return new CommandResult<SimpleProject>(simpleProjects);

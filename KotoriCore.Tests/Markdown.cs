@@ -204,11 +204,7 @@ cowboy
             { { "title", "yahaha" }, { "iq", 333 }, { "tags", new List<string> { "sci-fi", "drama" }}}
             , null);
             Assert.AreEqual(@"---
-title: yahaha
-iq: 333
-tags:
-- sci-fi
-- drama
+{""title"":""yahaha"",""iq"":333,""tags"":[""sci-fi"",""drama""]}
 ---
 ", c);
 
@@ -216,9 +212,7 @@ tags:
             { { "title", "yahaha" }, { "iq", 333 }, { "yes", true }}
             , "hello!");
             Assert.AreEqual(@"---
-title: yahaha
-iq: 333
-yes: true
+{""title"":""yahaha"",""iq"":333,""yes"":true}
 ---
 hello!", c);
 

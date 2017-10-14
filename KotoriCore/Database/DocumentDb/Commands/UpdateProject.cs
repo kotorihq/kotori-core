@@ -20,7 +20,7 @@ namespace KotoriCore.Database.DocumentDb
 
             p.Identifier = p.Identifier.ToKotoriUri().ToString();
 
-            await _repoProject.ReplaceAsync(p);
+            await ReplaceProjectAsync(p);
 
             return new CommandResult<string>("Project has been updated.");
         }

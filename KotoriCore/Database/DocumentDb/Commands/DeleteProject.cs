@@ -23,8 +23,8 @@ namespace KotoriCore.Database.DocumentDb
 
             if (documentTypes.Any())
                 throw new KotoriProjectException(command.Identifier, "Project contains document types.");
-            
-            await _repoProject.DeleteAsync(project);
+
+            await DeleteProjectAsync(project.Id);
 
             return new CommandResult<string>("Project has been deleted.");
         }

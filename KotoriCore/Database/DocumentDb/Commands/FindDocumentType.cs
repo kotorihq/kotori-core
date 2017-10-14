@@ -23,7 +23,7 @@ namespace KotoriCore.Database.DocumentDb
                 }
             );
 
-            var documentType = await _repoDocumentType.GetFirstOrDefaultAsync(q);
+            var documentType = await GetFirstOrDefaultDocumentTypeAsync(q);
 
             return documentType;
         }

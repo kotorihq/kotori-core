@@ -61,13 +61,13 @@ namespace KotoriCore.Database.DocumentDb
 
                 if (isNew)
                 {
-                    await _repoDocument.CreateAsync(d);
+                    await CreateDocumentAsync(d);
                     return new CommandResult<string>("Document has been created.");
                 }
 
                 d.Id = id;
 
-                await _repoDocument.ReplaceAsync(d);
+                await ReplaceDocumentAsync(d);
                 return new CommandResult<string>("Document has been replaced.");
 
             }

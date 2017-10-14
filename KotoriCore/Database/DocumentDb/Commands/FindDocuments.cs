@@ -38,7 +38,7 @@ namespace KotoriCore.Database.DocumentDb
                 command.Future
             );
 
-            var documents = await _repoDocument.GetListAsync(sql);
+            var documents = await GetDocumentsAsync(sql);
 
             var simpleDocuments = documents.Select(d => new SimpleDocument
                 (

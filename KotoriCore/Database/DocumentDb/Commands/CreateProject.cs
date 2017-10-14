@@ -16,7 +16,7 @@ namespace KotoriCore.Database.DocumentDb
 
             var prj = new Entities.Project(command.Instance, command.Name, projectUri.ToString(), command.ProjectKeys);
 
-            await _repoProject.CreateAsync(prj);
+            await CreateProjectAsync(prj);
 
             return new CommandResult<string>("Project has been created.");
         }

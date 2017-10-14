@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Database.DocumentDb.Helpers;
 using KotoriCore.Exceptions;
@@ -38,12 +36,7 @@ namespace KotoriCore.Database.DocumentDb
                 command.Future
             );
 
-            var documents = await _repoDocumentCount.GetListAsync(sql);
-
-            long count = 0;
-
-            if (documents.Any())
-                count = documents.Sum(x => x.Number);
+            var count = await CountDocumentsAsync(sql);
 
             return new CommandResult<long>(count);
         }

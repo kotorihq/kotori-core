@@ -55,7 +55,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 d.Hash = drr.Hash;
 
-                await _repoDocument.ReplaceAsync(d);
+                await ReplaceDocumentAsync(d);
 
                 return new CommandResult<string>("Document has been updated.");
 

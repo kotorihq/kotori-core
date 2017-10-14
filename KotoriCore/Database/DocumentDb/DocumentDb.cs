@@ -8,6 +8,7 @@ using Oogi2.Queries;
 using System.Threading.Tasks;
 using static KotoriCore.Database.DocumentDb.Helpers.DocumentDbHelpers;
 using KotoriCore.Helpers;
+using System.Collections.Generic;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -201,5 +202,89 @@ namespace KotoriCore.Database.DocumentDb
 
             return project;
         }
-    }
+
+        async Task<long> CountDocumentsAsync(string sql)
+        {
+            var documents = await _repoDocumentCount.GetListAsync(sql);
+
+            long count = 0;
+
+            if (documents.Any())
+                count = documents.Sum(x => x.Number);
+
+            return count;
+        }
+
+        async Task<Entities.Project> CreateProjectAsync(Entities.Project project)
+        {
+            return await _repoProject.CreateAsync(project);
+        }
+
+        async Task<Entities.Project> ReplaceProjectAsync(Entities.Project project)
+        {
+            return await _repoProject.ReplaceAsync(project);
+        }
+
+        async Task<bool> DeleteDocumentAsync(string id)
+        {
+            return await _repoDocument.DeleteAsync(id);
+        }
+
+        async Task<bool> DeleteDocumentTypeAsync(string id)
+        {
+            return await _repoDocument.DeleteAsync(id);
+        }
+
+        async Task<bool> DeleteProjectAsync(string id)
+        {
+            return await _repoProject.DeleteAsync(id);
+        }
+
+        async Task<Entities.DocumentType> GetFirstOrDefaultDocumentTypeAsync(DynamicQuery q)
+        {
+            var documentType = await _repoDocumentType.GetFirstOrDefaultAsync(q);
+            return documentType;
+        }
+
+        async Task<IList<Entities.Document>> GetDocumentsAsync(string sql)
+        {
+            var documents = await _repoDocument.GetListAsync(sql);
+
+            return documents;
+        }
+
+        async Task<IList<Entities.DocumentType>> GetDocumentTypesAsync(DynamicQuery q)
+        {
+            var documentTypes = await _repoDocumentType.GetListAsync(q);
+
+            return documentTypes;
+        }
+
+        async Task<IList<Entities.Project>> GetProjectsAsync(DynamicQuery q)
+        {
+            var projects = await _repoProject.GetListAsync(q);
+
+            return projects;
+        }
+
+        async Task<Entities.Document> ReplaceDocumentAsync(Entities.Document document)
+        {
+            return await _repoDocument.ReplaceAsync(document);
+        }
+
+        async Task<Entities.Document> CreateDocumentAsync(Entities.Document document)
+        {
+            return await _repoDocument.CreateAsync(document);
+        }
+
+        async Task<Entities.DocumentType> CreateDocumentTypeAsync(Entities.DocumentType documentType)
+        {
+            return await _repoDocumentType.CreateAsync(documentType);
+        }
+
+        async Task<Entities.DocumentType> ReplaceDocumentTypeAsync(Entities.DocumentType documentType)
+        {
+            return await _repoDocumentType.ReplaceAsync(documentType);
+        }
+     }
 }

@@ -38,7 +38,7 @@ namespace KotoriCore.Database.DocumentDb
                      indexes
                 );
 
-                dt = await _repoDocumentType.CreateAsync(dt);
+                dt = await CreateDocumentTypeAsync(dt);
 
                 return dt;
             }
@@ -47,7 +47,7 @@ namespace KotoriCore.Database.DocumentDb
                 var indexes = documentType.Indexes ?? new List<DocumentTypeIndex>();
                 documentType.Indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
 
-                await _repoDocumentType.ReplaceAsync(documentType);
+                await ReplaceDocumentTypeAsync(documentType);
 
                 return documentType;
             }

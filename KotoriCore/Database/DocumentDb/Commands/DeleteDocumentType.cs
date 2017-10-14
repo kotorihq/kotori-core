@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Database.DocumentDb.Helpers;
 using KotoriCore.Exceptions;
@@ -29,12 +28,12 @@ namespace KotoriCore.Database.DocumentDb
                 true
             );
 
-            var documents = await _repoDocumentCount.GetListAsync(sql);
+            var documents = await CountDocumentsAsync(sql);
 
-            if (documents.Sum(x => x.Number) > 0)
+            if (documents > 0)
                 throw new KotoriDocumentTypeException(command.Identifier, "Documents exist for the document type.");
 
-            if (await _repoDocumentType.DeleteAsync(documentType.Id))
+            if (await DeleteDocumentTypeAsync(documentType.Id))
                 return new CommandResult<string>("Document type has been deleted.");
 
             throw new KotoriDocumentException(command.Identifier, "Document type has not been deleted.");

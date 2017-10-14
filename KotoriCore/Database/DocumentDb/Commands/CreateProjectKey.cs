@@ -32,7 +32,7 @@ namespace KotoriCore.Database.DocumentDb
             project.Identifier = project.Identifier.ToKotoriUri().ToString();
             project.ProjectKeys = keys;
 
-            await _repoProject.ReplaceAsync(project);
+            await ReplaceProjectAsync(project);
 
             return new CommandResult<string>("Project key has been added.");
         }
