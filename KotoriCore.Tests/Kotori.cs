@@ -520,18 +520,13 @@ namespace KotoriCore.Tests
         {
             var result = _kotori.CreateProject("dev", "weformat", "WF", null);
 
-            _kotori.UpsertDocument("dev", "weformat", "_content/tv/rakosnicek.md", "---\n$source: test\n---\nhello *space* **cowboy**!");
+            _kotori.UpsertDocument("dev", "weformat", "_content/tv/rakosnicek.md", "---\n---\nhello *space* **cowboy**!");
 
             var d = _kotori.GetDocument("dev", "weformat", "_content/tv/rakosnicek.md");
             Assert.AreEqual("hello *space* **cowboy**!" + Environment.NewLine, d.Content);
-            Assert.AreEqual("test", d.Source);
 
             var d2 = _kotori.GetDocument("dev", "weformat", "_content/tv/rakosnicek.md", Helpers.Enums.DocumentFormat.Html);
             Assert.AreEqual("<p>hello <em>space</em> <strong>cowboy</strong>!</p>" + Environment.NewLine, d2.Content);
-
-            var docs = _kotori.FindDocuments("dev", "weformat", "_content/tv", null, null, "c.source = 'test'", null, false, false, null, Helpers.Enums.DocumentFormat.Html);
-            Assert.AreEqual(1, docs.Count());
-            Assert.AreEqual("<p>hello <em>space</em> <strong>cowboy</strong>!</p>" + Environment.NewLine, docs.First().Content);
         }
 
         [TestMethod]
