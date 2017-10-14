@@ -4,6 +4,7 @@ using System;
 using KotoriCore.Documents;
 using Sushi2;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace KotoriCore.Helpers
 {    
@@ -73,10 +74,13 @@ namespace KotoriCore.Helpers
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
 
-            var c = (result.Meta?.ToString() ?? string.Empty) + 
-                (result.Content?.ToString() ?? string.Empty) + 
+            var c = (result.Content?.ToString() ?? string.Empty) + 
                 (result.Date == null ? "(none)" : result.Date.Value.ToEpoch().ToString()) +
-                (result.Slug);
+                (result.Slug ?? "(none)") +
+                (result.Identifier ?? "(none)");
+
+            if (result.Meta != null)
+                c += JsonConvert.SerializeObject(result.Meta);
 
             return HashTools.GetHash(c, HashTools.HashType.SHA1);
         }

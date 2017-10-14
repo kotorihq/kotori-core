@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Documents;
 using KotoriCore.Exceptions;
@@ -11,20 +12,19 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<string>> HandleAsync(UpdateDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var document = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
 
-            if (project == null)
-                throw new KotoriValidationException("Project does not exist.");
+            if (document == null)
+                throw new KotoriDocumentException(command.Identifier, $"Document does not exist.");
 
-            var documentTypeUri = command.Identifier.ToKotoriUri(true);
-            var docType = documentTypeUri.ToDocumentType();
-
-            IDocumentResult documentResult = null;
+            var docType = new Uri(document.DocumentTypeId).ToDocumentType();
 
             if (docType == Enums.DocumentType.Content)
             {
                 var newDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(command.Meta, command.Content));
-                var newDocumentResult = newDocument.Process();
+                var newDocumentResult = await newDocument.ProcessAsync();
+                var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
+                var oldDocumentResult = await oldDocument.ProcessAsync();
 
                 var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
 
@@ -36,47 +36,28 @@ namespace KotoriCore.Database.DocumentDb
                 if (slug != null)
                     throw new KotoriDocumentException(command.Identifier, $"Slug {newDocumentResult.Slug} is already being used for another document.");
 
-                // TODO: prepare meta
+                var meta = Markdown.CombineMeta(oldDocumentResult.Meta, newDocumentResult.Meta);
 
+                d.Meta = meta;
 
+                if (!string.IsNullOrEmpty(newDocumentResult.Content))
+                    d.Content = newDocumentResult.Content;
 
-                var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, newDocumentResult.Meta);
+                d.Slug = newDocumentResult.Slug;
 
-                //var id = d?.Id;
+                if (newDocumentResult.Date.HasValue)
+                    d.Date = new Oogi2.Tokens.Stamp(newDocumentResult.Date.Value);
 
-                //if (!isNew)
-                //{
-                //    if (d.Hash.Equals(documentResult.Hash))
-                //    {
-                //        return new CommandResult<string>("Document saving skipped. Hash is the same one as in the database.");
-                //    }
-                //}
+                d.Modified = new Oogi2.Tokens.Stamp();
 
-                //d = new Entities.Document
-                //(
-                //    command.Instance,
-                //    projectUri.ToString(),
-                //    command.Identifier.ToKotoriUri().ToString(),
-                //    documentTypeUri.ToString(),
-                //    documentResult.Hash,
-                //    documentResult.Slug,
-                //    documentResult.Meta,
-                //    documentResult.Content,
-                //    documentResult.Date,
-                //    command.Identifier.ToKotoriUri().ToDraftFlag(),
-                //    documentResult.Source
-                //);
+                var dr = new Markdown(command.Identifier, Markdown.ConstructDocument(d.Meta, d.Content));
+                var drr = await dr.ProcessAsync();
 
-                //if (isNew)
-                //{
-                //    await _repoDocument.CreateAsync(d);
-                //    return new CommandResult<string>("Document has been created.");
-                //}
+                d.Hash = drr.Hash;
 
-                //d.Id = id;
+                await _repoDocument.ReplaceAsync(d);
 
-                //await _repoDocument.ReplaceAsync(d);
-                return new CommandResult<string>("Document has been replaces.");
+                return new CommandResult<string>("Document has been updated.");
 
             }
 

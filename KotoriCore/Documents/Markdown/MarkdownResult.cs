@@ -51,12 +51,6 @@ namespace KotoriCore.Documents
         public string Slug { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the source.
-        /// </summary>
-        /// <value>The source.</value>
-        public string Source { get; internal set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Documents.MarkdownResult"/> class.
         /// </summary>
         /// <param name="identifier">Identifier.</param>

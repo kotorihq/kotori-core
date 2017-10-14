@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using Sushi2;
 using YamlDotNet.Serialization;
+using Newtonsoft.Json;
 
 namespace KotoriCore.Documents
 {
@@ -144,7 +145,10 @@ namespace KotoriCore.Documents
             return markdownResult;
         }
 
-
+        /// <summary>
+        /// Processes the meta.
+        /// </summary>
+        /// <param name="result">Result.</param>
         void ProcessMeta(MarkdownResult result)
         {
             var expando = new ExpandoObject();
@@ -213,6 +217,22 @@ namespace KotoriCore.Documents
         /// <returns>The content.</returns>
         /// <param name="meta">Meta.</param>
         /// <param name="content">Content.</param>
+        internal static string ConstructDocument(JObject meta, string content)
+        {
+            if (meta == null)
+                return ConstructDocument((Dictionary<string, object>)null, content);
+
+            var dic = meta.ToObject<Dictionary<string, object>>();
+
+            return ConstructDocument(dic, content);
+        }
+
+        /// <summary>
+        /// Constructs the content.
+        /// </summary>
+        /// <returns>The content.</returns>
+        /// <param name="meta">Meta.</param>
+        /// <param name="content">Content.</param>
         internal static string ConstructDocument(Dictionary<string, object> meta, string content)
         {
             if (meta == null &&
@@ -226,10 +246,7 @@ namespace KotoriCore.Documents
             {
                 result += "---" + Environment.NewLine;
 
-                var serializer = new SerializerBuilder().Build();
-                var yaml = serializer.Serialize(meta);
-
-                result += yaml;
+                result += JsonConvert.SerializeObject(meta) + Environment.NewLine;
 
                 result += "---" + Environment.NewLine;
             }
@@ -238,6 +255,75 @@ namespace KotoriCore.Documents
                 result += content;
             
             return result;
+        }
+
+        /// <summary>
+        /// Combines the meta.
+        /// </summary>
+        /// <returns>The combined meta.</returns>
+        /// <param name="originalMeta">Original meta.</param>
+        /// <param name="newMeta">New meta.</param>
+        internal static Dictionary<string, object> CombineMeta(ExpandoObject originalMeta, ExpandoObject newMeta)
+        {
+            IDictionary<string, object> original = null;
+            IDictionary<string, object> @new = null;
+
+            if (originalMeta != null)
+                original = originalMeta;
+
+            if (newMeta != null)
+                @new = newMeta;
+
+            return CombineMeta(original, @new);
+        }
+
+        /// <summary>
+        /// Combines the meta.
+        /// </summary>
+        /// <returns>The combined meta.</returns>
+        /// <param name="originalMeta">Original meta.</param>
+        /// <param name="newMeta">New meta.</param>
+        internal static Dictionary<string, object> CombineMeta(IDictionary<string, object> originalMeta, IDictionary<string, object> newMeta)
+        {
+            if (originalMeta == null &&
+                newMeta == null)
+                return new Dictionary<string, object>();
+            
+            if (originalMeta == null)
+                return new Dictionary<string, object>(newMeta.Where(x => x.Value != null));
+
+            if (newMeta == null)
+                return new Dictionary<string, object>(newMeta.Where(x => x.Value != null));
+            
+            var combined = new Dictionary<string, object>();
+
+            foreach(var o in originalMeta)
+            {
+                var k = newMeta.Keys.FirstOrDefault(x => x == o.Key);
+
+                // keep original key:value
+                if (k == null)
+                {
+                    combined.Add(o.Key, o.Value);
+                    continue;
+                }
+
+                // remove original key:value
+                if (newMeta[k] == null)
+                    continue;
+
+                // get new key:value
+                combined.Add(o.Key, newMeta[k]);
+            }
+
+            // add fresh new keys:values
+            foreach(var n in newMeta)
+            {
+                if (originalMeta.Keys.All(x => x != n.Key))
+                    combined.Add(n.Key, n.Value);
+            }
+
+            return combined;
         }
     }
 }

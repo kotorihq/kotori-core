@@ -56,8 +56,7 @@ namespace KotoriCore.Database.DocumentDb
                     documentResult.Meta,
                     documentResult.Content,
                     documentResult.Date,
-                    command.Identifier.ToKotoriUri().ToDraftFlag(),
-                    documentResult.Source
+                    command.Identifier.ToKotoriUri().ToDraftFlag()
                 );
 
                 if (isNew)
@@ -69,7 +68,7 @@ namespace KotoriCore.Database.DocumentDb
                 d.Id = id;
 
                 await _repoDocument.ReplaceAsync(d);
-                return new CommandResult<string>("Document has been replaces.");
+                return new CommandResult<string>("Document has been replaced.");
 
             }
 

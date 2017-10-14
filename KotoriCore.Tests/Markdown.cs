@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using KotoriCore.Documents;
 using KotoriCore.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -196,7 +197,7 @@ cowboy
         [TestMethod]
         public void ConstructDocument()
         {
-            var c = Documents.Markdown.ConstructDocument(null, null);
+            var c = Documents.Markdown.ConstructDocument((JObject)null, null);
             Assert.AreEqual(null, c);
 
             c = Documents.Markdown.ConstructDocument(new Dictionary<string, object>
@@ -221,8 +222,57 @@ yes: true
 ---
 hello!", c);
 
-            c = Documents.Markdown.ConstructDocument(null, "hello!");
+            c = Documents.Markdown.ConstructDocument((JObject)null, "hello!");
             Assert.AreEqual(@"hello!", c);
+        }
+
+        [TestMethod]
+        public void CombineMeta()
+        {
+            var c = Documents.Markdown.CombineMeta(null, null);
+            Assert.IsNotNull(c);
+            Assert.AreEqual(0, c.Keys.Count);
+
+            c = Documents.Markdown.CombineMeta(new Dictionary<string, object>
+            {
+            }, 
+            new Dictionary<string, object>
+            {
+            });
+                                               
+            Assert.IsNotNull(c);
+            Assert.AreEqual(0, c.Keys.Count);
+
+            c = Documents.Markdown.CombineMeta(new Dictionary<string, object>
+            {
+                { "Title", "haha" },
+                { "Clever", false }
+            },
+            new Dictionary<string, object>
+            {
+                { "Clever", true }
+            });
+
+            Assert.IsNotNull(c);
+            Assert.AreEqual(2, c.Keys.Count);
+            Assert.AreEqual(true, c["Clever"]);
+
+            c = Documents.Markdown.CombineMeta(new Dictionary<string, object>
+            {
+                { "Title", "haha" },
+                { "Clever", false }
+            },
+            new Dictionary<string, object>
+            {
+                { "Title", null },
+                { "NewTitle", "yo" }
+            });
+
+            Assert.IsNotNull(c);
+            Assert.AreEqual(2, c.Keys.Count);
+            Assert.AreEqual("Clever", c.Keys.First());
+            Assert.AreEqual(false, c["Clever"]);
+            Assert.AreEqual("yo", c["NewTitle"]);
         }
     }
 }

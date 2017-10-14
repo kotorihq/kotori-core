@@ -504,7 +504,21 @@ namespace KotoriCore
         /// <param name="meta">Meta.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public async Task<string> UpsertDocumentAsync(string instance, string projectId, string identifier, Dictionary<string, object> meta, string content)
+        public string UpdateDocument(string instance, string projectId, string identifier, Dictionary<string, object> meta, string content)
+        {
+            return AsyncTools.RunSync(() => UpdateDocumentAsync(instance, projectId, identifier, meta, content));
+        }
+
+        /// <summary>
+        /// Updates document.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="meta">Meta.</param>
+        /// <param name="content">Content.</param>
+        /// <returns>Result.</returns>
+        public async Task<string> UpdateDocumentAsync(string instance, string projectId, string identifier, Dictionary<string, object> meta, string content)
         {
             return (await ProcessAsync(new UpdateDocument(instance, projectId, identifier, meta, content)) as CommandResult<string>)?.Message;
         }

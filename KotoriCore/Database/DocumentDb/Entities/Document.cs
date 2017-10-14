@@ -93,13 +93,6 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public bool Draft { get; set; }
 
         /// <summary>
-        /// Gets or sets the source.
-        /// </summary>
-        /// <value>The source.</value>
-        [PropertyMapping(Shushu.Enums.IndexField.Text5)]
-        public string Source { get; set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.Document"/> class.
         /// </summary>
         public Document()
@@ -119,8 +112,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <param name="content">Content.</param>
         /// <param name="date">Date.</param>
         /// <param name="draft">If set to <c>true</c> draft.</param>
-        /// <param name="source">Source.</param>
-        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime? date, bool draft, string source)
+        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime? date, bool draft)
         {
             Instance = instance;
             ProjectId = projectId;
@@ -133,7 +125,6 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Date = date.HasValue ? new Stamp(date.Value) : null;
             Modified = new Stamp();
             Draft = draft;
-            Source = source;
         }
     }
 }

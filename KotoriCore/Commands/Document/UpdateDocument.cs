@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
@@ -62,8 +63,9 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(Identifier))
                 yield return new ValidationResult("Identifier must be set.");
 
-            if (string.IsNullOrEmpty(Content))
-                yield return new ValidationResult("Content must be set.");
+            if (string.IsNullOrEmpty(Content) && 
+                (Meta == null || !Meta.Any()))
+                yield return new ValidationResult("Content or meta must be set.");
         }
     }
 }

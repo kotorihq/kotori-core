@@ -69,17 +69,21 @@ namespace KotoriCore.Cli
 
             // --- put stuff here --
 
-            var result = await _kotori.CreateProjectAsync("dev", "raw", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene"), new Configurations.ProjectKey("aoba", true) });
+            _kotori.CreateProject("dev", "udie", "Udie", null);
+            _kotori.UpsertDocument("dev", "udie", "_content/x/a",
+                                  @"
+---
+test: xxx
+cute: !!bool true
+---
+aloha everyone!
+");
 
-            var first = _kotori.GetProject("dev", "raw");
+            var d0 = _kotori.GetDocument("dev", "udie", "_content/x/a");
 
-            _kotori.UpdateProject("dev", "raw", "Aoba");
 
-            first = _kotori.GetProject("dev", "raw");
-
-            _kotori.UpdateProject("dev", "raw", null);
-
-            first = _kotori.GetProject("dev", "raw");
+            _kotori.UpdateDocument("dev", "udie", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
+            var d1 = _kotori.GetDocument("dev", "udie", "_content/x/a");
         }
     }
 }

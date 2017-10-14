@@ -603,6 +603,40 @@ namespace KotoriCore.Tests
             Assert.AreEqual("ddd", keys[2].Key);
         }
 
+        [TestMethod]
+        public void UpdateDocument()
+        {
+            _kotori.CreateProject("dev", "udie", "Udie", null);
+            _kotori.UpsertDocument("dev", "udie", "_content/x/a",
+                                  @"
+---
+test: xxx
+cute: !!bool true
+---
+aloha everyone!
+");
+
+            var d0 = _kotori.GetDocument("dev", "udie", "_content/x/a");
+            Assert.AreEqual(@"aloha everyone!".Trim(), d0.Content.Trim());
+            var meta0 = (d0.Meta as JObject);
+            Assert.AreEqual("xxx", meta0.Property("test").Value);
+            Assert.AreEqual(true, meta0.Property("cute").Value);
+
+            _kotori.UpdateDocument("dev", "udie", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
+            var d1 = _kotori.GetDocument("dev", "udie", "_content/x/a");
+            var meta1 = (d1.Meta as JObject);
+            Assert.AreEqual(@"aloha everyone!".Trim(), d1.Content.Trim());
+            Assert.AreEqual("zzz", meta1.Property("test").Value);
+            Assert.AreEqual(true, meta1.Property("cute").Value);
+
+            _kotori.UpdateDocument("dev", "udie", "_content/x/a", new Dictionary<string, object> { { "test", "xxx" }, { "cute", null } }, "hi everyone!");
+            var d2 = _kotori.GetDocument("dev", "udie", "_content/x/a");
+            var meta2 = (d2.Meta as JObject);
+            Assert.AreEqual(@"hi everyone!".Trim(), d2.Content.Trim());
+            Assert.AreEqual(1, meta2.Properties().LongCount());
+            Assert.AreEqual("xxx", meta2.Property("test").Value);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();
