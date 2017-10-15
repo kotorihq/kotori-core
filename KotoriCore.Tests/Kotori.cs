@@ -638,7 +638,7 @@ aloha everyone!
         }
 
         [TestMethod]
-        public void DocumentVersionNumber()
+        public void DocumentVersions()
         {
             _kotori.CreateProject("dev", "vnum", "vnum", null);
             _kotori.UpsertDocument("dev", "vnum", "_content/x/a", "haha");
@@ -653,6 +653,8 @@ aloha everyone!
             _kotori.UpsertDocument("dev", "vnum", "_content/x/a", "haha");
             var d2 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
             Assert.AreEqual(2, d2.Version);
+
+
         }
 
         static string GetContent(string path)

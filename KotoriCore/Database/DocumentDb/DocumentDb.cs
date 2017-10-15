@@ -20,6 +20,7 @@ namespace KotoriCore.Database.DocumentDb
         readonly Repository<Entities.Project> _repoProject;
         readonly Repository<Entities.DocumentType> _repoDocumentType;
         readonly Repository<Entities.Document> _repoDocument;
+        readonly Repository<Entities.DocumentVersion> _repoDocumentVersion;
         readonly Repository<Count> _repoDocumentCount;
 
         Connection _connection;
@@ -27,6 +28,7 @@ namespace KotoriCore.Database.DocumentDb
         internal const string ProjectEntity = "kotori/project";
         internal const string DocumentTypeEntity = "kotori/document-type";
         internal const string DocumentEntity = "kotori/document";
+        internal const string DocumentVersionEntity = "kotori/document-version";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.DocumentDb"/> class.
@@ -38,6 +40,7 @@ namespace KotoriCore.Database.DocumentDb
             _repoProject = new Repository<Entities.Project>(_connection);
             _repoDocumentType = new Repository<Entities.DocumentType>(_connection);
             _repoDocument = new Repository<Entities.Document>(_connection);
+            _repoDocumentVersion = new Repository<Entities.DocumentVersion>(_connection);
             _repoDocumentCount = new Repository<Count>(_connection);
         }
 
@@ -269,11 +272,15 @@ namespace KotoriCore.Database.DocumentDb
 
         async Task<Entities.Document> ReplaceDocumentAsync(Entities.Document document)
         {
+            await CreateDocumentVersionAsync(document);
+
             return await _repoDocument.ReplaceAsync(document);
         }
 
         async Task<Entities.Document> CreateDocumentAsync(Entities.Document document)
         {
+            await CreateDocumentVersionAsync(document);
+
             return await _repoDocument.CreateAsync(document);
         }
 
@@ -285,6 +292,11 @@ namespace KotoriCore.Database.DocumentDb
         async Task<Entities.DocumentType> ReplaceDocumentTypeAsync(Entities.DocumentType documentType)
         {
             return await _repoDocumentType.ReplaceAsync(documentType);
+        }
+
+        async Task<Entities.DocumentVersion> CreateDocumentVersionAsync(Entities.DocumentVersion documentVersion)
+        {
+            return await _repoDocumentVersion.CreateAsync(documentVersion);
         }
      }
 }

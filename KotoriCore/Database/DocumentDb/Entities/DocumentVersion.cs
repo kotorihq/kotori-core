@@ -1,0 +1,116 @@
+﻿using System;
+using Oogi2.Attributes;
+using Oogi2.Tokens;
+
+namespace KotoriCore.Database.DocumentDb.Entities
+{
+    [EntityType("entity", DocumentDb.DocumentVersionEntity)]
+    public class DocumentVersion
+    {
+        /// <summary>
+        /// Gets or sets the identifier (documentdb pk).
+        /// </summary>
+        /// <value>The identifier (documentdb pk).</value>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the instance.
+        /// </summary>
+        /// <value>The instance.</value>
+        public string Instance { get; set; }
+
+        /// <summary>
+        /// Gets or sets the project identifier.
+        /// </summary>
+        /// <value>The project identifier.</value>
+        public string ProjectId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
+        public string Identifier { get; set; }
+
+        /// <summary>
+        /// Gets or sets the document type identifier.
+        /// </summary>
+        /// <value>The document type identifier.</value>
+        public string DocumentTypeId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the hash.
+        /// </summary>
+        /// <value>The hash.</value>
+        public string Hash { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date.
+        /// </summary>
+        /// <value>The date.</value>
+        public Stamp Date { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
+        /// <value>The version.</value>
+        public long Version { get; set; }
+
+        /// <summary>
+        /// Gets or sets the document.
+        /// </summary>
+        /// <value>The document.</value>
+        public Document Document { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.DocumentVersion"/> class.
+        /// </summary>
+        public DocumentVersion()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.DocumentVersion"/> class.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="hash">Hash.</param>
+        /// <param name="date">Date.</param>
+        /// <param name="version">Version.</param>
+        /// <param name="document">Document.</param>
+        public DocumentVersion(string instance, string projectId, string identifier, string documentTypeId, string hash, DateTime date, long version, Document document)
+        {
+            Instance = instance;
+            ProjectId = projectId;
+            Identifier = identifier;
+            DocumentTypeId = documentTypeId;
+            Hash = hash;
+            Date = new Stamp(date);
+            Version = version;
+            Document = document;
+        }
+
+        /// <summary>
+        /// Converts implicitly document to document version.
+        /// </summary>
+        /// <returns>The document version.</returns>
+        /// <param name="document">Document.</param>
+        public static implicit operator DocumentVersion(Document document)  
+        {
+            var documentVersion = new DocumentVersion
+                (
+                    document.Instance,
+                    document.ProjectId,
+                    document.Identifier,
+                    document.DocumentTypeId,
+                    document.Hash,
+                    document.Modified?.DateTime ?? DateTime.Now,
+                    document.Version,
+                    document
+                );
+
+            return documentVersion;
+        }
+    }
+}
