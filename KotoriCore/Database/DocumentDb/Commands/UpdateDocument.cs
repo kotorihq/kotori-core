@@ -54,6 +54,7 @@ namespace KotoriCore.Database.DocumentDb
                 var drr = await dr.ProcessAsync();
 
                 d.Hash = drr.Hash;
+                d.Version++;
 
                 await ReplaceDocumentAsync(d);
 

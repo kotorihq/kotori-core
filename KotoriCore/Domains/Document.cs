@@ -72,5 +72,11 @@ namespace KotoriCore.Domains
         /// </summary>
         /// <value><c>true</c> if draft; otherwise, <c>false</c>.</value>
         public bool Draft { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
+        /// <value>The version.</value>
+        public long Version { get; set; }
     }
 }

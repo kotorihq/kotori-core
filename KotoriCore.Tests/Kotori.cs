@@ -637,6 +637,24 @@ aloha everyone!
             Assert.AreEqual("xxx", meta2.Property("test").Value);
         }
 
+        [TestMethod]
+        public void DocumentVersionNumber()
+        {
+            _kotori.CreateProject("dev", "vnum", "vnum", null);
+            _kotori.UpsertDocument("dev", "vnum", "_content/x/a", "haha");
+
+            var d0 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
+            Assert.AreEqual(0, d0.Version);
+
+            _kotori.UpdateDocument("dev", "vnum", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
+            var d1 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
+            Assert.AreEqual(1, d1.Version);
+
+            _kotori.UpsertDocument("dev", "vnum", "_content/x/a", "haha");
+            var d2 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
+            Assert.AreEqual(2, d2.Version);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

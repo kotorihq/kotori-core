@@ -36,6 +36,7 @@ namespace KotoriCore.Database.DocumentDb
                 var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
                 var isNew = d == null;
                 var id = d?.Id;
+                long version = 0;
 
                 if (!isNew)
                 {
@@ -43,6 +44,8 @@ namespace KotoriCore.Database.DocumentDb
                     {
                         return new CommandResult<string>("Document saving skipped. Hash is the same one as in the database.");
                     }
+
+                    version = d.Version + 1;
                 }
 
                 d = new Entities.Document
@@ -56,7 +59,8 @@ namespace KotoriCore.Database.DocumentDb
                     documentResult.Meta,
                     documentResult.Content,
                     documentResult.Date,
-                    command.Identifier.ToKotoriUri().ToDraftFlag()
+                    command.Identifier.ToKotoriUri().ToDraftFlag(),
+                    version
                 );
 
                 if (isNew)

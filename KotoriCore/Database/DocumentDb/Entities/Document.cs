@@ -93,6 +93,12 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public bool Draft { get; set; }
 
         /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
+        /// <value>The version.</value>
+        public long Version { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.Document"/> class.
         /// </summary>
         public Document()
@@ -112,7 +118,8 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <param name="content">Content.</param>
         /// <param name="date">Date.</param>
         /// <param name="draft">If set to <c>true</c> draft.</param>
-        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime? date, bool draft)
+        /// <param name="version">Version.</param>
+        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime? date, bool draft, long version)
         {
             Instance = instance;
             ProjectId = projectId;
@@ -125,6 +132,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Date = date.HasValue ? new Stamp(date.Value) : null;
             Modified = new Stamp();
             Draft = draft;
+            Version = version;
         }
     }
 }

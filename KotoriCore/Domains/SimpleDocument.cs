@@ -44,6 +44,11 @@ namespace KotoriCore.Domains
         public readonly bool? Draft;
 
         /// <summary>
+        /// The version.
+        /// </summary>
+        public readonly long Version;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocument"/> class.
         /// </summary>
         /// <param name="identifier">Identifier.</param>
@@ -53,7 +58,8 @@ namespace KotoriCore.Domains
         /// <param name="date">Date.</param>
         /// <param name="modified">Modified.</param>
         /// <param name="draft">If set to <c>true</c> draft.</param>
-        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime? date, DateTime? modified, bool? draft)
+        /// <param name="version">Version.</param>
+        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime? date, DateTime? modified, bool? draft, long version)
         {
             Identifier = identifier;
             Slug = slug;
@@ -62,6 +68,7 @@ namespace KotoriCore.Domains
             Date = date;
             Modified = modified;
             Draft = draft;
+            Version = version;
         }
     }
 }
