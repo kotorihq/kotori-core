@@ -129,23 +129,65 @@ namespace KotoriCore.Database.DocumentDb
             throw new KotoriException(message);
         }
 
-        async Task<Entities.Document> FindDocumentByIdAsync(string instance, Uri projectId, Uri documentId)
+        async Task<Entities.Document> FindDocumentByIdAsync(string instance, Uri projectId, Uri documentId, long? version)
         {
-            var q = new DynamicQuery
-            (
-                "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
-                new
-                {
-                    entity = DocumentEntity,
-                    instance,
-                    projectId = projectId.ToString(),
-                    identifier = documentId.ToString()
-                }
-            );
+            // get actual version
+            if (version == null)
+            {
+                var q = new DynamicQuery
+                (
+                    "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
+                    new
+                    {
+                        entity = DocumentEntity,
+                        instance,
+                        projectId = projectId.ToString(),
+                        identifier = documentId.ToString()
+                    }
+                );
 
-            var document = await _repoDocument.GetFirstOrDefaultAsync(q);
+                var document = await _repoDocument.GetFirstOrDefaultAsync(q);
 
-            return document;
+                return document;
+            }
+
+            // get document from snapshot
+            var q2 = new DynamicQuery
+                (
+                    "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.documentId = @identifier and c.version = @version",
+                    new
+                    {
+                        entity = DocumentVersionEntity,
+                        instance,
+                        projectId = projectId.ToString(),
+                        identifier = documentId.ToString(),
+                        version
+                    }
+                );
+
+            var x = q2.ToSqlQuerySpec().ToSqlQuery();
+
+            var documentVersion = await _repoDocumentVersion.GetFirstOrDefaultAsync(q2);
+
+            if (documentVersion == null)
+                return null;
+
+            var newDocument = new Entities.Document
+                (
+                    documentVersion.Instance,
+                    documentVersion.ProjectId,
+                    documentVersion.DocumentId,
+                    documentVersion.DocumentTypeId,
+                    documentVersion.Hash,
+                    documentVersion.Document.Slug,
+                    documentVersion.Document.Meta,
+                    documentVersion.Document.Content,
+                    documentVersion.Document.Date == null ? (DateTime?)null : documentVersion.Document.Date.DateTime,
+                    documentVersion.Document.Draft,
+                    documentVersion.Version
+               );
+
+            return newDocument;
         }
 
         async Task<Entities.Document> FindDocumentBySlugAsync(string instance, Uri projectId, string slug, Uri documentId)

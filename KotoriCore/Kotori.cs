@@ -163,10 +163,11 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Document identifier.</param>
+        /// <param name="version">Version.</param>
         /// <param name="format">Format.</param>
-        public SimpleDocument GetDocument(string instance, string projectId, string identifier, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
+        public SimpleDocument GetDocument(string instance, string projectId, string identifier, long? version = null, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
-            return AsyncTools.RunSync(() => GetDocumentAsync(instance, projectId, identifier, format));
+            return AsyncTools.RunSync(() => GetDocumentAsync(instance, projectId, identifier, version, format));
         }
 
         /// <summary>
@@ -176,10 +177,11 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Document identifier.</param>
+        /// <param name="version">Version.</param>
         /// <param name="format">Format.</param>
-        public async Task<SimpleDocument> GetDocumentAsync(string instance, string projectId, string identifier, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
+        public async Task<SimpleDocument> GetDocumentAsync(string instance, string projectId, string identifier, long? version = null, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
-            return (await ProcessAsync(new GetDocument(instance, projectId, identifier, format)) as CommandResult<SimpleDocument>)?.Record;
+            return (await ProcessAsync(new GetDocument(instance, projectId, identifier, version, format)) as CommandResult<SimpleDocument>)?.Record;
         }
 
         /// <summary>

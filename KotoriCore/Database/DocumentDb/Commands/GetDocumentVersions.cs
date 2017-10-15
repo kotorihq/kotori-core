@@ -14,7 +14,7 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<SimpleDocumentVersion>> HandleAsync(GetDocumentVersions command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
-            var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
+            var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(), null);
 
             if (d == null)
                 throw new KotoriDocumentException(command.Identifier, "Document not found.");

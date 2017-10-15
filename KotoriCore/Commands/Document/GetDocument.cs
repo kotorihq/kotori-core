@@ -11,20 +11,22 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <value>The instance.</value>
         public readonly string Instance;
 
         /// <summary>
         /// Gets the project identifier.
         /// </summary>
-        /// <value>The project identifier.</value>
         public readonly string ProjectId;
 
         /// <summary>
         /// Gets the identifier.
         /// </summary>
-        /// <value>The identifier.</value>
         public readonly string Identifier;
+
+        /// <summary>
+        /// The version.
+        /// </summary>
+        public readonly long? Version;
 
         /// <summary>
         /// The format.
@@ -37,13 +39,15 @@ namespace KotoriCore.Commands
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Document identifier.</param>
+        /// <param name="version">Version.</param>
         /// <param name="format">Format.</param>
-        public GetDocument(string instance, string projectId, string identifier, Enums.DocumentFormat format)
+        public GetDocument(string instance, string projectId, string identifier, long? version, Enums.DocumentFormat format)
         {
             Format = format;
             Instance = instance;
             ProjectId = projectId;
             Identifier = identifier;
+            Version = version;
         }
 
         /// <summary>
@@ -60,6 +64,10 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(Identifier))
                 yield return new ValidationResult("Identifier must be set.");
+
+            if (Version.HasValue &&
+               Version.Value < 0)
+                yield return new ValidationResult("Minimal version number allowed is 0.");
         }
     }
 }

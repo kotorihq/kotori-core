@@ -74,16 +74,14 @@ namespace KotoriCore.Cli
             _kotori.UpsertDocument("dev", "vnum", "_content/x/a", "haha");
 
             var d0 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
-
             _kotori.UpdateDocument("dev", "vnum", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
             var d1 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
-
             _kotori.UpsertDocument("dev", "vnum", "_content/x/a", "haha");
             var d2 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
 
             var versions = _kotori.GetDocumentVersions("dev", "vnum", "_content/x/a");
-            var json = JsonConvert.SerializeObject(versions);
-            Console.WriteLine(json);
+
+            var dd0 = _kotori.GetDocument("dev", "vnum", "_content/x/a", 0);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<string>> HandleAsync(UpdateDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriUri();
-            var document = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
+            var document = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(), null);
 
             if (document == null)
                 throw new KotoriDocumentException(command.Identifier, $"Document does not exist.");
@@ -26,7 +26,7 @@ namespace KotoriCore.Database.DocumentDb
                 var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
                 var oldDocumentResult = await oldDocument.ProcessAsync();
 
-                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
+                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(), null);
 
                 if (d == null)
                     throw new KotoriDocumentException(command.Identifier, $"Document does not exist.");

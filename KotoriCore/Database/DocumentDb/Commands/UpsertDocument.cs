@@ -33,7 +33,7 @@ namespace KotoriCore.Database.DocumentDb
                 
                 var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
 
-                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri());
+                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(), null);
                 var isNew = d == null;
                 var id = d?.Id;
                 long version = 0;

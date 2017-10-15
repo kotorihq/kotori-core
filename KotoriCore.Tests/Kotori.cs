@@ -525,7 +525,7 @@ namespace KotoriCore.Tests
             var d = _kotori.GetDocument("dev", "weformat", "_content/tv/rakosnicek.md");
             Assert.AreEqual("hello *space* **cowboy**!" + Environment.NewLine, d.Content);
 
-            var d2 = _kotori.GetDocument("dev", "weformat", "_content/tv/rakosnicek.md", Helpers.Enums.DocumentFormat.Html);
+            var d2 = _kotori.GetDocument("dev", "weformat", "_content/tv/rakosnicek.md", null, Helpers.Enums.DocumentFormat.Html);
             Assert.AreEqual("<p>hello <em>space</em> <strong>cowboy</strong>!</p>" + Environment.NewLine, d2.Content);
         }
 
@@ -657,6 +657,24 @@ aloha everyone!
             var versions = _kotori.GetDocumentVersions("dev", "vnum", "_content/x/a");
             Assert.IsNotNull(versions);
             Assert.AreEqual(3, versions.Count());
+
+            var dd0 = _kotori.GetDocument("dev", "vnum", "_content/x/a", 0);
+            var dd1 = _kotori.GetDocument("dev", "vnum", "_content/x/a", 1);
+            var dd2 = _kotori.GetDocument("dev", "vnum", "_content/x/a", 2);
+
+            Assert.AreEqual("haha", dd0.Content);
+            Assert.AreEqual("haha", dd1.Content);
+            Assert.AreEqual("haha", dd2.Content);
+
+            var meta00 = (dd0.Meta as JObject);
+            Assert.AreEqual(0, meta00.Properties().LongCount());
+
+            var meta11 = (dd1.Meta as JObject);
+            Assert.AreEqual(1, meta11.Properties().LongCount());
+
+            var meta22 = (dd2.Meta as JObject);
+            Assert.AreEqual(0, meta22.Properties().LongCount());
+            Assert.AreEqual(2, dd2.Version);
         }
 
         static string GetContent(string path)

@@ -9,7 +9,7 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(DeleteDocument command)
         {
-            var document = await FindDocumentByIdAsync(command.Instance, command.ProjectId.ToKotoriUri(), command.Identifier.ToKotoriUri());
+            var document = await FindDocumentByIdAsync(command.Instance, command.ProjectId.ToKotoriUri(), command.Identifier.ToKotoriUri(), null);
 
             if (document == null)
                 throw new KotoriDocumentException(command.Identifier, "Document does not exist.");
