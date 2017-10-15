@@ -9,7 +9,7 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(UpdateProject command)
         {
-            var projectUri = command.Identifier.ToKotoriUri();
+            var projectUri = command.Identifier.ToKotoriUri(Router.IdentifierType.Project);
             var p = await FindProjectAsync(command.Instance, projectUri);
 
             if (p == null)
@@ -18,7 +18,7 @@ namespace KotoriCore.Database.DocumentDb
             if (!string.IsNullOrEmpty(command.Name))
                 p.Name = command.Name;
 
-            p.Identifier = p.Identifier.ToKotoriUri().ToString();
+            p.Identifier = p.Identifier.ToKotoriUri(Router.IdentifierType.Project).ToString();
 
             await ReplaceProjectAsync(p);
 

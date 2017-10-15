@@ -13,20 +13,20 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Bad formatted URI has been inappropriately validated as ok.")]
         public void RouterBad0()
         {
-            "x x".ToKotoriUri();
+            "x x".ToKotoriUri(Router.IdentifierType.Project);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Bad formatted URI has been inappropriately validated as ok.")]
         public void RouterBad1()
         {
-            "čačačááá\\\\".ToKotoriUri();
+            "čačačááá\\\\".ToKotoriUri(Router.IdentifierType.Project);
         }
 
         [TestMethod]
         public void RouterOk0()
         {
-            Assert.AreEqual(new Uri("kotori://something-sweet/"), "something-sweet".ToKotoriUri());
+            Assert.AreEqual(new Uri("kotori://something-sweet/"), "something-sweet".ToKotoriUri(Router.IdentifierType.Project));
         }
 
         [TestMethod]

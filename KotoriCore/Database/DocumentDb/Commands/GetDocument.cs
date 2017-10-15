@@ -12,8 +12,14 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<SimpleDocument>> HandleAsync(GetDocument command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri();
-            var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(), command.Version);
+            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
+            var d = await FindDocumentByIdAsync
+                (
+                    command.Instance,
+                    projectUri,
+                    command.Identifier.ToKotoriUri(Router.IdentifierType.Document),
+                    command.Version
+                );
 
             if (d == null)
             {
@@ -27,7 +33,7 @@ namespace KotoriCore.Database.DocumentDb
             (
                 new SimpleDocument
                 (
-                    new Uri(d.Identifier).ToKotoriIdentifier(),
+                        new Uri(d.Identifier).ToKotoriIdentifier(Router.IdentifierType.Document),
                     d.Slug,
                     d.Meta,
                     DocumentHelpers.PostProcessedContent(d.Content, d.Meta, command.Format),

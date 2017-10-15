@@ -10,7 +10,12 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(DeleteDocumentType command)
         {
-            var documentType = await FindDocumentTypeAsync(command.Instance, command.ProjectId.ToKotoriUri(), command.Identifier.ToKotoriUri(true));
+            var documentType = await FindDocumentTypeAsync
+                (
+                    command.Instance, 
+                    command.ProjectId.ToKotoriUri(Router.IdentifierType.Project), 
+                    command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType)
+                );
 
             if (documentType == null)
                 throw new KotoriDocumentTypeException(command.Identifier, "Document type does not exist.");
@@ -18,8 +23,8 @@ namespace KotoriCore.Database.DocumentDb
             var sql = DocumentDbHelpers.CreateDynamicQuery
             (
                 command.Instance,
-                command.ProjectId.ToKotoriUri(),
-                command.Identifier.ToKotoriUri(true),
+                command.ProjectId.ToKotoriUri(Router.IdentifierType.Project),
+                command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType),
                 null,
                 "count(1) as number",
                 null,

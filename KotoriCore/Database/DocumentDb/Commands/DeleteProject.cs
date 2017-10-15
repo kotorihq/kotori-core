@@ -12,7 +12,7 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(DeleteProject command)
         {
-            var projectUri = command.Identifier.ToKotoriUri();
+            var projectUri = command.Identifier.ToKotoriUri(Router.IdentifierType.Project);
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 

@@ -9,15 +9,28 @@ namespace KotoriCore.Helpers
     /// </summary>
     static class Router
     {
+        /// <summary>
+        /// The URI scheme.
+        /// </summary>
         const string UriScheme = "kotori://";
+
+        /// <summary>
+        /// Identifier type.
+        /// </summary>
+        public enum IdentifierType
+        {
+            Project,
+            DocumentType,
+            Document
+        }
 
         /// <summary>
         /// Converts id to kotori URI.
         /// </summary>
         /// <returns>The kotori URI.</returns>
         /// <param name="uri">URI.</param>
-        /// <param name="documenType">If set to <c>true</c> shorten it to document type part of URI only.</param>
-        internal static Uri ToKotoriUri(this string uri, bool documenType = false)
+        /// <param name="identifierType">Identifier type.</param>
+        internal static Uri ToKotoriUri(this string uri, IdentifierType identifierType)
         {
             if (uri == null)
                 throw new KotoriValidationException("Identifier (null) is not valid URI string.");
@@ -30,7 +43,7 @@ namespace KotoriCore.Helpers
                 throw new KotoriValidationException($"Identifier {uri} is not valid URI string.");
             }
 
-            if (documenType)
+            if (identifierType == IdentifierType.DocumentType)
             {
                 if (result.Segments.Length < 2)
                     throw new KotoriValidationException($"Identifier {uri} is not valid document type URI string.");
@@ -51,8 +64,8 @@ namespace KotoriCore.Helpers
         /// </summary>
         /// <returns>The kotori identifier.</returns>
         /// <param name="uri">URI.</param>
-        /// <param name="documenType">If set to <c>true</c> shorten it to document type part of URI only.</param>
-        internal static string ToKotoriIdentifier(this Uri uri, bool documenType = false)
+        /// <param name="identifierType">Identifier type.</param>
+        internal static string ToKotoriIdentifier(this Uri uri, IdentifierType identifierType)
         {
             if (uri == null)
                 throw new KotoriValidationException("Identifier (null) is not valid URI string.");
@@ -64,7 +77,7 @@ namespace KotoriCore.Helpers
 
             u = u.RemoveTrailingSlashes(true, true);
 
-            if (documenType)
+            if (identifierType == IdentifierType.DocumentType)
                 u += "/";
             
             return u;

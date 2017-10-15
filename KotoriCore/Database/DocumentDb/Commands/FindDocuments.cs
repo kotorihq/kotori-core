@@ -14,8 +14,8 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<SimpleDocument>> HandleAsync(FindDocuments command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri();
-            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(true);
+            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
+            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
 
             var top = command.Top;
 
@@ -42,7 +42,7 @@ namespace KotoriCore.Database.DocumentDb
 
             var simpleDocuments = documents.Select(d => new SimpleDocument
                 (
-                    d.Identifier != null ? new Uri(d.Identifier).ToKotoriIdentifier() : null,
+                    d.Identifier != null ? new Uri(d.Identifier).ToKotoriIdentifier(Router.IdentifierType.Document) : null,
                     d.Slug,
                     d.Meta,
                     DocumentHelpers.PostProcessedContent(d.Content, d.Meta, command.Format),

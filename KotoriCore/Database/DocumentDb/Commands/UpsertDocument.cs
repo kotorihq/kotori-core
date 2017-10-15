@@ -10,13 +10,13 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(UpsertDocument command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri();
+            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
             var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
                 throw new KotoriValidationException("Project does not exist.");
 
-            var documentTypeUri = command.Identifier.ToKotoriUri(true);
+            var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
             var docType = documentTypeUri.ToDocumentType();
 
             IDocumentResult documentResult = null;
@@ -26,14 +26,14 @@ namespace KotoriCore.Database.DocumentDb
                 var document = new Markdown(command.Identifier, command.Content);
                 documentResult = document.Process();
 
-                var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, documentResult.Slug, command.Identifier.ToKotoriUri());
+                var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, documentResult.Slug, command.Identifier.ToKotoriUri(Router.IdentifierType.Document));
 
                 if (slug != null)
                     throw new KotoriDocumentException(command.Identifier, $"Slug {documentResult.Slug} is already being used for another document.");
                 
                 var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
 
-                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(), null);
+                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(Router.IdentifierType.Document), null);
                 var isNew = d == null;
                 var id = d?.Id;
                 long version = 0;
@@ -52,14 +52,14 @@ namespace KotoriCore.Database.DocumentDb
                 (
                     command.Instance,
                     projectUri.ToString(),
-                    command.Identifier.ToKotoriUri().ToString(),
+                    command.Identifier.ToKotoriUri(Router.IdentifierType.Document).ToString(),
                     documentTypeUri.ToString(),
                     documentResult.Hash,
                     documentResult.Slug,
                     documentResult.Meta,
                     documentResult.Content,
                     documentResult.Date,
-                    command.Identifier.ToKotoriUri().ToDraftFlag(),
+                    command.Identifier.ToKotoriUri(Router.IdentifierType.Document).ToDraftFlag(),
                     version
                 );
 

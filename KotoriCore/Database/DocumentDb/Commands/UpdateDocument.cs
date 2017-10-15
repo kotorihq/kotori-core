@@ -11,8 +11,8 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(UpdateDocument command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri();
-            var document = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(), null);
+            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
+            var document = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(Router.IdentifierType.Document), null);
 
             if (document == null)
                 throw new KotoriDocumentException(command.Identifier, $"Document does not exist.");
@@ -26,12 +26,12 @@ namespace KotoriCore.Database.DocumentDb
                 var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
                 var oldDocumentResult = await oldDocument.ProcessAsync();
 
-                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(), null);
+                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(Router.IdentifierType.Document), null);
 
                 if (d == null)
                     throw new KotoriDocumentException(command.Identifier, $"Document does not exist.");
                 
-                var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, newDocumentResult.Slug, command.Identifier.ToKotoriUri());
+                var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, newDocumentResult.Slug, command.Identifier.ToKotoriUri(Router.IdentifierType.Document));
 
                 if (slug != null)
                     throw new KotoriDocumentException(command.Identifier, $"Slug {newDocumentResult.Slug} is already being used for another document.");

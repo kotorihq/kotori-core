@@ -9,7 +9,7 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(CreateProject command)
         {
-            var projectUri = command.Identifier.ToKotoriUri();
+            var projectUri = command.Identifier.ToKotoriUri(Router.IdentifierType.Project);
 
             if (await FindProjectAsync(command.Instance, projectUri) != null)
                 throw new KotoriValidationException($"Project with identifier {command.Identifier} already exists.");

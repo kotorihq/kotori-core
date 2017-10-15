@@ -19,13 +19,13 @@ namespace KotoriCore.Database.DocumentDb
                     {
                         entity = DocumentTypeEntity,
                         instance = command.Instance,
-                        projectId = command.ProjectId.ToKotoriUri().ToString()
+                        projectId = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project).ToString()
                     }
                 );
 
             var documentTypes = await GetDocumentTypesAsync(q);
 
-            var simpleDocumentTypes = documentTypes.Select(p => new SimpleDocumentType(new Uri(p.Identifier).ToKotoriIdentifier(true), p.Type));
+            var simpleDocumentTypes = documentTypes.Select(p => new SimpleDocumentType(new Uri(p.Identifier).ToKotoriIdentifier(Router.IdentifierType.DocumentType), p.Type));
 
             return new CommandResult<SimpleDocumentType>(simpleDocumentTypes);
         }

@@ -247,7 +247,7 @@ namespace KotoriCore.Database.DocumentDb
             var project = await _repoProject.GetFirstOrDefaultAsync(q);
 
             if (project != null)
-                project.Identifier = new Uri(project.Identifier).ToKotoriIdentifier();
+                project.Identifier = new Uri(project.Identifier).ToKotoriIdentifier(Router.IdentifierType.Project);
 
             return project;
         }

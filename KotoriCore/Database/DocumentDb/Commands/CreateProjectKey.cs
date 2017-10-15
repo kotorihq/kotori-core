@@ -12,7 +12,7 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(CreateProjectKey command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri();
+            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 
@@ -29,7 +29,7 @@ namespace KotoriCore.Database.DocumentDb
             
             keys.Add(command.ProjectKey);
 
-            project.Identifier = project.Identifier.ToKotoriUri().ToString();
+            project.Identifier = project.Identifier.ToKotoriUri(Router.IdentifierType.Project).ToString();
             project.ProjectKeys = keys;
 
             await ReplaceProjectAsync(project);
