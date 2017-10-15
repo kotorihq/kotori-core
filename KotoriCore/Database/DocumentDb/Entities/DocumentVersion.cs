@@ -56,10 +56,10 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public long Version { get; set; }
 
         /// <summary>
-        /// Gets or sets the document.
+        /// Gets or sets the document snapshot.
         /// </summary>
-        /// <value>The document.</value>
-        public Document Document { get; set; }
+        /// <value>The document snapshot.</value>
+        public DocumentSnapshot Document { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.DocumentVersion"/> class.
@@ -79,7 +79,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <param name="date">Date.</param>
         /// <param name="version">Version.</param>
         /// <param name="document">Document.</param>
-        public DocumentVersion(string instance, string projectId, string documentId, string documentTypeId, string hash, DateTime date, long version, Document document)
+        public DocumentVersion(string instance, string projectId, string documentId, string documentTypeId, string hash, DateTime date, long version, DocumentSnapshot document)
         {
             Instance = instance;
             ProjectId = projectId;
