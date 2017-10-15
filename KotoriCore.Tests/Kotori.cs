@@ -677,6 +677,38 @@ aloha everyone!
             Assert.AreEqual(2, dd2.Version);
         }
 
+        [TestMethod]
+        public void DeleteDocumentVersions()
+        {
+            _kotori.CreateProject("dev", "vnum2", "vnum", null);
+            _kotori.UpsertDocument("dev", "vnum2", "_content/x/a", "haha");
+
+            for (var i = 0; i < 5; i++)
+                _kotori.UpdateDocument("dev", "vnum2", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
+            
+            var repo = new Repository(_con);
+            var q = new DynamicQuery
+                (
+                    "select c.id from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId",
+                    new
+                    {
+                        entity = Database.DocumentDb.DocumentDb.DocumentVersionEntity,
+                        instance = "dev",
+                        projectId = "kotori://vnum2/"
+                    }
+                );
+
+            var versions = repo.GetList(q);
+
+            Assert.AreEqual(6, versions.Count());
+
+            _kotori.DeleteDocument("dev", "vnum2", "_content/x/a");
+
+            versions = repo.GetList(q);
+
+            Assert.AreEqual(0, versions.Count());
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

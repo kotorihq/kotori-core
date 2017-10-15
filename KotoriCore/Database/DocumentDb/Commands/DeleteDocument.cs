@@ -14,7 +14,7 @@ namespace KotoriCore.Database.DocumentDb
             if (document == null)
                 throw new KotoriDocumentException(command.Identifier, "Document does not exist.");
 
-            if (await DeleteDocumentAsync(document.Id))
+            if (await DeleteDocumentAsync(document))
                 return new CommandResult<string>("Document has been deleted.");
 
             throw new KotoriDocumentException(command.Identifier, "Document has not been deleted.");

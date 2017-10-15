@@ -22,6 +22,7 @@ namespace KotoriCore.Database.DocumentDb
         readonly Repository<Entities.Document> _repoDocument;
         readonly Repository<Entities.DocumentVersion> _repoDocumentVersion;
         readonly Repository<Count> _repoDocumentCount;
+        readonly Repository<dynamic> _repoDocumentVersionDelete;
 
         Connection _connection;
 
@@ -42,6 +43,7 @@ namespace KotoriCore.Database.DocumentDb
             _repoDocument = new Repository<Entities.Document>(_connection);
             _repoDocumentVersion = new Repository<Entities.DocumentVersion>(_connection);
             _repoDocumentCount = new Repository<Count>(_connection);
+            _repoDocumentVersionDelete = new Repository<dynamic>(_connection);
         }
 
         /// <summary>
@@ -272,9 +274,34 @@ namespace KotoriCore.Database.DocumentDb
             return await _repoProject.ReplaceAsync(project);
         }
 
-        async Task<bool> DeleteDocumentAsync(string id)
+        async Task<bool> DeleteDocumentAsync(Entities.Document document)
         {
-            return await _repoDocument.DeleteAsync(id);
+            await DeleteDocumentVersionsAsync(document);
+
+            return await _repoDocument.DeleteAsync(document.Id);
+        }
+
+        async Task<bool> DeleteDocumentVersionsAsync(Entities.Document document)
+        {
+            var q = new DynamicQuery
+                (
+                    "select c.id as Id from c where c.entity = @entity and c.instance = @instance " +
+                    "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
+                    new
+                    {
+                        entity = DocumentVersionEntity,
+                        instance = document.Instance,
+                        projectId = document.ProjectId,
+                        documentId = document.Identifier
+                    }
+                );
+
+            var items = await _repoDocumentVersionDelete.GetListAsync(q);
+
+            foreach (var item in items)
+                await _repoDocumentVersionDelete.DeleteAsync(item.Id);
+
+            return true;
         }
 
         async Task<bool> DeleteDocumentTypeAsync(string id)
