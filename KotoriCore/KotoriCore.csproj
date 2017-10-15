@@ -34,7 +34,6 @@
     <Folder Include="Commands\DocumentType\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.3.0" />
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
@@ -44,8 +43,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="YamlDotNet" Version="4.2.2" />
     <PackageReference Include="Shushu" Version="2.0.5" />
-    <PackageReference Include="Oogi2" Version="1.2.2" />
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />
+    <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.4.0" />
+    <PackageReference Include="Oogi2" Version="1.2.4" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Bus\IBus.cs" />

@@ -26,10 +26,10 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public string ProjectId { get; set; }
 
         /// <summary>
-        /// Gets or sets the identifier.
+        /// Gets or sets the document identifier.
         /// </summary>
-        /// <value>The identifier.</value>
-        public string Identifier { get; set; }
+        /// <value>The document identifier.</value>
+        public string DocumentId { get; set; }
 
         /// <summary>
         /// Gets or sets the document type identifier.
@@ -73,17 +73,17 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="hash">Hash.</param>
         /// <param name="date">Date.</param>
         /// <param name="version">Version.</param>
         /// <param name="document">Document.</param>
-        public DocumentVersion(string instance, string projectId, string identifier, string documentTypeId, string hash, DateTime date, long version, Document document)
+        public DocumentVersion(string instance, string projectId, string documentId, string documentTypeId, string hash, DateTime date, long version, Document document)
         {
             Instance = instance;
             ProjectId = projectId;
-            Identifier = identifier;
+            DocumentId = documentId;
             DocumentTypeId = documentTypeId;
             Hash = hash;
             Date = new Stamp(date);

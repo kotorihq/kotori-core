@@ -523,6 +523,38 @@ namespace KotoriCore
             return (await ProcessAsync(new UpdateDocument(instance, projectId, identifier, meta, content)) as CommandResult<string>)?.Message;
         }
 
+        /// <summary>
+        /// Gets the document versions.
+        /// </summary>
+        /// <returns>The document versions.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        public IEnumerable<SimpleDocumentVersion> GetDocumentVersions(string instance, string projectId, string identifier)
+        {
+            return AsyncTools.RunSync(() => GetDocumentVersionsAsync(instance, projectId, identifier));
+        }
+
+        /// <summary>
+        /// Gets the document versions.
+        /// </summary>
+        /// <returns>The document versions.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        public async Task<IEnumerable<SimpleDocumentVersion>> GetDocumentVersionsAsync(string instance, string projectId, string identifier)
+        {
+            var result = await ProcessAsync(new GetDocumentVersions(instance, projectId, identifier));
+            var documentVersions = result.Data as IEnumerable<SimpleDocumentVersion>;
+
+            return documentVersions;
+        }
+
+        /// <summary>
+        /// Processes the command.
+        /// </summary>
+        /// <returns>The command result.</returns>
+        /// <param name="command">Command.</param>
         async Task<ICommandResult> ProcessAsync(ICommand command)
         {
             return await _database.HandleAsync(command);

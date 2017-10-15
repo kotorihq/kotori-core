@@ -654,7 +654,9 @@ aloha everyone!
             var d2 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
             Assert.AreEqual(2, d2.Version);
 
-
+            var versions = _kotori.GetDocumentVersions("dev", "vnum", "_content/x/a");
+            Assert.IsNotNull(versions);
+            Assert.AreEqual(3, versions.Count());
         }
 
         static string GetContent(string path)

@@ -98,6 +98,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(deleteProjectKey);
                 else if (command is UpdateDocument updateDocument)
                     result = await HandleAsync(updateDocument);
+                else if (command is GetDocumentVersions getDocumentVersions)
+                    result = await HandleAsync(getDocumentVersions);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
@@ -297,6 +299,13 @@ namespace KotoriCore.Database.DocumentDb
         async Task<Entities.DocumentVersion> CreateDocumentVersionAsync(Entities.DocumentVersion documentVersion)
         {
             return await _repoDocumentVersion.CreateAsync(documentVersion);
+        }
+
+        async Task<IList<Entities.DocumentVersion>> GetDocumentVersionsAsync(DynamicQuery q)
+        {
+            var documentVersions = await _repoDocumentVersion.GetListAsync(q);
+
+            return documentVersions;
         }
      }
 }

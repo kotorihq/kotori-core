@@ -6,12 +6,15 @@ using System.Net;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Documents;
+using KotoriCore.Documents.Deserializers;
 using KotoriCore.Helpers;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Oogi2;
 using Oogi2.Queries;
 using Sushi2;
+using YamlDotNet.Serialization;
 
 namespace KotoriCore.Cli
 {
@@ -29,7 +32,7 @@ namespace KotoriCore.Cli
 
         static void Main(string[] args)
         {
-            AsyncTools.RunSync(DoIt);
+             AsyncTools.RunSync(DoIt);
         }
 
         static async Task DoIt()
@@ -50,7 +53,6 @@ namespace KotoriCore.Cli
                     appSettings["Kotori:DocumentDb:Collection"]
                 );
 
-
             var repo = new Repository(_con);
             var q = new DynamicQuery
                 (
@@ -67,23 +69,21 @@ namespace KotoriCore.Cli
             foreach (var record in records)
                 repo.Delete(record);
 
-            // --- put stuff here --
+            // --- CODE HERE --
+            _kotori.CreateProject("dev", "vnum", "vnum", null);
+            _kotori.UpsertDocument("dev", "vnum", "_content/x/a", "haha");
 
-            _kotori.CreateProject("dev", "udie", "Udie", null);
-            _kotori.UpsertDocument("dev", "udie", "_content/x/a",
-                                  @"
----
-test: xxx
-cute: !!bool true
----
-aloha everyone!
-");
+            var d0 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
 
-            var d0 = _kotori.GetDocument("dev", "udie", "_content/x/a");
+            _kotori.UpdateDocument("dev", "vnum", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
+            var d1 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
 
+            _kotori.UpsertDocument("dev", "vnum", "_content/x/a", "haha");
+            var d2 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
 
-            _kotori.UpdateDocument("dev", "udie", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
-            var d1 = _kotori.GetDocument("dev", "udie", "_content/x/a");
+            var versions = _kotori.GetDocumentVersions("dev", "vnum", "_content/x/a");
+            var json = JsonConvert.SerializeObject(versions);
+            Console.WriteLine(json);
         }
     }
 }
