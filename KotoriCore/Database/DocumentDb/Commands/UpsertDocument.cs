@@ -59,7 +59,7 @@ namespace KotoriCore.Database.DocumentDb
                     documentResult.Meta,
                     documentResult.Content,
                     documentResult.Date,
-                    command.Identifier.ToKotoriUri(Router.IdentifierType.Document).ToDraftFlag(),
+                    command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentForDraftCheck).ToDraftFlag(),
                     version
                 );
 

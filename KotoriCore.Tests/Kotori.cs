@@ -709,6 +709,29 @@ aloha everyone!
             Assert.AreEqual(0, versions.Count());
         }
 
+        [TestMethod]
+        public void DraftAndNonDraft()
+        {
+            _kotori.CreateProject("dev", "drnodr", "Udie", null);
+            _kotori.UpsertDocument("dev", "drnodr", "_content/x/_a", "hello");
+
+            var d0 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
+            Assert.IsNotNull(d0);
+            Assert.AreEqual(true, d0.Draft);
+
+            _kotori.UpsertDocument("dev", "drnodr", "_content/x/a", "hello");
+            var d1 = _kotori.GetDocument("dev", "drnodr", "_content/x/_a");
+            Assert.IsNotNull(d1);
+            Assert.AreEqual(false, d1.Draft);
+            Assert.AreEqual(1, d1.Version);
+
+            _kotori.UpsertDocument("dev", "drnodr", "_content/x/a", "hello");
+            var d2 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
+            Assert.IsNotNull(d2);
+            Assert.AreEqual(false, d2.Draft);
+            Assert.AreEqual(1, d2.Version);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

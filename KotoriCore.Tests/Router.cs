@@ -32,10 +32,10 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void Drafts()
         {
-            Assert.AreEqual(false, Router.ToDraftFlag(new Uri("kotori://_content/tv/2017-08-12-flip-flappers.md")));
-            Assert.AreEqual(true, Router.ToDraftFlag(new Uri("kotori://_content/tv/_2017-08-12-flip-flappers.md")));
-            Assert.AreEqual(true, Router.ToDraftFlag(new Uri("kotori://_content/tv/.2017-08-12-flip-flappers.md")));
-            Assert.AreEqual(true, Router.ToDraftFlag(new Uri("kotori://_content/tv/.2017-08-12-flip-flappers.md/")));
+            Assert.AreEqual(false, new Uri("kotori://_content/tv/2017-08-12-flip-flappers.md").ToDraftFlag());
+            Assert.AreEqual(true, new Uri("kotori://_content/tv/_2017-08-12-flip-flappers.md").ToDraftFlag());
+            Assert.AreEqual(true, new Uri("kotori://_content/tv/.2017-08-12-flip-flappers.md").ToDraftFlag());
+            Assert.AreEqual(true, new Uri("kotori://_content/tv/.2017-08-12-flip-flappers.md/").ToDraftFlag());
         }
 
         [TestMethod]
@@ -47,6 +47,29 @@ namespace KotoriCore.Tests
             Assert.AreEqual("matrix", "_content/movie/.matrix".ToSlug(null));
             Assert.AreEqual("the-matrix", "_content/movie/.matrix".ToSlug("the-matrix"));
             Assert.AreEqual("matrix", "_content/movie/sci-fi/.matrix".ToSlug(null));
+        }
+
+        [TestMethod]
+        public void DocumentUri()
+        {
+            Assert.AreEqual(new Uri("kotori://_content/tv/2017-08-12-flip-flappers.md"), "_content/tv/2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/new/fresh/2017-08-12-flip-flappers.md"), "_content/tv/new/fresh/2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/2017-08-12-flip-flappers.md"), "_content/tv/_2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/2017-08-12-flip-flappers.md"), "_content/tv/.2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriException), "Bad formatted identifier has been inappropriately validated as ok.")]
+        public void DocumentUriFail()
+        {
+            "_content/tv/_".ToKotoriUri(Router.IdentifierType.Document);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriException), "Bad formatted identifier has been inappropriately validated as ok.")]
+        public void DocumentUriFail2()
+        {
+            "_content/tv/_.md".ToKotoriUri(Router.IdentifierType.Document);
         }
     }
 }

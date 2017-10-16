@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using KotoriCore.Exceptions;
 
@@ -21,7 +22,8 @@ namespace KotoriCore.Helpers
         {
             Project,
             DocumentType,
-            Document
+            Document,
+            DocumentForDraftCheck
         }
 
         /// <summary>
@@ -54,6 +56,42 @@ namespace KotoriCore.Helpers
                     dturi += "/";
                 
                 result = new Uri(dturi);
+            }
+
+            if (identifierType == IdentifierType.Document)
+            {
+                if (result.Segments.Length < 3)
+                    throw new KotoriValidationException($"Identifier {uri} is not valid document type URI string.");
+
+                var duri = result.Scheme + "://" + result.Host + result.Segments[0] + result.Segments[1];
+
+                if (Constants.DraftPrefixes.Any(prefix => result.Segments[2].StartsWith(prefix, StringComparison.Ordinal)))
+                {
+                    if (result.Segments[2].Length == 1)
+                        throw new KotoriException("Invalid document identifier.");
+
+                    if (result.Segments[2].IndexOf(".", StringComparison.OrdinalIgnoreCase) > -1)
+                    {
+                        var ext = Path.GetExtension(result.Segments[2]);
+
+                        if (result.Segments[2].Length - ext.Length - 1 <= 0)
+                            throw new KotoriException("Invalid document identifier.");
+                    }
+
+                    duri += result.Segments[2].Substring(1);
+                }
+                else
+                {
+                    duri += result.Segments[2];
+                }
+
+                if (result.Segments.Length > 3)
+                {
+                    for (var s = 3; s < result.Segments.Length; s++)
+                        duri += result.Segments[s];    
+                }
+
+                result = new Uri(duri);
             }
 
             return result;
