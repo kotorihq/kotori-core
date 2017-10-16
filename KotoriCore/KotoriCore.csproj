@@ -3,7 +3,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>kotori-core</PackageId>
     <Title>kotori core</Title>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
     <Authors>frohikey</Authors>
     <PackageLicenseUrl>https://github.com/kotorihq/kotori-core/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>Goto10</Owners>
