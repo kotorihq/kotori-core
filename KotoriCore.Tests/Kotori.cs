@@ -450,7 +450,7 @@ namespace KotoriCore.Tests
 
             var d = await _kotori.GetDocumentAsync("dev", "slugdraft", "_content/movie/.matrix.md");
 
-            Assert.AreEqual("_content/movie/.matrix.md", d.Identifier);
+            Assert.AreEqual("_content/movie/matrix.md", d.Identifier);
             Assert.AreEqual("matrix", d.Slug);
         }
 
