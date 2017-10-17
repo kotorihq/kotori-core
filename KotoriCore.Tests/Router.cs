@@ -52,10 +52,12 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void DocumentUri()
         {
-            Assert.AreEqual(new Uri("kotori://_content/tv/2017-08-12-flip-flappers.md"), "_content/tv/2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
-            Assert.AreEqual(new Uri("kotori://_content/tv/new/fresh/2017-08-12-flip-flappers.md"), "_content/tv/new/fresh/2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
-            Assert.AreEqual(new Uri("kotori://_content/tv/2017-08-12-flip-flappers.md"), "_content/tv/_2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
-            Assert.AreEqual(new Uri("kotori://_content/tv/2017-08-12-flip-flappers.md"), "_content/tv/.2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/flip-flappers.md"), "_content/tv/2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/new/fresh/flip-flappers.md"), "_content/tv/new/fresh/2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/flip-flappers.md"), "_content/tv/_2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/flip-flappers.md"), "_content/tv/.2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/flip-flappers.md"), "_content/tv/flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/yo/ya/ye/flip-flappers.md"), "_content/tv/yo/ya/ye/flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
         }
 
         [TestMethod]

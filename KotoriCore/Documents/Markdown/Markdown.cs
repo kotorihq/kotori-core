@@ -10,7 +10,6 @@ using KotoriCore.Helpers;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using Sushi2;
-using YamlDotNet.Serialization;
 using Newtonsoft.Json;
 
 namespace KotoriCore.Documents

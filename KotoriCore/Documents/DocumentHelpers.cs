@@ -39,7 +39,7 @@ namespace KotoriCore.Documents
         }
 
         /// <summary>
-        /// Gets date from filename prefix, $date propertry.
+        /// Gets date from filename prefix, $date property.
         /// </summary>
         /// <returns>The date time.</returns>
         /// <param name="identifier">Identifier.</param>

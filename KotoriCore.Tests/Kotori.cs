@@ -305,7 +305,7 @@ namespace KotoriCore.Tests
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-dn", "_content/tv/2117-05-06-flip-flappers.md", c);
 
-            await _kotori.GetDocumentAsync("dev", "nenecchi-dn", "_content/tv/2217-05-06-flip-flappers.md");
+            await _kotori.GetDocumentAsync("dev", "nenecchi-dn", "_content/tv/hm/2217-05-06-flip-flappers.md");
         }
 
         [TestMethod]
@@ -720,7 +720,7 @@ aloha everyone!
             Assert.AreEqual(true, d0.Draft);
 
             _kotori.UpsertDocument("dev", "drnodr", "_content/x/a", "hello");
-            var d1 = _kotori.GetDocument("dev", "drnodr", "_content/x/_a");
+            var d1 = _kotori.GetDocument("dev", "drnodr", "_content/x/_2017-01-01-a");
             Assert.IsNotNull(d1);
             Assert.AreEqual(false, d1.Draft);
             Assert.AreEqual(1, d1.Version);

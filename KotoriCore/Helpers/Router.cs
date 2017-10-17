@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using KotoriCore.Exceptions;
 
 namespace KotoriCore.Helpers
@@ -63,38 +64,57 @@ namespace KotoriCore.Helpers
                 if (result.Segments.Length < 3)
                     throw new KotoriValidationException($"Identifier {uri} is not valid document type URI string.");
 
-                var duri = result.Scheme + "://" + result.Host + result.Segments[0] + result.Segments[1];
+                var duri = result.Scheme + "://" + result.Host;
 
-                if (Constants.DraftPrefixes.Any(prefix => result.Segments[2].StartsWith(prefix, StringComparison.Ordinal)))
+                for (var s = 0; s < result.Segments.Length - 1; s++)
+                    duri += result.Segments[s];
+
+                var last = result.Segments.Last();
+
+                if (Constants.DraftPrefixes.Any(prefix => last.StartsWith(prefix, StringComparison.Ordinal)))
                 {
-                    if (result.Segments[2].Length == 1)
+                    if (last.Length == 1)
                         throw new KotoriException("Invalid document identifier.");
 
-                    if (result.Segments[2].IndexOf(".", StringComparison.OrdinalIgnoreCase) > -1)
+                    if (last.IndexOf(".", StringComparison.OrdinalIgnoreCase) > -1)
                     {
-                        var ext = Path.GetExtension(result.Segments[2]);
+                        var ext = Path.GetExtension(last);
 
-                        if (result.Segments[2].Length - ext.Length - 1 <= 0)
+                        if (last.Length - ext.Length - 1 <= 0)
                             throw new KotoriException("Invalid document identifier.");
                     }
 
-                    duri += result.Segments[2].Substring(1);
+                    duri += last.Substring(1).ToIdentifierWithoutDate();
                 }
                 else
                 {
-                    duri += result.Segments[2];
-                }
-
-                if (result.Segments.Length > 3)
-                {
-                    for (var s = 3; s < result.Segments.Length; s++)
-                        duri += result.Segments[s];    
+                    duri += last.ToIdentifierWithoutDate();
                 }
 
                 result = new Uri(duri);
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Converts the identifier to the version without date.
+        /// </summary>
+        /// <returns>The identifier without date.</returns>
+        /// <param name="id">Identifier.</param>
+        static string ToIdentifierWithoutDate(this string id)
+        {
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
+            
+            var r = new Regex(@"^(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})-(?<id>.*)$", RegexOptions.Singleline);
+
+            var match = r.Match(id);
+
+            if (match.Success)
+                return match.Groups["id"].Value;
+
+            return id;
         }
 
         /// <summary>
