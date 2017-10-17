@@ -268,5 +268,21 @@ hello!", c);
             Assert.AreEqual(false, c["Clever"]);
             Assert.AreEqual("yo", c["NewTitle"]);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Invalid internal tag was inappropriately accepted.")]
+        public void BadInternalTag()
+        {
+            var c = @"---
+$nenecchi: damn
+---
+hm
+";
+            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", c);
+            var result = md.Process();
+            var mdr = result as MarkdownResult;
+
+            Assert.AreEqual(new DateTime(2016, 03, 04).Date, mdr.Date);
+        }
     }
 }
