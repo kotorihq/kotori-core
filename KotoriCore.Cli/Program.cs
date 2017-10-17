@@ -75,16 +75,12 @@ namespace KotoriCore.Cli
                                   @"
 ---
 test: xxx
+$slug: a
+$Slug: b
 cute: !!bool true
 ---
 aloha everyone!
 ");
-            var d0 = _kotori.GetDocument("dev", "udie", "_content/x/a");
-            var meta0 = (d0.Meta as JObject);
-
-            _kotori.UpdateDocument("dev", "udie", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
-            var d1 = _kotori.GetDocument("dev", "udie", "_content/x/a");
-            var meta1 = (d1.Meta as JObject);
         }
     }
 }

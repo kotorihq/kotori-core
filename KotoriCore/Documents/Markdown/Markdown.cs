@@ -159,6 +159,7 @@ namespace KotoriCore.Documents
                 metaObj = JObject.FromObject(result.Meta);
             
             Dictionary<string, object> meta = metaObj?.ToObject<Dictionary<string, object>>();
+            var usedPropertyTypes = new List<Enums.DocumentPropertyType>();
 
             if (meta != null)
             {
@@ -167,16 +168,26 @@ namespace KotoriCore.Documents
                     var dpt = key.ToDocumentPropertyType();
 
                     if (dpt == Enums.DocumentPropertyType.Invalid)
-                        throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is not recognized thus invalid.");
+                        throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is not recognized.");
 
                     if (dpt == Enums.DocumentPropertyType.Date)
                     {
+                        if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Date))
+                            throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is used more than once.");
+                        
                         result.Date = Identifier.ToDateTime(meta[key].ToString());
+
+                        usedPropertyTypes.Add(Enums.DocumentPropertyType.Date);
                     }
 
                     if (dpt == Enums.DocumentPropertyType.Slug)
                     {
+                        if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Slug))
+                            throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is used more than once.");
+                        
                         result.Slug = Identifier.ToSlug(meta[key].ToString());
+
+                        usedPropertyTypes.Add(Enums.DocumentPropertyType.Slug);
                     }
 
                     if (dpt == Enums.DocumentPropertyType.UserDefined)
@@ -189,7 +200,7 @@ namespace KotoriCore.Documents
                         }
                         else
                         {
-                            throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is duplicated.");
+                            throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is used more than once.");
                         }
                     }
                 }

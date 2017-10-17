@@ -300,5 +300,57 @@ hm
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Duplicated meta fields were inappropriately accepted.")]
+        public void DuplicatedMetaFields()
+        {
+            var c = @"---
+$slug: x
+$Slug: X
+---
+hm
+";
+            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", c);
+            var result = md.Process();
+            var mdr = result as MarkdownResult;
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Duplicated meta fields were inappropriately accepted.")]
+        public void DuplicatedMetaFields2()
+        {
+            var c = @"---
+slugie: x
+Slugie: X
+---
+hm
+";
+            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", c);
+            var result = md.Process();
+            var mdr = result as MarkdownResult;
+        }
+
+        [TestMethod]
+        public void MetaCamelCasing()
+        {
+            var c = @"---
+Raw: 123
+a-l-o-h-a : 345
+Sakura_Nene: true
+---
+hm
+";
+            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", c);
+            var result = md.Process();
+            var mdr = result as MarkdownResult;
+
+            JObject metaObj = JObject.FromObject(result.Meta);            
+            Dictionary<string, object> meta = metaObj.ToObject<Dictionary<string, object>>();
+
+            Assert.AreEqual("raw", meta.First().Key);
+            Assert.AreEqual("a-l-o-h-a", meta.Skip(1).Take(1).Single().Key);
+            Assert.AreEqual("sakura_Nene", meta.Skip(2).Take(1).Single().Key);
+        }
     }
 }
