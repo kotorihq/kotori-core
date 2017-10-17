@@ -23,6 +23,10 @@ namespace KotoriCore.Database.DocumentDb
             {
                 var newDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(command.Meta, command.Content));
                 var newDocumentResult = await newDocument.ProcessAsync();
+
+                // TODO: remove
+                var test = Markdown.ConstructDocument(document.Meta, document.Content);
+
                 var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
                 var oldDocumentResult = await oldDocument.ProcessAsync();
                 

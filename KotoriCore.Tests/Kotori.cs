@@ -11,6 +11,7 @@ using Oogi2.Queries;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System;
+using Sushi2;
 
 namespace KotoriCore.Tests
 {
@@ -615,11 +616,11 @@ cute: !!bool true
 ---
 aloha everyone!
 ");
-
             var d0 = _kotori.GetDocument("dev", "udie", "_content/x/a");
             Assert.AreEqual(@"aloha everyone!".Trim(), d0.Content.Trim());
             var meta0 = (d0.Meta as JObject);
             Assert.AreEqual("xxx", meta0.Property("test").Value);
+            Assert.AreEqual(JTokenType.Boolean, meta0["cute"].Type);
             Assert.AreEqual(true, meta0.Property("cute").Value);
 
             _kotori.UpdateDocument("dev", "udie", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
@@ -627,6 +628,7 @@ aloha everyone!
             var meta1 = (d1.Meta as JObject);
             Assert.AreEqual(@"aloha everyone!".Trim(), d1.Content.Trim());
             Assert.AreEqual("zzz", meta1.Property("test").Value);
+            Assert.AreEqual(JTokenType.Boolean, meta1["cute"].Type);
             Assert.AreEqual(true, meta1.Property("cute").Value);
 
             _kotori.UpdateDocument("dev", "udie", "_content/x/a", new Dictionary<string, object> { { "test", "xxx" }, { "cute", null } }, "hi everyone!");

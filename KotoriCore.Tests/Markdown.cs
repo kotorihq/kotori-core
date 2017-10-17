@@ -284,5 +284,21 @@ hm
 
             Assert.AreEqual(new DateTime(2016, 03, 04).Date, mdr.Date);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Invalid yaml was inappropriately accepted.")]
+        public void DetectHeaderFormatAsBadYaml()
+        {
+            var c = @"---
+rom lll:
+xx
+aaa /// // /
+---
+hm
+";
+            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", c);
+            var result = md.Process();
+            var mdr = result as MarkdownResult;
+        }
     }
 }

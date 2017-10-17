@@ -70,7 +70,21 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
 
             // --- CODE HERE --
-            "_content/tv/_2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document);
+            _kotori.CreateProject("dev", "udie", "Udie", null);
+            _kotori.UpsertDocument("dev", "udie", "_content/x/a",
+                                  @"
+---
+test: xxx
+cute: !!bool true
+---
+aloha everyone!
+");
+            var d0 = _kotori.GetDocument("dev", "udie", "_content/x/a");
+            var meta0 = (d0.Meta as JObject);
+
+            _kotori.UpdateDocument("dev", "udie", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
+            var d1 = _kotori.GetDocument("dev", "udie", "_content/x/a");
+            var meta1 = (d1.Meta as JObject);
         }
     }
 }

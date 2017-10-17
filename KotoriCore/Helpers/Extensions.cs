@@ -5,6 +5,7 @@ using KotoriCore.Documents;
 using Sushi2;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace KotoriCore.Helpers
 {    
@@ -42,8 +43,20 @@ namespace KotoriCore.Helpers
             if (string.IsNullOrEmpty(content))
                 return Enums.FrontMatterType.None;
 
-            if (content.Trim().StartsWith("{", StringComparison.Ordinal))
-                return Enums.FrontMatterType.Json;
+            content = content.Trim();
+
+            if ((content.StartsWith("{", StringComparison.OrdinalIgnoreCase) && content.EndsWith("}", StringComparison.OrdinalIgnoreCase)) ||
+                (content.StartsWith("[", StringComparison.OrdinalIgnoreCase) && content.EndsWith("]", StringComparison.OrdinalIgnoreCase)))
+            {
+                try
+                {
+                    var obj = JToken.Parse(content);
+                    return Enums.FrontMatterType.Json;
+                }
+                catch (JsonReaderException)
+                {
+                }
+            }
 
             return Enums.FrontMatterType.Yaml;
         }
