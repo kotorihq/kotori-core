@@ -164,5 +164,27 @@ namespace KotoriCore.Helpers
 
             throw new KotoriException($"Flag draft cannot be determinded from {identifier}.");
         }
+
+        /// <summary>
+        /// Converts identifier to the filename.
+        /// </summary>
+        /// <returns>The filename.</returns>
+        /// <param name="identifier">Identifier.</param>
+        internal static string ToFilename(this string identifier)
+        {
+            if (identifier == null)
+                return null;
+            
+            var filename = identifier.RemoveTrailingSlashes(true, true);
+
+            var r = new Regex(@"^[^\/]+\/[^\/]+\/(?<id>.+)$", RegexOptions.Singleline);
+
+            var match = r.Match(filename);
+
+            if (match.Success)
+                return match.Groups["id"].Value;
+
+            return null;
+        }
     }
 }

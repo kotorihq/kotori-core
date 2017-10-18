@@ -60,7 +60,8 @@ namespace KotoriCore.Database.DocumentDb
                     documentResult.Content,
                     documentResult.Date,
                     command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentForDraftCheck).ToDraftFlag(),
-                    version
+                    version,
+                    command.Identifier.ToFilename()
                 );
 
                 if (isNew)

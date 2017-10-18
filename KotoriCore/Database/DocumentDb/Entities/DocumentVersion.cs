@@ -56,6 +56,12 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public long Version { get; set; }
 
         /// <summary>
+        /// Gets or sets the filename.
+        /// </summary>
+        /// <value>The filename.</value>
+        public string Filename { get; set; }
+
+        /// <summary>
         /// Gets or sets the document snapshot.
         /// </summary>
         /// <value>The document snapshot.</value>
@@ -78,8 +84,9 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <param name="hash">Hash.</param>
         /// <param name="date">Date.</param>
         /// <param name="version">Version.</param>
+        /// <param name="filename">Filename.</param>
         /// <param name="document">Document.</param>
-        public DocumentVersion(string instance, string projectId, string documentId, string documentTypeId, string hash, DateTime date, long version, DocumentSnapshot document)
+        public DocumentVersion(string instance, string projectId, string documentId, string documentTypeId, string hash, DateTime date, long version, string filename, DocumentSnapshot document)
         {
             Instance = instance;
             ProjectId = projectId;
@@ -88,6 +95,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Hash = hash;
             Date = new Stamp(date);
             Version = version;
+            Filename = filename;
             Document = document;
         }
 
@@ -107,6 +115,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
                     document.Hash,
                     document.Modified?.DateTime ?? DateTime.Now,
                     document.Version,
+                    document.Filename,
                     document
                 );
 

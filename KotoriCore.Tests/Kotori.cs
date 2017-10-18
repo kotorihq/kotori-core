@@ -720,18 +720,21 @@ aloha everyone!
             var d0 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
             Assert.IsNotNull(d0);
             Assert.AreEqual(true, d0.Draft);
+            Assert.AreEqual("_a", d0.Filename);
 
             _kotori.UpsertDocument("dev", "drnodr", "_content/x/a", "hello");
             var d1 = _kotori.GetDocument("dev", "drnodr", "_content/x/_2017-01-01-a");
             Assert.IsNotNull(d1);
             Assert.AreEqual(false, d1.Draft);
             Assert.AreEqual(1, d1.Version);
+            Assert.AreEqual("a", d1.Filename);
 
-            _kotori.UpsertDocument("dev", "drnodr", "_content/x/a", "hello");
+            _kotori.UpsertDocument("dev", "drnodr", "_content/x/2017-01-01-a", "hello");
             var d2 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
             Assert.IsNotNull(d2);
             Assert.AreEqual(false, d2.Draft);
-            Assert.AreEqual(1, d2.Version);
+            Assert.AreEqual(2, d2.Version);
+            Assert.AreEqual("2017-01-01-a", d2.Filename);
         }
 
         static string GetContent(string path)

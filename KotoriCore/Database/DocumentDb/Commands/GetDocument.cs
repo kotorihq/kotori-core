@@ -33,14 +33,15 @@ namespace KotoriCore.Database.DocumentDb
             (
                 new SimpleDocument
                 (
-                        new Uri(d.Identifier).ToKotoriIdentifier(Router.IdentifierType.Document),
+                    new Uri(d.Identifier).ToKotoriIdentifier(Router.IdentifierType.Document),
                     d.Slug,
                     d.Meta,
                     DocumentHelpers.PostProcessedContent(d.Content, d.Meta, command.Format),
                     d.Date.DateTime,
                     d.Modified.DateTime,
                     d.Draft,
-                    d.Version
+                    d.Version,
+                    d.Filename
                 )
             );
         }
