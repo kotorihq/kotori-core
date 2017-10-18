@@ -352,5 +352,29 @@ hm
             Assert.AreEqual("a-l-o-h-a", meta.Skip(1).Take(1).Single().Key);
             Assert.AreEqual("sakura_Nene", meta.Skip(2).Take(1).Single().Key);
         }
+
+        [TestMethod]
+        public void NoFrontMatter()
+        {
+            var c = @"aloha";
+            var md = new Documents.Markdown("_content/foo/bar.md", c);
+            var result = md.Process();
+            var mdr = result as MarkdownResult;
+
+            Assert.AreEqual("aloha", mdr.Content.Trim());
+        }
+
+        [TestMethod]
+        public void NoContent()
+        {
+            var c = @"---
+foo: bar
+---";
+            var md = new Documents.Markdown("_content/foo/bar.md", c);
+            var result = md.Process();
+            var mdr = result as MarkdownResult;
+
+            Assert.AreEqual(string.Empty, mdr.Content.Trim());
+        }
     }
 }
