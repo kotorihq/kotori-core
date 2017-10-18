@@ -17,7 +17,7 @@ namespace KotoriCore.Database.DocumentDb.Helpers
         }
 
         /// <summary>
-        /// Creates the dynamic query.
+        /// Creates the dynamic query for search.
         /// </summary>
         /// <returns>The dynamic query.</returns>
         /// <param name="instance">Instance.</param>
@@ -29,7 +29,7 @@ namespace KotoriCore.Database.DocumentDb.Helpers
         /// <param name="orderBy">Order by.</param>
         /// <param name="drafts">If <c>true</c> then show drafts.</param>
         /// <param name="future">If <c>true</c> then show future.</param>
-        internal static string CreateDynamicQuery(string instance, Uri project, Uri documentType, int? top, string select, string filter, string orderBy, bool drafts, bool future)
+        internal static string CreateDynamicQueryForDocumentSearch(string instance, Uri project, Uri documentType, int? top, string select, string filter, string orderBy, bool drafts, bool future)
         {
             var sql = "select ";
 

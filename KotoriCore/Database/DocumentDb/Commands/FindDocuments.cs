@@ -25,7 +25,7 @@ namespace KotoriCore.Database.DocumentDb
                 top = command.Skip.Value + command.Top.Value;
             }
 
-            var sql = DocumentDbHelpers.CreateDynamicQuery
+            var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
             (
                 command.Instance, 
                 projectUri, 

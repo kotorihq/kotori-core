@@ -20,8 +20,8 @@ namespace KotoriCore.Database.DocumentDb
             if (documentType == null)
                 throw new KotoriDocumentTypeException(command.Identifier, "Document type does not exist.");
 
-            var sql = DocumentDbHelpers.CreateDynamicQuery
-            (
+            var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
+            ( 
                 command.Instance,
                 command.ProjectId.ToKotoriUri(Router.IdentifierType.Project),
                 command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType),
