@@ -200,6 +200,38 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
+        public async Task FindDocuments2()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find2", "Nenecchi", null);
+
+            var c = @"aloha";
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find2", "_content/tv/witch.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find2", "_content/tv/ditch.md", c);
+
+            var docs = _kotori.FindDocuments("dev", "nenecchi-find2", "_content/tv", 2, null, null, null, false, false, null);
+            Assert.AreEqual(2, docs.Count());
+
+            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, "c.slug", null, "c.meta.rating asc", false, false, null);
+            //Assert.AreEqual(1, docs.Count());
+            //Assert.AreEqual(null, docs.First().Identifier);
+            //Assert.AreEqual("flip-flappers", docs.First().Slug);
+
+            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null, false, false, null);
+            //Assert.AreEqual(1, docs.Count());
+            //Assert.AreEqual("flip-flappers", docs.First().Slug);
+
+            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null, false, false, 3);
+            //Assert.AreEqual(0, docs.Count());
+
+            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 1);
+            //Assert.AreEqual(1, docs.Count());
+            //Assert.AreEqual("flying-witch-2016", docs.First().Slug);
+
+            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 2);
+            //Assert.AreEqual(0, docs.Count());
+        }
+
+        [TestMethod]
         public async Task SameHash()
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-hash", "Nenecchi", null);

@@ -70,10 +70,11 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
 
             // --- CODE HERE --
-            _kotori.CreateProject("dev", "drnodr", "Udie", null);
-            _kotori.UpsertDocument("dev", "drnodr", "_content/x/_a", "hello");
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find2", "Nenecchi", null);
 
-            var d0 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
+            var c = @"aloha";
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find2", "_content/tv/witch.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find2", "_content/tv/ditch.md", c);
         }
     }
 }
