@@ -8,11 +8,6 @@ namespace KotoriCore.Helpers
     static class Constants
     {
         /// <summary>
-        /// The draft prefixes.
-        /// </summary>
-        internal static readonly List<string> DraftPrefixes = new List<string> { "_", "." };
-
-        /// <summary>
         /// The document types.
         /// </summary>
         internal static readonly Dictionary<string, Enums.DocumentType> DocumentTypes = new Dictionary<string, Enums.DocumentType>

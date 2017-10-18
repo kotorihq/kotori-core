@@ -71,20 +71,24 @@ namespace KotoriCore.Helpers
 
                 var last = result.Segments.Last();
 
-                if (Constants.DraftPrefixes.Any(prefix => last.StartsWith(prefix, StringComparison.Ordinal)))
+                if (last.StartsWith("_", StringComparison.Ordinal))
                 {
                     if (last.Length == 1)
                         throw new KotoriException("Invalid document identifier.");
 
-                    if (last.IndexOf(".", StringComparison.OrdinalIgnoreCase) > -1)
+                    if (last.IndexOf(".", StringComparison.OrdinalIgnoreCase) > 0)
                     {
                         var ext = Path.GetExtension(last);
 
                         if (last.Length - ext.Length - 1 <= 0)
                             throw new KotoriException("Invalid document identifier.");
-                    }
 
-                    duri += last.Substring(1).ToIdentifierWithoutDate();
+                        duri += last.Substring(1).ToIdentifierWithoutDate();
+                    }
+                    else
+                    {
+                        duri += last.Substring(1).ToIdentifierWithoutDate();
+                    }
                 }
                 else
                 {
@@ -152,7 +156,7 @@ namespace KotoriCore.Helpers
 
             if (filename != null)
             {
-                if (Constants.DraftPrefixes.Any(prefix => filename.StartsWith(prefix, StringComparison.Ordinal)))
+                if (filename.StartsWith("_", StringComparison.Ordinal))
                     return true;
 
                 return false;

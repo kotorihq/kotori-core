@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
@@ -14,8 +13,6 @@ namespace KotoriCore.Documents
     /// </summary>
     static class DocumentHelpers
     {
-        static string _draftPrefixes => "[" + (Constants.DraftPrefixes.Select(pr => pr.Replace(".", @"\."))).ToImplodedString("") + "]";
-
         /// <summary>
         /// Converts from property name to the document property type.
         /// </summary>
@@ -50,7 +47,7 @@ namespace KotoriCore.Documents
             var now = DateTime.Now.Date;
             var dt = now;
 
-            var r = new Regex(@"^.*/" + _draftPrefixes + @"?(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})-.*$", RegexOptions.Singleline);
+            var r = new Regex(@"^.*/_?(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})-.*$", RegexOptions.Singleline);
 
             var match = r.Match(identifier);
 
@@ -88,7 +85,7 @@ namespace KotoriCore.Documents
         internal static string ToSlug(this string identifier, string slug)
         {
             string sl = null;
-            var r = new Regex(@"^.*\/" + _draftPrefixes + @"?(\d{4}-\d{1,2}-\d{1,2}-)?(?<url>[^\.]+).*$");
+            var r = new Regex(@"^.*\/_?(\d{4}-\d{1,2}-\d{1,2}-)?(?<url>[^\.\/]+)[^\/]*$");
 
             var match = r.Match(identifier);
 

@@ -276,12 +276,12 @@ namespace KotoriCore.Tests
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md", c);
 
             c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/.2017-05-06-flying-witch.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/_2017-05-06-flying-witch.md", c);
 
             var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md");
             Assert.AreEqual(false, futureDoc.Draft);
 
-            var draftDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/.2017-05-06-flying-witch.md");
+            var draftDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/_2017-05-06-flying-witch.md");
             Assert.AreEqual(true, draftDoc.Draft);
 
             var count0 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, false, false);
@@ -447,9 +447,9 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "slugdraft", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
 
             var c = GetContent("_content/movie/matrix.md");
-            await _kotori.UpsertDocumentAsync("dev", "slugdraft", "_content/movie/.matrix.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "slugdraft", "_content/movie/_matrix.md", c);
 
-            var d = await _kotori.GetDocumentAsync("dev", "slugdraft", "_content/movie/.matrix.md");
+            var d = await _kotori.GetDocumentAsync("dev", "slugdraft", "_content/movie/_matrix.md");
 
             Assert.AreEqual("_content/movie/matrix.md", d.Identifier);
             Assert.AreEqual("matrix", d.Slug);

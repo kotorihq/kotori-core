@@ -185,7 +185,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", all);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", all);
 
             var result = md.Process();
 
@@ -278,7 +278,7 @@ $nenecchi: damn
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", c);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -296,7 +296,7 @@ aaa /// // /
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", c);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -311,7 +311,7 @@ $Slug: X
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", c);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -326,7 +326,7 @@ Slugie: X
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", c);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -341,7 +341,7 @@ Sakura_Nene: true
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/.2016-03-04-bar.md", c);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 

@@ -70,17 +70,10 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
 
             // --- CODE HERE --
-            _kotori.CreateProject("dev", "udie", "Udie", null);
-            _kotori.UpsertDocument("dev", "udie", "_content/x/a",
-                                  @"
----
-test: xxx
-$slug: a
-$Slug: b
-cute: !!bool true
----
-aloha everyone!
-");
+            _kotori.CreateProject("dev", "drnodr", "Udie", null);
+            _kotori.UpsertDocument("dev", "drnodr", "_content/x/_a", "hello");
+
+            var d0 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
         }
     }
 }
