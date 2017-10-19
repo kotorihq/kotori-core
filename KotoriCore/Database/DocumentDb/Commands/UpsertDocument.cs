@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Documents;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
+using Newtonsoft.Json.Linq;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -21,16 +23,20 @@ namespace KotoriCore.Database.DocumentDb
 
             IDocumentResult documentResult = null;
 
-            if (docType == Enums.DocumentType.Content)
+            if (docType == Enums.DocumentType.Content ||
+               command.DataMode)
             {
                 var document = new Markdown(command.Identifier, command.Content);
                 documentResult = document.Process();
 
-                var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, documentResult.Slug, command.Identifier.ToKotoriUri(Router.IdentifierType.Document));
+                if (!command.DataMode)
+                {
+                    var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, documentResult.Slug, command.Identifier.ToKotoriUri(Router.IdentifierType.Document));
 
-                if (slug != null)
-                    throw new KotoriDocumentException(command.Identifier, $"Slug {documentResult.Slug} is already being used for another document.");
-                
+                    if (slug != null)
+                        throw new KotoriDocumentException(command.Identifier, $"Slug {documentResult.Slug} is already being used for another document.");
+                }
+
                 var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
 
                 var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(Router.IdentifierType.Document), null);
@@ -74,7 +80,41 @@ namespace KotoriCore.Database.DocumentDb
 
                 await ReplaceDocumentAsync(d);
                 return new CommandResult<string>("Document has been replaced.");
+            }
 
+            if (docType == Enums.DocumentType.Data)
+            {
+                var data = new Documents.Data.Data(command.Identifier, command.Content);
+                var documents = data.GetDocuments();
+
+                var tasks = new List<Task>();
+
+                for (int dc = 0; dc < documents.Count; dc++)
+                {
+                    var jo = JObject.FromObject(documents[dc]);
+                    var dic = jo.ToObject<Dictionary<string, object>>();
+                    var doc = Markdown.ConstructDocument(dic, null);
+
+                    tasks.Add
+                     (
+                         HandleAsync
+                         (
+                             new UpsertDocument
+                             (
+                                 command.Instance,
+                                 command.ProjectId,
+                                 command.Identifier + "?" + dc,
+                                 doc
+                                )
+                            )
+                        );
+                }
+
+                await Task.WhenAll(tasks);
+
+                // TODO: remove outside index docs
+
+                return new CommandResult<string>($"{documents.Count} {(documents.Count < 2 ? "document has" : "documents have")} been processed.");
             }
 
             throw new KotoriException("Unknown document type.");

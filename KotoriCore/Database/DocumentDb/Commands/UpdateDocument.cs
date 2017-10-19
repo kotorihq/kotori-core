@@ -24,8 +24,43 @@ namespace KotoriCore.Database.DocumentDb
                 var newDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(command.Meta, command.Content));
                 var newDocumentResult = await newDocument.ProcessAsync();
 
-                // TODO: remove
-                var test = Markdown.ConstructDocument(document.Meta, document.Content);
+                var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
+                var oldDocumentResult = await oldDocument.ProcessAsync();
+                
+                var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, newDocumentResult.Slug, command.Identifier.ToKotoriUri(Router.IdentifierType.Document));
+
+                if (slug != null)
+                    throw new KotoriDocumentException(command.Identifier, $"Slug {newDocumentResult.Slug} is already being used for another document.");
+
+                var meta = Markdown.CombineMeta(oldDocumentResult.Meta, newDocumentResult.Meta);
+
+                document.Meta = meta;
+
+                if (!string.IsNullOrEmpty(newDocumentResult.Content))
+                    document.Content = newDocumentResult.Content;
+
+                document.Slug = newDocumentResult.Slug;
+
+                if (newDocumentResult.Date.HasValue)
+                    document.Date = new Oogi2.Tokens.Stamp(newDocumentResult.Date.Value);
+
+                document.Modified = new Oogi2.Tokens.Stamp();
+
+                var dr = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
+                var drr = await dr.ProcessAsync();
+
+                document.Hash = drr.Hash;
+                document.Version++;
+
+                await ReplaceDocumentAsync(document);
+
+                return new CommandResult<string>("Document has been updated.");
+            }
+
+            if (docType == Enums.DocumentType.Data)
+            {
+                var newDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(command.Meta, command.Content));
+                var newDocumentResult = await newDocument.ProcessAsync();
 
                 var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
                 var oldDocumentResult = await oldDocument.ProcessAsync();

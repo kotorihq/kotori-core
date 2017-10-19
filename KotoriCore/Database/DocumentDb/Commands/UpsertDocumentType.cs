@@ -44,6 +44,11 @@ namespace KotoriCore.Database.DocumentDb
             }
             else
             {
+                var docType = documentTypeId.ToDocumentType();
+
+                if (docType == null)
+                    throw new KotoriException($"Document type could not be resolved for {documentTypeId}.");
+                
                 var indexes = documentType.Indexes ?? new List<DocumentTypeIndex>();
                 documentType.Indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
 

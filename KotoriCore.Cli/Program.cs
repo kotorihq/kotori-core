@@ -70,11 +70,25 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
 
             // --- CODE HERE --
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find2", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "mrdata", "MrData", null);
 
-            var c = @"aloha";
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find2", "_content/tv/witch.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find2", "_content/tv/ditch.md", c);
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Nenecchi
+position: programmer
+stars: !!int 5
+approved: !!bool true
+---
+girl: Umiko
+position: head programmer
+stars: !!int 3
+approved: !!bool false
+---";
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
         }
     }
 }

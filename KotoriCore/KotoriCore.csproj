@@ -32,6 +32,7 @@
     <Folder Include="Database\DocumentDb\Commands\" />
     <Folder Include="Database\DocumentDb\Helpers\" />
     <Folder Include="Commands\DocumentType\" />
+    <Folder Include="Documents\Data\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />

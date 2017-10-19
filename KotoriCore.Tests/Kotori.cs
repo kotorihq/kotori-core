@@ -210,25 +210,6 @@ namespace KotoriCore.Tests
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-find2", "_content/tv", 2, null, null, null, false, false, null);
             Assert.AreEqual(2, docs.Count());
-
-            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, "c.slug", null, "c.meta.rating asc", false, false, null);
-            //Assert.AreEqual(1, docs.Count());
-            //Assert.AreEqual(null, docs.First().Identifier);
-            //Assert.AreEqual("flip-flappers", docs.First().Slug);
-
-            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null, false, false, null);
-            //Assert.AreEqual(1, docs.Count());
-            //Assert.AreEqual("flip-flappers", docs.First().Slug);
-
-            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null, false, false, 3);
-            //Assert.AreEqual(0, docs.Count());
-
-            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 1);
-            //Assert.AreEqual(1, docs.Count());
-            //Assert.AreEqual("flying-witch-2016", docs.First().Slug);
-
-            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 2);
-            //Assert.AreEqual(0, docs.Count());
         }
 
         [TestMethod]
@@ -767,6 +748,55 @@ aloha everyone!
             Assert.AreEqual(false, d2.Draft);
             Assert.AreEqual(2, d2.Version);
             Assert.AreEqual("2017-01-01-a", d2.Filename);
+        }
+
+        [TestMethod]
+        public async Task ComplexData()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "mrdata", "MrData", null);
+
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Nenecchi
+position: programmer
+stars: !!int 5
+approved: !!bool true
+---
+girl: Umiko
+position: head programmer
+stars: !!int 3
+approved: !!bool false
+---";
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
+
+            //c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            //await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c);
+
+            //var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, null, false, false, null);
+            //Assert.AreEqual(1, docs.Count());
+
+            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, "c.slug", null, "c.meta.rating asc", false, false, null);
+            //Assert.AreEqual(1, docs.Count());
+            //Assert.AreEqual(null, docs.First().Identifier);
+            //Assert.AreEqual("flip-flappers", docs.First().Slug);
+
+            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null, false, false, null);
+            //Assert.AreEqual(1, docs.Count());
+            //Assert.AreEqual("flip-flappers", docs.First().Slug);
+
+            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null, false, false, 3);
+            //Assert.AreEqual(0, docs.Count());
+
+            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 1);
+            //Assert.AreEqual(1, docs.Count());
+            //Assert.AreEqual("flying-witch-2016", docs.First().Slug);
+
+            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 2);
+            //Assert.AreEqual(0, docs.Count());
         }
 
         static string GetContent(string path)

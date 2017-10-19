@@ -29,18 +29,25 @@ namespace KotoriCore.Commands
         public readonly string Content;
 
         /// <summary>
+        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.UpsertDocument"/> data mode.
+        /// </summary>
+        /// <value><c>true</c> if data mode; otherwise, <c>false</c>.</value>
+        public bool DataMode { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocument"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
-        public UpsertDocument(string instance, string projectId, string identifier, string content)
+        public UpsertDocument(string instance, string projectId, string identifier, string content, bool dataMode = false)
         {
             Instance = instance;
             ProjectId = projectId;
             Identifier = identifier;
             Content = content;
+            DataMode = dataMode;
         }
 
         /// <summary>
