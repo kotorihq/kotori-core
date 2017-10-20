@@ -75,5 +75,21 @@ namespace KotoriCore.Tests
         {
             "_content/tv/_.md".ToKotoriUri(Router.IdentifierType.Document);
         }
+
+        [TestMethod]
+        public void DataUri()
+        {
+            Assert.AreEqual(new Uri("kotori://_content/tv/flip-flappers.md"), "_content/tv/2017-08-12-flip-flappers.md?x=3".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/flip-flappers.md"), "_content/tv/2017-08-12-flip-flappers.md?3".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://_content/tv/flip-flappers.md?426"), "_content/tv/2017-08-12-flip-flappers.md?426".ToKotoriUri(Router.IdentifierType.Data));
+        }
+
+        [TestMethod]
+        public void ToFilename()
+        {
+            Assert.AreEqual("_content/tv/trick.md", "_content/tv/trick.md".ToFilename());
+            Assert.AreEqual("_content/tv/old/trick.md", "_content/tv/old/trick.md".ToFilename());
+            Assert.AreEqual("_content/tv/old/trick.md", "_content/tv/old/trick.md?777".ToFilename());
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using KotoriCore.Exceptions;
+using Sushi2;
 
 namespace KotoriCore.Helpers
 {
@@ -24,7 +25,8 @@ namespace KotoriCore.Helpers
             Project,
             DocumentType,
             Document,
-            DocumentForDraftCheck
+            DocumentForDraftCheck,
+            Data
         }
 
         /// <summary>
@@ -59,7 +61,8 @@ namespace KotoriCore.Helpers
                 result = new Uri(dturi);
             }
 
-            if (identifierType == IdentifierType.Document)
+            if (identifierType == IdentifierType.Document ||
+                identifierType == IdentifierType.Data)
             {
                 if (result.Segments.Length < 3)
                     throw new KotoriValidationException($"Identifier {uri} is not valid document type URI string.");
@@ -95,6 +98,9 @@ namespace KotoriCore.Helpers
                     duri += last.ToIdentifierWithoutDate();
                 }
 
+                if (identifierType == IdentifierType.Data)
+                    duri += result.Query;
+                
                 result = new Uri(duri);
             }
 
@@ -176,15 +182,14 @@ namespace KotoriCore.Helpers
                 return null;
             
             var filename = identifier.RemoveTrailingSlashes(true, true);
+            var parts = filename.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+            var finalname = parts.ToImplodedString("/");
+            var li = finalname.LastIndexOf('?');
 
-            var r = new Regex(@"^[^\/]+\/[^\/]+\/(?<id>.+)$", RegexOptions.Singleline);
-
-            var match = r.Match(filename);
-
-            if (match.Success)
-                return match.Groups["id"].Value;
-
-            return null;
+            if (li != -1)
+                finalname = finalname.Substring(0, li);
+            
+            return finalname;
         }
     }
 }

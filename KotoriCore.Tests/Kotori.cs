@@ -733,21 +733,21 @@ aloha everyone!
             var d0 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
             Assert.IsNotNull(d0);
             Assert.AreEqual(true, d0.Draft);
-            Assert.AreEqual("_a", d0.Filename);
+            Assert.AreEqual("_content/x/_a", d0.Filename);
 
             _kotori.UpsertDocument("dev", "drnodr", "_content/x/a", "hello");
             var d1 = _kotori.GetDocument("dev", "drnodr", "_content/x/_2017-01-01-a");
             Assert.IsNotNull(d1);
             Assert.AreEqual(false, d1.Draft);
             Assert.AreEqual(1, d1.Version);
-            Assert.AreEqual("a", d1.Filename);
+            Assert.AreEqual("_content/x/a", d1.Filename);
 
             _kotori.UpsertDocument("dev", "drnodr", "_content/x/2017-01-01-a", "hello");
             var d2 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
             Assert.IsNotNull(d2);
             Assert.AreEqual(false, d2.Draft);
             Assert.AreEqual(2, d2.Version);
-            Assert.AreEqual("2017-01-01-a", d2.Filename);
+            Assert.AreEqual("_content/x/2017-01-01-a", d2.Filename);
         }
 
         [TestMethod]
@@ -773,30 +773,53 @@ approved: !!bool false
 ---";
             await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
 
-            //c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            //await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c);
+            var doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(0, doc.Version);
+            Assert.AreEqual(new JValue(5), doc.Meta.stars);
 
-            //var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, null, false, false, null);
-            //Assert.AreEqual(1, docs.Count());
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
+            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(0, doc.Version);
+            Assert.AreEqual(new JValue(5), doc.Meta.stars);
 
-            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, "c.slug", null, "c.meta.rating asc", false, false, null);
-            //Assert.AreEqual(1, docs.Count());
-            //Assert.AreEqual(null, docs.First().Identifier);
-            //Assert.AreEqual("flip-flappers", docs.First().Slug);
+            c = @"---
+girl: Aoba
+position: designer
+stars: !!int 5
+approved: !!bool true
+---
+girl: Nenecchi
+position: programmer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Umiko
+position: head programmer
+stars: !!int 2
+approved: !!bool false
+---";
 
-            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null, false, false, null);
-            //Assert.AreEqual(1, docs.Count());
-            //Assert.AreEqual("flip-flappers", docs.First().Slug);
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
+            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(1, doc.Version);
+            Assert.AreEqual(new JValue(4), doc.Meta.stars);
 
-            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null, false, false, 3);
-            //Assert.AreEqual(0, docs.Count());
+            var n = _kotori.CountDocuments("dev", "mrdata", "_data/newgame", null, false, false);
+            Assert.AreEqual(3, n);
 
-            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 1);
-            //Assert.AreEqual(1, docs.Count());
-            //Assert.AreEqual("flying-witch-2016", docs.First().Slug);
+            n = _kotori.CountDocuments("dev", "mrdata", "_data/newgame", "c.meta.stars <= 4", false, false);
+            Assert.AreEqual(2, n);
 
-            //docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 2);
-            //Assert.AreEqual(0, docs.Count());
+            var docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", 1, null, null, "c.meta.stars asc", false, false, null, Helpers.Enums.DocumentFormat.Html);
+            Assert.AreEqual(1, docs.Count());
+            doc = docs.First();
+            Assert.AreEqual(new JValue(2), doc.Meta.stars);
+            Assert.AreEqual(new JValue("Umiko"), doc.Meta.girl);
+
+
         }
 
         static string GetContent(string path)

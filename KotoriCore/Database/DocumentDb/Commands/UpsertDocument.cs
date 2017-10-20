@@ -39,7 +39,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
 
-                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(Router.IdentifierType.Document), null);
+                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document), null);
                 var isNew = d == null;
                 var id = d?.Id;
                 long version = 0;
@@ -58,7 +58,7 @@ namespace KotoriCore.Database.DocumentDb
                 (
                     command.Instance,
                     projectUri.ToString(),
-                    command.Identifier.ToKotoriUri(Router.IdentifierType.Document).ToString(),
+                    command.Identifier.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document).ToString(),
                     documentTypeUri.ToString(),
                     documentResult.Hash,
                     documentResult.Slug,
@@ -104,7 +104,8 @@ namespace KotoriCore.Database.DocumentDb
                                  command.Instance,
                                  command.ProjectId,
                                  command.Identifier + "?" + dc,
-                                 doc
+                                 doc,
+                                 true
                                 )
                             )
                         );

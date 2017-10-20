@@ -13,11 +13,14 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<SimpleDocument>> HandleAsync(GetDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
+            var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var docType = documentTypeUri.ToDocumentType();
+
             var d = await FindDocumentByIdAsync
                 (
                     command.Instance,
                     projectUri,
-                    command.Identifier.ToKotoriUri(Router.IdentifierType.Document),
+                    command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data),
                     command.Version
                 );
 
@@ -33,7 +36,7 @@ namespace KotoriCore.Database.DocumentDb
             (
                 new SimpleDocument
                 (
-                    new Uri(d.Identifier).ToKotoriIdentifier(Router.IdentifierType.Document),
+                    new Uri(d.Identifier).ToKotoriIdentifier(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data),
                     d.Slug,
                     d.Meta,
                     DocumentHelpers.PostProcessedContent(d.Content, d.Meta, command.Format),
