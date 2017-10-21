@@ -35,7 +35,8 @@ namespace KotoriCore.Helpers
         /// <returns>The kotori URI.</returns>
         /// <param name="uri">URI.</param>
         /// <param name="identifierType">Identifier type.</param>
-        internal static Uri ToKotoriUri(this string uri, IdentifierType identifierType)
+        /// <param name="index">Index.</param>
+        internal static Uri ToKotoriUri(this string uri, IdentifierType identifierType, int? index = null)
         {
             if (uri == null)
                 throw new KotoriValidationException("Identifier (null) is not valid URI string.");
@@ -99,7 +100,12 @@ namespace KotoriCore.Helpers
                 }
 
                 if (identifierType == IdentifierType.Data)
-                    duri += result.Query;
+                {
+                    if (index.HasValue)
+                        duri += "?" + index.Value;
+                    else
+                        duri += result.Query;
+                }
                 
                 result = new Uri(duri);
             }

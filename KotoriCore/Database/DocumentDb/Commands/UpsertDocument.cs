@@ -87,6 +87,19 @@ namespace KotoriCore.Database.DocumentDb
                 var data = new Documents.Data.Data(command.Identifier, command.Content);
                 var documents = data.GetDocuments();
 
+                //var total = await HandleAsync
+                        // (
+                        //     new CountDocuments
+                        //     (
+                        //         command.Instance,
+                        //         command.ProjectId,
+                        //         documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType),
+                        //         null,
+                        //         true,
+                        //         true
+                        //     )
+                        //);
+
                 var tasks = new List<Task>();
 
                 for (int dc = 0; dc < documents.Count; dc++)
@@ -111,8 +124,9 @@ namespace KotoriCore.Database.DocumentDb
                         );
                 }
 
-                await Task.WhenAll(tasks);
+                Task.WaitAll(tasks.ToArray());
 
+                //var deleteTasks = new List<Task>();
                 // TODO: remove outside index docs
 
                 return new CommandResult<string>($"{documents.Count} {(documents.Count < 2 ? "document has" : "documents have")} been processed.");

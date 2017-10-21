@@ -819,7 +819,14 @@ approved: !!bool false
             Assert.AreEqual(new JValue(2), doc.Meta.stars);
             Assert.AreEqual(new JValue("Umiko"), doc.Meta.girl);
 
+            _kotori.DeleteDocument("dev", "mrdata", "_data/newgame/girls.yaml?0");
 
+            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+            Assert.AreEqual(2, docs.Count());
+            Assert.AreEqual(new JValue("Nenecchi"), docs.First().Meta.girl);
+            Assert.AreEqual("_data/newgame/girls.yaml?0", docs.First().Identifier);
+            Assert.AreEqual(new JValue("Umiko"), docs.Last().Meta.girl);
+            Assert.AreEqual("_data/newgame/girls.yaml?1", docs.Last().Identifier);
         }
 
         static string GetContent(string path)
