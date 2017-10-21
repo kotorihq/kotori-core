@@ -829,6 +829,60 @@ approved: !!bool false
             Assert.AreEqual("_data/newgame/girls.yaml?1", docs.Last().Identifier);
         }
 
+        [TestMethod]
+        public async Task WeirdDataDocument()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "mrdataf", "MrData", null);
+
+            var c = @"---
+foo: bar
+";
+            await _kotori.UpsertDocumentAsync("dev", "mrdataf", "_data/newgame/girls.yaml", c);
+            var docs = _kotori.FindDocuments("dev", "mrdataf", "_data/newgame", null, null, null, null, false, false, null);
+            Assert.AreEqual(1, docs.Count());
+            Assert.AreEqual(new JValue("bar"), docs.First().Meta.foo);
+        }
+
+        [TestMethod]
+        public async Task WeirdDataDocument2()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "mrdataf2", "MrData", null);
+
+            var c = @"
+foo: bar
+";
+            await _kotori.UpsertDocumentAsync("dev", "mrdataf2", "_data/newgame/girls.yaml", c);
+            var docs = _kotori.FindDocuments("dev", "mrdataf2", "_data/newgame", null, null, null, null, false, false, null);
+            Assert.AreEqual(1, docs.Count());
+            Assert.AreEqual(new JValue("bar"), docs.First().Meta.foo);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Invalid yaml data inappropriately accepted.")]
+        public async Task BadDataDocumentYaml()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "mrdataf3", "MrData", null);
+
+            var c = @"---
+---
+";
+            await _kotori.UpsertDocumentAsync("dev", "mrdataf3", "_data/newgame/girls.yaml", c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Invalid json data inappropriately accepted.")]
+        public async Task BadDataDocumentJson()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "mrdataf4", "MrData", null);
+
+            var c = @"[
+{ ""test"": true },
+{}
+]
+";
+            await _kotori.UpsertDocumentAsync("dev", "mrdataf4", "_data/newgame/girls.yaml", c);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

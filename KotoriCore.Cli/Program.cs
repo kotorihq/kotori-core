@@ -70,61 +70,14 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
 
             // --- CODE HERE --
-            var result = await _kotori.CreateProjectAsync("dev", "mrdata", "MrData", null);
+            var result = await _kotori.CreateProjectAsync("dev", "mrdataf4", "MrData", null);
 
-            var c = @"---
-girl: Aoba
-position: designer
-stars: !!int 4
-approved: !!bool true
----
-girl: Nenecchi
-position: programmer
-stars: !!int 5
-approved: !!bool true
----
-girl: Umiko
-position: head programmer
-stars: !!int 3
-approved: !!bool false
----";
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
-
-            var doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
-
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
-            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
-
-            c = @"---
-girl: Aoba
-position: designer
-stars: !!int 5
-approved: !!bool true
----
-girl: Nenecchi
-position: programmer
-stars: !!int 4
-approved: !!bool true
----
-girl: Umiko
-position: head programmer
-stars: !!int 2
-approved: !!bool false
----";
-
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
-            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
-
-            var n = _kotori.CountDocuments("dev", "mrdata", "_data/newgame", null, false, false);
-
-            n = _kotori.CountDocuments("dev", "mrdata", "_data/newgame", "c.meta.stars <= 4", false, false);
-
-            var docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", 1, null, null, "c.meta.stars asc", false, false, null, Helpers.Enums.DocumentFormat.Html);
-            doc = docs.First();
-
-            _kotori.DeleteDocument("dev", "mrdata", "_data/newgame/girls.yaml?0");
-
-            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+            var c = @"[
+{ ""test"": true },
+{}
+]
+";
+            await _kotori.UpsertDocumentAsync("dev", "mrdataf4", "_data/newgame/girls.yaml", c);
         }
     }
 }

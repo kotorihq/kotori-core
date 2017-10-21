@@ -38,6 +38,18 @@ namespace KotoriCore.Documents.Data
             {
                 var items = JsonConvert.DeserializeObject<List<dynamic>>(_content);
 
+                foreach(var i in items)
+                {
+                    var f = items.Skip(1).First();
+                    var f2 = f.ToObject<Dictionary<string, object>>();
+
+                    if (f2.Count == 0)
+                        throw new KotoriDocumentException(_identifier, "Data contains document with no meta fields.");
+                }
+
+                if (!items.Any())
+                    throw new KotoriDocumentException(_identifier, "Data contains no document.");
+                
                 return items.ToList();
             }
 
@@ -47,7 +59,15 @@ namespace KotoriCore.Documents.Data
 
                 var items = _content.Split("---", System.StringSplitOptions.RemoveEmptyEntries);
 
-                return items.Select(i => des.Deserialize(i)).ToList();
+                if (items.Any(x => string.IsNullOrWhiteSpace(x.Replace("\r", "").Replace("\n", "").Replace(" ", ""))))
+                    throw new KotoriDocumentException(_identifier, "Data contains document with no meta fields.");
+                
+                var items2 = items.Select(i => des.Deserialize(i)).ToList();
+
+                if (!items2.Any())
+                    throw new KotoriDocumentException(_identifier, "Data contains no document.");
+
+                return items2;
             }
 
             throw new KotoriDocumentException(_identifier, "Data content has an unknown format.");
