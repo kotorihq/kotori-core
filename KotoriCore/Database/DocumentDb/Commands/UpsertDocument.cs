@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Database.DocumentDb.Helpers;
@@ -77,7 +78,7 @@ namespace KotoriCore.Database.DocumentDb
                     version,
                     command.Identifier.ToFilename()
                 );
-
+                
                 if (isNew)
                 {
                     await CreateDocumentAsync(d);
@@ -118,7 +119,10 @@ namespace KotoriCore.Database.DocumentDb
 
                 if (idx >= count)
                 {
-                    throw new KotoriDocumentException(command.Identifier, $"When upserting data at a particular index, your index must be between 0 and ${count}.");
+                    if (count == 0)
+                        throw new KotoriDocumentException(command.Identifier, $"There are no data in this document type, do not use index when upserting.");    
+                    
+                    throw new KotoriDocumentException(command.Identifier, $"When upserting data at a particular index, your index must be between 0 and {count}.");
                 }
 
                 if (idx < 0)

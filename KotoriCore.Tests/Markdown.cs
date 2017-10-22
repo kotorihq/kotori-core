@@ -130,7 +130,7 @@ cowboy
 
             var mdr = result as MarkdownResult;
 
-            Assert.AreEqual(DateTime.Now.Date, mdr.Date);
+            Assert.AreEqual(DateTime.MinValue.Date, mdr.Date);
         }
 
         [TestMethod]

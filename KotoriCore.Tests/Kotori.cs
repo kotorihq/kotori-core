@@ -985,6 +985,34 @@ foo: bar
             await _kotori.UpsertDocumentAsync("dev", "bad-bat", "_content/tv/2007-02-32-flip-flappers.md", c);
         }
 
+        [TestMethod]
+        public void DefaultDateForData()
+        {
+            _kotori.CreateProject("dev", "data-inv", "Udie", null);
+
+            var c = @"---
+mr: x
+---";
+
+            _kotori.UpsertDocument("dev", "data-inv", "_data/newgame/2017-02-02-girls.yaml", c);
+            var d = _kotori.GetDocument("dev", "data-inv", "_data/newgame/2017-02-02-girls.yaml?0");
+            Assert.AreEqual(DateTime.MinValue.Date, d.Date);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriException), "Internal fields accepted for data document.")]
+        public void InternalPropsForData()
+        {
+            _kotori.CreateProject("dev", "data-inv2", "Udie", null);
+
+            var c = @"---
+$date: 2017-03-03
+$slug: haha
+---";
+
+            _kotori.UpsertDocument("dev", "data-inv2", "_data/newgame/2017-02-02-girls.yaml", c);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

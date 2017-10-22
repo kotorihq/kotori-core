@@ -44,7 +44,7 @@ namespace KotoriCore.Documents
         /// <remarks>Always returns date, if none found then returns just current date.</remarks>
         internal static DateTime ToDateTime(this string identifier, string date)
         {
-            var now = DateTime.Now.Date;
+            var now = DateTime.MinValue.Date;
             var dt = now;
 
             var r = new Regex(@"^.*/_?(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})-.*$", RegexOptions.Singleline);

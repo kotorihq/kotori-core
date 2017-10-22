@@ -20,6 +20,7 @@ namespace KotoriCore.Documents
     class Markdown : IDocument
     {
         readonly string _content;
+        readonly Enums.DocumentType _documentType;
 
         /// <summary>
         /// Gets the identifier.
@@ -35,6 +36,12 @@ namespace KotoriCore.Documents
         public Markdown(string identifier, string content)
         {
             Identifier = identifier;
+            var docType = Identifier.ToKotoriUri(Router.IdentifierType.DocumentType).ToDocumentType();
+
+            if (!docType.HasValue)
+                throw new KotoriDocumentException(Identifier, "Unknown document type.");
+
+            _documentType = docType.Value;
             _content = content;
         }
 
@@ -136,10 +143,17 @@ namespace KotoriCore.Documents
                 }
             }
 
-            markdownResult.Hash = markdownResult.ToHash();
             markdownResult.Date = markdownResult.Identifier.ToDateTime(null);
 
-            ProcessMeta(markdownResult);
+            ProcessMeta(markdownResult, _documentType);
+
+            if (_documentType == Enums.DocumentType.Data)
+            {
+                markdownResult.Date = DateTime.MinValue;
+                markdownResult.Slug = null;
+            }
+
+            markdownResult.Hash = markdownResult.ToHash();
 
             return markdownResult;
         }
@@ -148,7 +162,7 @@ namespace KotoriCore.Documents
         /// Processes the meta.
         /// </summary>
         /// <param name="result">Result.</param>
-        void ProcessMeta(MarkdownResult result)
+        void ProcessMeta(MarkdownResult result, Enums.DocumentType documentType)
         {
             var expando = new ExpandoObject();
             IDictionary<string, object> dictionary = expando;
@@ -172,6 +186,9 @@ namespace KotoriCore.Documents
 
                     if (dpt == Enums.DocumentPropertyType.Date)
                     {
+                        if (documentType == Enums.DocumentType.Data)
+                            throw new KotoriDocumentException(Identifier, $"$Date is not allowed for data documents.");
+                        
                         if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Date))
                             throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is used more than once.");
                         
@@ -182,6 +199,9 @@ namespace KotoriCore.Documents
 
                     if (dpt == Enums.DocumentPropertyType.Slug)
                     {
+                        if (documentType == Enums.DocumentType.Data)
+                            throw new KotoriDocumentException(Identifier, $"$Slug is not allowed for data documents.");
+                        
                         if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Slug))
                             throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is used more than once.");
                         
@@ -206,10 +226,10 @@ namespace KotoriCore.Documents
                 }
             }
 
-            // no date, set today
+            // no date, set min date
             if (!result.Date.HasValue)
             {
-                result.Date = DateTime.Now.Date;
+                result.Date = DateTime.MinValue.Date;
             }
 
             // no slug, set from filename

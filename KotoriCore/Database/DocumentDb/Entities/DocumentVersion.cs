@@ -113,7 +113,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
                     document.Identifier,
                     document.DocumentTypeId,
                     document.Hash,
-                    document.Modified?.DateTime ?? DateTime.Now,
+                    document.Modified?.DateTime ?? DateTime.MinValue.Date,
                     document.Version,
                     document.Filename,
                     document
