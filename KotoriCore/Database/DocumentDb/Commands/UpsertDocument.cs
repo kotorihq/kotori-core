@@ -24,10 +24,10 @@ namespace KotoriCore.Database.DocumentDb
             var docType = documentTypeUri.ToDocumentType();
             var documentUri = command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
 
-            int? idx = null;
+            long? idx = null;
 
             if (docType == Enums.DocumentType.Data)
-                idx = documentUri.Query?.Replace("?", "").ToInt32();
+                idx = documentUri.Query?.Replace("?", "").ToInt64();
             
             IDocumentResult documentResult = null;
 
@@ -116,12 +116,14 @@ namespace KotoriCore.Database.DocumentDb
 
                 var count = await CountDocumentsAsync(sql);
 
-                if (idx < 0 ||
-                   idx > count)
+                if (idx >= count)
                 {
                     throw new KotoriDocumentException(command.Identifier, $"When upserting data at a particular index, your index must be between 0 and ${count}.");
                 }
 
+                if (idx < 0)
+                    idx = count;
+                
                 var tasks = new List<Task>();
 
                 for (var dc = 0; dc < documents.Count; dc++)

@@ -17,10 +17,10 @@ namespace KotoriCore.Database.DocumentDb
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
             var documentUri = command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
 
-            int? idx = null;
+            long? idx = null;
 
             if (docType == Enums.DocumentType.Data)
-                idx = documentUri.Query?.Replace("?", "").ToInt32();
+                idx = documentUri.Query?.Replace("?", "").ToInt64();
 
             var document = await FindDocumentByIdAsync
                 (

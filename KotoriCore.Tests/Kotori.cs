@@ -875,6 +875,24 @@ approved: !!bool true
             docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(3, docs.Count());
             Assert.AreEqual(new JValue("Nenecchi v.2"), docs.Skip(1).First().Meta.girl);
+
+            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(new JValue("Nenecchi v.2"), doc.Meta.girl);
+
+            c = @"---
+girl: Momo
+position: graphician
+stars: !!int 2
+approved: !!bool true
+---";
+
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?-1", c);
+
+            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+            Assert.AreEqual(4, docs.Count());
+            Assert.AreEqual(new JValue("Momo"), docs.Last().Meta.girl);
+            Assert.AreEqual(0, docs.Last().Version);
         }
 
         [TestMethod]

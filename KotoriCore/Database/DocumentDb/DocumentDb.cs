@@ -349,7 +349,7 @@ namespace KotoriCore.Database.DocumentDb
             return await _repoDocument.ReplaceAsync(document);
         }
 
-        async Task<Entities.Document> ReindexDocumentAsync(Entities.Document document, int index)
+        async Task<Entities.Document> ReindexDocumentAsync(Entities.Document document, long index)
         {
             var id = document.Identifier;
             var li = id.LastIndexOf("?", StringComparison.OrdinalIgnoreCase);
