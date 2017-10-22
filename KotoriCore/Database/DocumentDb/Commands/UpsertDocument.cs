@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
+using KotoriCore.Database.DocumentDb.Helpers;
 using KotoriCore.Documents;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
@@ -87,22 +88,24 @@ namespace KotoriCore.Database.DocumentDb
                 var data = new Documents.Data.Data(command.Identifier, command.Content);
                 var documents = data.GetDocuments();
 
-                //var total = await HandleAsync
-                        // (
-                        //     new CountDocuments
-                        //     (
-                        //         command.Instance,
-                        //         command.ProjectId,
-                        //         documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType),
-                        //         null,
-                        //         true,
-                        //         true
-                        //     )
-                        //);
+                var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
+                (
+                   command.Instance,
+                   projectUri,
+                   documentTypeUri,
+                   null,
+                   "count(1) as number",
+                   null,
+                   null,
+                   true,
+                   true
+                );
+
+                var count = await CountDocumentsAsync(sql);
 
                 var tasks = new List<Task>();
 
-                for (int dc = 0; dc < documents.Count; dc++)
+                for (var dc = 0; dc < documents.Count; dc++)
                 {
                     var jo = JObject.FromObject(documents[dc]);
                     var dic = jo.ToObject<Dictionary<string, object>>();
@@ -126,8 +129,22 @@ namespace KotoriCore.Database.DocumentDb
 
                 Task.WaitAll(tasks.ToArray());
 
-                //var deleteTasks = new List<Task>();
-                // TODO: remove outside index docs
+                if (count > documents.Count)
+                {
+                    var deleteTasks = new List<Task>();
+
+                    for (var n = documents.Count; n < count; n++)
+                    {
+                        var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(Router.IdentifierType.Data, n), null);
+
+                        if (d != null)
+                        {
+                            deleteTasks.Add(DeleteDocumentAsync(d));
+                        }
+                    }
+
+                    Task.WaitAll(deleteTasks.ToArray());
+                }
 
                 return new CommandResult<string>($"{documents.Count} {(documents.Count < 2 ? "document has" : "documents have")} been processed.");
             }

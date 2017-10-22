@@ -33,21 +33,21 @@ namespace KotoriCore.Database.DocumentDb
             if (document == null)
                 throw new KotoriDocumentException(command.Identifier, "Document does not exist.");
 
-            var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
-            (
-                command.Instance,
-                projectUri,
-                documentTypeUri,
-                null,
-                "count(1) as number",
-                null,
-                null,
-                true,
-                true
-            );
-
             if (docType == Enums.DocumentType.Data)
             {
+                var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
+                (
+                   command.Instance,
+                   projectUri,
+                   documentTypeUri,
+                   null,
+                   "count(1) as number",
+                   null,
+                   null,
+                   true,
+                   true
+                );
+                
                 var count = await CountDocumentsAsync(sql);
 
                 var result = await DeleteDocumentAsync(document);

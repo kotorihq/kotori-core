@@ -827,6 +827,18 @@ approved: !!bool false
             Assert.AreEqual("_data/newgame/girls.yaml?0", docs.First().Identifier);
             Assert.AreEqual(new JValue("Umiko"), docs.Last().Meta.girl);
             Assert.AreEqual("_data/newgame/girls.yaml?1", docs.Last().Identifier);
+
+            c = @"---
+girl: Umiko
+position: head programmer
+stars: !!int 2
+approved: !!bool false
+---";
+
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
+
+            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+            Assert.AreEqual(1, docs.Count());
         }
 
         [TestMethod]
