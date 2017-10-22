@@ -6,6 +6,7 @@ using KotoriCore.Documents;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 using Newtonsoft.Json.Linq;
+using Sushi2;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -21,7 +22,13 @@ namespace KotoriCore.Database.DocumentDb
 
             var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
             var docType = documentTypeUri.ToDocumentType();
+            var documentUri = command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
 
+            int? idx = null;
+
+            if (docType == Enums.DocumentType.Data)
+                idx = documentUri.Query?.Replace("?", "").ToInt32();
+            
             IDocumentResult documentResult = null;
 
             if (docType == Enums.DocumentType.Content ||
@@ -88,6 +95,12 @@ namespace KotoriCore.Database.DocumentDb
                 var data = new Documents.Data.Data(command.Identifier, command.Content);
                 var documents = data.GetDocuments();
 
+                if (idx.HasValue &&
+                   documents.Count != 1)
+                {
+                    throw new KotoriDocumentException(command.Identifier, $"When upserting data at a particular index you can provide just one document only.");    
+                }
+
                 var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
                 (
                    command.Instance,
@@ -103,6 +116,12 @@ namespace KotoriCore.Database.DocumentDb
 
                 var count = await CountDocumentsAsync(sql);
 
+                if (idx < 0 ||
+                   idx > count)
+                {
+                    throw new KotoriDocumentException(command.Identifier, $"When upserting data at a particular index, your index must be between 0 and ${count}.");
+                }
+
                 var tasks = new List<Task>();
 
                 for (var dc = 0; dc < documents.Count; dc++)
@@ -111,6 +130,10 @@ namespace KotoriCore.Database.DocumentDb
                     var dic = jo.ToObject<Dictionary<string, object>>();
                     var doc = Markdown.ConstructDocument(dic, null);
 
+                    var ci = idx == null ?
+                        command.Identifier.ToKotoriUri(Router.IdentifierType.Data, dc).ToKotoriIdentifier(Router.IdentifierType.Data) :
+                        command.Identifier.ToKotoriUri(Router.IdentifierType.Data, idx).ToKotoriIdentifier(Router.IdentifierType.Data);
+                        
                     tasks.Add
                      (
                          HandleAsync
@@ -119,7 +142,7 @@ namespace KotoriCore.Database.DocumentDb
                              (
                                  command.Instance,
                                  command.ProjectId,
-                                 command.Identifier + "?" + dc,
+                                 ci,
                                  doc,
                                  true
                                 )
@@ -129,7 +152,8 @@ namespace KotoriCore.Database.DocumentDb
 
                 Task.WaitAll(tasks.ToArray());
 
-                if (count > documents.Count)
+                if (idx == null &&
+                    count > documents.Count)
                 {
                     var deleteTasks = new List<Task>();
 

@@ -829,7 +829,7 @@ approved: !!bool false
             Assert.AreEqual("_data/newgame/girls.yaml?1", docs.Last().Identifier);
 
             c = @"---
-girl: Umiko
+girl: Umikox
 position: head programmer
 stars: !!int 2
 approved: !!bool false
@@ -839,6 +839,68 @@ approved: !!bool false
 
             docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(1, docs.Count());
+            Assert.AreEqual(new JValue("Umikox"), docs.First().Meta.girl);
+
+            c = @"---
+girl: Aoba
+position: designer
+stars: !!int 5
+approved: !!bool true
+---
+girl: Nenecchi
+position: programmer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Umiko
+position: head programmer
+stars: !!int 2
+approved: !!bool false
+---";
+
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
+
+            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+            Assert.AreEqual(3, docs.Count());
+            Assert.AreEqual(new JValue("Nenecchi"), docs.Skip(1).First().Meta.girl);
+
+            c = @"---
+girl: Nenecchi v.2
+position: programmer
+stars: !!int 4
+approved: !!bool true
+---";
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?1", c);
+
+            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+            Assert.AreEqual(3, docs.Count());
+            Assert.AreEqual(new JValue("Nenecchi v.2"), docs.Skip(1).First().Meta.girl);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Upserting at index should allow only 1 document.")]
+        public void UpsertDataAtIndexFail()
+        {
+            _kotori.CreateProject("dev", "data-fff", "Udie", null);
+
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 5
+approved: !!bool true
+---
+girl: Nenecchi
+position: programmer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Umiko
+position: head programmer
+stars: !!int 2
+approved: !!bool false
+---";
+
+            _kotori.UpsertDocument("dev", "data-fff", "_data/newgame/girls.yaml?0", c);
         }
 
         [TestMethod]
