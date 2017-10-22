@@ -975,6 +975,16 @@ foo: bar
             await _kotori.UpsertDocumentAsync("dev", "mrdataf4", "_data/newgame/girls.yaml", c);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriException), "Invalid date was accepted.")]
+        public async Task DocumentWithBadDate()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "bad-bat", "Nenecchi", null);
+
+            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.UpsertDocumentAsync("dev", "bad-bat", "_content/tv/2007-02-32-flip-flappers.md", c);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();
