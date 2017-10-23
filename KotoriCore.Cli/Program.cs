@@ -167,7 +167,23 @@ approved: !!bool true
             await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?1", c);
 
             docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
-          
+
+            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
+
+            c = @"---
+girl: Momo
+position: graphician
+stars: !!int 2
+approved: !!bool true
+---";
+
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?-1", c);
+
+            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+
+            _kotori.UpdateDocument("dev", "mrdata", "_data/newgame/girls.yaml?3", new Dictionary<string, object> { { "stars", 3 }, { "approved", false } }, "xxx");
+            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?3");
+
         }
     }
 }

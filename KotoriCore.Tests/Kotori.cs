@@ -885,6 +885,7 @@ girl: Momo
 position: graphician
 stars: !!int 2
 approved: !!bool true
+fake: no
 ---";
 
             await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?-1", c);
@@ -892,7 +893,19 @@ approved: !!bool true
             docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(4, docs.Count());
             Assert.AreEqual(new JValue("Momo"), docs.Last().Meta.girl);
+            Assert.AreEqual(new JValue("no"), docs.Last().Meta.fake);
             Assert.AreEqual(0, docs.Last().Version);
+
+            _kotori.UpdateDocument("dev", "mrdata", "_data/newgame/girls.yaml?3", new Dictionary<string, object> { { "stars", 3 }, { "approved", false }, { "fake", null } }, "xxx");
+            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?3");
+            Assert.AreEqual(1, doc.Version);
+            Assert.AreEqual(new JValue("Momo"), doc.Meta.girl);
+            Assert.AreEqual(new JValue(3), doc.Meta.stars);
+            Assert.AreEqual(new JValue(false), doc.Meta.approved);
+            Assert.IsTrue(string.IsNullOrEmpty(doc.Content));
+
+            var meta = (doc.Meta as JObject);
+            Assert.AreEqual(4, meta.Properties().LongCount());
         }
 
         [TestMethod]

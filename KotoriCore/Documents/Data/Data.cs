@@ -40,8 +40,7 @@ namespace KotoriCore.Documents.Data
 
                 foreach(var i in items)
                 {
-                    var f = items.Skip(1).First();
-                    var f2 = f.ToObject<Dictionary<string, object>>();
+                    var f2 = i.ToObject<Dictionary<string, object>>();
 
                     if (f2.Count == 0)
                         throw new KotoriDocumentException(_identifier, "Data contains document with no meta fields.");

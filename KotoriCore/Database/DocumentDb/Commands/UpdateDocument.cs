@@ -1,9 +1,13 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Documents;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Sushi2;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -12,13 +16,21 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<string>> HandleAsync(UpdateDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
-            var document = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(Router.IdentifierType.Document), null);
+            var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var docType = documentTypeUri.ToDocumentType();
+
+            var document = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data), null);
 
             if (document == null)
                 throw new KotoriDocumentException(command.Identifier, $"Document does not exist.");
+            
+            var documentUri = command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
 
-            var docType = new Uri(document.DocumentTypeId).ToDocumentType();
+            long? idx = null;
 
+            if (docType == Enums.DocumentType.Data)
+                idx = documentUri.Query?.Replace("?", "").ToInt64();
+            
             if (docType == Enums.DocumentType.Content)
             {
                 var newDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(command.Meta, command.Content));
@@ -59,29 +71,32 @@ namespace KotoriCore.Database.DocumentDb
 
             if (docType == Enums.DocumentType.Data)
             {
-                var newDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(command.Meta, command.Content));
-                var newDocumentResult = await newDocument.ProcessAsync();
+                var newData = new Documents.Data.Data(command.Identifier, "[" + JsonConvert.SerializeObject(command.Meta) + "]");
+                var newDocuments = newData.GetDocuments();
 
-                var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
-                var oldDocumentResult = await oldDocument.ProcessAsync();
-                
-                var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, newDocumentResult.Slug, command.Identifier.ToKotoriUri(Router.IdentifierType.Document));
+                if (!idx.HasValue)
+                {
+                    throw new KotoriDocumentException(command.Identifier, $"When updating data you need to provide an index.");
+                }
 
-                if (slug != null)
-                    throw new KotoriDocumentException(command.Identifier, $"Slug {newDocumentResult.Slug} is already being used for another document.");
+                if (idx.HasValue &&
+                   newDocuments.Count != 1)
+                {
+                    throw new KotoriDocumentException(command.Identifier, $"When updating data at a particular index you can provide just one document only.");
+                }
 
-                var meta = Markdown.CombineMeta(oldDocumentResult.Meta, newDocumentResult.Meta);
+                var newDocument = newDocuments.First();
+                var oldDocument = (new Documents.Data.Data(document.Identifier, "[" + JsonConvert.SerializeObject(document.Meta) + "]")).GetDocuments().First();
+
+                JObject oldMeta = JObject.FromObject(oldDocument);
+                Dictionary<string, object> oldMeta2 = oldMeta?.ToObject<Dictionary<string, object>>();
+
+                JObject newMeta = JObject.FromObject(newDocument);
+                Dictionary<string, object> newMeta2 = newMeta?.ToObject<Dictionary<string, object>>();
+
+                var meta = Markdown.CombineMeta(oldMeta2, newMeta2);
 
                 document.Meta = meta;
-
-                if (!string.IsNullOrEmpty(newDocumentResult.Content))
-                    document.Content = newDocumentResult.Content;
-
-                document.Slug = newDocumentResult.Slug;
-
-                if (newDocumentResult.Date.HasValue)
-                    document.Date = new Oogi2.Tokens.Stamp(newDocumentResult.Date.Value);
-
                 document.Modified = new Oogi2.Tokens.Stamp();
 
                 var dr = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
