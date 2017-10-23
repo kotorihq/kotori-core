@@ -96,6 +96,7 @@ namespace KotoriCore.Database.DocumentDb
                 var documents = data.GetDocuments();
 
                 if (idx.HasValue &&
+                    idx != -1 &&
                    documents.Count != 1)
                 {
                     throw new KotoriDocumentException(command.Identifier, $"When upserting data at a particular index you can provide just one document only.");    
@@ -116,6 +117,14 @@ namespace KotoriCore.Database.DocumentDb
 
                 var count = await CountDocumentsAsync(sql);
 
+                if (idx < 0)
+                {
+                    if (count == 0)
+                        idx = null;
+                    else
+                        idx = count;
+                }
+                
                 if (idx >= count)
                 {
                     if (count == 0)
@@ -123,9 +132,6 @@ namespace KotoriCore.Database.DocumentDb
                     
                     throw new KotoriDocumentException(command.Identifier, $"When upserting data at a particular index, your index must be between 0 and {count}.");
                 }
-
-                if (idx < 0)
-                    idx = count;
                 
                 var tasks = new List<Task>();
 

@@ -20,7 +20,12 @@ namespace KotoriCore.Database.DocumentDb
             long? idx = null;
 
             if (docType == Enums.DocumentType.Data)
+            {
                 idx = documentUri.Query?.Replace("?", "").ToInt64();
+
+                if (!idx.HasValue)
+                    throw new KotoriDocumentException(command.Identifier, "Data document cannot be deleted without index.");
+            }
 
             var document = await FindDocumentByIdAsync
                 (

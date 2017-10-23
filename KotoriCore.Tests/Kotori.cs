@@ -935,6 +935,87 @@ approved: !!bool false
         }
 
         [TestMethod]
+        public void UpsertDocumentsWithSpecialIndex()
+        {
+            _kotori.CreateProject("dev", "data-woho", "Udie", null);
+
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 5
+approved: !!bool true
+---
+girl: Nenecchi
+position: programmer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Umiko
+position: head programmer
+stars: !!int 2
+approved: !!bool false
+---";
+
+            _kotori.UpsertDocument("dev", "data-woho", "_data/newgame/girls.yaml?-1", c);
+            var n = _kotori.CountDocuments("dev", "data-woho", "_data/newgame", null, false, false);
+            Assert.AreEqual(3, n);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Deleting without index was allowed to be deleted.")]
+        public void DeleteDataWithoutIndex()
+        {
+            _kotori.CreateProject("dev", "data-woho2", "Udie", null);
+
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 5
+approved: !!bool true
+---
+girl: Nenecchi
+position: programmer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Umiko
+position: head programmer
+stars: !!int 2
+approved: !!bool false
+---";
+
+            _kotori.UpsertDocument("dev", "data-woho2", "_data/newgame/girls.yaml?-1", c);
+            _kotori.DeleteDocument("dev", "data-woho2", "_data/newgame/girls.yaml");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Deleting with bad index was allowed to be deleted.")]
+        public void DeleteDataWithBadIndex()
+        {
+            _kotori.CreateProject("dev", "data-woho3", "Udie", null);
+
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 5
+approved: !!bool true
+---
+girl: Nenecchi
+position: programmer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Umiko
+position: head programmer
+stars: !!int 2
+approved: !!bool false
+---";
+
+            _kotori.UpsertDocument("dev", "data-woho3", "_data/newgame/girls.yaml", c);
+            _kotori.DeleteDocument("dev", "data-woho3", "_data/newgame/girls.yaml?4");
+        }
+
+        [TestMethod]
         public async Task WeirdDataDocument()
         {
             var result = await _kotori.CreateProjectAsync("dev", "mrdataf", "MrData", null);
