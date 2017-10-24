@@ -125,7 +125,7 @@ namespace KotoriCore.Database.DocumentDb
                         idx = count;
                 }
                 
-                if (idx >= count)
+                if (idx > count)
                 {
                     if (count == 0)
                         throw new KotoriDocumentException(command.Identifier, $"There are no data in this document type, do not use index when upserting.");    
