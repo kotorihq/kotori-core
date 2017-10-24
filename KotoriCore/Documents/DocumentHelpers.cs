@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Text.RegularExpressions;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
@@ -124,13 +125,38 @@ namespace KotoriCore.Documents
 
             foreach (var key in meta2.Keys)
             {
-                content = content.Replace("{{" + key + "}}", meta2[key].ToString());
+                if (meta2[key] != null)
+                    content = content.Replace("{{" + key + "}}", meta2[key].ToString());
             }
 
             if (format == Enums.DocumentFormat.Html)
                 content = content.ToHtml();
             
             return content;
+        }
+
+        /// <summary>
+        /// Cleans up meta.
+        /// </summary>
+        /// <returns>The cleaned up meta.</returns>
+        /// <param name="meta">Meta.</param>
+        internal static dynamic CleanUpMeta(dynamic meta)
+        {
+            if (meta == null)
+                return new Dictionary<string, object>();
+
+            JObject metaObj = JObject.FromObject(meta);
+
+            Dictionary<string, object> meta2 = metaObj?.ToObject<Dictionary<string, object>>();
+            Dictionary<string, object> metaFinal = new Dictionary<string, object>();
+
+            foreach (var key in meta2.Keys)
+            {
+                if (meta2[key] != null)
+                    metaFinal.Add(key, meta2[key]);
+            }
+
+            return metaFinal;
         }
     }
 }

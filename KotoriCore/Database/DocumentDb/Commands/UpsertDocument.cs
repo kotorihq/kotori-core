@@ -45,7 +45,7 @@ namespace KotoriCore.Database.DocumentDb
                         throw new KotoriDocumentException(command.Identifier, $"Slug {documentResult.Slug} is already being used for another document.");
                 }
 
-                var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, documentResult.Meta);
+                var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, DocumentHelpers.CleanUpMeta(documentResult.Meta));
 
                 var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document), null);
                 var isNew = d == null;

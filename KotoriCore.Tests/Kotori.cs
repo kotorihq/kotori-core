@@ -1109,14 +1109,16 @@ $slug: haha
 
         [TestMethod]
         [ExpectedException(typeof(KotoriDocumentException), "Data document with no meta was accepted and upserted.")]
-        public void UpdateSetNullForAllFields()
+        public void UpdateSetNullForAllFieldsData()
         {
             _kotori.CreateProject("dev", "alldata", "Udie", null);
 
             var c = @"---
-x: a
-y: b
-z: c
+{ ""x"": a,
+""y"": b,
+""z"": c,
+""nope"": null
+}
 ---";
 
             _kotori.UpsertDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml", c);
@@ -1136,7 +1138,7 @@ z: null
         }
 
         [TestMethod]
-        public void UpdateSetNullForAllFields2()
+        public void UpdateSetNullForAllFieldsContent()
         {
             _kotori.CreateProject("dev", "alldata2", "Udie", null);
 
@@ -1162,6 +1164,12 @@ z: null
             d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
             meta = (d.Meta as JObject);
             Assert.AreEqual(0, meta.Properties().LongCount());
+            Assert.AreEqual(".", d.Content.Trim());
+
+            _kotori.UpdateDocument("dev", "alldata2", "_content/x/foo.md", new Dictionary<string, object> { { "x", null }, { "yo", "yeah" } }, null);
+            d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
+            meta = (d.Meta as JObject);
+            Assert.AreEqual(1, meta.Properties().LongCount());
             Assert.AreEqual(".", d.Content.Trim());
         }
 

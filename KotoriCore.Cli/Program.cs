@@ -70,31 +70,28 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
 
             // --- CODE HERE --
-            _kotori.CreateProject("dev", "data-woho", "Udie", null);
+            _kotori.CreateProject("dev", "alldata", "Udie", null);
 
             var c = @"---
-girl: Aoba
-position: designer
-stars: !!int 5
-approved: !!bool true
----
-girl: Nenecchi
-position: programmer
-stars: !!int 4
-approved: !!bool true
----
-girl: Umiko
-position: head programmer
-stars: !!int 2
-approved: !!bool false
+{ ""x"": a,
+""y"": b,
+""z"": c,
+""nope"": null
+}
 ---";
 
-            _kotori.UpsertDocument("dev", "data-woho", "_data/newgame/girls.yaml?-1", c);
-            var n = _kotori.CountDocuments("dev", "data-woho", "_data/newgame", null, false, false);
+            _kotori.UpsertDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml", c);
+            var d = _kotori.GetDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml");
+            var meta = (d.Meta as JObject);
 
-            _kotori.DeleteDocument("dev", "data-woho", "_data/newgame/girls.yaml");
-            n = _kotori.CountDocuments("dev", "data-woho", "_data/newgame", null, false, false);
-
+            c = @"---
+x: null
+y: null
+z: null
+---";
+            _kotori.UpdateDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml?0", new Dictionary<string, object> { { "x", null }, { "z", null }, { "y", null } }, null);
+            d = _kotori.GetDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml");
+            meta = (d.Meta as JObject);
         }
     }
 }

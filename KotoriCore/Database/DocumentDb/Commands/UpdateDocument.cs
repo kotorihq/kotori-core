@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
@@ -46,7 +47,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 var meta = Markdown.CombineMeta(oldDocumentResult.Meta, newDocumentResult.Meta);
 
-                document.Meta = meta;
+                document.Meta = DocumentHelpers.CleanUpMeta(meta);
 
                 if (!string.IsNullOrEmpty(newDocumentResult.Content))
                     document.Content = newDocumentResult.Content;
@@ -100,7 +101,7 @@ namespace KotoriCore.Database.DocumentDb
                     meta.Keys.Count() == 0)
                     throw new KotoriDocumentException(command.Identifier, $"The result data document contains no meta after combination. Cannot update.");
                 
-                document.Meta = meta;
+                document.Meta = DocumentHelpers.CleanUpMeta(meta);
                 document.Modified = new Oogi2.Tokens.Stamp();
 
                 var dr = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
