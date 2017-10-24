@@ -1135,6 +1135,36 @@ z: null
             Assert.AreEqual(0, meta.Properties().LongCount());
         }
 
+        [TestMethod]
+        public void UpdateSetNullForAllFields2()
+        {
+            _kotori.CreateProject("dev", "alldata2", "Udie", null);
+
+            var c = @"---
+x: a
+y: b
+z: c
+---
+hello";
+
+            _kotori.UpsertDocument("dev", "alldata2", "_content/x/foo.md", c);
+            var d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
+            var meta = (d.Meta as JObject);
+            Assert.AreEqual(3, meta.Properties().LongCount());
+            Assert.IsFalse(string.IsNullOrEmpty(d.Content));
+
+            c = @"---
+x: null
+y: null
+z: null
+---";
+            _kotori.UpdateDocument("dev", "alldata2", "_content/x/foo.md", new Dictionary<string, object> { { "x", null }, { "z", null }, { "y", null } }, ".");
+            d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
+            meta = (d.Meta as JObject);
+            Assert.AreEqual(0, meta.Properties().LongCount());
+            Assert.AreEqual(".", d.Content.Trim());
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();
