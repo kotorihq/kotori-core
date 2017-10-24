@@ -96,6 +96,10 @@ namespace KotoriCore.Database.DocumentDb
 
                 var meta = Markdown.CombineMeta(oldMeta2, newMeta2);
 
+                if (meta == null ||
+                    meta.Keys.Count() == 0)
+                    throw new KotoriDocumentException(command.Identifier, $"The result data document contains no meta after combination. Cannot update.");
+                
                 document.Meta = meta;
                 document.Modified = new Oogi2.Tokens.Stamp();
 

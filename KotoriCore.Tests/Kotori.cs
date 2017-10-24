@@ -1107,6 +1107,34 @@ $slug: haha
             _kotori.UpsertDocument("dev", "data-inv2", "_data/newgame/2017-02-02-girls.yaml", c);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Data document with no meta was accepted and upserted.")]
+        public void UpdateSetNullForAllFields()
+        {
+            _kotori.CreateProject("dev", "alldata", "Udie", null);
+
+            var c = @"---
+x: a
+y: b
+z: c
+---";
+
+            _kotori.UpsertDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml", c);
+            var d = _kotori.GetDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml");
+            var meta = (d.Meta as JObject);
+            Assert.AreEqual(3, meta.Properties().LongCount());
+
+            c = @"---
+x: null
+y: null
+z: null
+---";
+            _kotori.UpdateDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml?0", new Dictionary<string, object> { { "x", null }, { "z", null }, { "y", null }}, null);
+            d = _kotori.GetDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml");
+            meta = (d.Meta as JObject);
+            Assert.AreEqual(0, meta.Properties().LongCount());
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();
