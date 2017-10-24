@@ -287,7 +287,7 @@ namespace KotoriCore.Database.DocumentDb
             var q = new DynamicQuery
                 (
                     "select c.id as Id from c where c.entity = @entity and c.instance = @instance " +
-                    "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
+                    "and c.projectId = @projectId and c.documentId = @documentId",
                     new
                     {
                         entity = DocumentVersionEntity,
