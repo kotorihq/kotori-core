@@ -1266,6 +1266,34 @@ rr: !!str nxull
             Assert.AreEqual(0, documentVersions.Count());
         }
 
+        [TestMethod]
+        public void DataReindexAndVersions()
+        {
+            _kotori.CreateProject("dev", "dsmart", "Udie", null);
+
+            var c = @"---
+x: a
+b: 33
+---
+x: b
+b: 34
+---";
+
+            _kotori.UpsertDocument("dev", "dsmart", "_data/x/foo", c);
+            _kotori.UpdateDocument("dev", "dsmart", "_data/x/foo?1", new Dictionary<string, object> { { "b", "35" } }, null);
+            var vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?0");
+            Assert.AreEqual(1, vers.Count());
+            vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?1");
+            Assert.AreEqual(2, vers.Count());
+
+            _kotori.DeleteDocument("dev", "dsmart", "_data/x/foo?0");
+            var n = _kotori.CountDocuments("dev", "dsmart", "_data/x", null, false, false);
+            Assert.AreEqual(1, n);
+
+            vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?0");
+            Assert.AreEqual(2, vers.Count());
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

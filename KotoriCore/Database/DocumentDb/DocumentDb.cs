@@ -356,6 +356,30 @@ namespace KotoriCore.Database.DocumentDb
             if (li != -1)
                 id = id.Substring(0, li);
 
+            var q = new DynamicQuery
+               (
+                   "select * from c where c.entity = @entity and c.instance = @instance " +
+                   "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
+                   new
+                   {
+                       entity = DocumentVersionEntity,
+                       instance = document.Instance,
+                       projectId = document.ProjectId,
+                       documentId = document.Identifier
+                   }
+               );
+
+            var documentVersions = await GetDocumentVersionsAsync(q);
+            var docv = new List<Task>();
+
+            foreach(var dv in documentVersions)
+            {
+                dv.DocumentId = id + "?" + index;
+                docv.Add(_repoDocumentVersion.UpsertAsync(dv));
+            }
+
+            Task.WaitAll(docv.ToArray());
+
             document.Identifier = id + "?" + index;
 
             return await _repoDocument.ReplaceAsync(document);
