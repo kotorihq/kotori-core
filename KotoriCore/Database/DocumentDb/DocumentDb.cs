@@ -23,8 +23,7 @@ namespace KotoriCore.Database.DocumentDb
         readonly Repository<Entities.DocumentVersion> _repoDocumentVersion;
         readonly Repository<Count> _repoDocumentCount;
         readonly Repository<dynamic> _repoDocumentVersionDelete;
-
-        Connection _connection;
+        readonly Connection _connection;
 
         internal const string ProjectEntity = "kotori/project";
         internal const string DocumentTypeEntity = "kotori/document-type";

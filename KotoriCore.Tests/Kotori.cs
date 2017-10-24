@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System;
 using Sushi2;
+using KotoriCore.Database.DocumentDb;
 
 namespace KotoriCore.Tests
 {
@@ -1146,6 +1147,7 @@ z: null
 x: a
 y: b
 z: c
+d: null
 ---
 hello";
 
@@ -1155,11 +1157,6 @@ hello";
             Assert.AreEqual(3, meta.Properties().LongCount());
             Assert.IsFalse(string.IsNullOrEmpty(d.Content));
 
-            c = @"---
-x: null
-y: null
-z: null
----";
             _kotori.UpdateDocument("dev", "alldata2", "_content/x/foo.md", new Dictionary<string, object> { { "x", null }, { "z", null }, { "y", null } }, ".");
             d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
             meta = (d.Meta as JObject);
@@ -1171,6 +1168,102 @@ z: null
             meta = (d.Meta as JObject);
             Assert.AreEqual(1, meta.Properties().LongCount());
             Assert.AreEqual(".", d.Content.Trim());
+        }
+
+        [TestMethod]
+        public void ContentVersions()
+        {
+            _kotori.CreateProject("dev", "cversions", "Udie", null);
+
+            var c = @"---
+x: a
+b: 33
+r: null
+rr: !!str nxull
+---";
+
+            _kotori.UpsertDocument("dev", "cversions", "_content/x/foo", c);
+            _kotori.UpdateDocument("dev", "cversions", "_content/x/foo", new Dictionary<string, object> { { "x", "b" }}, null);
+            var d = _kotori.GetDocument("dev", "cversions", "_content/x/foo");
+            var meta = (d.Meta as JObject);
+            Assert.AreEqual(3, meta.Properties().LongCount());
+            Assert.AreEqual(new JValue("b"), d.Meta.x);
+            Assert.AreEqual(new JValue("33"), d.Meta.b);
+            Assert.AreEqual(null, d.Meta.r);
+
+            var vers = _kotori.GetDocumentVersions("dev", "cversions", "_content/x/foo");
+            Assert.AreEqual(2, vers.Count());
+
+            var q = new DynamicQuery
+                (
+                    "select c.version, c.hash, c.date from c where c.entity = @entity and c.instance = @instance " +
+                    "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
+                    new
+                    {
+                        entity = DocumentDb.DocumentVersionEntity,
+                        instance = "dev",
+                        projectId = Helpers.Router.ToKotoriUri("cversions", Helpers.Router.IdentifierType.Project).ToString(),
+                        documentId = Helpers.Router.ToKotoriUri("_content/x/foo", Helpers.Router.IdentifierType.Document).ToString()
+                    }
+                );
+
+            var repo = new Repository<Database.DocumentDb.Entities.DocumentVersion>(_con);
+            var documentVersions = repo.GetList(q);
+
+            Assert.AreEqual(vers.Count(), documentVersions.Count());
+
+            _kotori.DeleteDocument("dev", "cversions", "_content/x/foo");
+
+            documentVersions = repo.GetList(q);
+            Assert.AreEqual(0, documentVersions.Count());
+        }
+
+        [TestMethod]
+        public void DataVersions()
+        {
+            _kotori.CreateProject("dev", "dversions", "Udie", null);
+
+            var c = @"---
+x: a
+b: 33
+r: null
+rr: !!str nxull
+---";
+
+            _kotori.UpsertDocument("dev", "dversions", "_data/x/foo", c);
+            _kotori.UpdateDocument("dev", "dversions", "_data/x/foo?0", new Dictionary<string, object> { { "x", "b" } }, null);
+            var d = _kotori.GetDocument("dev", "dversions", "_data/x/foo?0");
+            var meta = (d.Meta as JObject);
+            Assert.AreEqual(3, meta.Properties().LongCount());
+            Assert.AreEqual(new JValue("b"), d.Meta.x);
+            Assert.AreEqual(new JValue("33"), d.Meta.b);
+            Assert.AreEqual(null, d.Meta.r);
+
+            var vers = _kotori.GetDocumentVersions("dev", "dversions", "_data/x/foo?0");
+            Assert.AreEqual(2, vers.Count());
+
+            var q = new DynamicQuery
+                (
+                    "select c.version, c.hash, c.date from c where c.entity = @entity and c.instance = @instance " +
+                    "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
+                    new
+                    {
+                        entity = DocumentDb.DocumentVersionEntity,
+                        instance = "dev",
+                        projectId = Helpers.Router.ToKotoriUri("dversions", Helpers.Router.IdentifierType.Project).ToString(),
+                        documentId = Helpers.Router.ToKotoriUri("_data/x/foo?0", Helpers.Router.IdentifierType.Data).ToString()
+                    }
+                );
+
+            var repo = new Repository<Database.DocumentDb.Entities.DocumentVersion>(_con);
+            var documentVersions = repo.GetList(q);
+
+            Assert.AreEqual(vers.Count(), documentVersions.Count());
+
+            _kotori.DeleteDocument("dev", "dversions", "_data/x/foo?0");
+
+            documentVersions = repo.GetList(q);
+            Assert.AreEqual(0, documentVersions.Count());
         }
 
         static string GetContent(string path)

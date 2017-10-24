@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Newtonsoft.Json;
 using YamlDotNet.Serialization;
 
@@ -13,7 +14,7 @@ namespace KotoriCore.Documents.Deserializers
             
             var r = new StringReader(content);
             var deserializer = new DeserializerBuilder().Build();
-            dynamic yamlObject = deserializer.Deserialize(r);
+            dynamic yamlObject = deserializer.Deserialize<Dictionary<string, object>>(r);
             dynamic serializer = new SerializerBuilder()
                 .EnsureRoundtrip()
                 .EmitDefaults()

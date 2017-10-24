@@ -4,7 +4,6 @@ using KotoriCore.Commands;
 using KotoriCore.Domains;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
-using Oogi2;
 using Oogi2.Queries;
 
 namespace KotoriCore.Database.DocumentDb
@@ -14,7 +13,11 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<SimpleDocumentVersion>> HandleAsync(GetDocumentVersions command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
-            var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(Router.IdentifierType.Document), null);
+            var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var docType = documentTypeUri.ToDocumentType();
+            var documentUri = command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
+
+            var d = await FindDocumentByIdAsync(command.Instance, projectUri, documentUri, null);
 
             if (d == null)
                 throw new KotoriDocumentException(command.Identifier, "Document not found.");
