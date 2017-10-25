@@ -1147,7 +1147,6 @@ z: null
 x: a
 y: b
 z: c
-d: null
 ---
 hello";
 
@@ -1179,7 +1178,7 @@ hello";
 x: a
 b: 33
 r: null
-rr: !!str nxull
+rr: ""nxull""
 ---";
 
             _kotori.UpsertDocument("dev", "cversions", "_content/x/foo", c);
