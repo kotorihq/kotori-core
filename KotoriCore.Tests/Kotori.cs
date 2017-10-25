@@ -1293,6 +1293,62 @@ b: 34
             Assert.AreEqual(2, vers.Count());
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "No data content was incorrectly permitted.")]
+        public void UpsertingNoData()
+        {
+            _kotori.CreateProject("dev", "nodata", "Udie", null);
+
+            var c = @"---";
+
+            _kotori.UpsertDocument("dev", "nodata", "_data/x/foo", c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "No data content was incorrectly permitted.")]
+        public void UpsertingNoData2()
+        {
+            _kotori.CreateProject("dev", "nodata2", "Udie", null);
+
+            var c = @"---";
+
+            _kotori.UpsertDocument("dev", "nodata2", "_data/x/foo?0", c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentTypeException), "Document type has been found. It shouldn't have been!")]
+        public void AutoDeleteDocumentTypeContent()
+        {
+            _kotori.CreateProject("dev", "auto-content", "Udie", null);
+
+            var c = @"hello!";
+
+            _kotori.UpsertDocument("dev", "auto-content", "_content/x/foo", c);
+            var dt = _kotori.GetDocumentType("dev", "auto-content", "_content/x");
+            Assert.IsNotNull(dt);
+
+            _kotori.DeleteDocument("dev", "auto-content", "_content/x/foo");
+            dt = _kotori.GetDocumentType("dev", "auto-content", "_content/x");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentTypeException), "Document type has been found. It shouldn't have been!")]
+        public void AutoDeleteDocumentTypeData()
+        {
+            _kotori.CreateProject("dev", "auto-data", "Udie", null);
+
+            var c = @"---
+            a: b
+---";
+
+            _kotori.UpsertDocument("dev", "auto-data", "_data/x/one/foo", c);
+            var dt = _kotori.GetDocumentType("dev", "auto-data", "_data/x");
+            Assert.IsNotNull(dt);
+
+            _kotori.DeleteDocument("dev", "auto-data", "_data/x/one/foo?0");
+            dt = _kotori.GetDocumentType("dev", "auto-data", "_data/x");
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

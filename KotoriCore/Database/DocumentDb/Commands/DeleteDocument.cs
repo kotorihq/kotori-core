@@ -78,13 +78,56 @@ namespace KotoriCore.Database.DocumentDb
                     Task.WaitAll(reindexTasks.ToArray());
                 }
 
+                if (count - 1 == 0)
+                {
+                    var documentType = await FindDocumentTypeAsync
+                        (
+                           command.Instance,
+                           command.ProjectId.ToKotoriUri(Router.IdentifierType.Project),
+                           command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType)
+                        );
+
+                    if (documentType != null)
+                        await DeleteDocumentTypeAsync(documentType.Id);
+                }
+                
                 if (result)
                     return new CommandResult<string>("Document has been deleted.");
             }
             else
             {
                 if (await DeleteDocumentAsync(document))
+                {
+                    var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
+                    (
+                       command.Instance,
+                       projectUri,
+                       documentTypeUri,
+                       null,
+                       "count(1) as number",
+                       null,
+                       null,
+                       true,
+                       true
+                    );
+
+                    var count = await CountDocumentsAsync(sql);
+
+                    if (count == 0)
+                    {
+                        var documentType = await FindDocumentTypeAsync
+                        (
+                           command.Instance,
+                           command.ProjectId.ToKotoriUri(Router.IdentifierType.Project),
+                           command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType)
+                        );
+
+                        if (documentType != null)
+                            await DeleteDocumentTypeAsync(documentType.Id);
+                    }
+                    
                     return new CommandResult<string>("Document has been deleted.");
+                }
             }
 
             throw new KotoriDocumentException(command.Identifier, "Document has not been deleted.");

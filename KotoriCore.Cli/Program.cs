@@ -70,26 +70,15 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
 
             // --- CODE HERE --
-            _kotori.CreateProject("dev", "dsmart", "Udie", null);
+            _kotori.CreateProject("dev", "auto-content", "Udie", null);
 
-            var c = @"---
-x: a
-b: 33
----
-x: b
-b: 34
----";
+            var c = @"hello!";
 
-            _kotori.UpsertDocument("dev", "dsmart", "_data/x/foo", c);
-            _kotori.UpdateDocument("dev", "dsmart", "_data/x/foo?1", new Dictionary<string, object> { { "b", "35" } }, null);
-            var vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?0");
-            vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?1");
+            _kotori.UpsertDocument("dev", "auto-content", "_content/x/foo", c);
+            var dt = _kotori.GetDocumentType("dev", "auto-content", "_content/x");
 
-            _kotori.DeleteDocument("dev", "dsmart", "_data/x/foo?0");
-            var n = _kotori.CountDocuments("dev", "dsmart", "_data/x", null, false, false);
-
-            vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?0");
-
+            _kotori.DeleteDocument("dev", "auto-content", "_content/x/foo");
+            dt = _kotori.GetDocumentType("dev", "auto-content", "_content/x");
         }
     }
 }

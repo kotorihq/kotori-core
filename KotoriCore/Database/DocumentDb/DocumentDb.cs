@@ -306,7 +306,7 @@ namespace KotoriCore.Database.DocumentDb
 
         async Task<bool> DeleteDocumentTypeAsync(string id)
         {
-            return await _repoDocument.DeleteAsync(id);
+            return await _repoDocumentType.DeleteAsync(id);
         }
 
         async Task<bool> DeleteProjectAsync(string id)
