@@ -377,30 +377,6 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        public async Task DocumentTypesDelete()
-        {
-            var result = await _kotori.CreateProjectAsync("dev", "doctypesd", "Nenecchi", null);
-
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "doctypesd", "_content/tv/2007-05-06-flip-flappers.md", c);
-
-            var dt0 = await _kotori.GetDocumentTypesAsync("dev", "doctypesd");
-
-            Assert.AreEqual(1, dt0.Count());
-
-            var docs = await _kotori.FindDocumentsAsync("dev", "doctypesd", "_content/tv", null, null, null, null, true, true, null);
-
-            foreach (var d in docs)
-                Assert.AreEqual("Document has been deleted.", await _kotori.DeleteDocumentAsync("dev", "doctypesd", d.Identifier));
-
-            await _kotori.DeleteDocumentTypeAsync("dev", "doctypesd", "_content/tv");
-
-            var dt1 = await _kotori.GetDocumentTypesAsync("dev", "doctypesd");
-
-            Assert.AreEqual(0, dt1.Count());
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(KotoriProjectException), "Non deletable project inappropriately allowed to be deleted.")]
         public async Task ProjectDeleteFail()
         {
@@ -409,17 +385,6 @@ namespace KotoriCore.Tests
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
             await _kotori.UpsertDocumentAsync("dev", "immortal", "_content/tv/2007-05-06-flip-flappers.md", c);
             await _kotori.DeleteProjectAsync("dev", "immortal");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(KotoriDocumentTypeException), "Non deletable project inappropriately allowed to be deleted.")]
-        public async Task ProjectDeleteFail2()
-        {
-            var result = await _kotori.CreateProjectAsync("dev", "immortal2", "Nenecchi", null);
-
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "immortal2", "_content/tv/2007-05-06-flip-flappers.md", c);
-            await _kotori.DeleteDocumentTypeAsync("dev", "immortal2", "_content/tv");
         }
 
         [TestMethod]
@@ -439,13 +404,6 @@ namespace KotoriCore.Tests
             foreach(var d in documents)
             {
                 _kotori.DeleteDocument("dev", "immortal3", d.Identifier);
-            }
-
-            var documentTypes = _kotori.GetDocumentTypes("dev", "immortal3");
-
-            foreach(var dt in documentTypes)
-            {
-                _kotori.DeleteDocumentType("dev", "immortal3", dt.Identifier);
             }
 
             _kotori.DeleteProject("dev", "immortal3");

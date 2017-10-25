@@ -1,7 +1,4 @@
 ﻿using System.Threading.Tasks;
-using KotoriCore.Commands;
-using KotoriCore.Exceptions;
-using KotoriCore.Helpers;
 using System;
 using Oogi2.Queries;
 

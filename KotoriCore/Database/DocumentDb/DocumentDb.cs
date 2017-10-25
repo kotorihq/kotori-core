@@ -83,8 +83,6 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(getDocumentType);
                 else if (command is GetDocumentTypes getDocumentTypes)
                     result = await HandleAsync(getDocumentTypes);
-                else if (command is DeleteDocumentType deleteDocumentType)
-                    result = await HandleAsync(deleteDocumentType);
                 else if (command is GetProject getProject)
                     result = await HandleAsync(getProject);
                 else if (command is GetProjectKeys getProjectKeys)

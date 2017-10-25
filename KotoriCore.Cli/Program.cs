@@ -70,15 +70,6 @@ namespace KotoriCore.Cli
                 repo.Delete(record);
 
             // --- CODE HERE --
-            _kotori.CreateProject("dev", "auto-content", "Udie", null);
-
-            var c = @"hello!";
-
-            _kotori.UpsertDocument("dev", "auto-content", "_content/x/foo", c);
-            var dt = _kotori.GetDocumentType("dev", "auto-content", "_content/x");
-
-            _kotori.DeleteDocument("dev", "auto-content", "_content/x/foo");
-            dt = _kotori.GetDocumentType("dev", "auto-content", "_content/x");
         }
     }
 }
