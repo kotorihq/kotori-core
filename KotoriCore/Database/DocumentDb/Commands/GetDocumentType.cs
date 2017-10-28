@@ -12,6 +12,11 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<SimpleDocumentType>> HandleAsync(GetDocumentType command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
+            var project = await FindProjectAsync(command.Instance, projectUri);
+
+            if (project == null)
+                throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+            
             var docType = await FindDocumentTypeByIdAsync
                 (
                     command.Instance,
@@ -26,7 +31,7 @@ namespace KotoriCore.Database.DocumentDb
             (
                 new SimpleDocumentType
                 (
-                        new Uri(docType.Identifier).ToKotoriIdentifier(Router.IdentifierType.DocumentType),
+                    new Uri(docType.Identifier).ToKotoriIdentifier(Router.IdentifierType.DocumentType),
                     docType.Type
                 )
             );
