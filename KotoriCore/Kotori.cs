@@ -15,13 +15,13 @@ namespace KotoriCore
     /// <summary>
     /// Kotori.
     /// </summary>
-    public class Kotori
+    public class Kotori : IKotori
     {
         /// <summary>
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        public KotoriConfiguration Configuration { get; }
+        public IKotoriConfiguration Configuration { get; }
 
         IDatabase _database { get; }
 

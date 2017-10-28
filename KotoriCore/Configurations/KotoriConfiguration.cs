@@ -7,7 +7,7 @@ namespace KotoriCore.Configurations
     /// <summary>
     /// Kotori main configuration.
     /// </summary>
-    public class KotoriConfiguration
+    public class KotoriConfiguration : IKotoriConfiguration
     {
         /// <summary>
         /// Gets the instance.
