@@ -64,10 +64,10 @@ namespace KotoriCore.Cli
                     }
             );
 
-            var records = repo.GetList(q);
+            var records = await repo.GetListAsync(q);
 
             foreach (var record in records)
-                repo.Delete(record);
+                await repo.DeleteAsync(record);
 
             // --- CODE HERE --
         }

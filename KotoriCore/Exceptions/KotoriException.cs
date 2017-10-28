@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Sushi2;
 using System.Linq;
+using System.Net;
 
 namespace KotoriCore.Exceptions
 {
@@ -10,6 +11,8 @@ namespace KotoriCore.Exceptions
     /// </summary>
     public class KotoriException : Exception
     {
+        public virtual HttpStatusCode StatusCode { get; set; } = HttpStatusCode.BadRequest;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriServer.Exceptions.KotoriException"/> class.
         /// </summary>
