@@ -16,6 +16,11 @@ namespace KotoriCore.Database.DocumentDb
             var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
             var docType = documentTypeUri.ToDocumentType();
 
+            var project = await FindProjectAsync(command.Instance, projectUri);
+
+            if (project == null)
+                throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+            
             var d = await FindDocumentByIdAsync
                 (
                     command.Instance,
@@ -27,9 +32,9 @@ namespace KotoriCore.Database.DocumentDb
             if (d == null)
             {
                 if (command.Version.HasValue)
-                    throw new KotoriDocumentException(command.Identifier, "Document version not found.");
+                    throw new KotoriDocumentException(command.Identifier, "Document version not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
                 
-                throw new KotoriDocumentException(command.Identifier, "Document not found.");
+                throw new KotoriDocumentException(command.Identifier, "Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
             }
             
             return new CommandResult<SimpleDocument>

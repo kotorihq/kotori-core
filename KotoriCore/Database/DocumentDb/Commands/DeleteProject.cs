@@ -17,7 +17,7 @@ namespace KotoriCore.Database.DocumentDb
             var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
-                throw new KotoriValidationException("Project does not exist.");
+                throw new KotoriProjectException(command.Identifier, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var documentTypes = (await HandleAsync(new GetDocumentTypes(command.Instance, command.Identifier))).Data as IEnumerable<SimpleDocumentType>;
 

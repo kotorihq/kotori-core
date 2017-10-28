@@ -15,13 +15,13 @@ namespace KotoriCore.Database.DocumentDb
             var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
-                throw new KotoriValidationException("Project does not exist.");
+                throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
             var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
 
             if (documentType == null)
-                throw new KotoriValidationException("Document type does not exist.");
+                throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
             (

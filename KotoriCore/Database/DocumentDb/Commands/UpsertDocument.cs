@@ -18,7 +18,7 @@ namespace KotoriCore.Database.DocumentDb
             var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
-                throw new KotoriValidationException("Project does not exist.");
+                throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
             var docType = documentTypeUri.ToDocumentType();
@@ -42,7 +42,7 @@ namespace KotoriCore.Database.DocumentDb
                     var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, documentResult.Slug, command.Identifier.ToKotoriUri(Router.IdentifierType.Document));
 
                     if (slug != null)
-                        throw new KotoriDocumentException(command.Identifier, $"Slug {documentResult.Slug} is already being used for another document.");
+                        throw new KotoriDocumentException(command.Identifier, $"Slug '{documentResult.Slug}' is already being used for another document.");
                 }
 
                 var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, DocumentHelpers.CleanUpMeta(documentResult.Meta));
@@ -184,7 +184,7 @@ namespace KotoriCore.Database.DocumentDb
                 return new CommandResult<string>($"{documents.Count} {(documents.Count < 2 ? "document has" : "documents have")} been processed.");
             }
 
-            throw new KotoriException("Unknown document type.");
+            throw new KotoriDocumentException(command.Identifier, "Unknown document type.");
         }
     }
 }

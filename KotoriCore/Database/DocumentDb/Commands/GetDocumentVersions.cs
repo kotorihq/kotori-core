@@ -17,10 +17,15 @@ namespace KotoriCore.Database.DocumentDb
             var docType = documentTypeUri.ToDocumentType();
             var documentUri = command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
 
+            var project = await FindProjectAsync(command.Instance, projectUri);
+
+            if (project == null)
+                throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+            
             var d = await FindDocumentByIdAsync(command.Instance, projectUri, documentUri, null);
 
             if (d == null)
-                throw new KotoriDocumentException(command.Identifier, "Document not found.");
+                throw new KotoriDocumentException(command.Identifier, "Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var q = new DynamicQuery
                 (

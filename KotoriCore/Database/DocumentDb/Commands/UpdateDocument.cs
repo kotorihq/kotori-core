@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
@@ -20,18 +19,23 @@ namespace KotoriCore.Database.DocumentDb
             var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
             var docType = documentTypeUri.ToDocumentType();
 
+            var project = await FindProjectAsync(command.Instance, projectUri);
+
+            if (project == null)
+                throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+
             var document = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data), null);
 
             if (document == null)
-                throw new KotoriDocumentException(command.Identifier, $"Document does not exist.");
-            
+                throw new KotoriDocumentException(command.Identifier, $"Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+
             var documentUri = command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
 
             long? idx = null;
 
             if (docType == Enums.DocumentType.Data)
                 idx = documentUri.Query?.Replace("?", "").ToInt64();
-            
+
             if (docType == Enums.DocumentType.Content)
             {
                 var newDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(command.Meta, command.Content));
@@ -39,11 +43,11 @@ namespace KotoriCore.Database.DocumentDb
 
                 var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
                 var oldDocumentResult = await oldDocument.ProcessAsync();
-                
+
                 var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, newDocumentResult.Slug, command.Identifier.ToKotoriUri(Router.IdentifierType.Document));
 
                 if (slug != null)
-                    throw new KotoriDocumentException(command.Identifier, $"Slug {newDocumentResult.Slug} is already being used for another document.");
+                    throw new KotoriDocumentException(command.Identifier, $"Slug '{newDocumentResult.Slug}' is already being used for another document.");
 
                 var meta = Markdown.CombineMeta(oldDocumentResult.Meta, newDocumentResult.Meta);
 
@@ -98,9 +102,9 @@ namespace KotoriCore.Database.DocumentDb
                 var meta = Markdown.CombineMeta(oldMeta2, newMeta2);
 
                 if (meta == null ||
-                    meta.Keys.Count() == 0)
+                    !meta.Keys.Any())
                     throw new KotoriDocumentException(command.Identifier, $"The result data document contains no meta after combination. Cannot update.");
-                
+
                 document.Meta = DocumentHelpers.CleanUpMeta(meta);
                 document.Modified = new Oogi2.Tokens.Stamp();
 

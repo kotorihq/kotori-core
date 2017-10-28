@@ -15,7 +15,7 @@ namespace KotoriCore.Database.DocumentDb
             var p = await FindProjectAsync(command.Instance, projectUri);
 
             if (p == null)
-                throw new KotoriProjectException(command.Identifier, "Project not found.");
+                throw new KotoriProjectException(command.Identifier, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             return new CommandResult<ProjectKey>
             (

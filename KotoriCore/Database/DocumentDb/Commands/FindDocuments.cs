@@ -7,6 +7,7 @@ using KotoriCore.Database.DocumentDb.Helpers;
 using System.Linq;
 using System.Collections.Generic;
 using KotoriCore.Documents;
+using KotoriCore.Exceptions;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -17,6 +18,11 @@ namespace KotoriCore.Database.DocumentDb
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
             var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
 
+            var project = await FindProjectAsync(command.Instance, projectUri);
+
+            if (project == null)
+                throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+            
             var top = command.Top;
 
             if (command.Skip.HasValue &&

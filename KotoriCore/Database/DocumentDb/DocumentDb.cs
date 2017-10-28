@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using static KotoriCore.Database.DocumentDb.Helpers.DocumentDbHelpers;
 using KotoriCore.Helpers;
 using System.Collections.Generic;
+using KotoriCore.Domains;
+using KotoriCore.Search;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -410,6 +412,73 @@ namespace KotoriCore.Database.DocumentDb
             var documentVersions = await _repoDocumentVersion.GetListAsync(q);
 
             return documentVersions;
+        }
+
+        async Task<Entities.DocumentType> FindDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId)
+        {
+            var q = new DynamicQuery
+            (
+                "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
+                new
+                {
+                    entity = DocumentTypeEntity,
+                    instance,
+                    projectId = projectId.ToString(),
+                    identifier = documentTypeId.ToString()
+                }
+            );
+
+            var documentType = await GetFirstOrDefaultDocumentTypeAsync(q);
+
+            return documentType;
+        }
+
+        async Task<Entities.DocumentType> UpsertDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId, dynamic meta)
+        {
+            var project = await FindProjectAsync(instance, projectId);
+
+            if (project == null)
+                throw new KotoriProjectException(projectId.ToKotoriIdentifier(Router.IdentifierType.Project), "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+
+            var documentType = await FindDocumentTypeAsync(instance, projectId, documentTypeId);
+
+            if (documentType == null)
+            {
+                var docType = documentTypeId.ToDocumentType();
+
+                if (docType == null)
+                    throw new KotoriException($"Document type could not be resolved for {documentTypeId}.");
+
+                var indexes = new List<DocumentTypeIndex>();
+                indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
+
+                var dt = new Entities.DocumentType
+                (
+                     instance,
+                     documentTypeId.ToString(),
+                     projectId.ToString(),
+                     documentTypeId.ToDocumentType().Value,
+                     indexes
+                );
+
+                dt = await CreateDocumentTypeAsync(dt);
+
+                return dt;
+            }
+            else
+            {
+                var docType = documentTypeId.ToDocumentType();
+
+                if (docType == null)
+                    throw new KotoriException($"Document type could not be resolved for {documentTypeId}.");
+
+                var indexes = documentType.Indexes ?? new List<DocumentTypeIndex>();
+                documentType.Indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
+
+                await ReplaceDocumentTypeAsync(documentType);
+
+                return documentType;
+            }
         }
      }
 }

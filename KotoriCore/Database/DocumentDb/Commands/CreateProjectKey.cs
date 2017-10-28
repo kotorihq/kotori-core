@@ -17,7 +17,7 @@ namespace KotoriCore.Database.DocumentDb
             var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
-                throw new KotoriValidationException("Project does not exist.");
+                throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             if (project.ProjectKeys == null)
                 project.ProjectKeys = new List<ProjectKey>();
@@ -25,7 +25,7 @@ namespace KotoriCore.Database.DocumentDb
             var keys = project.ProjectKeys.ToList();
 
             if (keys.Any(key => key.Key == command.ProjectKey.Key))
-                throw new KotoriValidationException("Project key already exists.");
+                throw new KotoriProjectException(command.ProjectId, "Project key already exists.");
             
             keys.Add(command.ProjectKey);
 

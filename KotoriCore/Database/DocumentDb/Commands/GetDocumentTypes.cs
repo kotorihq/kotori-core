@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Domains;
+using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 using Oogi2.Queries;
 
@@ -12,6 +13,12 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<SimpleDocumentType>> HandleAsync(GetDocumentTypes command)
         {
+            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
+            var project = await FindProjectAsync(command.Instance, projectUri);
+
+            if (project == null)
+                throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+            
             var q = new DynamicQuery
                 (
                     "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId",

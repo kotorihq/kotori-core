@@ -17,18 +17,18 @@ namespace KotoriCore.Database.DocumentDb
             var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
-                throw new KotoriValidationException("Project does not exist.");
+                throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             if (project.ProjectKeys == null)
                 project.ProjectKeys = new List<ProjectKey>();
 
             if (!project.ProjectKeys.Any())
-                throw new KotoriValidationException("Project does not have any key.");
+                throw new KotoriProjectException(command.ProjectId, "Project does not have any key.");
 
             var keys = project.ProjectKeys.ToList();
 
             if (keys.All(key => key.Key != command.ProjectKey))
-                throw new KotoriValidationException("Project key does not exists.");
+                throw new KotoriProjectException(command.ProjectId, $"Project key '{command.ProjectKey}' does not exists.") { StatusCode = System.Net.HttpStatusCode.NotFound };
             
             keys.RemoveAll(key => key.Key == command.ProjectKey);
 

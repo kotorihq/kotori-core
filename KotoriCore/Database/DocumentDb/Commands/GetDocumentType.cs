@@ -25,7 +25,7 @@ namespace KotoriCore.Database.DocumentDb
                 );
 
             if (docType == null)
-                throw new KotoriDocumentTypeException(command.Identifier, "Document type not found.");
+                throw new KotoriDocumentTypeException(command.Identifier, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
             
             return new CommandResult<SimpleDocumentType>
             (

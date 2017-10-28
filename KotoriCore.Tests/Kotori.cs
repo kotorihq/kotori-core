@@ -94,7 +94,7 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "Project has been deleted even if it does not exist.")]
+        [ExpectedException(typeof(KotoriProjectException), "Project has been deleted even if it does not exist.")]
         public async Task FailToDeleteProject()
         {
             await _kotori.DeleteProjectAsync("dev", "nothing");
@@ -259,7 +259,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del2", "Nenecchi", null);
 
-            _kotori.DeleteDocument("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witchxxx.md");
+            _kotori.DeleteDocument("dev", "nenecchi-del2", "_content/tv/2017-05-06-flying-witchxxx.md");
         }
 
         [TestMethod]
@@ -512,7 +512,7 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "Duplicate key was inappropriately accepted.")]
+        [ExpectedException(typeof(KotoriProjectException), "Duplicate key was inappropriately accepted.")]
         public void CreateProjectKeyFail1()
         {
             var result = _kotori.CreateProject("dev", "cpkf1", "foo", null);
@@ -522,7 +522,7 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "Non existent key was inappropriately accepted.")]
+        [ExpectedException(typeof(KotoriProjectException), "Non existent key was inappropriately accepted.")]
         public void UpdateProjectKeyFail()
         {
             var result = _kotori.CreateProject("dev", "cpkf2", "foo", null);
@@ -531,7 +531,7 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "Non existent key was inappropriately accepted for deletion.")]
+        [ExpectedException(typeof(KotoriProjectException), "Non existent key was inappropriately accepted for deletion.")]
         public void DeleteProjectKeyFail()
         {
             var result = _kotori.CreateProject("dev", "delprok", "foo", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("xxx") });

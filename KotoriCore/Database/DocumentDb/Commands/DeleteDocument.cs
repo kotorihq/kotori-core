@@ -17,6 +17,11 @@ namespace KotoriCore.Database.DocumentDb
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
             var documentUri = command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
 
+            var project = await FindProjectAsync(command.Instance, projectUri);
+
+            if (project == null)
+                throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+            
             long? idx = null;
 
             if (docType == Enums.DocumentType.Data)
@@ -36,7 +41,7 @@ namespace KotoriCore.Database.DocumentDb
                 );
 
             if (document == null)
-                throw new KotoriDocumentException(command.Identifier, "Document does not exist.");
+                throw new KotoriDocumentException(command.Identifier, "Document does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             if (docType == Enums.DocumentType.Data)
             {
