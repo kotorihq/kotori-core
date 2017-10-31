@@ -17,6 +17,8 @@ namespace KotoriCore.Database.DocumentDb
 
             if (!string.IsNullOrEmpty(command.Name))
                 p.Name = command.Name;
+            else
+                throw new KotoriProjectException(command.Identifier, "No properties provided for a change.");
 
             p.Identifier = p.Identifier.ToKotoriUri(Router.IdentifierType.Project).ToString();
 

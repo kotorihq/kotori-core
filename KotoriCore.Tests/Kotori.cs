@@ -473,12 +473,6 @@ namespace KotoriCore.Tests
             first = _kotori.GetProject("dev", "raw");
 
             Assert.AreEqual("Aoba", first.Name);
-
-            _kotori.UpdateProject("dev", "raw", null);
-
-            first = _kotori.GetProject("dev", "raw");
-
-            Assert.AreEqual("Aoba", first.Name);
         }
 
         [TestMethod]
@@ -486,6 +480,14 @@ namespace KotoriCore.Tests
         public void UpdateProjectFail()
         {
             var projectKeys = _kotori.UpdateProject("dev", "rudex-fail", "Hehe");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriProjectException), "No properties were inappropriately accepted.")]
+        public void UpdateProjectFail2()
+        {
+            _kotori.CreateProject("dev", "failiep", "Nenecchi", null);
+            var projectKeys = _kotori.UpdateProject("dev", "failiep", null);
         }
 
         [TestMethod]
