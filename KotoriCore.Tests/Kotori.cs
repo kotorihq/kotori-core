@@ -597,7 +597,7 @@ aloha everyone!
             Assert.AreEqual(JTokenType.Boolean, meta0["cute"].Type);
             Assert.AreEqual(true, meta0.Property("cute").Value);
 
-            _kotori.UpdateDocument("dev", "udie", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
+            _kotori.UpdateDocument("dev", "udie", "_content/x/a", "---\ntest: zzz\n---\n");
             var d1 = _kotori.GetDocument("dev", "udie", "_content/x/a");
             var meta1 = (d1.Meta as JObject);
             Assert.AreEqual(@"aloha everyone!".Trim(), d1.Content.Trim());
@@ -605,7 +605,12 @@ aloha everyone!
             Assert.AreEqual(JTokenType.Boolean, meta1["cute"].Type);
             Assert.AreEqual(true, meta1.Property("cute").Value);
 
-            _kotori.UpdateDocument("dev", "udie", "_content/x/a", new Dictionary<string, object> { { "test", "xxx" }, { "cute", null } }, "hi everyone!");
+            _kotori.UpdateDocument("dev", "udie", "_content/x/a", 
+                                   @"---
+test: xxx
+cute: ~
+---
+hi everyone!");
             var d2 = _kotori.GetDocument("dev", "udie", "_content/x/a");
             var meta2 = (d2.Meta as JObject);
             Assert.AreEqual(@"hi everyone!".Trim(), d2.Content.Trim());
@@ -622,7 +627,10 @@ aloha everyone!
             var d0 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
             Assert.AreEqual(0, d0.Version);
 
-            _kotori.UpdateDocument("dev", "vnum", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
+            _kotori.UpdateDocument("dev", "vnum", "_content/x/a",
+                                   @"---
+test: zzz
+---");
             var d1 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
             Assert.AreEqual(1, d1.Version);
 
@@ -660,7 +668,9 @@ aloha everyone!
             _kotori.UpsertDocument("dev", "vnum2", "_content/x/a", "haha");
 
             for (var i = 0; i < 5; i++)
-                _kotori.UpdateDocument("dev", "vnum2", "_content/x/a", new Dictionary<string, object> { { "test", "zzz" } }, null);
+                _kotori.UpdateDocument("dev", "vnum2", "_content/x/a", @"---
+test: zzz
+---");
             
             var repo = new Repository(_con);
             var q = new DynamicQuery
@@ -857,7 +867,12 @@ fake: no
             Assert.AreEqual(new JValue("no"), docs.Last().Meta.fake);
             Assert.AreEqual(0, docs.Last().Version);
 
-            _kotori.UpdateDocument("dev", "mrdata", "_data/newgame/girls.yaml?3", new Dictionary<string, object> { { "stars", 3 }, { "approved", false }, { "fake", null } }, "xxx");
+            _kotori.UpdateDocument("dev", "mrdata", "_data/newgame/girls.yaml?3", @"---
+stars: !!int 3
+approved: !!bool false
+fake: ~
+---
+xxx");
             doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?3");
             Assert.AreEqual(1, doc.Version);
             Assert.AreEqual(new JValue("Momo"), doc.Meta.girl);
@@ -1092,7 +1107,7 @@ x: null
 y: null
 z: null
 ---";
-            _kotori.UpdateDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml?0", new Dictionary<string, object> { { "x", null }, { "z", null }, { "y", null }}, null);
+            _kotori.UpdateDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml?0", @"");
             d = _kotori.GetDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml");
             meta = (d.Meta as JObject);
             Assert.AreEqual(0, meta.Properties().LongCount());
@@ -1116,13 +1131,21 @@ hello";
             Assert.AreEqual(3, meta.Properties().LongCount());
             Assert.IsFalse(string.IsNullOrEmpty(d.Content));
 
-            _kotori.UpdateDocument("dev", "alldata2", "_content/x/foo.md", new Dictionary<string, object> { { "x", null }, { "z", null }, { "y", null } }, ".");
+            _kotori.UpdateDocument("dev", "alldata2", "_content/x/foo.md", @"---
+x: ~
+y: ~
+z: ~
+---
+.");
             d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
             meta = (d.Meta as JObject);
             Assert.AreEqual(0, meta.Properties().LongCount());
             Assert.AreEqual(".", d.Content.Trim());
 
-            _kotori.UpdateDocument("dev", "alldata2", "_content/x/foo.md", new Dictionary<string, object> { { "x", null }, { "yo", "yeah" } }, null);
+            _kotori.UpdateDocument("dev", "alldata2", "_content/x/foo.md", @"---
+yo: yeah
+x: ~
+---");
             d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
             meta = (d.Meta as JObject);
             Assert.AreEqual(1, meta.Properties().LongCount());
@@ -1142,7 +1165,9 @@ rr: ""nxull""
 ---";
 
             _kotori.UpsertDocument("dev", "cversions", "_content/x/foo", c);
-            _kotori.UpdateDocument("dev", "cversions", "_content/x/foo", new Dictionary<string, object> { { "x", "b" }}, null);
+            _kotori.UpdateDocument("dev", "cversions", "_content/x/foo", @"---
+x: b
+---");
             var d = _kotori.GetDocument("dev", "cversions", "_content/x/foo");
             var meta = (d.Meta as JObject);
             Assert.AreEqual(3, meta.Properties().LongCount());
@@ -1190,7 +1215,9 @@ rr: !!str nxull
 ---";
 
             _kotori.UpsertDocument("dev", "dversions", "_data/x/foo", c);
-            _kotori.UpdateDocument("dev", "dversions", "_data/x/foo?0", new Dictionary<string, object> { { "x", "b" } }, null);
+            _kotori.UpdateDocument("dev", "dversions", "_data/x/foo?0", @"---
+x: b
+---");
             var d = _kotori.GetDocument("dev", "dversions", "_data/x/foo?0");
             var meta = (d.Meta as JObject);
             Assert.AreEqual(3, meta.Properties().LongCount());
@@ -1239,7 +1266,9 @@ b: 34
 ---";
 
             _kotori.UpsertDocument("dev", "dsmart", "_data/x/foo", c);
-            _kotori.UpdateDocument("dev", "dsmart", "_data/x/foo?1", new Dictionary<string, object> { { "b", "35" } }, null);
+            _kotori.UpdateDocument("dev", "dsmart", "_data/x/foo?1", @"---
+b: 35
+---");
             var vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?0");
             Assert.AreEqual(1, vers.Count());
             vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?1");

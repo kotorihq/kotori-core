@@ -38,7 +38,7 @@ namespace KotoriCore.Database.DocumentDb
 
             if (docType == Enums.DocumentType.Content)
             {
-                var newDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(command.Meta, command.Content));
+                var newDocument = new Markdown(command.Identifier, command.Content);
                 var newDocumentResult = await newDocument.ProcessAsync();
 
                 var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
@@ -76,7 +76,9 @@ namespace KotoriCore.Database.DocumentDb
 
             if (docType == Enums.DocumentType.Data)
             {
-                var newData = new Documents.Data.Data(command.Identifier, "[" + JsonConvert.SerializeObject(command.Meta) + "]");
+                var newDataM = new Markdown(command.Identifier, command.Content);
+                var newDataR = await newDataM.ProcessAsync();
+                var newData = new Documents.Data.Data(command.Identifier, "[" + JsonConvert.SerializeObject(newDataR.Meta) + "]");
                 var newDocuments = newData.GetDocuments();
 
                 if (!idx.HasValue)

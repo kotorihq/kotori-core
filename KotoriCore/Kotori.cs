@@ -479,12 +479,11 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
-        /// <param name="meta">Meta.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public string UpdateDocument(string instance, string projectId, string identifier, Dictionary<string, object> meta, string content)
+        public string UpdateDocument(string instance, string projectId, string identifier, string content)
         {
-            return AsyncTools.RunSync(() => UpdateDocumentAsync(instance, projectId, identifier, meta, content));
+            return AsyncTools.RunSync(() => UpdateDocumentAsync(instance, projectId, identifier, content));
         }
 
         /// <summary>
@@ -493,12 +492,11 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
-        /// <param name="meta">Meta.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public async Task<string> UpdateDocumentAsync(string instance, string projectId, string identifier, Dictionary<string, object> meta, string content)
+        public async Task<string> UpdateDocumentAsync(string instance, string projectId, string identifier, string content)
         {
-            return (await ProcessAsync(new UpdateDocument(instance, projectId, identifier, meta, content)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpdateDocument(instance, projectId, identifier, content)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
