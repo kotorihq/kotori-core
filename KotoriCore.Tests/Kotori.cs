@@ -41,7 +41,7 @@ namespace KotoriCore.Tests
                     appSettings["Kotori:DocumentDb:Collection"]
                 );
 
-            Cleanup();
+            _con.CreateCollection();
 
             try
             {
@@ -55,21 +55,7 @@ namespace KotoriCore.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            var repo = new Repository(_con);
-            var q = new DynamicQuery
-                (
-                    "select c.id from c where startswith(c.entity, @entity) and c.instance = @instance",
-                    new
-                    {
-                        entity = "kotori/",
-                        instance = "dev"
-                    }
-            );
-
-            var records = repo.GetList(q);
-
-            foreach (var record in records)
-                repo.Delete(record);
+            _con.DeleteCollection();   
         }
 
         [TestMethod]
