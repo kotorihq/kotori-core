@@ -53,23 +53,30 @@ namespace KotoriCore.Cli
                     appSettings["Kotori:DocumentDb:Collection"]
                 );
 
-            var repo = new Repository(_con);
-            var q = new DynamicQuery
-                (
-                    "select c.id from c where startswith(c.entity, @entity) and c.instance = @instance",
-                    new
-                    {
-                        entity = "kotori/",
-                        instance = "dev"
-                    }
-            );
+            _con.CreateCollection();
 
-            var records = await repo.GetListAsync(q);
+            try
+            {
+                // --- CODE HERE --
 
-            foreach (var record in records)
-                await repo.DeleteAsync(record);
+                var result = await _kotori.CreateProjectAsync("dev", "mrdataf", "MrData", null);
 
-            // --- CODE HERE --
+                var c = @"---
+foo: bar
+";
+                await _kotori.CreateDocumentAsync("dev", "mrdataf", "_data/newgame/girls.yaml", c);
+                var docs = _kotori.FindDocuments("dev", "mrdataf", "_data/newgame", null, null, null, null, false, false, null);
+
+                // --- CODE HERE --
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                _con.DeleteCollection();
+            }
         }
     }
 }

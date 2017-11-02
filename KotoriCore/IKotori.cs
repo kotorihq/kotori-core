@@ -13,8 +13,10 @@ namespace KotoriCore
     {
         IKotoriConfiguration Configuration { get; }
 
-        string UpsertDocument(string instance, string projectId, string identifier, string content);
-        Task<string> UpsertDocumentAsync(string instance, string projectId, string identifier, string content);
+        string UpdateDocument(string instance, string projectId, string identifier, string content);
+        Task<string> UpdateDocumentAsync(string instance, string projectId, string identifier, string content);
+        string CreateDocument(string instance, string projectId, string identifier, string content);
+        Task<string> CreateDocumentAsync(string instance, string projectId, string identifier, string content);
         string CreateProject(string instance, string identifier, string name, IEnumerable<Configurations.ProjectKey> projectKeys);
         Task<string> CreateProjectAsync(string instance, string identifier, string name, IEnumerable<Configurations.ProjectKey> projectKeys);
         string DeleteProject(string instance, string identifier);
@@ -45,8 +47,8 @@ namespace KotoriCore
         Task<string> UpdateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey);
         string DeleteProjectKey(string instance, string projectId, string projectKey);
         Task<string> DeleteProjectKeyAsync(string instance, string projectId, string projectKey);
-        string UpdateDocument(string instance, string projectId, string identifier, string content);
-        Task<string> UpdateDocumentAsync(string instance, string projectId, string identifier, string content);
+        string PartiallyUpdateDocument(string instance, string projectId, string identifier, string content);
+        Task<string> PartiallyUpdateDocumentAsync(string instance, string projectId, string identifier, string content);
         IEnumerable<SimpleDocumentVersion> GetDocumentVersions(string instance, string projectId, string identifier);
         Task<IEnumerable<SimpleDocumentVersion>> GetDocumentVersionsAsync(string instance, string projectId, string identifier);
     }

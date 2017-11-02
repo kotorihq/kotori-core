@@ -4,9 +4,9 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Update document command.
+    /// Create document command.
     /// </summary>
-    public class UpdateDocument : Command
+    public class CreateDocument : Command
     {
         /// <summary>
         /// Gets the instance.
@@ -35,14 +35,14 @@ namespace KotoriCore.Commands
         public bool DataMode { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpdateDocument"/> class.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CreateDocument"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
         /// <param name="dataMode">If set to <c>true</c> data mode.</param>
-        public UpdateDocument(string instance, string projectId, string identifier, string content, bool dataMode = false)
+        public CreateDocument(string instance, string projectId, string identifier, string content, bool dataMode = false)
         {
             Instance = instance;
             ProjectId = projectId;

@@ -11,7 +11,6 @@ using Oogi2.Queries;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System;
-using Sushi2;
 using KotoriCore.Database.DocumentDb;
 
 namespace KotoriCore.Tests
@@ -122,7 +121,7 @@ namespace KotoriCore.Tests
             Assert.AreEqual(1, projects.Count());
 
             var c = GetContent("_content/movie/matrix.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi/stable", "_content/movie/matrix.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi/stable", "_content/movie/matrix.md", c);
 
             var d = await _kotori.GetDocumentAsync("dev", "nenecchi/stable", "_content/movie/matrix.md");
 
@@ -148,8 +147,8 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dupe", "Nenecchi", null);
 
             var c = GetContent("_content/movie/matrix.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dupe", "_content/movie2/matrix.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dupe", "_content/movie3/matrix.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", "_content/movie2/matrix.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", "_content/movie3/matrix.md", c);
         }
 
         [TestMethod]
@@ -158,10 +157,10 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-05-06-flying-witch.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-05-06-flying-witch.md", c);
 
             c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, null, false, false, null);
             Assert.AreEqual(1, docs.Count());
@@ -192,8 +191,8 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find2", "Nenecchi", null);
 
             var c = @"aloha";
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find2", "_content/tv/witch.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find2", "_content/tv/ditch.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", "_content/tv/witch.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", "_content/tv/ditch.md", c);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-find2", "_content/tv", 2, null, null, null, false, false, null);
             Assert.AreEqual(2, docs.Count());
@@ -205,13 +204,13 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-hash", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witch.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witch.md", c);
 
-            var resultok = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c);
+            var resultok = await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c);
 
             Assert.AreEqual("Document has been created.", resultok);
 
-            var resulthash = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c);
+            var resulthash = await _kotori.UpdateDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c);
             Assert.AreEqual("Document saving skipped. Hash is the same one as in the database.", resulthash);
         }
 
@@ -221,10 +220,10 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flip-flappers.md", c);
 
             c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witch.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witch.md", c);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null, false, false, null);
 
@@ -254,10 +253,10 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-count", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flip-flappers.md", c);
 
             c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flying-witch.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flying-witch.md", c);
 
             var docs = _kotori.CountDocuments("dev", "nenecchi-count", "_content/tv/", null, false, false);
 
@@ -273,10 +272,10 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-drafts", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md", c);
 
             c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", "_content/tv/_2017-05-06-flying-witch.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-drafts", "_content/tv/_2017-05-06-flying-witch.md", c);
 
             var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md");
             Assert.AreEqual(false, futureDoc.Draft);
@@ -304,7 +303,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dn", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dn", "_content/tv/2117-05-06-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dn", "_content/tv/2117-05-06-flip-flappers.md", c);
 
             await _kotori.GetDocumentAsync("dev", "nenecchi-dn", "_content/tv/hm/2217-05-06-flip-flappers.md");
         }
@@ -316,7 +315,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dty", "_content/tv/2117-05-06-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dty", "_content/tv/2117-05-06-flip-flappers.md", c);
 
             var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty", "_content/tvx/");
         }
@@ -327,7 +326,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty2", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dty2", "_content/tv/2117-05-06-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dty2", "_content/tv/2117-05-06-flip-flappers.md", c);
 
             var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty2", "_content/tv");
 
@@ -341,7 +340,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "inv", "Nenecchi", null);
 
-            await _kotori.UpsertDocumentAsync("dev", "inv", "_content/tv/2117-05-06-flip-flappers.md", null);
+            await _kotori.CreateDocumentAsync("dev", "inv", "_content/tv/2117-05-06-flip-flappers.md", null);
         }
 
         [TestMethod]
@@ -350,10 +349,10 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "doctypes", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/2007-05-06-flip-flappers.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv/_2007-05-07-flip-flappers2.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv2/2007-05-06-aflip-flappers.md", c);
-            await _kotori.UpsertDocumentAsync("dev", "doctypes", "_content/tv3/2007-05-06-bflip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", "_content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", "_content/tv/_2007-05-07-flip-flappers2.md", c);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", "_content/tv2/2007-05-06-aflip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", "_content/tv3/2007-05-06-bflip-flappers.md", c);
 
             var docTypes = await _kotori.GetDocumentTypesAsync("dev", "doctypes");
 
@@ -369,7 +368,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "immortal", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "immortal", "_content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "immortal", "_content/tv/2007-05-06-flip-flappers.md", c);
             await _kotori.DeleteProjectAsync("dev", "immortal");
         }
 
@@ -383,7 +382,7 @@ namespace KotoriCore.Tests
             Assert.IsTrue(projects2.Any(x => x.Identifier == "immortal3"));
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "immortal3", "_content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "immortal3", "_content/tv/2007-05-06-flip-flappers.md", c);
 
             var documents = await _kotori.FindDocumentsAsync("dev", "immortal3", "_content/tv", null, null, null, null, true, true, null);
 
@@ -405,7 +404,7 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "slugdraft", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
 
             var c = GetContent("_content/movie/matrix.md");
-            await _kotori.UpsertDocumentAsync("dev", "slugdraft", "_content/movie/_matrix.md", c);
+            await _kotori.CreateDocumentAsync("dev", "slugdraft", "_content/movie/_matrix.md", c);
 
             var d = await _kotori.GetDocumentAsync("dev", "slugdraft", "_content/movie/_matrix.md");
 
@@ -481,7 +480,7 @@ namespace KotoriCore.Tests
         {
             var result = _kotori.CreateProject("dev", "weformat", "WF", null);
 
-            _kotori.UpsertDocument("dev", "weformat", "_content/tv/rakosnicek.md", "---\n---\nhello *space* **cowboy**!");
+            _kotori.CreateDocument("dev", "weformat", "_content/tv/rakosnicek.md", "---\n---\nhello *space* **cowboy**!");
 
             var d = _kotori.GetDocument("dev", "weformat", "_content/tv/rakosnicek.md");
             Assert.AreEqual("hello *space* **cowboy**!" + Environment.NewLine, d.Content);
@@ -568,7 +567,7 @@ namespace KotoriCore.Tests
         public void UpdateDocument()
         {
             _kotori.CreateProject("dev", "udie", "Udie", null);
-            _kotori.UpsertDocument("dev", "udie", "_content/x/a",
+            _kotori.CreateDocument("dev", "udie", "_content/x/a",
                                   @"
 ---
 test: xxx
@@ -583,7 +582,7 @@ aloha everyone!
             Assert.AreEqual(JTokenType.Boolean, meta0["cute"].Type);
             Assert.AreEqual(true, meta0.Property("cute").Value);
 
-            _kotori.UpdateDocument("dev", "udie", "_content/x/a", "---\ntest: zzz\n---\n");
+            _kotori.PartiallyUpdateDocument("dev", "udie", "_content/x/a", "---\ntest: zzz\n---\n");
             var d1 = _kotori.GetDocument("dev", "udie", "_content/x/a");
             var meta1 = (d1.Meta as JObject);
             Assert.AreEqual(@"aloha everyone!".Trim(), d1.Content.Trim());
@@ -591,7 +590,7 @@ aloha everyone!
             Assert.AreEqual(JTokenType.Boolean, meta1["cute"].Type);
             Assert.AreEqual(true, meta1.Property("cute").Value);
 
-            _kotori.UpdateDocument("dev", "udie", "_content/x/a", 
+            _kotori.PartiallyUpdateDocument("dev", "udie", "_content/x/a", 
                                    @"---
 test: xxx
 cute: ~
@@ -608,19 +607,19 @@ hi everyone!");
         public void DocumentVersions()
         {
             _kotori.CreateProject("dev", "vnum", "vnum", null);
-            _kotori.UpsertDocument("dev", "vnum", "_content/x/a", "haha");
+            _kotori.CreateDocument("dev", "vnum", "_content/x/a", "haha");
 
             var d0 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
             Assert.AreEqual(0, d0.Version);
 
-            _kotori.UpdateDocument("dev", "vnum", "_content/x/a",
+            _kotori.PartiallyUpdateDocument("dev", "vnum", "_content/x/a",
                                    @"---
 test: zzz
 ---");
             var d1 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
             Assert.AreEqual(1, d1.Version);
 
-            _kotori.UpsertDocument("dev", "vnum", "_content/x/a", "haha");
+            _kotori.UpdateDocument("dev", "vnum", "_content/x/a", "haha");
             var d2 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
             Assert.AreEqual(2, d2.Version);
 
@@ -651,10 +650,10 @@ test: zzz
         public void DeleteDocumentVersions()
         {
             _kotori.CreateProject("dev", "vnum2", "vnum", null);
-            _kotori.UpsertDocument("dev", "vnum2", "_content/x/a", "haha");
+            _kotori.CreateDocument("dev", "vnum2", "_content/x/a", "haha");
 
             for (var i = 0; i < 5; i++)
-                _kotori.UpdateDocument("dev", "vnum2", "_content/x/a", @"---
+                _kotori.PartiallyUpdateDocument("dev", "vnum2", "_content/x/a", @"---
 test: zzz
 ---");
             
@@ -664,7 +663,7 @@ test: zzz
                     "select c.id from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId",
                     new
                     {
-                        entity = Database.DocumentDb.DocumentDb.DocumentVersionEntity,
+                        entity = DocumentDb.DocumentVersionEntity,
                         instance = "dev",
                         projectId = "kotori://vnum2/"
                     }
@@ -685,21 +684,21 @@ test: zzz
         public void DraftAndNonDraft()
         {
             _kotori.CreateProject("dev", "drnodr", "Udie", null);
-            _kotori.UpsertDocument("dev", "drnodr", "_content/x/_a", "hello");
+            _kotori.CreateDocument("dev", "drnodr", "_content/x/_a", "hello");
 
             var d0 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
             Assert.IsNotNull(d0);
             Assert.AreEqual(true, d0.Draft);
             Assert.AreEqual("_content/x/_a", d0.Filename);
 
-            _kotori.UpsertDocument("dev", "drnodr", "_content/x/a", "hello");
+            _kotori.UpdateDocument("dev", "drnodr", "_content/x/a", "hello");
             var d1 = _kotori.GetDocument("dev", "drnodr", "_content/x/_2017-01-01-a");
             Assert.IsNotNull(d1);
             Assert.AreEqual(false, d1.Draft);
             Assert.AreEqual(1, d1.Version);
             Assert.AreEqual("_content/x/a", d1.Filename);
 
-            _kotori.UpsertDocument("dev", "drnodr", "_content/x/2017-01-01-a", "hello");
+            _kotori.UpdateDocument("dev", "drnodr", "_content/x/2017-01-01-a", "hello");
             var d2 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
             Assert.IsNotNull(d2);
             Assert.AreEqual(false, d2.Draft);
@@ -728,37 +727,22 @@ position: head programmer
 stars: !!int 3
 approved: !!bool false
 ---";
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
 
             var doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
             Assert.IsNotNull(doc);
             Assert.AreEqual(0, doc.Version);
             Assert.AreEqual(new JValue(5), doc.Meta.stars);
 
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
-            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
-            Assert.IsNotNull(doc);
-            Assert.AreEqual(0, doc.Version);
-            Assert.AreEqual(new JValue(5), doc.Meta.stars);
-
             c = @"---
-girl: Aoba
-position: designer
-stars: !!int 5
-approved: !!bool true
----
 girl: Nenecchi
 position: programmer
 stars: !!int 4
 approved: !!bool true
 ---
-girl: Umiko
-position: head programmer
-stars: !!int 2
-approved: !!bool false
----";
+";
 
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
+            await _kotori.UpdateDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?1", c);
             doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
             Assert.IsNotNull(doc);
             Assert.AreEqual(1, doc.Version);
@@ -768,12 +752,12 @@ approved: !!bool false
             Assert.AreEqual(3, n);
 
             n = _kotori.CountDocuments("dev", "mrdata", "_data/newgame", "c.meta.stars <= 4", false, false);
-            Assert.AreEqual(2, n);
+            Assert.AreEqual(3, n);
 
             var docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", 1, null, null, "c.meta.stars asc", false, false, null, Helpers.Enums.DocumentFormat.Html);
             Assert.AreEqual(1, docs.Count());
             doc = docs.First();
-            Assert.AreEqual(new JValue(2), doc.Meta.stars);
+            Assert.AreEqual(new JValue(3), doc.Meta.stars);
             Assert.AreEqual(new JValue("Umiko"), doc.Meta.girl);
 
             _kotori.DeleteDocument("dev", "mrdata", "_data/newgame/girls.yaml?0");
@@ -792,34 +776,11 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
+            await _kotori.UpdateDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?1", c);
 
             docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
-            Assert.AreEqual(1, docs.Count());
-            Assert.AreEqual(new JValue("Umikox"), docs.First().Meta.girl);
-
-            c = @"---
-girl: Aoba
-position: designer
-stars: !!int 5
-approved: !!bool true
----
-girl: Nenecchi
-position: programmer
-stars: !!int 4
-approved: !!bool true
----
-girl: Umiko
-position: head programmer
-stars: !!int 2
-approved: !!bool false
----";
-
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
-
-            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
-            Assert.AreEqual(3, docs.Count());
-            Assert.AreEqual(new JValue("Nenecchi"), docs.Skip(1).First().Meta.girl);
+            Assert.AreEqual(2, docs.Count());
+            Assert.AreEqual(new JValue("Umikox"), docs.Last().Meta.girl);
 
             c = @"---
 girl: Nenecchi v.2
@@ -827,10 +788,10 @@ position: programmer
 stars: !!int 4
 approved: !!bool true
 ---";
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?1", c);
+            await _kotori.UpdateDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?1", c);
 
             docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
-            Assert.AreEqual(3, docs.Count());
+            Assert.AreEqual(2, docs.Count());
             Assert.AreEqual(new JValue("Nenecchi v.2"), docs.Skip(1).First().Meta.girl);
 
             doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
@@ -845,21 +806,21 @@ approved: !!bool true
 fake: no
 ---";
 
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?-1", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?-1", c);
 
             docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
-            Assert.AreEqual(4, docs.Count());
+            Assert.AreEqual(3, docs.Count());
             Assert.AreEqual(new JValue("Momo"), docs.Last().Meta.girl);
             Assert.AreEqual(new JValue("no"), docs.Last().Meta.fake);
             Assert.AreEqual(0, docs.Last().Version);
 
-            _kotori.UpdateDocument("dev", "mrdata", "_data/newgame/girls.yaml?3", @"---
+            _kotori.PartiallyUpdateDocument("dev", "mrdata", "_data/newgame/girls.yaml?2", @"---
 stars: !!int 3
 approved: !!bool false
 fake: ~
 ---
 xxx");
-            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?3");
+            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?2");
             Assert.AreEqual(1, doc.Version);
             Assert.AreEqual(new JValue("Momo"), doc.Meta.girl);
             Assert.AreEqual(new JValue(3), doc.Meta.stars);
@@ -893,7 +854,7 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            _kotori.UpsertDocument("dev", "data-fff", "_data/newgame/girls.yaml?0", c);
+            _kotori.CreateDocument("dev", "data-fff", "_data/newgame/girls.yaml?0", c);
         }
 
         [TestMethod]
@@ -918,7 +879,7 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            _kotori.UpsertDocument("dev", "data-woho", "_data/newgame/girls.yaml?-1", c);
+            _kotori.CreateDocument("dev", "data-woho", "_data/newgame/girls.yaml?-1", c);
             var n = _kotori.CountDocuments("dev", "data-woho", "_data/newgame", null, false, false);
             Assert.AreEqual(3, n);
         }
@@ -946,7 +907,7 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            _kotori.UpsertDocument("dev", "data-woho2", "_data/newgame/girls.yaml?-1", c);
+            _kotori.CreateDocument("dev", "data-woho2", "_data/newgame/girls.yaml?-1", c);
             _kotori.DeleteDocument("dev", "data-woho2", "_data/newgame/girls.yaml");
         }
 
@@ -973,7 +934,7 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            _kotori.UpsertDocument("dev", "data-woho3", "_data/newgame/girls.yaml", c);
+            _kotori.CreateDocument("dev", "data-woho3", "_data/newgame/girls.yaml", c);
             _kotori.DeleteDocument("dev", "data-woho3", "_data/newgame/girls.yaml?4");
         }
 
@@ -985,7 +946,7 @@ approved: !!bool false
             var c = @"---
 foo: bar
 ";
-            await _kotori.UpsertDocumentAsync("dev", "mrdataf", "_data/newgame/girls.yaml", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf", "_data/newgame/girls.yaml", c);
             var docs = _kotori.FindDocuments("dev", "mrdataf", "_data/newgame", null, null, null, null, false, false, null);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual(new JValue("bar"), docs.First().Meta.foo);
@@ -999,7 +960,7 @@ foo: bar
             var c = @"
 foo: bar
 ";
-            await _kotori.UpsertDocumentAsync("dev", "mrdataf2", "_data/newgame/girls.yaml", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf2", "_data/newgame/girls.yaml", c);
             var docs = _kotori.FindDocuments("dev", "mrdataf2", "_data/newgame", null, null, null, null, false, false, null);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual(new JValue("bar"), docs.First().Meta.foo);
@@ -1014,7 +975,7 @@ foo: bar
             var c = @"---
 ---
 ";
-            await _kotori.UpsertDocumentAsync("dev", "mrdataf3", "_data/newgame/girls.yaml", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf3", "_data/newgame/girls.yaml", c);
         }
 
         [TestMethod]
@@ -1028,7 +989,7 @@ foo: bar
 {}
 ]
 ";
-            await _kotori.UpsertDocumentAsync("dev", "mrdataf4", "_data/newgame/girls.yaml", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf4", "_data/newgame/girls.yaml", c);
         }
 
         [TestMethod]
@@ -1038,7 +999,7 @@ foo: bar
             var result = await _kotori.CreateProjectAsync("dev", "bad-bat", "Nenecchi", null);
 
             var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.UpsertDocumentAsync("dev", "bad-bat", "_content/tv/2007-02-32-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "bad-bat", "_content/tv/2007-02-32-flip-flappers.md", c);
         }
 
         [TestMethod]
@@ -1050,7 +1011,7 @@ foo: bar
 mr: x
 ---";
 
-            _kotori.UpsertDocument("dev", "data-inv", "_data/newgame/2017-02-02-girls.yaml", c);
+            _kotori.CreateDocument("dev", "data-inv", "_data/newgame/2017-02-02-girls.yaml", c);
             var d = _kotori.GetDocument("dev", "data-inv", "_data/newgame/2017-02-02-girls.yaml?0");
             Assert.AreEqual(DateTime.MinValue.Date, d.Date);
         }
@@ -1066,7 +1027,7 @@ $date: 2017-03-03
 $slug: haha
 ---";
 
-            _kotori.UpsertDocument("dev", "data-inv2", "_data/newgame/2017-02-02-girls.yaml", c);
+            _kotori.CreateDocument("dev", "data-inv2", "_data/newgame/2017-02-02-girls.yaml", c);
         }
 
         [TestMethod]
@@ -1083,7 +1044,7 @@ $slug: haha
 }
 ---";
 
-            _kotori.UpsertDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml", c);
+            _kotori.CreateDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml", c);
             var d = _kotori.GetDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml");
             var meta = (d.Meta as JObject);
             Assert.AreEqual(3, meta.Properties().LongCount());
@@ -1093,7 +1054,7 @@ x: null
 y: null
 z: null
 ---";
-            _kotori.UpdateDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml?0", @"");
+            _kotori.PartiallyUpdateDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml?0", @"");
             d = _kotori.GetDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml");
             meta = (d.Meta as JObject);
             Assert.AreEqual(0, meta.Properties().LongCount());
@@ -1111,13 +1072,13 @@ z: c
 ---
 hello";
 
-            _kotori.UpsertDocument("dev", "alldata2", "_content/x/foo.md", c);
+            _kotori.CreateDocument("dev", "alldata2", "_content/x/foo.md", c);
             var d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
             var meta = (d.Meta as JObject);
             Assert.AreEqual(3, meta.Properties().LongCount());
             Assert.IsFalse(string.IsNullOrEmpty(d.Content));
 
-            _kotori.UpdateDocument("dev", "alldata2", "_content/x/foo.md", @"---
+            _kotori.PartiallyUpdateDocument("dev", "alldata2", "_content/x/foo.md", @"---
 x: ~
 y: ~
 z: ~
@@ -1128,7 +1089,7 @@ z: ~
             Assert.AreEqual(0, meta.Properties().LongCount());
             Assert.AreEqual(".", d.Content.Trim());
 
-            _kotori.UpdateDocument("dev", "alldata2", "_content/x/foo.md", @"---
+            _kotori.PartiallyUpdateDocument("dev", "alldata2", "_content/x/foo.md", @"---
 yo: yeah
 x: ~
 ---");
@@ -1150,8 +1111,8 @@ r: null
 rr: ""nxull""
 ---";
 
-            _kotori.UpsertDocument("dev", "cversions", "_content/x/foo", c);
-            _kotori.UpdateDocument("dev", "cversions", "_content/x/foo", @"---
+            _kotori.CreateDocument("dev", "cversions", "_content/x/foo", c);
+            _kotori.PartiallyUpdateDocument("dev", "cversions", "_content/x/foo", @"---
 x: b
 ---");
             var d = _kotori.GetDocument("dev", "cversions", "_content/x/foo");
@@ -1200,8 +1161,8 @@ r: null
 rr: !!str nxull
 ---";
 
-            _kotori.UpsertDocument("dev", "dversions", "_data/x/foo", c);
-            _kotori.UpdateDocument("dev", "dversions", "_data/x/foo?0", @"---
+            _kotori.CreateDocument("dev", "dversions", "_data/x/foo", c);
+            _kotori.PartiallyUpdateDocument("dev", "dversions", "_data/x/foo?0", @"---
 x: b
 ---");
             var d = _kotori.GetDocument("dev", "dversions", "_data/x/foo?0");
@@ -1251,8 +1212,8 @@ x: b
 b: 34
 ---";
 
-            _kotori.UpsertDocument("dev", "dsmart", "_data/x/foo", c);
-            _kotori.UpdateDocument("dev", "dsmart", "_data/x/foo?1", @"---
+            _kotori.CreateDocument("dev", "dsmart", "_data/x/foo", c);
+            _kotori.PartiallyUpdateDocument("dev", "dsmart", "_data/x/foo?1", @"---
 b: 35
 ---");
             var vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?0");
@@ -1276,7 +1237,7 @@ b: 35
 
             var c = @"---";
 
-            _kotori.UpsertDocument("dev", "nodata", "_data/x/foo", c);
+            _kotori.CreateDocument("dev", "nodata", "_data/x/foo", c);
         }
 
         [TestMethod]
@@ -1287,7 +1248,7 @@ b: 35
 
             var c = @"---";
 
-            _kotori.UpsertDocument("dev", "nodata2", "_data/x/foo?0", c);
+            _kotori.CreateDocument("dev", "nodata2", "_data/x/foo?0", c);
         }
 
         [TestMethod]
@@ -1298,7 +1259,7 @@ b: 35
 
             var c = @"hello!";
 
-            _kotori.UpsertDocument("dev", "auto-content", "_content/x/foo", c);
+            _kotori.CreateDocument("dev", "auto-content", "_content/x/foo", c);
             var dt = _kotori.GetDocumentType("dev", "auto-content", "_content/x");
             Assert.IsNotNull(dt);
 
@@ -1316,7 +1277,7 @@ b: 35
             a: b
 ---";
 
-            _kotori.UpsertDocument("dev", "auto-data", "_data/x/one/foo", c);
+            _kotori.CreateDocument("dev", "auto-data", "_data/x/one/foo", c);
             var dt = _kotori.GetDocumentType("dev", "auto-data", "_data/x");
             Assert.IsNotNull(dt);
 

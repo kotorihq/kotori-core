@@ -4,14 +4,13 @@ using KotoriCore.Documents.Deserializers;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-namespace KotoriCore.Documents.Data
+namespace KotoriCore.Documents
 {
     /// <summary>
     /// Data cruncher.
     /// </summary>
-    public class Data
+    class Data
     {
         readonly string _content;
         readonly string _identifier;
@@ -30,7 +29,7 @@ namespace KotoriCore.Documents.Data
         /// Gets the documents.
         /// </summary>
         /// <returns>The documents.</returns>
-        public IList<dynamic> GetDocuments()
+        internal IList<dynamic> GetDocuments()
         {
             var mt = _content.ToFrontMatterType();
 
@@ -56,7 +55,9 @@ namespace KotoriCore.Documents.Data
             {
                 IDeserializer des = new Yaml();
 
-                var items = _content.Split("---", System.StringSplitOptions.RemoveEmptyEntries);
+                var items = _content.Split("---", System.StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                items.RemoveAll(x => x.Trim() == string.Empty);
 
                 if (items.Any(x => string.IsNullOrWhiteSpace(x.Replace("\r", "").Replace("\n", "").Replace(" ", ""))))
                     throw new KotoriDocumentException(_identifier, "Data contains document with no meta fields.");

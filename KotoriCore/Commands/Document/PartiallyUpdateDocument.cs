@@ -4,9 +4,9 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Upsert document command.
+    /// Partially update document.
     /// </summary>
-    public class UpsertDocument : Command
+    public class PartiallyUpdateDocument : Command
     {
         /// <summary>
         /// Gets the instance.
@@ -29,25 +29,18 @@ namespace KotoriCore.Commands
         public readonly string Content;
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.UpsertDocument"/> data mode.
-        /// </summary>
-        /// <value><c>true</c> if data mode; otherwise, <c>false</c>.</value>
-        public bool DataMode { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocument"/> class.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.PartiallyUpdateDocument"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
-        public UpsertDocument(string instance, string projectId, string identifier, string content, bool dataMode = false)
+        public PartiallyUpdateDocument(string instance, string projectId, string identifier, string content)
         {
             Instance = instance;
             ProjectId = projectId;
             Identifier = identifier;
             Content = content;
-            DataMode = dataMode;
         }
 
         /// <summary>
