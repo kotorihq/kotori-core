@@ -842,6 +842,22 @@ girl: Aoba
 position: designer
 stars: !!int 5
 approved: !!bool true
+---";
+
+            _kotori.CreateDocument("dev", "data-fff", "_data/newgame/girls.yaml?1", c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Upserting at index should allow only 1 document.")]
+        public void UpsertDataAtIndexSemiOk()
+        {
+            _kotori.CreateProject("dev", "data-fff-v2", "Udie", null);
+
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 5
+approved: !!bool true
 ---
 girl: Nenecchi
 position: programmer
@@ -854,7 +870,28 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            _kotori.CreateDocument("dev", "data-fff", "_data/newgame/girls.yaml?0", c);
+            _kotori.CreateDocument("dev", "data-fff-v2", "_data/newgame/girls.yaml?0", c);
+            var n = _kotori.CountDocuments("dev", "data-fff-v2", "_data/newgame", null, false, false);
+            Assert.AreEqual(3, n);
+
+            var c2 = "girl: Aoba";
+            _kotori.UpdateDocument("dev", "data-fff-v2", "_data/newgame/girls.yaml?0", c2);
+
+            n = _kotori.CountDocuments("dev", "data-fff-v2", "_data/newgame", null, false, false);
+            Assert.AreEqual(3, n);
+
+            var vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", "_data/newgame/girls.yaml?0");
+            Assert.AreEqual(2, vc.Count());
+
+            _kotori.CreateDocument("dev", "data-fff-v2", "_data/newgame/girls.yaml?3", c);
+
+            n = _kotori.CountDocuments("dev", "data-fff-v2", "_data/newgame", null, false, false);
+            Assert.AreEqual(6, n);
+
+            vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", "_data/newgame/girls.yaml?0");
+            Assert.AreEqual(2, vc.Count());
+
+            _kotori.UpdateDocument("dev", "data-fff-v2", "_data/newgame/girls.yaml?0", c);
         }
 
         [TestMethod]
@@ -1017,7 +1054,7 @@ mr: x
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriException), "Internal fields accepted for data document.")]
+        [ExpectedException(typeof(KotoriDocumentException), "Internal fields accepted for data document.")]
         public void InternalPropsForData()
         {
             _kotori.CreateProject("dev", "data-inv2", "Udie", null);
@@ -1283,6 +1320,102 @@ b: 35
 
             _kotori.DeleteDocument("dev", "auto-data", "_data/x/one/foo?0");
             dt = _kotori.GetDocumentType("dev", "auto-data", "_data/x");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Creating over an existing document has been allowed.")]
+        public async Task CreateOverExistingContent()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "exicon", "Content", null);
+
+            var c = @"---
+girl: Aoba
+---
+Hello.
+";
+            await _kotori.CreateDocumentAsync("dev", "exicon", "_content/newgame/girls.md", c);
+
+            var doc = _kotori.GetDocument("dev", "exicon", "_content/newgame/girls.md");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(0, doc.Version);
+
+            await _kotori.CreateDocumentAsync("dev", "exicon", "_content/newgame/girls.md", c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Creating over a non-existing document has been allowed.")]
+        public async Task UpdateOverNonExistingContent()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "exicon2", "Content", null);
+
+            var c = @"---
+girl: Aoba
+---
+Hello.
+";
+            await _kotori.UpdateDocumentAsync("dev", "exicon2", "_content/newgame/girls.md", c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException), "Creating over an existing data document has been allowed.")]
+        public async Task CreateOverExistingData()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "exicond", "Data", null);
+
+            var c = @"---
+girl: Aoba
+---
+";
+            await _kotori.CreateDocumentAsync("dev", "exicond", "_data/newgame/girls.md", c);
+
+            c = @"---
+girl: Nene
+---
+girl: Umiko
+---
+";
+            await _kotori.CreateDocumentAsync("dev", "exicond", "_data/newgame/girls.md?-1", c);
+            var n = _kotori.CountDocuments("dev", "exicond", "_data/newgame", null, false, false);
+            Assert.AreEqual(3, n);
+
+            await _kotori.CreateDocumentAsync("dev", "exicond", "_data/newgame/girls.md?3", c);
+
+            n = _kotori.CountDocuments("dev", "exicond", "_data/newgame", null, false, false);
+            Assert.AreEqual(5, n);
+
+            await _kotori.CreateDocumentAsync("dev", "exicond", "_data/newgame/girls.md", c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException), "Changing of meta field type was allowed.")]
+        public async Task ChangingMetaTypeFail()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "f-a-i-l", "f-a-i-l", null);
+
+            var c = @"girl: Aoba";
+            await _kotori.CreateDocumentAsync("dev", "f-a-i-l", "_data/newgame/girls.md", c);
+
+            c = @"girl: !!bool true";
+            await _kotori.CreateDocumentAsync("dev", "f-a-i-l", "_data/newgame/girls.md?-1", c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException), "Changing of meta field type was allowed.")]
+        public async Task ChangingMetaTypeFail2()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "f-a-i-l2", "f-a-i-l2", null);
+
+            var c = @"---
+girl: Aoba
+---
+haha";
+            await _kotori.CreateDocumentAsync("dev", "f-a-i-l2", "_content/newgame/girls.md", c);
+
+            c = @"---
+girl: !!int 6502
+---
+haha";
+            await _kotori.UpdateDocumentAsync("dev", "f-a-i-l2", "_content/newgame/girls.md", c);
         }
 
         static string GetContent(string path)

@@ -59,13 +59,26 @@ namespace KotoriCore.Cli
             {
                 // --- CODE HERE --
 
-                var result = await _kotori.CreateProjectAsync("dev", "mrdataf", "MrData", null);
+                _kotori.CreateProject("dev", "data-fff", "Udie", null);
 
                 var c = @"---
-foo: bar
-";
-                await _kotori.CreateDocumentAsync("dev", "mrdataf", "_data/newgame/girls.yaml", c);
-                var docs = _kotori.FindDocuments("dev", "mrdataf", "_data/newgame", null, null, null, null, false, false, null);
+girl: Aoba
+position: designer
+stars: !!int 5
+approved: !!bool true
+---
+girl: Nenecchi
+position: programmer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Umiko
+position: head programmer
+stars: !!int 2
+approved: !!bool false
+---";
+
+                _kotori.CreateDocument("dev", "data-fff", "_data/newgame/girls.yaml?0", c);
 
                 // --- CODE HERE --
             }

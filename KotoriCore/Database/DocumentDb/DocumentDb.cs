@@ -54,7 +54,7 @@ namespace KotoriCore.Database.DocumentDb
         /// <param name="command">Command.</param>
         async Task<ICommandResult> IDatabase.HandleAsync(ICommand command)
         {
-            var message = $"DocumentDb failed when handling command {command.GetType()}.";
+            var message = $"DocumentDb failed when handling command '{command.GetType().Name}'.";
             ICommandResult result = null;
 
             try
@@ -126,6 +126,9 @@ namespace KotoriCore.Database.DocumentDb
             }
             catch (Exception ex)
             {
+                if (ex?.InnerException is KotoriException ke)
+                    throw ex.InnerException;
+                
                 message += $" Message: {ex.Message}";
             }
 
@@ -449,7 +452,7 @@ namespace KotoriCore.Database.DocumentDb
                 var docType = documentTypeId.ToDocumentType();
 
                 if (docType == null)
-                    throw new KotoriException($"Document type could not be resolved for {documentTypeId}.");
+                    throw new KotoriException($"Document type could not be resolved for '{documentTypeId}'.");
 
                 var indexes = new List<DocumentTypeIndex>();
                 indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);

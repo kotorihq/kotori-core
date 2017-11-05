@@ -5,12 +5,20 @@ using KotoriCore.Domains;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using KotoriCore.Exceptions;
-using System.Threading.Tasks;
 
 namespace KotoriCore.Search
 {
+    /// <summary>
+    /// Search tools.
+    /// </summary>
     static class SearchTools
     {
+        /// <summary>
+        /// Gets the updated document type indexes.
+        /// </summary>
+        /// <returns>The updated document type indexes.</returns>
+        /// <param name="indexes">Indexes.</param>
+        /// <param name="meta">Meta.</param>
         internal static IList<DocumentTypeIndex> GetUpdatedDocumentTypeIndexes(this IList<DocumentTypeIndex> indexes, dynamic meta)
         {
             var indexes2 = indexes.ToList();
@@ -38,7 +46,7 @@ namespace KotoriCore.Search
                     if (ex != null)
                     {
                         if (availables.All(x => x != ex.To))
-                            throw new KotoriValidationException($"Meta property {key} cannot be mapped because it has been alreade mapped to {ex.To}");
+                            throw new KotoriValidationException($"Meta property '{key}' cannot be mapped because it has been alreade mapped to '{ex.To}'.");
 
                         // we are ok for this key
                         result.Add(ex);
@@ -64,6 +72,12 @@ namespace KotoriCore.Search
             return result;
         }
 
+        /// <summary>
+        /// Gets the available fields for the given type.
+        /// </summary>
+        /// <returns>The available fields for given type.</returns>
+        /// <param name="type">Type.</param>
+        /// <param name="val">Value.</param>
         internal static IList<Enums.IndexField> GetAvailableFieldsForType(this Type type, object val)
         {
             if (type == typeof(string))
@@ -170,7 +184,7 @@ namespace KotoriCore.Search
                     Enums.IndexField.Date4
                 };
 
-            // none
+            // no suitable fields
             return new List<Enums.IndexField>();
         }
     }

@@ -49,7 +49,6 @@ namespace KotoriCore.Database.DocumentDb
                 var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document, idx), null);
                 var isNew = d == null;
                 var id = d?.Id;
-                long version = d.Version + 1;
 
                 if (!isNew)
                 {
@@ -62,6 +61,8 @@ namespace KotoriCore.Database.DocumentDb
                 {
                     throw new KotoriDocumentException(command.Identifier, $"Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
                 }
+
+                long version = d.Version + 1;
 
                 d = new Entities.Document
                 (

@@ -3,6 +3,9 @@ using Oogi2.Tokens;
 
 namespace KotoriCore.Database.DocumentDb.Entities
 {
+    /// <summary>
+    /// Document snapshot.
+    /// </summary>
     public class DocumentSnapshot
     {
         /// <summary>

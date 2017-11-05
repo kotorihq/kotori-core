@@ -4,6 +4,9 @@ using Oogi2.Tokens;
 
 namespace KotoriCore.Database.DocumentDb.Entities
 {
+    /// <summary>
+    /// Document version.
+    /// </summary>
     [EntityType("entity", DocumentDb.DocumentVersionEntity)]
     public class DocumentVersion
     {

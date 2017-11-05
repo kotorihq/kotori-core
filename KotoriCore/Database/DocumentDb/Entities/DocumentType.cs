@@ -6,6 +6,9 @@ using Oogi2.Attributes;
 
 namespace KotoriCore.Database.DocumentDb.Entities
 {
+    /// <summary>
+    /// Document type.
+    /// </summary>
     [EntityType("entity", DocumentDb.DocumentTypeEntity)]
     public class DocumentType
     {

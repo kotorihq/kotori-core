@@ -47,7 +47,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, DocumentHelpers.CleanUpMeta(documentResult.Meta));
 
-                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document), null);
+                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document, idx), null);
                 var isNew = d == null;
 
                 if (!isNew)
@@ -78,13 +78,6 @@ namespace KotoriCore.Database.DocumentDb
                 var data = new Data(command.Identifier, command.Content);
                 var documents = data.GetDocuments();
 
-                if (idx.HasValue &&
-                    idx != -1 &&
-                   documents.Count != 1)
-                {
-                    throw new KotoriDocumentException(command.Identifier, $"When creating data document at a particular index you can provide just one data document only.");
-                }
-
                 var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
                 (
                    command.Instance,
@@ -100,6 +93,9 @@ namespace KotoriCore.Database.DocumentDb
 
                 var count = await CountDocumentsAsync(sql);
 
+                if (idx == count)
+                    idx = -1;
+                
                 if (idx < 0)
                 {
                     if (count == 0)
@@ -110,10 +106,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 if (idx > count)
                 {
-                    if (count == 0)
-                        throw new KotoriDocumentException(command.Identifier, $"No data in this document type, do not use index when creating new data documents.");
-
-                    throw new KotoriDocumentException(command.Identifier, $"When creating data document at a particular index, your index must be between 0 and {count}.");
+                    throw new KotoriDocumentException(command.Identifier, $"When creating data document at a particular index, your index must be -1 or {count}.");
                 }
 
                 var tasks = new List<Task>();
@@ -126,7 +119,7 @@ namespace KotoriCore.Database.DocumentDb
 
                     var ci = idx == null ?
                         command.Identifier.ToKotoriUri(Router.IdentifierType.Data, dc).ToKotoriIdentifier(Router.IdentifierType.Data) :
-                        command.Identifier.ToKotoriUri(Router.IdentifierType.Data, idx).ToKotoriIdentifier(Router.IdentifierType.Data);
+                        command.Identifier.ToKotoriUri(Router.IdentifierType.Data, idx + dc).ToKotoriIdentifier(Router.IdentifierType.Data);
 
                     tasks.Add
                      (
@@ -145,24 +138,6 @@ namespace KotoriCore.Database.DocumentDb
                 }
 
                 Task.WaitAll(tasks.ToArray());
-
-                if (idx == null &&
-                    count > documents.Count)
-                {
-                    var deleteTasks = new List<Task>();
-
-                    for (var n = documents.Count; n < count; n++)
-                    {
-                        var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(Router.IdentifierType.Data, n), null);
-
-                        if (d != null)
-                        {
-                            deleteTasks.Add(DeleteDocumentAsync(d));
-                        }
-                    }
-
-                    Task.WaitAll(deleteTasks.ToArray());
-                }
 
                 return new CommandResult<string>($"{documents.Count} {(documents.Count < 2 ? "document has" : "documents have")} been created.");
             }

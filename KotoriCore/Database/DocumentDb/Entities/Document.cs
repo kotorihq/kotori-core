@@ -5,6 +5,9 @@ using Shushu.Attributes;
 
 namespace KotoriCore.Database.DocumentDb.Entities
 {
+    /// <summary>
+    /// Document.
+    /// </summary>
     [EntityType("entity", DocumentDb.DocumentEntity)]
     [ClassMapping(Shushu.Enums.IndexField.Entity, DocumentDb.DocumentEntity)]
     public class Document
