@@ -11,6 +11,7 @@ using KotoriCore.Helpers;
 using System.Collections.Generic;
 using KotoriCore.Domains;
 using KotoriCore.Search;
+using Newtonsoft.Json.Linq;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -24,7 +25,7 @@ namespace KotoriCore.Database.DocumentDb
         readonly Repository<Entities.Document> _repoDocument;
         readonly Repository<Entities.DocumentVersion> _repoDocumentVersion;
         readonly Repository<Count> _repoDocumentCount;
-        readonly Repository<dynamic> _repoDocumentVersionDelete;
+        readonly Repository<dynamic> _repoDynamic;
         readonly Connection _connection;
 
         internal const string ProjectEntity = "kotori/project";
@@ -44,7 +45,7 @@ namespace KotoriCore.Database.DocumentDb
             _repoDocument = new Repository<Entities.Document>(_connection);
             _repoDocumentVersion = new Repository<Entities.DocumentVersion>(_connection);
             _repoDocumentCount = new Repository<Count>(_connection);
-            _repoDocumentVersionDelete = new Repository<dynamic>(_connection);
+            _repoDynamic = new Repository<dynamic>(_connection);
         }
 
         /// <summary>
@@ -281,9 +282,57 @@ namespace KotoriCore.Database.DocumentDb
 
         async Task<bool> DeleteDocumentAsync(Entities.Document document)
         {
+            var metaObj = JObject.FromObject(document.Meta);
+            Dictionary<string, object> meta2 = metaObj.ToObject<Dictionary<string, object>>();
+
             await DeleteDocumentVersionsAsync(document);
 
-            return await _repoDocument.DeleteAsync(document.Id);
+            var result = await _repoDocument.DeleteAsync(document.Id);
+            var nonIndexedFields = new List<string>();
+
+            if (meta2 != null)
+            {
+                foreach (var key in meta2.Keys)
+                {
+                    var q = new DynamicQuery
+                    (
+                            "select count(1) as number from c where c.entity = @entity and c.instance = @instance " +
+                            $"and c.projectId = @projectId and is_defined(c.meta[\"{key}\"])",
+                    new
+                    {
+                        entity = DocumentEntity,
+                        instance = document.Instance,
+                        projectId = document.ProjectId
+                    }
+                    );
+
+                    var sql = q.ToSqlQuery();
+
+                    var counts = await _repoDocumentCount.GetListAsync(q);
+                    var n = counts.Sum(x => x.Number);
+
+                    if (n == 0)
+                        nonIndexedFields.Add(key);
+                }
+
+                if (nonIndexedFields.Any())
+                {
+                    var docType = await FindDocumentTypeAsync(document.Instance, new Uri(document.ProjectId), new Uri(document.DocumentTypeId));
+
+                    if (docType != null)
+                    {
+                        var indexes = docType.Indexes.ToList();
+
+                        indexes.RemoveAll(i => nonIndexedFields.Any(i2 => i2.Equals(i.From, StringComparison.OrdinalIgnoreCase)));
+
+                        docType.Indexes = indexes;
+
+                        await _repoDocumentType.ReplaceAsync(docType);
+                    }
+                }
+            }
+
+            return result;
         }
 
         async Task<bool> DeleteDocumentVersionsAsync(Entities.Document document)
@@ -301,10 +350,10 @@ namespace KotoriCore.Database.DocumentDb
                     }
                 );
 
-            var items = await _repoDocumentVersionDelete.GetListAsync(q);
+            var items = await _repoDynamic.GetListAsync(q);
 
             foreach (var item in items)
-                await _repoDocumentVersionDelete.DeleteAsync(item.Id);
+                await _repoDynamic.DeleteAsync(item.Id);
 
             return true;
         }

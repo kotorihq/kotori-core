@@ -23,7 +23,7 @@ namespace KotoriCore.Search
         {
             var indexes2 = indexes.ToList();
 
-            var result = new List<DocumentTypeIndex>();
+            var result = new List<DocumentTypeIndex>(indexes);
             var metaObj = JObject.FromObject(meta);
             Dictionary<string, object> meta2 = metaObj.ToObject<Dictionary<string, object>>();
 
@@ -47,9 +47,7 @@ namespace KotoriCore.Search
                     {
                         if (availables.All(x => x != ex.To))
                             throw new KotoriValidationException($"Meta property '{key}' cannot be mapped because it has been alreade mapped to '{ex.To}'.");
-
-                        // we are ok for this key
-                        result.Add(ex);
+                        
                         continue;
                     }
 

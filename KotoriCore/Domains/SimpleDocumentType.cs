@@ -1,4 +1,5 @@
-﻿using KotoriCore.Helpers;
+﻿using System.Collections.Generic;
+using KotoriCore.Helpers;
 
 namespace KotoriCore.Domains
 {
@@ -18,14 +19,20 @@ namespace KotoriCore.Domains
         public readonly string Type;
 
         /// <summary>
+        /// Gets or sets the fields.
+        /// </summary>
+        public IEnumerable<string> Fields { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocumentType"/> class.
         /// </summary>
         /// <param name="identifier">Identifier.</param>
         /// <param name="type">Document type.</param>
-        public SimpleDocumentType(string identifier, Enums.DocumentType type)
+        public SimpleDocumentType(string identifier, Enums.DocumentType type, IEnumerable<string> fields)
         {
             Identifier = identifier;
             Type = type.ToString().ToLower();
+            Fields = fields;
         }
 }
 }

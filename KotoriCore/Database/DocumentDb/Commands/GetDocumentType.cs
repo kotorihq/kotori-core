@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Domains;
@@ -32,7 +33,8 @@ namespace KotoriCore.Database.DocumentDb
                 new SimpleDocumentType
                 (
                     new Uri(docType.Identifier).ToKotoriIdentifier(Router.IdentifierType.DocumentType),
-                    docType.Type
+                    docType.Type,
+                    docType.Indexes.Select(i => i.From)
                 )
             );
         }

@@ -1418,6 +1418,46 @@ haha";
             await _kotori.UpdateDocumentAsync("dev", "f-a-i-l2", "_content/newgame/girls.md", c);
         }
 
+        [TestMethod]
+        public async Task AutoDeleteIndex()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "f", "f-a-i-l2", null);
+
+            var c = @"---
+girl: Aoba
+cute: !!bool true
+---
+haha";
+            await _kotori.CreateDocumentAsync("dev", "f", "_content/newgame/item0", c);
+
+            var dt = await _kotori.GetDocumentTypeAsync("dev", "f", "_content/newgame");
+            Assert.AreEqual(2, dt.Fields.Count());
+
+            c = @"---
+girl: Nene
+---
+haha";
+            await _kotori.CreateDocumentAsync("dev", "f", "_content/newgame/item1", c);
+
+            dt = await _kotori.GetDocumentTypeAsync("dev", "f", "_content/newgame");
+            Assert.AreEqual(2, dt.Fields.Count());
+
+            c = @"---
+wonder: !!int 6592
+disaster: earthquake
+---
+haha";
+            await _kotori.CreateDocumentAsync("dev", "f", "_content/newgame/item2", c);
+
+            dt = await _kotori.GetDocumentTypeAsync("dev", "f", "_content/newgame");
+            Assert.AreEqual(4, dt.Fields.Count());
+
+            await _kotori.DeleteDocumentAsync("dev", "f", "_content/newgame/item0");
+
+            dt = await _kotori.GetDocumentTypeAsync("dev", "f", "_content/newgame");
+            Assert.AreEqual(3, dt.Fields.Count());
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();
