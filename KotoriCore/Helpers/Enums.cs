@@ -95,5 +95,19 @@
             /// </summary>
             Html = 1
         }
+
+        /// <summary>
+        /// Transformation.
+        /// </summary>
+        public enum Transformation
+        {
+            None = 0,
+            Lowercase = 1,
+            Uppercase = 2,
+            Trim = 3,
+            Normalize = 4,
+            Search = 5,
+            Epoch = 6
+        }
     }
 }

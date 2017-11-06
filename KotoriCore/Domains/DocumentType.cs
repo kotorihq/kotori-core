@@ -38,5 +38,11 @@ namespace KotoriCore.Domains
         /// <value>The indexes.</value>
         /// <remarks>Used for Elastic Search.</remarks>
         public IList<DocumentTypeIndex> Indexes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the transformations.
+        /// </summary>
+        /// <value>The transformations.</value>
+        public IList<DocumentTypeTransformation> Transformations { get; set; }
     }
 }

@@ -512,7 +512,8 @@ namespace KotoriCore.Database.DocumentDb
                      documentTypeId.ToString(),
                      projectId.ToString(),
                      documentTypeId.ToDocumentType().Value,
-                     indexes
+                     indexes,
+                     new List<DocumentTypeTransformation>()
                 );
 
                 dt = await CreateDocumentTypeAsync(dt);

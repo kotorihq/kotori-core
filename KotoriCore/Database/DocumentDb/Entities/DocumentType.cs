@@ -50,6 +50,12 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public List<DocumentTypeIndex> Indexes { get; set; }
 
         /// <summary>
+        /// Gets or sets the transformations.
+        /// </summary>
+        /// <value>The transformations.</value>
+        public List<DocumentTypeTransformation> Transformations { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.DocumentType"/> class.
         /// </summary>
         public DocumentType()
@@ -64,13 +70,15 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <param name="projectId">Project identifier.</param>
         /// <param name="type">Type.</param>
         /// <param name="indexes">Indexes.</param>
-        public DocumentType(string instance, string identifier, string projectId, Enums.DocumentType type, IList<DocumentTypeIndex> indexes)
+        public DocumentType(string instance, string identifier, string projectId, Enums.DocumentType type, IList<DocumentTypeIndex> indexes, 
+                            IList<DocumentTypeTransformation> transformations)
         {
             Instance = instance;
             Identifier = identifier;
             ProjectId = projectId;
             Type = type;
             Indexes = indexes.ToList();
+            Transformations = transformations.ToList();
         }
     }
 }
