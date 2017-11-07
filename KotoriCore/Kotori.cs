@@ -553,6 +553,59 @@ namespace KotoriCore
         }
 
         /// <summary>
+        /// Gets the document type transformations.
+        /// </summary>
+        /// <returns>The document type transformations.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        public IList<DocumentTypeTransformation> GetDocumentTypeTransformations(string instance, string projectId, string identifier)
+        {
+            return AsyncTools.RunSync(() => GetDocumentTypeTransformationsAsync(instance, projectId, identifier));
+        }
+
+        /// <summary>
+        /// Gets the document type transformations.
+        /// </summary>
+        /// <returns>The document type transformations.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        public async Task<IList<DocumentTypeTransformation>> GetDocumentTypeTransformationsAsync(string instance, string projectId, string identifier)
+        {
+            var result = await ProcessAsync(new GetDocumentTypeTransformations(instance, projectId, identifier));
+            var transformations = result.Data as IList<DocumentTypeTransformation>;
+
+            return transformations;
+        }
+
+        /// <summary>
+        /// Creates the document type transformations async.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="transformations">Transformations.</param>
+        /// <returns>Result.</returns>
+        public string CreateDocumentTypeTransformations(string instance, string projectId, string identifier, string transformations)
+        {
+            return AsyncTools.RunSync(() => CreateDocumentTypeTransformationsAsync(instance, projectId, identifier, transformations));
+        }
+
+        /// <summary>
+        /// Creates the document type transformations async.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="transformations">Transformations.</param>
+        /// <returns>Result.</returns>
+        public async Task<string> CreateDocumentTypeTransformationsAsync(string instance, string projectId, string identifier, string transformations)
+        {
+            return (await ProcessAsync(new CreateDocumentTypeTransformations(instance, projectId, identifier, transformations)) as CommandResult<string>)?.Message;
+        }
+
+        /// <summary>
         /// Processes the command.
         /// </summary>
         /// <returns>The command result.</returns>
