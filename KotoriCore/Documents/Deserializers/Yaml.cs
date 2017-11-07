@@ -31,11 +31,24 @@ namespace KotoriCore.Documents.Deserializers
         public T Deserialize<T>(string content)
         {
             if (content == null)
-                throw new System.ArgumentNullException(nameof(content));
+                return default(T);
 
+            var r = new StringReader(content);
             var deserializer = new DeserializerBuilder().Build();
 
-            return deserializer.Deserialize<T>(content);
+            // it's hack atm, we just assyme it's a list of dynamic objects no matter of T
+            dynamic yamlObject = deserializer.Deserialize<List<dynamic>>(r);
+            dynamic serializer = new SerializerBuilder()
+                .EnsureRoundtrip()
+                .EmitDefaults()
+                .JsonCompatible()
+                .Build();
+
+            var json = serializer.Serialize(yamlObject);
+
+            var d = JsonConvert.DeserializeObject<T>(json);
+
+            return d;
         }
     }
 }

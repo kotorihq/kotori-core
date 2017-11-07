@@ -16,16 +16,15 @@ namespace KotoriCore.Domains
         public string From { get; set; }
 
         /// <summary>
-        /// Gets or sets the transformations.
-        /// </summary>
-        /// <value>The transformations.</value>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public List<Helpers.Enums.Transformation> Transformations { get; set; }
-
-        /// <summary>
         /// Gets or sets to.
         /// </summary>
         /// <value>To.</value>
         public string To { get; set; }
+
+        /// <summary>
+        /// Gets or sets the transformations.
+        /// </summary>
+        /// <value>The transformations.</value>
+        public List<Helpers.Enums.Transformation> Transformations { get; set; }
     }
 }

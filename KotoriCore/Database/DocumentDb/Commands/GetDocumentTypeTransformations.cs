@@ -9,7 +9,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<IList<DocumentTypeTransformation>>> HandleAsync(GetDocumentTypeTransformations command)
+        async Task<CommandResult<DocumentTypeTransformation>> HandleAsync(GetDocumentTypeTransformations command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
             var project = await FindProjectAsync(command.Instance, projectUri);
@@ -27,9 +27,9 @@ namespace KotoriCore.Database.DocumentDb
             if (docType == null)
                 throw new KotoriDocumentTypeException(command.Identifier, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
-            return new CommandResult<IList<DocumentTypeTransformation>>
+            return new CommandResult<DocumentTypeTransformation>
             (
-                docType.Transformations
+                docType.Transformations ?? new List<DocumentTypeTransformation>()
             );
         }
     }

@@ -1,4 +1,8 @@
-﻿namespace KotoriCore.Helpers
+﻿using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace KotoriCore.Helpers
 {
     /// <summary>
     /// Enums.
@@ -99,14 +103,22 @@
         /// <summary>
         /// Transformation.
         /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
         public enum Transformation
         {
+            [EnumMember(Value = "none")]
             None = 0,
+            [EnumMember(Value = "lowercase")]
             Lowercase = 1,
+            [EnumMember(Value = "uppercase")]
             Uppercase = 2,
+            [EnumMember(Value = "trim")]
             Trim = 3,
+            [EnumMember(Value = "normalize")]
             Normalize = 4,
+            [EnumMember(Value = "search")]
             Search = 5,
+            [EnumMember(Value = "epoch")]
             Epoch = 6
         }
     }

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System;
 using KotoriCore.Database.DocumentDb;
+using Newtonsoft.Json;
 
 namespace KotoriCore.Tests
 {
@@ -1456,6 +1457,42 @@ haha";
 
             dt = await _kotori.GetDocumentTypeAsync("dev", "f", "_content/newgame");
             Assert.AreEqual(3, dt.Fields.Count());
+        }
+
+        [TestMethod]
+        public async Task CreateAndGetDocumentTypeTransformations()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "trans001", "Data", null);
+
+            var c = @"---
+girl: Aoba
+---
+";
+            await _kotori.CreateDocumentAsync("dev", "trans001", "_data/newgame/girls.md", c);
+
+            _kotori.CreateDocumentTypeTransformations("dev", "trans001", "_data/newgame", @"
+[
+{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
+]           
+");
+            var transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "_data/newgame");
+
+            Assert.IsNotNull(transformations);
+            Assert.AreEqual(1, transformations.Count());
+            Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
+
+            _kotori.CreateDocumentTypeTransformations("dev", "trans001", "_data/newgame", @"
+- from: girl
+  to: girl2
+  transformations:
+  - trim
+  - lowercase
+");
+            transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "_data/newgame");
+
+            Assert.IsNotNull(transformations);
+            Assert.AreEqual(1, transformations.Count());
+            Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
         }
 
         static string GetContent(string path)
