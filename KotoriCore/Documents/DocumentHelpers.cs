@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Text.RegularExpressions;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;

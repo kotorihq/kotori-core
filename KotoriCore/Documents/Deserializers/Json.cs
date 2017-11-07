@@ -13,5 +13,13 @@ namespace KotoriCore.Documents.Deserializers
 
             return d;
         }
+
+        public T Deserialize<T>(string content)
+        {
+            if (content == null)
+                throw new System.ArgumentNullException(nameof(content));
+            
+            return JsonConvert.DeserializeObject<T>(content);
+        }
     }
 }

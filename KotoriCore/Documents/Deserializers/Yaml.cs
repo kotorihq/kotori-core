@@ -27,5 +27,15 @@ namespace KotoriCore.Documents.Deserializers
 
             return d;
         }
+
+        public T Deserialize<T>(string content)
+        {
+            if (content == null)
+                throw new System.ArgumentNullException(nameof(content));
+
+            var deserializer = new DeserializerBuilder().Build();
+
+            return deserializer.Deserialize<T>(content);
+        }
     }
 }

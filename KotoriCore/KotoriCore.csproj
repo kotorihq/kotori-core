@@ -33,6 +33,7 @@
     <Folder Include="Database\DocumentDb\Helpers\" />
     <Folder Include="Commands\DocumentType\" />
     <Folder Include="Documents\Data\" />
+    <Folder Include="Documents\Transformation\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.0" />
