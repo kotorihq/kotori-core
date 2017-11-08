@@ -1495,6 +1495,30 @@ girl: Aoba
             Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
         }
 
+        [TestMethod]
+        public async Task DocumentTransformations()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "trans002", "Data", null);
+
+            var c = @"---
+girl: "" Aoba ""
+---
+";
+            await _kotori.CreateDocumentAsync("dev", "trans002", "_data/newgame/girls.md", c);
+
+            _kotori.CreateDocumentTypeTransformations("dev", "trans002", "_data/newgame", @"
+[
+{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
+]           
+");
+            await _kotori.UpdateDocumentAsync("dev", "trans002", "_data/newgame/girls.md?0", c);
+            var d = _kotori.GetDocument("dev", "trans002", "_data/newgame/girls.md?0");
+
+            JObject metaObj = JObject.FromObject(d.Meta);
+
+            Assert.AreEqual(new JValue("aoba"), metaObj["girl2"]);
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();

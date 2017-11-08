@@ -59,21 +59,17 @@ namespace KotoriCore.Cli
             {
                 // --- CODE HERE --
 
-                var result = await _kotori.CreateProjectAsync("dev", "trans001", "Data", null);
-
                 var c = @"---
-girl: Aoba
----
-";
-                await _kotori.CreateDocumentAsync("dev", "trans001", "_data/newgame/girls.md", c);
-
-                _kotori.CreateDocumentTypeTransformations("dev", "trans001", "_data/newgame", @"
-[
-{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
-]           
-");
-                //[JsonConverter(typeof(StringEnumConverter))]
-                var transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "_data/newgame");
+foo: "" BAR ""
+---";
+                var md = new Documents.Markdown("_content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+- from: foo
+  to: foo2
+  transformations:
+  - trim
+  - lowercase
+"));
+                var result = md.Process();
 
                 // --- CODE HERE --
             }

@@ -88,12 +88,17 @@ namespace KotoriCore.Documents.Transformation
                         return val.ToString().ToNormalizedString();
                     case Enums.Transformation.Search:
                         return val.ToString().ToSortedString();
+                    case Enums.Transformation.Epoch:
+                        return val.ToDateTime().Value.ToEpoch();
                     default:
                         throw new KotoriDocumentTypeException(Identifier, $"Transformation of type '{transformation.ToString().ToLower()}' is not supported.");
                 }
             }
             catch(Exception ex)
             {
+                if (ex is KotoriDocumentTypeException)
+                    throw;
+                
                 throw new KotoriDocumentTypeException(Identifier, $"Transformation of field '{field}' failed. Message: {ex.Message}");
             }
         }

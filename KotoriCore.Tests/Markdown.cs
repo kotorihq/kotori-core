@@ -378,5 +378,99 @@ foo: bar
 
             Assert.AreEqual(string.Empty, mdr.Content.Trim());
         }
+
+        [TestMethod]
+        public void Transformations()
+        {
+            var c = @"---
+foo: "" BAR ""
+Normalize: žLUťoučký!
+sort: čuník
+date: 2001-12-15T02:59:43.1Z
+---";
+            var md = new Documents.Markdown("_content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+- from: foo
+  to: foo2
+  transformations:
+  - trim
+  - lowercase
+- from: foo2
+  to: foo3
+  transformations:
+  - uppercase
+- from: normalize
+  to: normalize
+  transformations:
+  - normalize
+- from: sort
+  to: sort2
+  transformations:
+  - search
+- from: date
+  to: dateAsEpoch
+  transformations:
+  - epoch
+"));
+            var result = md.Process();
+            var mdr = result as MarkdownResult;
+            JObject metaObj = JObject.FromObject(result.Meta);
+
+            Assert.AreEqual(new JValue(" BAR "), metaObj["foo"]);
+            Assert.AreEqual(new JValue("bar"), metaObj["foo2"]);
+            Assert.AreEqual(new JValue("BAR"), metaObj["foo3"]);
+            Assert.AreEqual(new JValue("zlutoucky!"), metaObj["normalize"]);
+            Assert.AreEqual(new JValue("d*unj*k"), metaObj["sort2"]);
+            Assert.AreEqual(new JValue(1008385183), metaObj["dateAsEpoch"]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException))]
+        public void TransformationsFail0()
+        {
+            var c = @"---
+foo: "" BAR ""
+---";
+            var md = new Documents.Markdown("_content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+- from: $slug
+  to: foo2
+  transformations:
+  - trim
+  - lowercase
+"));
+            var result = md.Process();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException))]
+        public void TransformationsFail1()
+        {
+            var c = @"---
+foo: "" BAR ""
+---";
+            var md = new Documents.Markdown("_content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+- from: foo2
+  to: $slug
+  transformations:
+  - trim
+  - lowercase
+"));
+            var result = md.Process();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException))]
+        public void TransformationsFail2()
+        {
+            var c = @"---
+foo: "" x ""
+---";
+            var md = new Documents.Markdown("_content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+- from: foo
+  to: $slug
+  transformations:
+  - epoch
+"));
+            var result = md.Process();
+        }
     }
 }

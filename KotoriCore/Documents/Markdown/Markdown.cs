@@ -227,6 +227,43 @@ namespace KotoriCore.Documents
                         }
                     }
                 }
+
+                if (_transformation != null)
+                {
+                    foreach(var t in _transformation.Transformations)
+                    {
+                        var from = t.From.ToCamelCase();
+                        var to = t.To.ToCamelCase();
+                        var dtpFrom = t.From.ToDocumentPropertyType();
+                        var dtpTo = t.From.ToDocumentPropertyType();
+
+                        if (dtpFrom == Enums.DocumentPropertyType.Invalid)
+                            throw new KotoriDocumentException(Identifier, $"Transformation error. Property {t.From} is not valid for transformation (from).");
+
+                        if (dtpTo == Enums.DocumentPropertyType.Invalid)
+                            throw new KotoriDocumentException(Identifier, $"Transformation error. Property {t.From} is not valid for transformation (to).");
+
+                        if (dtpTo != Enums.DocumentPropertyType.UserDefined)
+                            throw new KotoriDocumentException(Identifier, $"Transformation error. Property {t.From} is not valid for transformation (to). Don't use system fields.");
+
+                        if (!dictionary.ContainsKey(from))
+                            throw new KotoriDocumentException(Identifier, $"Transformation error. Property {t.From} is not valid for transformation (to). Source doesn't exist in meta fields.");
+
+                        var val = dictionary[from];
+
+                        foreach (var p in t.Transformations)
+                        {
+                            var newVal = _transformation.Transform(from, val, p);
+
+                            if (dictionary.ContainsKey(to))
+                                dictionary[to] = newVal;
+                            else
+                                dictionary.Add(to, newVal);
+
+                            val = newVal;
+                        }
+                    }
+                }
             }
 
             // no date, set min date
