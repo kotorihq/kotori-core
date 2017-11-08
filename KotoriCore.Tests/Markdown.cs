@@ -17,7 +17,8 @@ namespace KotoriCore.Tests
         {
             var md = new Documents.Markdown("_content/foo/bar.md",
 @"---
-name: Ami Kawashima (川嶋 亜美)"
+name: Ami Kawashima (川嶋 亜美)",
+null
 );
 
             md.Process();
@@ -30,7 +31,8 @@ name: Ami Kawashima (川嶋 亜美)"
             var md = new Documents.Markdown("_content/foo/bar.md",
 @"---name: Ami Kawashima (川嶋 亜美)
 ---
-a"
+a",
+null
 );
 
             md.Process();
@@ -42,7 +44,7 @@ a"
             var c = @"hello
 space
 cowboy";
-            var md = new Documents.Markdown("_content/foo/bar.md", c);
+            var md = new Documents.Markdown("_content/foo/bar.md", c, null);
 
             var result = md.Process();
 
@@ -69,7 +71,7 @@ bwh: { b: !!int 90, w: !!int 58, h: !!int 88 }
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/bar.md", all);
+            var md = new Documents.Markdown("_content/foo/bar.md", all, null);
 
             var result = md.Process();
 
@@ -98,7 +100,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/bar.md", all);
+            var md = new Documents.Markdown("_content/foo/bar.md", all, null);
 
             var result = md.Process();
 
@@ -124,7 +126,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/bar.md", all);
+            var md = new Documents.Markdown("_content/foo/bar.md", all, null);
 
             var result = md.Process();
 
@@ -145,7 +147,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/2016-03-04-bar.md", all);
+            var md = new Documents.Markdown("_content/foo/2016-03-04-bar.md", all, null);
 
             var result = md.Process();
 
@@ -165,7 +167,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/2016-03-04-bar.md", all);
+            var md = new Documents.Markdown("_content/foo/2016-03-04-bar.md", all, null);
 
             var result = md.Process();
 
@@ -185,7 +187,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", all);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", all, null);
 
             var result = md.Process();
 
@@ -278,7 +280,7 @@ $nenecchi: damn
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -296,7 +298,7 @@ aaa /// // /
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -311,7 +313,7 @@ $Slug: X
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -326,7 +328,7 @@ Slugie: X
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -341,7 +343,7 @@ Sakura_Nene: true
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c);
+            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -357,7 +359,7 @@ hm
         public void NoFrontMatter()
         {
             var c = @"aloha";
-            var md = new Documents.Markdown("_content/foo/bar.md", c);
+            var md = new Documents.Markdown("_content/foo/bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -370,7 +372,7 @@ hm
             var c = @"---
 foo: bar
 ---";
-            var md = new Documents.Markdown("_content/foo/bar.md", c);
+            var md = new Documents.Markdown("_content/foo/bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 

@@ -1483,7 +1483,7 @@ girl: Aoba
 
             _kotori.CreateDocumentTypeTransformations("dev", "trans001", "_data/newgame", @"
 - from: girl
-  to: girl2
+  to: Girl2
   transformations:
   - trim
   - lowercase

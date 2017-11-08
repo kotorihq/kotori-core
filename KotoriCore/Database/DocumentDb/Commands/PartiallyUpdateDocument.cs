@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Documents;
+using KotoriCore.Documents.Transformation;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 using Newtonsoft.Json;
@@ -38,10 +39,17 @@ namespace KotoriCore.Database.DocumentDb
 
             if (docType == Enums.DocumentType.Content)
             {
-                var newDocument = new Markdown(command.Identifier, command.Content);
+                var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
+
+                if (docType == null)
+                    throw new KotoriDocumentTypeException(command.Identifier, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                
+                var transformation = new Transformation(documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType), documentType?.Transformations);
+
+                var newDocument = new Markdown(command.Identifier, command.Content, transformation);
                 var newDocumentResult = await newDocument.ProcessAsync();
 
-                var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
+                var oldDocument = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content), null);
                 var oldDocumentResult = await oldDocument.ProcessAsync();
 
                 var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, newDocumentResult.Slug, command.Identifier.ToKotoriUri(Router.IdentifierType.Document));
@@ -63,7 +71,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 document.Modified = new Oogi2.Tokens.Stamp();
 
-                var dr = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
+                var dr = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content), null);
                 var drr = await dr.ProcessAsync();
 
                 document.Hash = drr.Hash;
@@ -76,7 +84,14 @@ namespace KotoriCore.Database.DocumentDb
 
             if (docType == Enums.DocumentType.Data)
             {
-                var newDataM = new Markdown(command.Identifier, command.Content);
+                var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
+
+                if (docType == null)
+                    throw new KotoriDocumentTypeException(command.Identifier, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+
+                var transformation = new Transformation(documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType), documentType?.Transformations);
+
+                var newDataM = new Markdown(command.Identifier, command.Content, transformation);
                 var newDataR = await newDataM.ProcessAsync();
                 var newData = new Data(command.Identifier, "[" + JsonConvert.SerializeObject(newDataR.Meta) + "]");
                 var newDocuments = newData.GetDocuments();
@@ -110,7 +125,7 @@ namespace KotoriCore.Database.DocumentDb
                 document.Meta = DocumentHelpers.CleanUpMeta(meta);
                 document.Modified = new Oogi2.Tokens.Stamp();
 
-                var dr = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content));
+                var dr = new Markdown(command.Identifier, Markdown.ConstructDocument(document.Meta, document.Content), null);
                 var drr = await dr.ProcessAsync();
 
                 document.Hash = drr.Hash;

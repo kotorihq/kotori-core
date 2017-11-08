@@ -21,6 +21,7 @@ namespace KotoriCore.Documents
     {
         readonly string _content;
         readonly Enums.DocumentType _documentType;
+        readonly Transformation.Transformation _transformation;
 
         /// <summary>
         /// Gets the identifier.
@@ -33,7 +34,8 @@ namespace KotoriCore.Documents
         /// </summary>
         /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
-        public Markdown(string identifier, string content)
+        /// <param name="transformation">Transformation.</param>
+        public Markdown(string identifier, string content, Transformation.Transformation transformation)
         {
             Identifier = identifier;
             var docType = Identifier.ToKotoriUri(Router.IdentifierType.DocumentType).ToDocumentType();
@@ -43,6 +45,7 @@ namespace KotoriCore.Documents
 
             _documentType = docType.Value;
             _content = content;
+            _transformation = transformation;
         }
 
         /// <summary>

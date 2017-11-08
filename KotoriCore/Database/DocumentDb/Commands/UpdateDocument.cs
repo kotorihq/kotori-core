@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Documents;
+using KotoriCore.Documents.Transformation;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 using Newtonsoft.Json.Linq;
@@ -33,7 +34,10 @@ namespace KotoriCore.Database.DocumentDb
             if (docType == Enums.DocumentType.Content ||
                command.DataMode)
             {
-                var document = new Markdown(command.Identifier, command.Content);
+                var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
+                var transformation = new Transformation(documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType), documentType?.Transformations);
+                var document = new Markdown(command.Identifier, command.Content, transformation);
+
                 documentResult = document.Process();
 
                 if (!command.DataMode)
@@ -44,7 +48,10 @@ namespace KotoriCore.Database.DocumentDb
                         throw new KotoriDocumentException(command.Identifier, $"Slug '{documentResult.Slug}' is already being used for another document.");
                 }
 
-                var documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, DocumentHelpers.CleanUpMeta(documentResult.Meta));
+                documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, DocumentHelpers.CleanUpMeta(documentResult.Meta));
+                transformation = new Transformation(documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType), documentType.Transformations);
+                document = new Markdown(command.Identifier, command.Content, transformation);
+                documentResult = document.Process();
 
                 var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document, idx), null);
                 var isNew = d == null;

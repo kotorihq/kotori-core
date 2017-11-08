@@ -106,20 +106,18 @@ namespace KotoriCore.Helpers
         [JsonConverter(typeof(StringEnumConverter))]
         public enum Transformation
         {
-            [EnumMember(Value = "none")]
-            None = 0,
             [EnumMember(Value = "lowercase")]
-            Lowercase = 1,
+            Lowercase = 0,
             [EnumMember(Value = "uppercase")]
-            Uppercase = 2,
+            Uppercase = 1,
             [EnumMember(Value = "trim")]
-            Trim = 3,
+            Trim = 2,
             [EnumMember(Value = "normalize")]
-            Normalize = 4,
+            Normalize = 3,
             [EnumMember(Value = "search")]
-            Search = 5,
+            Search = 4,
             [EnumMember(Value = "epoch")]
-            Epoch = 6
+            Epoch = 5
         }
     }
 }
