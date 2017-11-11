@@ -458,7 +458,7 @@ foo: "" BAR ""
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriDocumentException))]
+        [ExpectedException(typeof(KotoriDocumentTypeException))]
         public void TransformationsFail2()
         {
             var c = @"---
