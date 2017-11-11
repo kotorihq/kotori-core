@@ -374,32 +374,6 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        public async Task ProjectDelete()
-        {
-            var result = await _kotori.CreateProjectAsync("dev", "immortal3", "Nenecchi", null);
-
-            var projects2 = _kotori.GetProjects("dev");
-
-            Assert.IsTrue(projects2.Any(x => x.Identifier == "immortal3"));
-
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "immortal3", "_content/tv/2007-05-06-flip-flappers.md", c);
-
-            var documents = await _kotori.FindDocumentsAsync("dev", "immortal3", "_content/tv", null, null, null, null, true, true, null);
-
-            foreach(var d in documents)
-            {
-                _kotori.DeleteDocument("dev", "immortal3", d.Identifier);
-            }
-
-            _kotori.DeleteProject("dev", "immortal3");
-
-            var projects = _kotori.GetProjects("dev");
-
-            Assert.IsTrue(projects.All(x => x.Identifier != "immortal3"));
-        }
-
-        [TestMethod]
         public async Task Draft()
         {
             var result = await _kotori.CreateProjectAsync("dev", "slugdraft", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
@@ -1290,7 +1264,6 @@ b: 35
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriDocumentTypeException), "Document type has been found. It shouldn't have been!")]
         public void AutoDeleteDocumentTypeContent()
         {
             _kotori.CreateProject("dev", "auto-content", "Udie", null);
@@ -1303,10 +1276,11 @@ b: 35
 
             _kotori.DeleteDocument("dev", "auto-content", "_content/x/foo");
             dt = _kotori.GetDocumentType("dev", "auto-content", "_content/x");
+
+            Assert.IsNotNull(dt);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriDocumentTypeException), "Document type has been found. It shouldn't have been!")]
         public void AutoDeleteDocumentTypeData()
         {
             _kotori.CreateProject("dev", "auto-data", "Udie", null);
@@ -1321,6 +1295,8 @@ b: 35
 
             _kotori.DeleteDocument("dev", "auto-data", "_data/x/one/foo?0");
             dt = _kotori.GetDocumentType("dev", "auto-data", "_data/x");
+
+            Assert.IsNotNull(dt);
         }
 
         [TestMethod]
