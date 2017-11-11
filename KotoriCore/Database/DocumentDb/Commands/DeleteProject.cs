@@ -5,6 +5,7 @@ using KotoriCore.Helpers;
 using System.Linq;
 using System.Collections.Generic;
 using KotoriCore.Domains;
+using KotoriCore.Database.DocumentDb.Helpers;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -19,6 +20,24 @@ namespace KotoriCore.Database.DocumentDb
             if (project == null)
                 throw new KotoriProjectException(command.Identifier, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
+            var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
+            (
+                command.Instance,
+                projectUri,
+                null,
+                null,
+                "count(1) as number",
+                null,
+                null,
+                true,
+                true
+            );
+
+            var count = await CountDocumentsAsync(sql);
+
+            if (count > 0)
+                throw new KotoriProjectException(command.Identifier, "Project contains documents.");
+            
             var documentTypes = (await HandleAsync(new GetDocumentTypes(command.Instance, command.Identifier))).Data as IEnumerable<SimpleDocumentType>;
 
             if (documentTypes.Any())

@@ -40,14 +40,16 @@ namespace KotoriCore.Database.DocumentDb.Helpers
 
             sql += " (c.entity = '" +
                 DocumentDb.DocumentEntity +
-                "' and c.projectId = '" +
-                project +
-                "' and c.documentTypeId = '" +
-                documentType +
                 "' and c.instance = '" +
                 instance +
                 "'";
 
+            if (project != null)
+                sql += " and c.projectId = '" + project + "'";
+            
+            if (documentType != null)
+                sql += " and c.documentTypeId = '" + documentType + "'";
+            
             if (!drafts)
                 sql += " and c.draft = false ";
 
