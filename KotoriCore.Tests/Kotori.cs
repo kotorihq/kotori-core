@@ -1446,7 +1446,7 @@ girl: Aoba
 ";
             await _kotori.CreateDocumentAsync("dev", "trans001", "_data/newgame/girls.md", c);
 
-            _kotori.CreateDocumentTypeTransformations("dev", "trans001", "_data/newgame", @"
+            _kotori.CreateDocumentType("dev", "trans001", "_data/newgame", @"
 [
 { ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
 ]           
@@ -1457,7 +1457,7 @@ girl: Aoba
             Assert.AreEqual(1, transformations.Count());
             Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
 
-            _kotori.CreateDocumentTypeTransformations("dev", "trans001", "_data/newgame", @"
+            _kotori.CreateDocumentType("dev", "trans001", "_data/newgame", @"
 - from: girl
   to: Girl2
   transformations:
@@ -1471,6 +1471,44 @@ girl: Aoba
             Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
         }
 
+//        [TestMethod]
+//        public async Task CreateAndGetDocumentTypeTransformations2()
+//        {
+//            var result = await _kotori.CreateProjectAsync("dev", "trans001", "Data", null);
+
+//            var c = @"---
+//girl: Aoba
+//---
+//";
+//            _kotori.CreateDocumentType("dev", "trans001", "_data/newgame", @"
+//[
+//{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
+//]           
+//");
+            
+//            await _kotori.CreateDocumentAsync("dev", "trans001", "_data/newgame/girls.md", c);
+
+
+//            var transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "_data/newgame");
+
+//            Assert.IsNotNull(transformations);
+//            Assert.AreEqual(1, transformations.Count());
+//            Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
+
+//            _kotori.CreateDocumentType("dev", "trans001", "_data/newgame", @"
+//- from: girl
+//  to: Girl2
+//  transformations:
+//  - trim
+//  - lowercase
+//");
+        //    transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "_data/newgame");
+
+        //    Assert.IsNotNull(transformations);
+        //    Assert.AreEqual(1, transformations.Count());
+        //    Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
+        //}
+
         [TestMethod]
         public async Task DocumentTransformations()
         {
@@ -1482,7 +1520,7 @@ girl: "" Aoba ""
 ";
             await _kotori.CreateDocumentAsync("dev", "trans002", "_data/newgame/girls.md", c);
 
-            _kotori.CreateDocumentTypeTransformations("dev", "trans002", "_data/newgame", @"
+            _kotori.CreateDocumentType("dev", "trans002", "_data/newgame", @"
 [
 { ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
 ]           

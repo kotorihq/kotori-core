@@ -8,7 +8,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(CreateDocumentTypeTransformations command)
+        async Task<CommandResult<string>> HandleAsync(CreateDocumentType command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
             var project = await FindProjectAsync(command.Instance, projectUri);

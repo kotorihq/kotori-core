@@ -3,7 +3,7 @@ using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
-    public class CreateDocumentTypeTransformations : Command
+    public class CreateDocumentType : Command
     {
         /// <summary>
         /// Gets the instance.
@@ -26,12 +26,13 @@ namespace KotoriCore.Commands
         public readonly string Transformations;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CreateDocumentTypeTransformations"/> class.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CreateDocumentType"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
-        public CreateDocumentTypeTransformations(string instance, string projectId, string identifier, string transformations)
+        /// <param name="transformations">Transformations.</param>
+        public CreateDocumentType(string instance, string projectId, string identifier, string transformations)
         {
             Instance = instance;
             ProjectId = projectId;

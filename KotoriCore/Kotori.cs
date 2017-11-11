@@ -580,29 +580,29 @@ namespace KotoriCore
         }
 
         /// <summary>
-        /// Creates the document type transformations async.
+        /// Creates the document type.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="transformations">Transformations.</param>
         /// <returns>Result.</returns>
-        public string CreateDocumentTypeTransformations(string instance, string projectId, string identifier, string transformations)
+        public string CreateDocumentType(string instance, string projectId, string identifier, string transformations)
         {
-            return AsyncTools.RunSync(() => CreateDocumentTypeTransformationsAsync(instance, projectId, identifier, transformations));
+            return AsyncTools.RunSync(() => CreateDocumentTypeAsync(instance, projectId, identifier, transformations));
         }
 
         /// <summary>
-        /// Creates the document type transformations async.
+        /// Creates the document type.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="transformations">Transformations.</param>
         /// <returns>Result.</returns>
-        public async Task<string> CreateDocumentTypeTransformationsAsync(string instance, string projectId, string identifier, string transformations)
+        public async Task<string> CreateDocumentTypeAsync(string instance, string projectId, string identifier, string transformations)
         {
-            return (await ProcessAsync(new CreateDocumentTypeTransformations(instance, projectId, identifier, transformations)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new CreateDocumentType(instance, projectId, identifier, transformations)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
