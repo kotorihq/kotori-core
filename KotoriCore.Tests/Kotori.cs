@@ -1495,6 +1495,28 @@ girl: "" Aoba ""
             Assert.AreEqual(new JValue("aoba"), metaObj["girl2"]);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentTypeException))]
+        public async Task DeleteDocumentType()
+        {
+            var result = await _kotori.CreateProjectAsync("dev", "doctdel", "Data", null);
+
+            var c = @"---
+girl: "" Aoba ""
+---
+";
+            await _kotori.CreateDocumentAsync("dev", "doctdel", "_data/newgame/girls.md", c);
+
+            var docType = _kotori.GetDocumentType("dev", "doctdel", "_data/newgame");
+
+            Assert.IsNotNull(docType);
+
+            _kotori.DeleteDocument("dev", "doctdel", "_data/newgame/girls.md?0");
+            _kotori.DeleteDocumentType("dev", "doctdel", "_data/newgame");
+
+            _kotori.GetDocumentType("dev", "doctdel", "_data/newgame");
+        }
+
         static string GetContent(string path)
         {
             var wc = new WebClient();
