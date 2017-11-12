@@ -22,11 +22,11 @@ namespace KotoriCore.Database.DocumentDb
                 (
                     command.Instance,
                     projectUri,
-                    command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType)
+                    command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType)
                 );
 
             if (docType == null)
-                throw new KotoriDocumentTypeException(command.Identifier, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
             
             return new CommandResult<SimpleDocumentType>
             (

@@ -9,31 +9,31 @@ namespace KotoriCore.Commands
     public class GetDocumentType : Command
     {
         /// <summary>
-        /// Gets the instance.
+        /// The instance.
         /// </summary>
         public readonly string Instance;
 
         /// <summary>
-        /// Gets the project identifier.
+        /// The project identifier.
         /// </summary>
         public readonly string ProjectId;
 
         /// <summary>
-        /// Gets the identifier.
+        /// The document type identifier.
         /// </summary>
-        public readonly string Identifier;
+        public readonly string DocumentTypeId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetDocumentType"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Document identifier.</param>
-        public GetDocumentType(string instance, string projectId, string identifier)
+        /// <param name="documentTypeId">Document type identifier.</param>
+        public GetDocumentType(string instance, string projectId, string documentTypeId)
         {
             Instance = instance;
             ProjectId = projectId;
-            Identifier = identifier;
+            DocumentTypeId = documentTypeId;
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Project Id must be set.");
 
-            if (string.IsNullOrEmpty(Identifier))
-                yield return new ValidationResult("Identifier must be set.");
+            if (string.IsNullOrEmpty(DocumentTypeId))
+                yield return new ValidationResult("Document type Id must be set.");
         }
     }
 }
