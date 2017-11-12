@@ -121,12 +121,12 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual(1, projects.Count());
 
-            var c = GetContent("_content/movie/matrix.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi/stable", "_content/movie/matrix.md", c);
+            var c = GetContent("content/movie/matrix.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi/stable", "content/movie/matrix.md", c);
 
-            var d = await _kotori.GetDocumentAsync("dev", "nenecchi/stable", "_content/movie/matrix.md");
+            var d = await _kotori.GetDocumentAsync("dev", "nenecchi/stable", "content/movie/matrix.md");
 
-            Assert.AreEqual("_content/movie/matrix.md", d.Identifier);
+            Assert.AreEqual("content/movie/matrix.md", d.Identifier);
             Assert.AreEqual("matrix", d.Slug);
 
             var meta = (d.Meta as JObject);
@@ -147,9 +147,9 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dupe", "Nenecchi", null);
 
-            var c = GetContent("_content/movie/matrix.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", "_content/movie2/matrix.md", c);
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", "_content/movie3/matrix.md", c);
+            var c = GetContent("content/movie/matrix.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", "content/movie2/matrix.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", "content/movie3/matrix.md", c);
         }
 
         [TestMethod]
@@ -157,32 +157,32 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-05-06-flying-witch.md", c);
+            var c = GetContent("content/tv/2017-05-06-flying-witch.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-find", "content/tv/2017-05-06-flying-witch.md", c);
 
-            c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-find", "_content/tv/2017-08-12-flip-flappers.md", c);
+            c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-find", "content/tv/2017-08-12-flip-flappers.md", c);
 
-            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, null, false, false, null);
+            var docs = _kotori.FindDocuments("dev", "nenecchi-find", "content/tv", 1, null, null, null, false, false, null);
             Assert.AreEqual(1, docs.Count());
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, "c.slug", null, "c.meta.rating asc", false, false, null);
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "content/tv", 1, "c.slug", null, "c.meta.rating asc", false, false, null);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual(null, docs.First().Identifier);
             Assert.AreEqual("flip-flappers", docs.First().Slug);
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, "c.meta.rating = 8", null, false, false, null);
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "content/tv", null, null, "c.meta.rating = 8", null, false, false, null);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual("flip-flappers", docs.First().Slug);
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", null, null, null, null, false, false, 3);
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "content/tv", null, null, null, null, false, false, 3);
             Assert.AreEqual(0, docs.Count());
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 1);
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "content/tv", 1, null, null, "c.meta.rating asc", false, false, 1);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual("flying-witch-2016", docs.First().Slug);
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-find", "_content/tv", 1, null, null, "c.meta.rating asc", false, false, 2);
+            docs = _kotori.FindDocuments("dev", "nenecchi-find", "content/tv", 1, null, null, "c.meta.rating asc", false, false, 2);
             Assert.AreEqual(0, docs.Count());
         }
 
@@ -192,10 +192,10 @@ namespace KotoriCore.Tests
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find2", "Nenecchi", null);
 
             var c = @"aloha";
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", "_content/tv/witch.md", c);
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", "_content/tv/ditch.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", "content/tv/witch.md", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", "content/tv/ditch.md", c);
 
-            var docs = _kotori.FindDocuments("dev", "nenecchi-find2", "_content/tv", 2, null, null, null, false, false, null);
+            var docs = _kotori.FindDocuments("dev", "nenecchi-find2", "content/tv", 2, null, null, null, false, false, null);
             Assert.AreEqual(2, docs.Count());
         }
 
@@ -204,14 +204,14 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-hash", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witch.md", c);
+            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witch.md", c);
 
-            var resultok = await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c);
+            var resultok = await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witchx.md", c);
 
             Assert.AreEqual("Document has been created.", resultok);
 
-            var resulthash = await _kotori.UpdateDocumentAsync("dev", "nenecchi-hash", "_content/tv/2017-05-06-flying-witchx.md", c);
+            var resulthash = await _kotori.UpdateDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witchx.md", c);
             Assert.AreEqual("Document saving skipped. Hash is the same one as in the database.", resulthash);
         }
 
@@ -220,21 +220,21 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flip-flappers.md", c);
+            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-del", "content/tv/2017-05-06-flip-flappers.md", c);
 
-            c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witch.md", c);
+            c = GetContent("content/tv/2017-05-06-flying-witch.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-del", "content/tv/2017-05-06-flying-witch.md", c);
 
-            var docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null, false, false, null);
+            var docs = _kotori.FindDocuments("dev", "nenecchi-del", "content/tv/", null, null, null, null, false, false, null);
 
             Assert.AreEqual(2, docs.Count());
 
-            var resd2 = _kotori.DeleteDocument("dev", "nenecchi-del", "_content/tv/2017-05-06-flying-witch.md");
+            var resd2 = _kotori.DeleteDocument("dev", "nenecchi-del", "content/tv/2017-05-06-flying-witch.md");
 
             Assert.AreEqual("Document has been deleted.", resd2);
 
-            docs = _kotori.FindDocuments("dev", "nenecchi-del", "_content/tv/", null, null, null, null, false, false, null);
+            docs = _kotori.FindDocuments("dev", "nenecchi-del", "content/tv/", null, null, null, null, false, false, null);
 
             Assert.AreEqual(1, docs.Count());
         }
@@ -245,7 +245,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del2", "Nenecchi", null);
 
-            _kotori.DeleteDocument("dev", "nenecchi-del2", "_content/tv/2017-05-06-flying-witchxxx.md");
+            _kotori.DeleteDocument("dev", "nenecchi-del2", "content/tv/2017-05-06-flying-witchxxx.md");
         }
 
         [TestMethod]
@@ -253,17 +253,17 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-count", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flip-flappers.md", c);
+            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-count", "content/tv/2017-05-06-flip-flappers.md", c);
 
-            c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-count", "_content/tv/2017-05-06-flying-witch.md", c);
+            c = GetContent("content/tv/2017-05-06-flying-witch.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-count", "content/tv/2017-05-06-flying-witch.md", c);
 
-            var docs = _kotori.CountDocuments("dev", "nenecchi-count", "_content/tv/", null, false, false);
+            var docs = _kotori.CountDocuments("dev", "nenecchi-count", "content/tv/", null, false, false);
 
             Assert.AreEqual(2, docs);
 
-            var docs2 = _kotori.CountDocuments("dev", "nenecchi-count", "_content/tv/", "c.meta.rating in (8)", false, false);
+            var docs2 = _kotori.CountDocuments("dev", "nenecchi-count", "content/tv/", "c.meta.rating in (8)", false, false);
             Assert.AreEqual(1, docs2);
         }
 
@@ -272,28 +272,28 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-drafts", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md", c);
+            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-drafts", "content/tv/2037-05-06-flip-flappers.md", c);
 
-            c = GetContent("_content/tv/2017-05-06-flying-witch.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-drafts", "_content/tv/_2017-05-06-flying-witch.md", c);
+            c = GetContent("content/tv/2017-05-06-flying-witch.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-drafts", "content/tv/_2017-05-06-flying-witch.md", c);
 
-            var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/2037-05-06-flip-flappers.md");
+            var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "content/tv/2037-05-06-flip-flappers.md");
             Assert.AreEqual(false, futureDoc.Draft);
 
-            var draftDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "_content/tv/_2017-05-06-flying-witch.md");
+            var draftDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "content/tv/_2017-05-06-flying-witch.md");
             Assert.AreEqual(true, draftDoc.Draft);
 
-            var count0 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, false, false);
+            var count0 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "content/tv", null, false, false);
             Assert.AreEqual(0, count0);
 
-            var count1 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, true, false);
+            var count1 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "content/tv", null, true, false);
             Assert.AreEqual(1, count1);
 
-            var count2 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, false, true);
+            var count2 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "content/tv", null, false, true);
             Assert.AreEqual(1, count2);
 
-            var count3 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "_content/tv", null, true, true);
+            var count3 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", "content/tv", null, true, true);
             Assert.AreEqual(2, count3);
         }
 
@@ -303,10 +303,10 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dn", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-dn", "_content/tv/2117-05-06-flip-flappers.md", c);
+            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dn", "content/tv/2117-05-06-flip-flappers.md", c);
 
-            await _kotori.GetDocumentAsync("dev", "nenecchi-dn", "_content/tv/hm/2217-05-06-flip-flappers.md");
+            await _kotori.GetDocumentAsync("dev", "nenecchi-dn", "content/tv/hm/2217-05-06-flip-flappers.md");
         }
 
         [TestMethod]
@@ -315,10 +315,10 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-dty", "_content/tv/2117-05-06-flip-flappers.md", c);
+            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dty", "content/tv/2117-05-06-flip-flappers.md", c);
 
-            var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty", "_content/tvx/");
+            var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty", "content/tvx/");
         }
 
         [TestMethod]
@@ -326,13 +326,13 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty2", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-dty2", "_content/tv/2117-05-06-flip-flappers.md", c);
+            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dty2", "content/tv/2117-05-06-flip-flappers.md", c);
 
-            var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty2", "_content/tv");
+            var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty2", "content/tv");
 
             Assert.AreEqual("content", dt.Type);
-            Assert.AreEqual("_content/tv/", dt.Identifier);
+            Assert.AreEqual("content/tv/", dt.Identifier);
         }
 
         [TestMethod]
@@ -341,7 +341,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "inv", "Nenecchi", null);
 
-            await _kotori.CreateDocumentAsync("dev", "inv", "_content/tv/2117-05-06-flip-flappers.md", null);
+            await _kotori.CreateDocumentAsync("dev", "inv", "content/tv/2117-05-06-flip-flappers.md", null);
         }
 
         [TestMethod]
@@ -349,17 +349,17 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "doctypes", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "doctypes", "_content/tv/2007-05-06-flip-flappers.md", c);
-            await _kotori.CreateDocumentAsync("dev", "doctypes", "_content/tv/_2007-05-07-flip-flappers2.md", c);
-            await _kotori.CreateDocumentAsync("dev", "doctypes", "_content/tv2/2007-05-06-aflip-flappers.md", c);
-            await _kotori.CreateDocumentAsync("dev", "doctypes", "_content/tv3/2007-05-06-bflip-flappers.md", c);
+            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "doctypes", "content/tv/2007-05-06-flip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", "content/tv/_2007-05-07-flip-flappers2.md", c);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", "content/tv2/2007-05-06-aflip-flappers.md", c);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", "content/tv3/2007-05-06-bflip-flappers.md", c);
 
             var docTypes = await _kotori.GetDocumentTypesAsync("dev", "doctypes");
 
             Assert.AreEqual(3, docTypes.Count());
             Assert.AreEqual("content", docTypes.First().Type);
-            Assert.AreEqual("_content/tv/", docTypes.First().Identifier);
+            Assert.AreEqual("content/tv/", docTypes.First().Identifier);
         }
 
         [TestMethod]
@@ -368,8 +368,8 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "immortal", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "immortal", "_content/tv/2007-05-06-flip-flappers.md", c);
+            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "immortal", "content/tv/2007-05-06-flip-flappers.md", c);
             await _kotori.DeleteProjectAsync("dev", "immortal");
         }
 
@@ -378,12 +378,12 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "slugdraft", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
 
-            var c = GetContent("_content/movie/matrix.md");
-            await _kotori.CreateDocumentAsync("dev", "slugdraft", "_content/movie/_matrix.md", c);
+            var c = GetContent("content/movie/matrix.md");
+            await _kotori.CreateDocumentAsync("dev", "slugdraft", "content/movie/_matrix.md", c);
 
-            var d = await _kotori.GetDocumentAsync("dev", "slugdraft", "_content/movie/_matrix.md");
+            var d = await _kotori.GetDocumentAsync("dev", "slugdraft", "content/movie/_matrix.md");
 
-            Assert.AreEqual("_content/movie/matrix.md", d.Identifier);
+            Assert.AreEqual("content/movie/matrix.md", d.Identifier);
             Assert.AreEqual("matrix", d.Slug);
         }
 
@@ -455,12 +455,12 @@ namespace KotoriCore.Tests
         {
             var result = _kotori.CreateProject("dev", "weformat", "WF", null);
 
-            _kotori.CreateDocument("dev", "weformat", "_content/tv/rakosnicek.md", "---\n---\nhello *space* **cowboy**!");
+            _kotori.CreateDocument("dev", "weformat", "content/tv/rakosnicek.md", "---\n---\nhello *space* **cowboy**!");
 
-            var d = _kotori.GetDocument("dev", "weformat", "_content/tv/rakosnicek.md");
+            var d = _kotori.GetDocument("dev", "weformat", "content/tv/rakosnicek.md");
             Assert.AreEqual("hello *space* **cowboy**!" + Environment.NewLine, d.Content);
 
-            var d2 = _kotori.GetDocument("dev", "weformat", "_content/tv/rakosnicek.md", null, Helpers.Enums.DocumentFormat.Html);
+            var d2 = _kotori.GetDocument("dev", "weformat", "content/tv/rakosnicek.md", null, Helpers.Enums.DocumentFormat.Html);
             Assert.AreEqual("<p>hello <em>space</em> <strong>cowboy</strong>!</p>" + Environment.NewLine, d2.Content);
         }
 
@@ -542,7 +542,7 @@ namespace KotoriCore.Tests
         public void UpdateDocument()
         {
             _kotori.CreateProject("dev", "udie", "Udie", null);
-            _kotori.CreateDocument("dev", "udie", "_content/x/a",
+            _kotori.CreateDocument("dev", "udie", "content/x/a",
                                   @"
 ---
 test: xxx
@@ -550,28 +550,28 @@ cute: !!bool true
 ---
 aloha everyone!
 ");
-            var d0 = _kotori.GetDocument("dev", "udie", "_content/x/a");
+            var d0 = _kotori.GetDocument("dev", "udie", "content/x/a");
             Assert.AreEqual(@"aloha everyone!".Trim(), d0.Content.Trim());
             var meta0 = (d0.Meta as JObject);
             Assert.AreEqual("xxx", meta0.Property("test").Value);
             Assert.AreEqual(JTokenType.Boolean, meta0["cute"].Type);
             Assert.AreEqual(true, meta0.Property("cute").Value);
 
-            _kotori.PartiallyUpdateDocument("dev", "udie", "_content/x/a", "---\ntest: zzz\n---\n");
-            var d1 = _kotori.GetDocument("dev", "udie", "_content/x/a");
+            _kotori.PartiallyUpdateDocument("dev", "udie", "content/x/a", "---\ntest: zzz\n---\n");
+            var d1 = _kotori.GetDocument("dev", "udie", "content/x/a");
             var meta1 = (d1.Meta as JObject);
             Assert.AreEqual(@"aloha everyone!".Trim(), d1.Content.Trim());
             Assert.AreEqual("zzz", meta1.Property("test").Value);
             Assert.AreEqual(JTokenType.Boolean, meta1["cute"].Type);
             Assert.AreEqual(true, meta1.Property("cute").Value);
 
-            _kotori.PartiallyUpdateDocument("dev", "udie", "_content/x/a", 
+            _kotori.PartiallyUpdateDocument("dev", "udie", "content/x/a", 
                                    @"---
 test: xxx
 cute: ~
 ---
 hi everyone!");
-            var d2 = _kotori.GetDocument("dev", "udie", "_content/x/a");
+            var d2 = _kotori.GetDocument("dev", "udie", "content/x/a");
             var meta2 = (d2.Meta as JObject);
             Assert.AreEqual(@"hi everyone!".Trim(), d2.Content.Trim());
             Assert.AreEqual(1, meta2.Properties().LongCount());
@@ -582,29 +582,29 @@ hi everyone!");
         public void DocumentVersions()
         {
             _kotori.CreateProject("dev", "vnum", "vnum", null);
-            _kotori.CreateDocument("dev", "vnum", "_content/x/a", "haha");
+            _kotori.CreateDocument("dev", "vnum", "content/x/a", "haha");
 
-            var d0 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
+            var d0 = _kotori.GetDocument("dev", "vnum", "content/x/a");
             Assert.AreEqual(0, d0.Version);
 
-            _kotori.PartiallyUpdateDocument("dev", "vnum", "_content/x/a",
+            _kotori.PartiallyUpdateDocument("dev", "vnum", "content/x/a",
                                    @"---
 test: zzz
 ---");
-            var d1 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
+            var d1 = _kotori.GetDocument("dev", "vnum", "content/x/a");
             Assert.AreEqual(1, d1.Version);
 
-            _kotori.UpdateDocument("dev", "vnum", "_content/x/a", "haha");
-            var d2 = _kotori.GetDocument("dev", "vnum", "_content/x/a");
+            _kotori.UpdateDocument("dev", "vnum", "content/x/a", "haha");
+            var d2 = _kotori.GetDocument("dev", "vnum", "content/x/a");
             Assert.AreEqual(2, d2.Version);
 
-            var versions = _kotori.GetDocumentVersions("dev", "vnum", "_content/x/a");
+            var versions = _kotori.GetDocumentVersions("dev", "vnum", "content/x/a");
             Assert.IsNotNull(versions);
             Assert.AreEqual(3, versions.Count());
 
-            var dd0 = _kotori.GetDocument("dev", "vnum", "_content/x/a", 0);
-            var dd1 = _kotori.GetDocument("dev", "vnum", "_content/x/a", 1);
-            var dd2 = _kotori.GetDocument("dev", "vnum", "_content/x/a", 2);
+            var dd0 = _kotori.GetDocument("dev", "vnum", "content/x/a", 0);
+            var dd1 = _kotori.GetDocument("dev", "vnum", "content/x/a", 1);
+            var dd2 = _kotori.GetDocument("dev", "vnum", "content/x/a", 2);
 
             Assert.AreEqual("haha", dd0.Content);
             Assert.AreEqual("haha", dd1.Content);
@@ -625,10 +625,10 @@ test: zzz
         public void DeleteDocumentVersions()
         {
             _kotori.CreateProject("dev", "vnum2", "vnum", null);
-            _kotori.CreateDocument("dev", "vnum2", "_content/x/a", "haha");
+            _kotori.CreateDocument("dev", "vnum2", "content/x/a", "haha");
 
             for (var i = 0; i < 5; i++)
-                _kotori.PartiallyUpdateDocument("dev", "vnum2", "_content/x/a", @"---
+                _kotori.PartiallyUpdateDocument("dev", "vnum2", "content/x/a", @"---
 test: zzz
 ---");
             
@@ -648,7 +648,7 @@ test: zzz
 
             Assert.AreEqual(6, versions.Count());
 
-            _kotori.DeleteDocument("dev", "vnum2", "_content/x/a");
+            _kotori.DeleteDocument("dev", "vnum2", "content/x/a");
 
             versions = repo.GetList(q);
 
@@ -659,26 +659,26 @@ test: zzz
         public void DraftAndNonDraft()
         {
             _kotori.CreateProject("dev", "drnodr", "Udie", null);
-            _kotori.CreateDocument("dev", "drnodr", "_content/x/_a", "hello");
+            _kotori.CreateDocument("dev", "drnodr", "content/x/_a", "hello");
 
-            var d0 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
+            var d0 = _kotori.GetDocument("dev", "drnodr", "content/x/a");
             Assert.IsNotNull(d0);
             Assert.AreEqual(true, d0.Draft);
-            Assert.AreEqual("_content/x/_a", d0.Filename);
+            Assert.AreEqual("content/x/_a", d0.Filename);
 
-            _kotori.UpdateDocument("dev", "drnodr", "_content/x/a", "hello");
-            var d1 = _kotori.GetDocument("dev", "drnodr", "_content/x/_2017-01-01-a");
+            _kotori.UpdateDocument("dev", "drnodr", "content/x/a", "hello");
+            var d1 = _kotori.GetDocument("dev", "drnodr", "content/x/_2017-01-01-a");
             Assert.IsNotNull(d1);
             Assert.AreEqual(false, d1.Draft);
             Assert.AreEqual(1, d1.Version);
-            Assert.AreEqual("_content/x/a", d1.Filename);
+            Assert.AreEqual("content/x/a", d1.Filename);
 
-            _kotori.UpdateDocument("dev", "drnodr", "_content/x/2017-01-01-a", "hello");
-            var d2 = _kotori.GetDocument("dev", "drnodr", "_content/x/a");
+            _kotori.UpdateDocument("dev", "drnodr", "content/x/2017-01-01-a", "hello");
+            var d2 = _kotori.GetDocument("dev", "drnodr", "content/x/a");
             Assert.IsNotNull(d2);
             Assert.AreEqual(false, d2.Draft);
             Assert.AreEqual(2, d2.Version);
-            Assert.AreEqual("_content/x/2017-01-01-a", d2.Filename);
+            Assert.AreEqual("content/x/2017-01-01-a", d2.Filename);
         }
 
         [TestMethod]
@@ -702,9 +702,9 @@ position: head programmer
 stars: !!int 3
 approved: !!bool false
 ---";
-            await _kotori.CreateDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml", c);
 
-            var doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
+            var doc = _kotori.GetDocument("dev", "mrdata", "data/newgame/girls.yaml?1");
             Assert.IsNotNull(doc);
             Assert.AreEqual(0, doc.Version);
             Assert.AreEqual(new JValue(5), doc.Meta.stars);
@@ -717,32 +717,32 @@ approved: !!bool true
 ---
 ";
 
-            await _kotori.UpdateDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?1", c);
-            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
+            await _kotori.UpdateDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml?1", c);
+            doc = _kotori.GetDocument("dev", "mrdata", "data/newgame/girls.yaml?1");
             Assert.IsNotNull(doc);
             Assert.AreEqual(1, doc.Version);
             Assert.AreEqual(new JValue(4), doc.Meta.stars);
 
-            var n = _kotori.CountDocuments("dev", "mrdata", "_data/newgame", null, false, false);
+            var n = _kotori.CountDocuments("dev", "mrdata", "data/newgame", null, false, false);
             Assert.AreEqual(3, n);
 
-            n = _kotori.CountDocuments("dev", "mrdata", "_data/newgame", "c.meta.stars <= 4", false, false);
+            n = _kotori.CountDocuments("dev", "mrdata", "data/newgame", "c.meta.stars <= 4", false, false);
             Assert.AreEqual(3, n);
 
-            var docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", 1, null, null, "c.meta.stars asc", false, false, null, Helpers.Enums.DocumentFormat.Html);
+            var docs = _kotori.FindDocuments("dev", "mrdata", "data/newgame", 1, null, null, "c.meta.stars asc", false, false, null, Helpers.Enums.DocumentFormat.Html);
             Assert.AreEqual(1, docs.Count());
             doc = docs.First();
             Assert.AreEqual(new JValue(3), doc.Meta.stars);
             Assert.AreEqual(new JValue("Umiko"), doc.Meta.girl);
 
-            _kotori.DeleteDocument("dev", "mrdata", "_data/newgame/girls.yaml?0");
+            _kotori.DeleteDocument("dev", "mrdata", "data/newgame/girls.yaml?0");
 
-            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+            docs = _kotori.FindDocuments("dev", "mrdata", "data/newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(2, docs.Count());
             Assert.AreEqual(new JValue("Nenecchi"), docs.First().Meta.girl);
-            Assert.AreEqual("_data/newgame/girls.yaml?0", docs.First().Identifier);
+            Assert.AreEqual("data/newgame/girls.yaml?0", docs.First().Identifier);
             Assert.AreEqual(new JValue("Umiko"), docs.Last().Meta.girl);
-            Assert.AreEqual("_data/newgame/girls.yaml?1", docs.Last().Identifier);
+            Assert.AreEqual("data/newgame/girls.yaml?1", docs.Last().Identifier);
 
             c = @"---
 girl: Umikox
@@ -751,9 +751,9 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            await _kotori.UpdateDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?1", c);
+            await _kotori.UpdateDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml?1", c);
 
-            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+            docs = _kotori.FindDocuments("dev", "mrdata", "data/newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(2, docs.Count());
             Assert.AreEqual(new JValue("Umikox"), docs.Last().Meta.girl);
 
@@ -763,13 +763,13 @@ position: programmer
 stars: !!int 4
 approved: !!bool true
 ---";
-            await _kotori.UpdateDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?1", c);
+            await _kotori.UpdateDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml?1", c);
 
-            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+            docs = _kotori.FindDocuments("dev", "mrdata", "data/newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(2, docs.Count());
             Assert.AreEqual(new JValue("Nenecchi v.2"), docs.Skip(1).First().Meta.girl);
 
-            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?1");
+            doc = _kotori.GetDocument("dev", "mrdata", "data/newgame/girls.yaml?1");
             Assert.IsNotNull(doc);
             Assert.AreEqual(new JValue("Nenecchi v.2"), doc.Meta.girl);
 
@@ -781,21 +781,21 @@ approved: !!bool true
 fake: no
 ---";
 
-            await _kotori.CreateDocumentAsync("dev", "mrdata", "_data/newgame/girls.yaml?-1", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml?-1", c);
 
-            docs = _kotori.FindDocuments("dev", "mrdata", "_data/newgame", null, null, null, "c.identifier", false, false, null);
+            docs = _kotori.FindDocuments("dev", "mrdata", "data/newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(3, docs.Count());
             Assert.AreEqual(new JValue("Momo"), docs.Last().Meta.girl);
             Assert.AreEqual(new JValue("no"), docs.Last().Meta.fake);
             Assert.AreEqual(0, docs.Last().Version);
 
-            _kotori.PartiallyUpdateDocument("dev", "mrdata", "_data/newgame/girls.yaml?2", @"---
+            _kotori.PartiallyUpdateDocument("dev", "mrdata", "data/newgame/girls.yaml?2", @"---
 stars: !!int 3
 approved: !!bool false
 fake: ~
 ---
 xxx");
-            doc = _kotori.GetDocument("dev", "mrdata", "_data/newgame/girls.yaml?2");
+            doc = _kotori.GetDocument("dev", "mrdata", "data/newgame/girls.yaml?2");
             Assert.AreEqual(1, doc.Version);
             Assert.AreEqual(new JValue("Momo"), doc.Meta.girl);
             Assert.AreEqual(new JValue(3), doc.Meta.stars);
@@ -819,7 +819,7 @@ stars: !!int 5
 approved: !!bool true
 ---";
 
-            _kotori.CreateDocument("dev", "data-fff", "_data/newgame/girls.yaml?1", c);
+            _kotori.CreateDocument("dev", "data-fff", "data/newgame/girls.yaml?1", c);
         }
 
         [TestMethod]
@@ -845,28 +845,28 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            _kotori.CreateDocument("dev", "data-fff-v2", "_data/newgame/girls.yaml?0", c);
-            var n = _kotori.CountDocuments("dev", "data-fff-v2", "_data/newgame", null, false, false);
+            _kotori.CreateDocument("dev", "data-fff-v2", "data/newgame/girls.yaml?0", c);
+            var n = _kotori.CountDocuments("dev", "data-fff-v2", "data/newgame", null, false, false);
             Assert.AreEqual(3, n);
 
             var c2 = "girl: Aoba";
-            _kotori.UpdateDocument("dev", "data-fff-v2", "_data/newgame/girls.yaml?0", c2);
+            _kotori.UpdateDocument("dev", "data-fff-v2", "data/newgame/girls.yaml?0", c2);
 
-            n = _kotori.CountDocuments("dev", "data-fff-v2", "_data/newgame", null, false, false);
+            n = _kotori.CountDocuments("dev", "data-fff-v2", "data/newgame", null, false, false);
             Assert.AreEqual(3, n);
 
-            var vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", "_data/newgame/girls.yaml?0");
+            var vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", "data/newgame/girls.yaml?0");
             Assert.AreEqual(2, vc.Count());
 
-            _kotori.CreateDocument("dev", "data-fff-v2", "_data/newgame/girls.yaml?3", c);
+            _kotori.CreateDocument("dev", "data-fff-v2", "data/newgame/girls.yaml?3", c);
 
-            n = _kotori.CountDocuments("dev", "data-fff-v2", "_data/newgame", null, false, false);
+            n = _kotori.CountDocuments("dev", "data-fff-v2", "data/newgame", null, false, false);
             Assert.AreEqual(6, n);
 
-            vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", "_data/newgame/girls.yaml?0");
+            vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", "data/newgame/girls.yaml?0");
             Assert.AreEqual(2, vc.Count());
 
-            _kotori.UpdateDocument("dev", "data-fff-v2", "_data/newgame/girls.yaml?0", c);
+            _kotori.UpdateDocument("dev", "data-fff-v2", "data/newgame/girls.yaml?0", c);
         }
 
         [TestMethod]
@@ -891,8 +891,8 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            _kotori.CreateDocument("dev", "data-woho", "_data/newgame/girls.yaml?-1", c);
-            var n = _kotori.CountDocuments("dev", "data-woho", "_data/newgame", null, false, false);
+            _kotori.CreateDocument("dev", "data-woho", "data/newgame/girls.yaml?-1", c);
+            var n = _kotori.CountDocuments("dev", "data-woho", "data/newgame", null, false, false);
             Assert.AreEqual(3, n);
         }
 
@@ -919,8 +919,8 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            _kotori.CreateDocument("dev", "data-woho2", "_data/newgame/girls.yaml?-1", c);
-            _kotori.DeleteDocument("dev", "data-woho2", "_data/newgame/girls.yaml");
+            _kotori.CreateDocument("dev", "data-woho2", "data/newgame/girls.yaml?-1", c);
+            _kotori.DeleteDocument("dev", "data-woho2", "data/newgame/girls.yaml");
         }
 
         [TestMethod]
@@ -946,8 +946,8 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            _kotori.CreateDocument("dev", "data-woho3", "_data/newgame/girls.yaml", c);
-            _kotori.DeleteDocument("dev", "data-woho3", "_data/newgame/girls.yaml?4");
+            _kotori.CreateDocument("dev", "data-woho3", "data/newgame/girls.yaml", c);
+            _kotori.DeleteDocument("dev", "data-woho3", "data/newgame/girls.yaml?4");
         }
 
         [TestMethod]
@@ -958,8 +958,8 @@ approved: !!bool false
             var c = @"---
 foo: bar
 ";
-            await _kotori.CreateDocumentAsync("dev", "mrdataf", "_data/newgame/girls.yaml", c);
-            var docs = _kotori.FindDocuments("dev", "mrdataf", "_data/newgame", null, null, null, null, false, false, null);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf", "data/newgame/girls.yaml", c);
+            var docs = _kotori.FindDocuments("dev", "mrdataf", "data/newgame", null, null, null, null, false, false, null);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual(new JValue("bar"), docs.First().Meta.foo);
         }
@@ -972,8 +972,8 @@ foo: bar
             var c = @"
 foo: bar
 ";
-            await _kotori.CreateDocumentAsync("dev", "mrdataf2", "_data/newgame/girls.yaml", c);
-            var docs = _kotori.FindDocuments("dev", "mrdataf2", "_data/newgame", null, null, null, null, false, false, null);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf2", "data/newgame/girls.yaml", c);
+            var docs = _kotori.FindDocuments("dev", "mrdataf2", "data/newgame", null, null, null, null, false, false, null);
             Assert.AreEqual(1, docs.Count());
             Assert.AreEqual(new JValue("bar"), docs.First().Meta.foo);
         }
@@ -987,7 +987,7 @@ foo: bar
             var c = @"---
 ---
 ";
-            await _kotori.CreateDocumentAsync("dev", "mrdataf3", "_data/newgame/girls.yaml", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf3", "data/newgame/girls.yaml", c);
         }
 
         [TestMethod]
@@ -1001,7 +1001,7 @@ foo: bar
 {}
 ]
 ";
-            await _kotori.CreateDocumentAsync("dev", "mrdataf4", "_data/newgame/girls.yaml", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf4", "data/newgame/girls.yaml", c);
         }
 
         [TestMethod]
@@ -1010,8 +1010,8 @@ foo: bar
         {
             var result = await _kotori.CreateProjectAsync("dev", "bad-bat", "Nenecchi", null);
 
-            var c = GetContent("_content/tv/2017-08-12-flip-flappers.md");
-            await _kotori.CreateDocumentAsync("dev", "bad-bat", "_content/tv/2007-02-32-flip-flappers.md", c);
+            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            await _kotori.CreateDocumentAsync("dev", "bad-bat", "content/tv/2007-02-32-flip-flappers.md", c);
         }
 
         [TestMethod]
@@ -1023,8 +1023,8 @@ foo: bar
 mr: x
 ---";
 
-            _kotori.CreateDocument("dev", "data-inv", "_data/newgame/2017-02-02-girls.yaml", c);
-            var d = _kotori.GetDocument("dev", "data-inv", "_data/newgame/2017-02-02-girls.yaml?0");
+            _kotori.CreateDocument("dev", "data-inv", "data/newgame/2017-02-02-girls.yaml", c);
+            var d = _kotori.GetDocument("dev", "data-inv", "data/newgame/2017-02-02-girls.yaml?0");
             Assert.AreEqual(DateTime.MinValue.Date, d.Date);
         }
 
@@ -1039,7 +1039,7 @@ $date: 2017-03-03
 $slug: haha
 ---";
 
-            _kotori.CreateDocument("dev", "data-inv2", "_data/newgame/2017-02-02-girls.yaml", c);
+            _kotori.CreateDocument("dev", "data-inv2", "data/newgame/2017-02-02-girls.yaml", c);
         }
 
         [TestMethod]
@@ -1056,8 +1056,8 @@ $slug: haha
 }
 ---";
 
-            _kotori.CreateDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml", c);
-            var d = _kotori.GetDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml");
+            _kotori.CreateDocument("dev", "alldata", "data/newgame/2017-02-02-girls.yaml", c);
+            var d = _kotori.GetDocument("dev", "alldata", "data/newgame/2017-02-02-girls.yaml");
             var meta = (d.Meta as JObject);
             Assert.AreEqual(3, meta.Properties().LongCount());
 
@@ -1066,8 +1066,8 @@ x: null
 y: null
 z: null
 ---";
-            _kotori.PartiallyUpdateDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml?0", @"");
-            d = _kotori.GetDocument("dev", "alldata", "_data/newgame/2017-02-02-girls.yaml");
+            _kotori.PartiallyUpdateDocument("dev", "alldata", "data/newgame/2017-02-02-girls.yaml?0", @"");
+            d = _kotori.GetDocument("dev", "alldata", "data/newgame/2017-02-02-girls.yaml");
             meta = (d.Meta as JObject);
             Assert.AreEqual(0, meta.Properties().LongCount());
         }
@@ -1084,28 +1084,28 @@ z: c
 ---
 hello";
 
-            _kotori.CreateDocument("dev", "alldata2", "_content/x/foo.md", c);
-            var d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
+            _kotori.CreateDocument("dev", "alldata2", "content/x/foo.md", c);
+            var d = _kotori.GetDocument("dev", "alldata2", "content/x/foo.md");
             var meta = (d.Meta as JObject);
             Assert.AreEqual(3, meta.Properties().LongCount());
             Assert.IsFalse(string.IsNullOrEmpty(d.Content));
 
-            _kotori.PartiallyUpdateDocument("dev", "alldata2", "_content/x/foo.md", @"---
+            _kotori.PartiallyUpdateDocument("dev", "alldata2", "content/x/foo.md", @"---
 x: ~
 y: ~
 z: ~
 ---
 .");
-            d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
+            d = _kotori.GetDocument("dev", "alldata2", "content/x/foo.md");
             meta = (d.Meta as JObject);
             Assert.AreEqual(0, meta.Properties().LongCount());
             Assert.AreEqual(".", d.Content.Trim());
 
-            _kotori.PartiallyUpdateDocument("dev", "alldata2", "_content/x/foo.md", @"---
+            _kotori.PartiallyUpdateDocument("dev", "alldata2", "content/x/foo.md", @"---
 yo: yeah
 x: ~
 ---");
-            d = _kotori.GetDocument("dev", "alldata2", "_content/x/foo.md");
+            d = _kotori.GetDocument("dev", "alldata2", "content/x/foo.md");
             meta = (d.Meta as JObject);
             Assert.AreEqual(1, meta.Properties().LongCount());
             Assert.AreEqual(".", d.Content.Trim());
@@ -1123,18 +1123,18 @@ r: null
 rr: ""nxull""
 ---";
 
-            _kotori.CreateDocument("dev", "cversions", "_content/x/foo", c);
-            _kotori.PartiallyUpdateDocument("dev", "cversions", "_content/x/foo", @"---
+            _kotori.CreateDocument("dev", "cversions", "content/x/foo", c);
+            _kotori.PartiallyUpdateDocument("dev", "cversions", "content/x/foo", @"---
 x: b
 ---");
-            var d = _kotori.GetDocument("dev", "cversions", "_content/x/foo");
+            var d = _kotori.GetDocument("dev", "cversions", "content/x/foo");
             var meta = (d.Meta as JObject);
             Assert.AreEqual(3, meta.Properties().LongCount());
             Assert.AreEqual(new JValue("b"), d.Meta.x);
             Assert.AreEqual(new JValue("33"), d.Meta.b);
             Assert.AreEqual(null, d.Meta.r);
 
-            var vers = _kotori.GetDocumentVersions("dev", "cversions", "_content/x/foo");
+            var vers = _kotori.GetDocumentVersions("dev", "cversions", "content/x/foo");
             Assert.AreEqual(2, vers.Count());
 
             var q = new DynamicQuery
@@ -1146,7 +1146,7 @@ x: b
                         entity = DocumentDb.DocumentVersionEntity,
                         instance = "dev",
                         projectId = Helpers.Router.ToKotoriUri("cversions", Helpers.Router.IdentifierType.Project).ToString(),
-                        documentId = Helpers.Router.ToKotoriUri("_content/x/foo", Helpers.Router.IdentifierType.Document).ToString()
+                        documentId = Helpers.Router.ToKotoriUri("content/x/foo", Helpers.Router.IdentifierType.Document).ToString()
                     }
                 );
 
@@ -1155,7 +1155,7 @@ x: b
 
             Assert.AreEqual(vers.Count(), documentVersions.Count());
 
-            _kotori.DeleteDocument("dev", "cversions", "_content/x/foo");
+            _kotori.DeleteDocument("dev", "cversions", "content/x/foo");
 
             documentVersions = repo.GetList(q);
             Assert.AreEqual(0, documentVersions.Count());
@@ -1173,18 +1173,18 @@ r: null
 rr: !!str nxull
 ---";
 
-            _kotori.CreateDocument("dev", "dversions", "_data/x/foo", c);
-            _kotori.PartiallyUpdateDocument("dev", "dversions", "_data/x/foo?0", @"---
+            _kotori.CreateDocument("dev", "dversions", "data/x/foo", c);
+            _kotori.PartiallyUpdateDocument("dev", "dversions", "data/x/foo?0", @"---
 x: b
 ---");
-            var d = _kotori.GetDocument("dev", "dversions", "_data/x/foo?0");
+            var d = _kotori.GetDocument("dev", "dversions", "data/x/foo?0");
             var meta = (d.Meta as JObject);
             Assert.AreEqual(3, meta.Properties().LongCount());
             Assert.AreEqual(new JValue("b"), d.Meta.x);
             Assert.AreEqual(new JValue("33"), d.Meta.b);
             Assert.AreEqual(null, d.Meta.r);
 
-            var vers = _kotori.GetDocumentVersions("dev", "dversions", "_data/x/foo?0");
+            var vers = _kotori.GetDocumentVersions("dev", "dversions", "data/x/foo?0");
             Assert.AreEqual(2, vers.Count());
 
             var q = new DynamicQuery
@@ -1196,7 +1196,7 @@ x: b
                         entity = DocumentDb.DocumentVersionEntity,
                         instance = "dev",
                         projectId = Helpers.Router.ToKotoriUri("dversions", Helpers.Router.IdentifierType.Project).ToString(),
-                        documentId = Helpers.Router.ToKotoriUri("_data/x/foo?0", Helpers.Router.IdentifierType.Data).ToString()
+                        documentId = Helpers.Router.ToKotoriUri("data/x/foo?0", Helpers.Router.IdentifierType.Data).ToString()
                     }
                 );
 
@@ -1205,7 +1205,7 @@ x: b
 
             Assert.AreEqual(vers.Count(), documentVersions.Count());
 
-            _kotori.DeleteDocument("dev", "dversions", "_data/x/foo?0");
+            _kotori.DeleteDocument("dev", "dversions", "data/x/foo?0");
 
             documentVersions = repo.GetList(q);
             Assert.AreEqual(0, documentVersions.Count());
@@ -1224,20 +1224,20 @@ x: b
 b: 34
 ---";
 
-            _kotori.CreateDocument("dev", "dsmart", "_data/x/foo", c);
-            _kotori.PartiallyUpdateDocument("dev", "dsmart", "_data/x/foo?1", @"---
+            _kotori.CreateDocument("dev", "dsmart", "data/x/foo", c);
+            _kotori.PartiallyUpdateDocument("dev", "dsmart", "data/x/foo?1", @"---
 b: 35
 ---");
-            var vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?0");
+            var vers = _kotori.GetDocumentVersions("dev", "dsmart", "data/x/foo?0");
             Assert.AreEqual(1, vers.Count());
-            vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?1");
+            vers = _kotori.GetDocumentVersions("dev", "dsmart", "data/x/foo?1");
             Assert.AreEqual(2, vers.Count());
 
-            _kotori.DeleteDocument("dev", "dsmart", "_data/x/foo?0");
-            var n = _kotori.CountDocuments("dev", "dsmart", "_data/x", null, false, false);
+            _kotori.DeleteDocument("dev", "dsmart", "data/x/foo?0");
+            var n = _kotori.CountDocuments("dev", "dsmart", "data/x", null, false, false);
             Assert.AreEqual(1, n);
 
-            vers = _kotori.GetDocumentVersions("dev", "dsmart", "_data/x/foo?0");
+            vers = _kotori.GetDocumentVersions("dev", "dsmart", "data/x/foo?0");
             Assert.AreEqual(2, vers.Count());
         }
 
@@ -1249,7 +1249,7 @@ b: 35
 
             var c = @"---";
 
-            _kotori.CreateDocument("dev", "nodata", "_data/x/foo", c);
+            _kotori.CreateDocument("dev", "nodata", "data/x/foo", c);
         }
 
         [TestMethod]
@@ -1260,7 +1260,7 @@ b: 35
 
             var c = @"---";
 
-            _kotori.CreateDocument("dev", "nodata2", "_data/x/foo?0", c);
+            _kotori.CreateDocument("dev", "nodata2", "data/x/foo?0", c);
         }
 
         [TestMethod]
@@ -1270,12 +1270,12 @@ b: 35
 
             var c = @"hello!";
 
-            _kotori.CreateDocument("dev", "auto-content", "_content/x/foo", c);
-            var dt = _kotori.GetDocumentType("dev", "auto-content", "_content/x");
+            _kotori.CreateDocument("dev", "auto-content", "content/x/foo", c);
+            var dt = _kotori.GetDocumentType("dev", "auto-content", "content/x");
             Assert.IsNotNull(dt);
 
-            _kotori.DeleteDocument("dev", "auto-content", "_content/x/foo");
-            dt = _kotori.GetDocumentType("dev", "auto-content", "_content/x");
+            _kotori.DeleteDocument("dev", "auto-content", "content/x/foo");
+            dt = _kotori.GetDocumentType("dev", "auto-content", "content/x");
 
             Assert.IsNotNull(dt);
         }
@@ -1289,12 +1289,12 @@ b: 35
             a: b
 ---";
 
-            _kotori.CreateDocument("dev", "auto-data", "_data/x/one/foo", c);
-            var dt = _kotori.GetDocumentType("dev", "auto-data", "_data/x");
+            _kotori.CreateDocument("dev", "auto-data", "data/x/one/foo", c);
+            var dt = _kotori.GetDocumentType("dev", "auto-data", "data/x");
             Assert.IsNotNull(dt);
 
-            _kotori.DeleteDocument("dev", "auto-data", "_data/x/one/foo?0");
-            dt = _kotori.GetDocumentType("dev", "auto-data", "_data/x");
+            _kotori.DeleteDocument("dev", "auto-data", "data/x/one/foo?0");
+            dt = _kotori.GetDocumentType("dev", "auto-data", "data/x");
 
             Assert.IsNotNull(dt);
         }
@@ -1310,13 +1310,13 @@ girl: Aoba
 ---
 Hello.
 ";
-            await _kotori.CreateDocumentAsync("dev", "exicon", "_content/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "exicon", "content/newgame/girls.md", c);
 
-            var doc = _kotori.GetDocument("dev", "exicon", "_content/newgame/girls.md");
+            var doc = _kotori.GetDocument("dev", "exicon", "content/newgame/girls.md");
             Assert.IsNotNull(doc);
             Assert.AreEqual(0, doc.Version);
 
-            await _kotori.CreateDocumentAsync("dev", "exicon", "_content/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "exicon", "content/newgame/girls.md", c);
         }
 
         [TestMethod]
@@ -1330,7 +1330,7 @@ girl: Aoba
 ---
 Hello.
 ";
-            await _kotori.UpdateDocumentAsync("dev", "exicon2", "_content/newgame/girls.md", c);
+            await _kotori.UpdateDocumentAsync("dev", "exicon2", "content/newgame/girls.md", c);
         }
 
         [TestMethod]
@@ -1343,7 +1343,7 @@ Hello.
 girl: Aoba
 ---
 ";
-            await _kotori.CreateDocumentAsync("dev", "exicond", "_data/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "exicond", "data/newgame/girls.md", c);
 
             c = @"---
 girl: Nene
@@ -1351,16 +1351,16 @@ girl: Nene
 girl: Umiko
 ---
 ";
-            await _kotori.CreateDocumentAsync("dev", "exicond", "_data/newgame/girls.md?-1", c);
-            var n = _kotori.CountDocuments("dev", "exicond", "_data/newgame", null, false, false);
+            await _kotori.CreateDocumentAsync("dev", "exicond", "data/newgame/girls.md?-1", c);
+            var n = _kotori.CountDocuments("dev", "exicond", "data/newgame", null, false, false);
             Assert.AreEqual(3, n);
 
-            await _kotori.CreateDocumentAsync("dev", "exicond", "_data/newgame/girls.md?3", c);
+            await _kotori.CreateDocumentAsync("dev", "exicond", "data/newgame/girls.md?3", c);
 
-            n = _kotori.CountDocuments("dev", "exicond", "_data/newgame", null, false, false);
+            n = _kotori.CountDocuments("dev", "exicond", "data/newgame", null, false, false);
             Assert.AreEqual(5, n);
 
-            await _kotori.CreateDocumentAsync("dev", "exicond", "_data/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "exicond", "data/newgame/girls.md", c);
         }
 
         [TestMethod]
@@ -1370,10 +1370,10 @@ girl: Umiko
             var result = await _kotori.CreateProjectAsync("dev", "f-a-i-l", "f-a-i-l", null);
 
             var c = @"girl: Aoba";
-            await _kotori.CreateDocumentAsync("dev", "f-a-i-l", "_data/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "f-a-i-l", "data/newgame/girls.md", c);
 
             c = @"girl: !!bool true";
-            await _kotori.CreateDocumentAsync("dev", "f-a-i-l", "_data/newgame/girls.md?-1", c);
+            await _kotori.CreateDocumentAsync("dev", "f-a-i-l", "data/newgame/girls.md?-1", c);
         }
 
         [TestMethod]
@@ -1386,13 +1386,13 @@ girl: Umiko
 girl: Aoba
 ---
 haha";
-            await _kotori.CreateDocumentAsync("dev", "f-a-i-l2", "_content/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "f-a-i-l2", "content/newgame/girls.md", c);
 
             c = @"---
 girl: !!int 6502
 ---
 haha";
-            await _kotori.UpdateDocumentAsync("dev", "f-a-i-l2", "_content/newgame/girls.md", c);
+            await _kotori.UpdateDocumentAsync("dev", "f-a-i-l2", "content/newgame/girls.md", c);
         }
 
         [TestMethod]
@@ -1405,18 +1405,18 @@ girl: Aoba
 cute: !!bool true
 ---
 haha";
-            await _kotori.CreateDocumentAsync("dev", "f", "_content/newgame/item0", c);
+            await _kotori.CreateDocumentAsync("dev", "f", "content/newgame/item0", c);
 
-            var dt = await _kotori.GetDocumentTypeAsync("dev", "f", "_content/newgame");
+            var dt = await _kotori.GetDocumentTypeAsync("dev", "f", "content/newgame");
             Assert.AreEqual(2, dt.Fields.Count());
 
             c = @"---
 girl: Nene
 ---
 haha";
-            await _kotori.CreateDocumentAsync("dev", "f", "_content/newgame/item1", c);
+            await _kotori.CreateDocumentAsync("dev", "f", "content/newgame/item1", c);
 
-            dt = await _kotori.GetDocumentTypeAsync("dev", "f", "_content/newgame");
+            dt = await _kotori.GetDocumentTypeAsync("dev", "f", "content/newgame");
             Assert.AreEqual(2, dt.Fields.Count());
 
             c = @"---
@@ -1424,14 +1424,14 @@ wonder: !!int 6592
 disaster: earthquake
 ---
 haha";
-            await _kotori.CreateDocumentAsync("dev", "f", "_content/newgame/item2", c);
+            await _kotori.CreateDocumentAsync("dev", "f", "content/newgame/item2", c);
 
-            dt = await _kotori.GetDocumentTypeAsync("dev", "f", "_content/newgame");
+            dt = await _kotori.GetDocumentTypeAsync("dev", "f", "content/newgame");
             Assert.AreEqual(4, dt.Fields.Count());
 
-            await _kotori.DeleteDocumentAsync("dev", "f", "_content/newgame/item0");
+            await _kotori.DeleteDocumentAsync("dev", "f", "content/newgame/item0");
 
-            dt = await _kotori.GetDocumentTypeAsync("dev", "f", "_content/newgame");
+            dt = await _kotori.GetDocumentTypeAsync("dev", "f", "content/newgame");
             Assert.AreEqual(3, dt.Fields.Count());
         }
 
@@ -1444,27 +1444,27 @@ haha";
 girl: Aoba
 ---
 ";
-            await _kotori.CreateDocumentAsync("dev", "trans001", "_data/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "trans001", "data/newgame/girls.md", c);
 
-            _kotori.CreateDocumentType("dev", "trans001", "_data/newgame", @"
+            _kotori.CreateDocumentType("dev", "trans001", "data/newgame", @"
 [
 { ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
 ]           
 ");
-            var transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "_data/newgame");
+            var transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "data/newgame");
 
             Assert.IsNotNull(transformations);
             Assert.AreEqual(1, transformations.Count());
             Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
 
-            _kotori.CreateDocumentType("dev", "trans001", "_data/newgame", @"
+            _kotori.CreateDocumentType("dev", "trans001", "data/newgame", @"
 - from: girl
   to: Girl2
   transformations:
   - trim
   - lowercase
 ");
-            transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "_data/newgame");
+            transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "data/newgame");
 
             Assert.IsNotNull(transformations);
             Assert.AreEqual(1, transformations.Count());
@@ -1480,29 +1480,29 @@ girl: Aoba
 //girl: Aoba
 //---
 //";
-//            _kotori.CreateDocumentType("dev", "trans001", "_data/newgame", @"
+//            _kotori.CreateDocumentType("dev", "trans001", "data/newgame", @"
 //[
 //{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
 //]           
 //");
             
-//            await _kotori.CreateDocumentAsync("dev", "trans001", "_data/newgame/girls.md", c);
+//            await _kotori.CreateDocumentAsync("dev", "trans001", "data/newgame/girls.md", c);
 
 
-//            var transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "_data/newgame");
+//            var transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "data/newgame");
 
 //            Assert.IsNotNull(transformations);
 //            Assert.AreEqual(1, transformations.Count());
 //            Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
 
-//            _kotori.CreateDocumentType("dev", "trans001", "_data/newgame", @"
+//            _kotori.CreateDocumentType("dev", "trans001", "data/newgame", @"
 //- from: girl
 //  to: Girl2
 //  transformations:
 //  - trim
 //  - lowercase
 //");
-        //    transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "_data/newgame");
+        //    transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "data/newgame");
 
         //    Assert.IsNotNull(transformations);
         //    Assert.AreEqual(1, transformations.Count());
@@ -1518,15 +1518,15 @@ girl: Aoba
 girl: "" Aoba ""
 ---
 ";
-            await _kotori.CreateDocumentAsync("dev", "trans002", "_data/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md", c);
 
-            _kotori.CreateDocumentType("dev", "trans002", "_data/newgame", @"
+            _kotori.CreateDocumentType("dev", "trans002", "data/newgame", @"
 [
 { ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
 ]           
 ");
-            await _kotori.UpdateDocumentAsync("dev", "trans002", "_data/newgame/girls.md?0", c);
-            var d = _kotori.GetDocument("dev", "trans002", "_data/newgame/girls.md?0");
+            await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?0", c);
+            var d = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?0");
 
             JObject metaObj = JObject.FromObject(d.Meta);
 
@@ -1543,16 +1543,16 @@ girl: "" Aoba ""
 girl: "" Aoba ""
 ---
 ";
-            await _kotori.CreateDocumentAsync("dev", "doctdel", "_data/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "doctdel", "data/newgame/girls.md", c);
 
-            var docType = _kotori.GetDocumentType("dev", "doctdel", "_data/newgame");
+            var docType = _kotori.GetDocumentType("dev", "doctdel", "data/newgame");
 
             Assert.IsNotNull(docType);
 
-            _kotori.DeleteDocument("dev", "doctdel", "_data/newgame/girls.md?0");
-            _kotori.DeleteDocumentType("dev", "doctdel", "_data/newgame");
+            _kotori.DeleteDocument("dev", "doctdel", "data/newgame/girls.md?0");
+            _kotori.DeleteDocumentType("dev", "doctdel", "data/newgame");
 
-            _kotori.GetDocumentType("dev", "doctdel", "_data/newgame");
+            _kotori.GetDocumentType("dev", "doctdel", "data/newgame");
         }
 
         static string GetContent(string path)

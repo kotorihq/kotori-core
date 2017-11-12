@@ -26,7 +26,7 @@ stars: !!int 3
 approved: !!bool false
 ---";
 
-            var yaml = new Documents.Data("_data/anime/girls.yaml", c);
+            var yaml = new Documents.Data("data/anime/girls.yaml", c);
             var docs = yaml.GetDocuments();
 
             Assert.AreEqual(3, docs.Count());
@@ -49,7 +49,7 @@ approved: !!bool false
 ""stars"": 3,
 ""approved"": false }]";
 
-            var json = new Documents.Data("_data/anime/girls.json", c);
+            var json = new Documents.Data("data/anime/girls.json", c);
             var docs = json.GetDocuments();
 
             Assert.AreEqual(3, docs.Count());
@@ -58,13 +58,13 @@ approved: !!bool false
         [TestMethod]
         public void ParsingMoreData()
         {
-            var d = new Documents.Data("_data/data", @"a: b
+            var d = new Documents.Data("data/data", @"a: b
 c: d            
 ");
             var docs = d.GetDocuments();
             Assert.AreEqual(1, docs.Count());
 
-            d = new Documents.Data("_data/data", @"---
+            d = new Documents.Data("data/data", @"---
 a: b
 c: d            
 ---

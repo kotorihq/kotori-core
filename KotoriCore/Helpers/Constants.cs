@@ -12,8 +12,8 @@ namespace KotoriCore.Helpers
         /// </summary>
         internal static readonly Dictionary<string, Enums.DocumentType> DocumentTypes = new Dictionary<string, Enums.DocumentType>
         {
-            { "_content", Enums.DocumentType.Content },
-            { "_data", Enums.DocumentType.Data }
+            { "content", Enums.DocumentType.Content },
+            { "data", Enums.DocumentType.Data }
         };
     }
 }

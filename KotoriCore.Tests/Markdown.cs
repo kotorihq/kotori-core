@@ -15,7 +15,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Invalid front matter was inappropriately accepted.")]
         public void InvalidFrontMatter()
         {
-            var md = new Documents.Markdown("_content/foo/bar.md",
+            var md = new Documents.Markdown("content/foo/bar.md",
 @"---
 name: Ami Kawashima (川嶋 亜美)",
 null
@@ -28,7 +28,7 @@ null
         [ExpectedException(typeof(KotoriDocumentException), "Invalid front matter was inappropriately accepted.")]
         public void InvalidFrontMatter2()
         {
-            var md = new Documents.Markdown("_content/foo/bar.md",
+            var md = new Documents.Markdown("content/foo/bar.md",
 @"---name: Ami Kawashima (川嶋 亜美)
 ---
 a",
@@ -44,11 +44,11 @@ null
             var c = @"hello
 space
 cowboy";
-            var md = new Documents.Markdown("_content/foo/bar.md", c, null);
+            var md = new Documents.Markdown("content/foo/bar.md", c, null);
 
             var result = md.Process();
 
-            Assert.AreEqual("_content/foo/bar.md", result.Identifier);
+            Assert.AreEqual("content/foo/bar.md", result.Identifier);
 
             var mdr = result as MarkdownResult;
 
@@ -71,7 +71,7 @@ bwh: { b: !!int 90, w: !!int 58, h: !!int 88 }
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/bar.md", all, null);
+            var md = new Documents.Markdown("content/foo/bar.md", all, null);
 
             var result = md.Process();
 
@@ -100,7 +100,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/bar.md", all, null);
+            var md = new Documents.Markdown("content/foo/bar.md", all, null);
 
             var result = md.Process();
 
@@ -126,7 +126,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/bar.md", all, null);
+            var md = new Documents.Markdown("content/foo/bar.md", all, null);
 
             var result = md.Process();
 
@@ -147,7 +147,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/2016-03-04-bar.md", all, null);
+            var md = new Documents.Markdown("content/foo/2016-03-04-bar.md", all, null);
 
             var result = md.Process();
 
@@ -167,7 +167,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/2016-03-04-bar.md", all, null);
+            var md = new Documents.Markdown("content/foo/2016-03-04-bar.md", all, null);
 
             var result = md.Process();
 
@@ -187,7 +187,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", all, null);
+            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", all, null);
 
             var result = md.Process();
 
@@ -280,7 +280,7 @@ $nenecchi: damn
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c, null);
+            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -298,7 +298,7 @@ aaa /// // /
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c, null);
+            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -313,7 +313,7 @@ $Slug: X
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c, null);
+            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -328,7 +328,7 @@ Slugie: X
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c, null);
+            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -343,7 +343,7 @@ Sakura_Nene: true
 ---
 hm
 ";
-            var md = new Documents.Markdown("_content/foo/_2016-03-04-bar.md", c, null);
+            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -359,7 +359,7 @@ hm
         public void NoFrontMatter()
         {
             var c = @"aloha";
-            var md = new Documents.Markdown("_content/foo/bar.md", c, null);
+            var md = new Documents.Markdown("content/foo/bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -372,7 +372,7 @@ hm
             var c = @"---
 foo: bar
 ---";
-            var md = new Documents.Markdown("_content/foo/bar.md", c, null);
+            var md = new Documents.Markdown("content/foo/bar.md", c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -388,7 +388,7 @@ Normalize: žLUťoučký!
 sort: čuník
 date: 2001-12-15T02:59:43.1Z
 ---";
-            var md = new Documents.Markdown("_content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+            var md = new Documents.Markdown("content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
 - from: foo
   to: foo2
   transformations:
@@ -430,7 +430,7 @@ date: 2001-12-15T02:59:43.1Z
             var c = @"---
 foo: "" BAR ""
 ---";
-            var md = new Documents.Markdown("_content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+            var md = new Documents.Markdown("content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
 - from: $slug
   to: foo2
   transformations:
@@ -447,7 +447,7 @@ foo: "" BAR ""
             var c = @"---
 foo: "" BAR ""
 ---";
-            var md = new Documents.Markdown("_content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+            var md = new Documents.Markdown("content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
 - from: foo2
   to: $slug
   transformations:
@@ -464,7 +464,7 @@ foo: "" BAR ""
             var c = @"---
 foo: "" x ""
 ---";
-            var md = new Documents.Markdown("_content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+            var md = new Documents.Markdown("content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
 - from: foo
   to: $slug
   transformations:

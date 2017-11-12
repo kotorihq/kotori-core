@@ -16,8 +16,9 @@ namespace KotoriCore.Documents
         readonly string _identifier;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Documents.Data.Data"/> class.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Documents.Data"/> class.
         /// </summary>
+        /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
         public Data(string identifier, string content)
         {
