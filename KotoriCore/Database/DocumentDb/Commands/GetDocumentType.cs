@@ -34,8 +34,7 @@ namespace KotoriCore.Database.DocumentDb
                 (
                     new Uri(docType.Identifier).ToKotoriIdentifier(Router.IdentifierType.DocumentType),
                     docType.Type,
-                    docType.Indexes.Select(i => i.From),
-                    docType.Transformations
+                    docType.Indexes.Select(i => i.From)
                 )
             );
         }

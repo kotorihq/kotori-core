@@ -32,7 +32,15 @@ namespace KotoriCore.Database.DocumentDb
 
             var documentTypes = await GetDocumentTypesAsync(q);
 
-            var simpleDocumentTypes = documentTypes.Select(p => new SimpleDocumentType(new Uri(p.Identifier).ToKotoriIdentifier(Router.IdentifierType.DocumentType), p.Type, p.Indexes.Select(i => i.From), p.Transformations));
+            var simpleDocumentTypes = documentTypes.Select
+            (
+            p => new SimpleDocumentType
+            (
+            new Uri(p.Identifier).ToKotoriIdentifier(Router.IdentifierType.DocumentType),
+            p.Type,
+            p.Indexes.Select(i => i.From)
+            )
+            );
 
             return new CommandResult<SimpleDocumentType>(simpleDocumentTypes);
         }
