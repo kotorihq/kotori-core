@@ -121,7 +121,7 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual(1, projects.Count());
 
-            var c = GetContent("content/movie/matrix.md");
+            var c = GetContent(RawDocument.Matrix);
             await _kotori.CreateDocumentAsync("dev", "nenecchi/stable", "content/movie/matrix.md", c);
 
             var d = await _kotori.GetDocumentAsync("dev", "nenecchi/stable", "content/movie/matrix.md");
@@ -147,7 +147,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dupe", "Nenecchi", null);
 
-            var c = GetContent("content/movie/matrix.md");
+            var c = GetContent(RawDocument.Matrix);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", "content/movie2/matrix.md", c);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", "content/movie3/matrix.md", c);
         }
@@ -157,10 +157,10 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-05-06-flying-witch.md");
+            var c = GetContent(RawDocument.FlyingWitch);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-find", "content/tv/2017-05-06-flying-witch.md", c);
 
-            c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-find", "content/tv/2017-08-12-flip-flappers.md", c);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-find", "content/tv", 1, null, null, null, false, false, null);
@@ -204,7 +204,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-hash", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witch.md", c);
 
             var resultok = await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witchx.md", c);
@@ -220,10 +220,10 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-del", "content/tv/2017-05-06-flip-flappers.md", c);
 
-            c = GetContent("content/tv/2017-05-06-flying-witch.md");
+            c = GetContent(RawDocument.FlyingWitch);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-del", "content/tv/2017-05-06-flying-witch.md", c);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-del", "content/tv/", null, null, null, null, false, false, null);
@@ -253,10 +253,10 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-count", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-count", "content/tv/2017-05-06-flip-flappers.md", c);
 
-            c = GetContent("content/tv/2017-05-06-flying-witch.md");
+            c = GetContent(RawDocument.FlyingWitch);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-count", "content/tv/2017-05-06-flying-witch.md", c);
 
             var docs = _kotori.CountDocuments("dev", "nenecchi-count", "content/tv/", null, false, false);
@@ -272,10 +272,10 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-drafts", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-drafts", "content/tv/2037-05-06-flip-flappers.md", c);
 
-            c = GetContent("content/tv/2017-05-06-flying-witch.md");
+            c = GetContent(RawDocument.FlyingWitch);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-drafts", "content/tv/_2017-05-06-flying-witch.md", c);
 
             var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", "content/tv/2037-05-06-flip-flappers.md");
@@ -303,7 +303,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dn", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-dn", "content/tv/2117-05-06-flip-flappers.md", c);
 
             await _kotori.GetDocumentAsync("dev", "nenecchi-dn", "content/tv/hm/2217-05-06-flip-flappers.md");
@@ -315,7 +315,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-dty", "content/tv/2117-05-06-flip-flappers.md", c);
 
             var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty", "content/tvx/");
@@ -326,7 +326,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty2", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-dty2", "content/tv/2117-05-06-flip-flappers.md", c);
 
             var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty2", "content/tv");
@@ -349,7 +349,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "doctypes", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "doctypes", "content/tv/2007-05-06-flip-flappers.md", c);
             await _kotori.CreateDocumentAsync("dev", "doctypes", "content/tv/_2007-05-07-flip-flappers2.md", c);
             await _kotori.CreateDocumentAsync("dev", "doctypes", "content/tv2/2007-05-06-aflip-flappers.md", c);
@@ -368,7 +368,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "immortal", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "immortal", "content/tv/2007-05-06-flip-flappers.md", c);
             await _kotori.DeleteProjectAsync("dev", "immortal");
         }
@@ -378,7 +378,7 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.CreateProjectAsync("dev", "slugdraft", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
 
-            var c = GetContent("content/movie/matrix.md");
+            var c = GetContent(RawDocument.Matrix);
             await _kotori.CreateDocumentAsync("dev", "slugdraft", "content/movie/_matrix.md", c);
 
             var d = await _kotori.GetDocumentAsync("dev", "slugdraft", "content/movie/_matrix.md");
@@ -1010,7 +1010,7 @@ foo: bar
         {
             var result = await _kotori.CreateProjectAsync("dev", "bad-bat", "Nenecchi", null);
 
-            var c = GetContent("content/tv/2017-08-12-flip-flappers.md");
+            var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "bad-bat", "content/tv/2007-02-32-flip-flappers.md", c);
         }
 
@@ -1555,11 +1555,81 @@ girl: "" Aoba ""
             _kotori.GetDocumentType("dev", "doctdel", "data/newgame");
         }
 
-        static string GetContent(string path)
+        enum RawDocument
         {
-            var wc = new WebClient();
-            var content = wc.DownloadString($"https://raw.githubusercontent.com/kotorihq/kotori-sample-data/master/{path}");
-            return content;
+            Matrix,
+            FlyingWitch,
+            FlipFlappers
+        }
+
+        static string GetContent(RawDocument raw)
+        {
+            switch(raw)
+            {
+                case RawDocument.Matrix:
+                    return @"---
+title: The Matrix
+$date: 2017-03-03
+rating: !!int 10
+from: !!int 1999
+imdb: http://www.imdb.com/title/tt5621006
+---
+
+## 0101000010101010010101 and btw rating is {{rating}} for {{title}}
+
+***
+
+**Thomas A. Anderson** is a man living two lives. By day he is an average computer programmer and by night a hacker known as Neo. Neo has always questioned his reality, but the truth is far beyond his imagination. Neo finds himself targeted by the police when he is contacted by Morpheus, a legendary computer hacker branded a terrorist by the government. Morpheus awakens Neo to the real world, a ravaged wasteland where most of humanity have been captured by a race of machines that live off of the humans' body heat and electrochemical energy and who imprison their minds within an artificial reality known as the Matrix. As a rebel against the machines, Neo must return to the Matrix and confront the agents: super-powerful computer programs devoted to snuffing out Neo and the entire human rebellion.";
+
+                case RawDocument.FlyingWitch:
+                    return @"---
+title: Flying Witch
+altTitles: ['ふらいんぐうぃっち']
+$date: 2017-05-06
+$slug: flying-witch-2016 
+rating: !!int 9
+from: !!int 2016
+categories: ['Anime', 'Slice of Life', 'Comedy', 'Supernatural', 'Magic', 'Shounen']
+imdb: http://www.imdb.com/title/tt5621006
+trakt: https://trakt.tv/shows/flying-witch
+mal: https://myanimelist.net/anime/31376/Flying_Witch
+---
+
+![{{title}}](http://kotori/{{slug}}/title.jpg)
+
+## That's a funny one, rated {{rating}} / 10
+
+***
+
+In the witches' tradition, when a practitioner turns 15, they must become independent and leave their home to study witchcraft. Makoto Kowata is one such apprentice witch who leaves her parents' home in Yokohama in pursuit of knowledge and training. Along with her companion Chito, a black cat familiar, they embark on a journey to Aomori, a region favored by witches due to its abundance of nature and affinity with magic. They begin their new life by living with Makoto's second cousins, Kei Kuramoto and his little sister Chinatsu.
+
+While Makoto may seem to be attending high school like any other teenager, her whimsical and eccentric involvement with witchcraft sets her apart from others her age. From her encounter with an anthropomorphic dog fortune teller to the peculiar magic training she receives from her older sister Akane, Makoto's peaceful everyday life is filled with the idiosyncrasies of witchcraft that she shares with her friends and family.
+";
+                case RawDocument.FlipFlappers:
+                    return @"---
+title: Flip Flappers
+altTitles: ['フリップフラッパーズ']
+rating: !!int 8
+from: !!int 2016
+categories: ['Anime', 'Sci-Fi', 'Comedy']
+imdb: http://www.imdb.com/title/tt6139566
+trakt: https://trakt.tv/shows/flip-flappers
+mal: https://myanimelist.net/anime/32979/Flip_Flappers
+---
+
+![{{title}}](http://kotori/{{slug}}/title.jpg)
+
+## That's funny one as well
+
+***
+
+Cocona is an average middle schooler living with her grandmother. And she who has yet to decide a goal to strive for, soon met a strange girl named Papika who invites her to an organization called Flip Flap.
+
+Dragged along by the energetic stranger, Cocona finds herself in the world of Pure Illusion—a bizarre alternate dimension—helping Papika look for crystal shards. Upon completing their mission, Papika and Cocona are sent to yet another world in Pure Illusion. As a dangerous creature besets them, the girls use their crystals to transform into magical girls: Cocona into Pure Blade, and Papika into Pure Barrier. But as they try to defeat the creature before them, three others with powers from a rival organization enter the fray and slay the creature, taking with them a fragment left behind from its body. Afterward, the girls realize that to stand a chance against their rivals and the creatures in Pure Illusion, they must learn to work together and synchronize their feelings in order to transform more effectively.";
+
+                default:
+                    throw new Exception("Unknown raw document.");
+            }
         }
     }
 }
