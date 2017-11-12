@@ -16,9 +16,9 @@ namespace KotoriCore.Commands
         public readonly string Name;
 
         /// <summary>
-        /// The identifier.
+        /// The project identifier.
         /// </summary>
-        public readonly string Identifier;
+        public readonly string ProjectId;
 
         /// <summary>
         /// Gets or sets the project keys.
@@ -34,14 +34,14 @@ namespace KotoriCore.Commands
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CreateProject"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="projectId">Project identifier.</param>
         /// <param name="name">Name.</param>
         /// <param name="projectKeys">Project keys.</param>
-        public CreateProject(string instance, string identifier, string name, IEnumerable<ProjectKey> projectKeys)
+        public CreateProject(string instance, string projectId, string name, IEnumerable<ProjectKey> projectKeys)
         {
             Instance = instance;
             Name = name;
-            Identifier = identifier;
+            ProjectId = projectId;
             ProjectKeys = projectKeys ?? new List<ProjectKey>();
         }
 
@@ -57,8 +57,8 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(Name))
                 yield return new ValidationResult("Name must be set.");
             
-            if (string.IsNullOrEmpty(Identifier))
-                yield return new ValidationResult("Identifier must be set.");
+            if (string.IsNullOrEmpty(ProjectId))
+                yield return new ValidationResult("Project Id must be set.");
 
             if (ProjectKeys?.Any(x => string.IsNullOrEmpty(x.Key)) == true)
                 yield return new ValidationResult("All project keys must be set.");
