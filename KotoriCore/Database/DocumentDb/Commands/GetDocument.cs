@@ -13,7 +13,7 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<SimpleDocument>> HandleAsync(GetDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
-            var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var documentTypeUri = command.DocumentId.ToKotoriUri(Router.IdentifierType.DocumentType);
             var docType = documentTypeUri.ToDocumentType();
 
             var project = await FindProjectAsync(command.Instance, projectUri);
@@ -25,16 +25,16 @@ namespace KotoriCore.Database.DocumentDb
                 (
                     command.Instance,
                     projectUri,
-                    command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data),
+                    command.DocumentId.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data),
                     command.Version
                 );
 
             if (d == null)
             {
                 if (command.Version.HasValue)
-                    throw new KotoriDocumentException(command.Identifier, "Document version not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                    throw new KotoriDocumentException(command.DocumentId, "Document version not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
                 
-                throw new KotoriDocumentException(command.Identifier, "Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriDocumentException(command.DocumentId, "Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
             }
             
             return new CommandResult<SimpleDocument>
