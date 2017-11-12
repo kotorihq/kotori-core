@@ -67,6 +67,12 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public dynamic Meta { get; set; }
 
         /// <summary>
+        /// Gets or sets the original meta.
+        /// </summary>
+        /// <value>The original meta.</value>
+        public dynamic OriginalMeta { get; set; }
+
+        /// <summary>
         /// Gets or sets the content.
         /// </summary>
         /// <value>The content.</value>
@@ -123,13 +129,14 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="hash">Hash.</param>
         /// <param name="slug">Slug.</param>
+        /// <param name="originalMeta">Original meta.</param>
         /// <param name="meta">Meta.</param>
         /// <param name="content">Content.</param>
         /// <param name="date">Date.</param>
         /// <param name="draft">If set to <c>true</c> draft.</param>
         /// <param name="version">Version.</param>
         /// <param name="filename">Filename.</param>
-        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic meta, string content, DateTime? date, bool draft, long version, string filename)
+        public Document(string instance, string projectId, string identifier, string documentTypeId, string hash, string slug, dynamic originalMeta, dynamic meta, string content, DateTime? date, bool draft, long version, string filename)
         {
             Instance = instance;
             ProjectId = projectId;
@@ -138,6 +145,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Hash = hash;
             Slug = slug;
             Meta = meta;
+            OriginalMeta = originalMeta;
             Content = content;
             Date = date.HasValue ? new Stamp(date.Value) : null;
             Modified = new Stamp();

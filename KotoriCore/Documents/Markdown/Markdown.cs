@@ -168,7 +168,10 @@ namespace KotoriCore.Documents
         void ProcessMeta(MarkdownResult result, Enums.DocumentType documentType)
         {
             var expando = new ExpandoObject();
+            var originalExpando = new ExpandoObject();
+
             IDictionary<string, object> dictionary = expando;
+            IDictionary<string, object> originalDictionary = originalExpando;
 
             JObject metaObj = null;
 
@@ -228,6 +231,12 @@ namespace KotoriCore.Documents
                     }
                 }
 
+                // set original meta
+                foreach(var key in dictionary.Keys)
+                {
+                    originalDictionary.Add(key, dictionary[key]);
+                }
+
                 if (_transformation != null)
                 {
                     foreach(var t in _transformation.Transformations)
@@ -278,6 +287,7 @@ namespace KotoriCore.Documents
                 result.Slug = Identifier.ToSlug(null);
             }
 
+            result.OriginalMeta = originalExpando;
             result.Meta = expando;
         }
 

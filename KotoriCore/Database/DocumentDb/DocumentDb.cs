@@ -142,7 +142,7 @@ namespace KotoriCore.Database.DocumentDb
             throw new KotoriException(message);
         }
 
-        async Task<Entities.Document> FindDocumentByIdAsync(string instance, Uri projectId, Uri documentId, long? version)
+        internal async Task<Entities.Document> FindDocumentByIdAsync(string instance, Uri projectId, Uri documentId, long? version)
         {
             // get actual version
             if (version == null)
@@ -193,6 +193,7 @@ namespace KotoriCore.Database.DocumentDb
                     documentVersion.DocumentTypeId,
                     documentVersion.Hash,
                     documentVersion.Document.Slug,
+                    documentVersion.Document.OriginalMeta,
                     documentVersion.Document.Meta,
                     documentVersion.Document.Content,
                     documentVersion.Document.Date == null ? (DateTime?)null : documentVersion.Document.Date.DateTime,

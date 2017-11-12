@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using KotoriCore.Database.DocumentDb;
 using Newtonsoft.Json;
+using KotoriCore.Configurations;
 
 namespace KotoriCore.Tests
 {
@@ -21,6 +22,7 @@ namespace KotoriCore.Tests
     {
         Kotori _kotori;
         Connection _con;
+        DocumentDb _documentDb;
 
         [TestInitialize]
         public async Task Init()
@@ -41,6 +43,12 @@ namespace KotoriCore.Tests
                     appSettings["Kotori:DocumentDb:Collection"]
                 );
 
+            _documentDb = new DocumentDb(new DocumentDbConfiguration { Endpoint = appSettings["Kotori:DocumentDb:Endpoint"],
+                AuthorizationKey = appSettings["Kotori:DocumentDb:AuthorizationKey"], 
+                Database = appSettings["Kotori:DocumentDb:Database"],
+                Collection = appSettings["Kotori:DocumentDb:Collection"]
+            });
+                                    
             _con.CreateCollection();
 
             try
@@ -1471,43 +1479,6 @@ girl: Aoba
             Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
         }
 
-//        [TestMethod]
-//        public async Task CreateAndGetDocumentTypeTransformations2()
-//        {
-//            var result = await _kotori.CreateProjectAsync("dev", "trans001", "Data", null);
-
-//            var c = @"---
-//girl: Aoba
-//---
-//";
-//            _kotori.CreateDocumentType("dev", "trans001", "data/newgame", @"
-//[
-//{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
-//]           
-//");
-            
-//            await _kotori.CreateDocumentAsync("dev", "trans001", "data/newgame/girls.md", c);
-
-
-//            var transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "data/newgame");
-
-//            Assert.IsNotNull(transformations);
-//            Assert.AreEqual(1, transformations.Count());
-//            Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
-
-//            _kotori.CreateDocumentType("dev", "trans001", "data/newgame", @"
-//- from: girl
-//  to: Girl2
-//  transformations:
-//  - trim
-//  - lowercase
-//");
-        //    transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", "data/newgame");
-
-        //    Assert.IsNotNull(transformations);
-        //    Assert.AreEqual(1, transformations.Count());
-        //    Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
-        //}
 
         [TestMethod]
         public async Task DocumentTransformations()
@@ -1516,14 +1487,16 @@ girl: Aoba
 
             var c = @"---
 girl: "" Aoba ""
+module: "" foo ""
 ---
 ";
             await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md", c);
 
             _kotori.CreateDocumentType("dev", "trans002", "data/newgame", @"
 [
-{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
-]           
+{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] },
+{ ""from"": ""module"", ""to"": ""module"", ""transformations"": [ ""trim"", ""uppercase"" ] }
+]
 ");
             await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?0", c);
             var d = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?0");
@@ -1531,6 +1504,17 @@ girl: "" Aoba ""
             JObject metaObj = JObject.FromObject(d.Meta);
 
             Assert.AreEqual(new JValue("aoba"), metaObj["girl2"]);
+            Assert.AreEqual(new JValue("FOO"), metaObj["module"]);
+
+            var dd = await _documentDb.FindDocumentByIdAsync("dev", new Uri("kotori://trans002/"), new Uri("kotori://data/newgame/girls.md?0"), null);
+
+            Assert.IsNotNull(dd);
+
+            JObject originalObj = JObject.FromObject(dd.OriginalMeta);
+
+            Assert.AreEqual(new JValue(" Aoba "), originalObj["girl"]);
+            Assert.AreEqual(new JValue(" foo "), originalObj["module"]);
+            Assert.IsNull(originalObj["girl2"]);
         }
 
         [TestMethod]

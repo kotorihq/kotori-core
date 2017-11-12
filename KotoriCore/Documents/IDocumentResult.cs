@@ -21,6 +21,12 @@ namespace KotoriCore.Documents
         Enums.FrontMatterType FrontMatterType { get; }
 
         /// <summary>
+        /// Gets or sets the original meta.
+        /// </summary>
+        /// <value>The original meta.</value>
+        dynamic OriginalMeta { get; }
+
+        /// <summary>
         /// Gets or sets the meta.
         /// </summary>
         /// <value>The meta.</value>

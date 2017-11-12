@@ -68,6 +68,7 @@ namespace KotoriCore.Database.DocumentDb
                     documentTypeUri.ToString(),
                     documentResult.Hash,
                     documentResult.Slug,
+                    documentResult.OriginalMeta,
                     documentResult.Meta,
                     documentResult.Content,
                     documentResult.Date,

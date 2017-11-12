@@ -15,6 +15,12 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public string Slug { get; set; }
 
         /// <summary>
+        /// Gets or sets the original meta.
+        /// </summary>
+        /// <value>The original meta.</value>
+        public dynamic OriginalMeta { get; set; }
+
+        /// <summary>
         /// Gets or sets the meta.
         /// </summary>
         /// <value>The meta.</value>
@@ -50,28 +56,36 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.DocumentSnapshot"/> class.
         /// </summary>
         /// <param name="slug">Slug.</param>
+        /// <param name="originalMeta">Original meta.</param>
         /// <param name="meta">Meta.</param>
         /// <param name="content">Content.</param>
         /// <param name="date">Date.</param>
         /// <param name="draft">If set to <c>true</c> draft.</param>
-        public DocumentSnapshot(string slug, dynamic meta, string content, DateTime? date, bool draft)
+        public DocumentSnapshot(string slug, dynamic originalMeta, dynamic meta, string content, DateTime? date, bool draft)
         {
             Slug = slug;
+            OriginalMeta = originalMeta;
             Meta = meta;
             Content = content;
             Date = date.HasValue ? new Stamp(date.Value) : null;
             Draft = draft;
         }
 
-        public static implicit operator DocumentSnapshot(Entities.Document d)
+        /// <summary>
+        /// Implicitly converts document to document snapshot.
+        /// </summary>
+        /// <returns>The document snapshot.</returns>
+        /// <param name="document">Document.</param>
+        public static implicit operator DocumentSnapshot(Document document)
         {
             var ds = new DocumentSnapshot
                 (
-                    d.Slug,
-                    d.Meta,
-                    d.Content,
-                    d.Date == null ? (DateTime?)null : d.Date.DateTime,
-                    d.Draft
+                    document.Slug,
+                    document.OriginalMeta,
+                    document.Meta,
+                    document.Content,
+                    document.Date == null ? (DateTime?)null : document.Date.DateTime,
+                    document.Draft
                 );
 
             return ds;

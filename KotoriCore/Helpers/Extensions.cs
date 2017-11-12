@@ -87,11 +87,14 @@ namespace KotoriCore.Helpers
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
 
-            var c = (result.Content?.ToString() ?? string.Empty) + 
+            var c = (result.Content?.ToString() ?? string.Empty) +
                 (result.Date == null ? "(none)" : result.Date.Value.ToEpoch().ToString()) +
                 (result.Slug ?? "(none)") +
                 (result.Identifier ?? "(none)");
 
+            if (result.OriginalMeta != null)
+                c += JsonConvert.SerializeObject(result.OriginalMeta);
+            
             if (result.Meta != null)
                 c += JsonConvert.SerializeObject(result.Meta);
 

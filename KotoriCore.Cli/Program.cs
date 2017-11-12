@@ -59,17 +59,14 @@ namespace KotoriCore.Cli
             {
                 // --- CODE HERE --
 
+                var result = await _kotori.CreateProjectAsync("dev", "trans002", "Data", null);
+
                 var c = @"---
-foo: "" BAR ""
----";
-                var md = new Documents.Markdown("_content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
-- from: foo
-  to: foo2
-  transformations:
-  - trim
-  - lowercase
-"));
-                var result = md.Process();
+girl: "" Aoba ""
+---
+";
+                await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md", c);
+                c += "foo";
 
                 // --- CODE HERE --
             }
