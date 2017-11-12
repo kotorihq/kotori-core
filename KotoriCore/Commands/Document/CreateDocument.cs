@@ -9,22 +9,22 @@ namespace KotoriCore.Commands
     public class CreateDocument : Command
     {
         /// <summary>
-        /// Gets the instance.
+        /// The instance.
         /// </summary>
         public readonly string Instance;
 
         /// <summary>
-        /// Gets the project identifier.
+        /// The project identifier.
         /// </summary>
         public readonly string ProjectId;
 
         /// <summary>
-        /// Gets the identifier.
+        /// The document identifier.
         /// </summary>
-        public readonly string Identifier;
+        public readonly string DocumentId;
 
         /// <summary>
-        /// Gets the content.
+        /// The content.
         /// </summary>
         public readonly string Content;
 
@@ -39,14 +39,14 @@ namespace KotoriCore.Commands
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <param name="dataMode">If set to <c>true</c> data mode.</param>
-        public CreateDocument(string instance, string projectId, string identifier, string content, bool dataMode = false)
+        public CreateDocument(string instance, string projectId, string documentId, string content, bool dataMode = false)
         {
             Instance = instance;
             ProjectId = projectId;
-            Identifier = identifier;
+            DocumentId = documentId;
             Content = content;
             DataMode = dataMode;
         }
@@ -63,8 +63,8 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Project Id must be set.");
 
-            if (string.IsNullOrEmpty(Identifier))
-                yield return new ValidationResult("Identifier must be set.");
+            if (string.IsNullOrEmpty(DocumentId))
+                yield return new ValidationResult("Document Id must be set.");
 
             if (string.IsNullOrEmpty(Content))
                 yield return new ValidationResult("Content must be set.");
