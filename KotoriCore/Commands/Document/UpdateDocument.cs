@@ -19,9 +19,9 @@ namespace KotoriCore.Commands
         public readonly string ProjectId;
 
         /// <summary>
-        /// Gets the identifier.
+        /// The document identifier.
         /// </summary>
-        public readonly string Identifier;
+        public readonly string DocumentId;
 
         /// <summary>
         /// Gets the content.
@@ -39,14 +39,14 @@ namespace KotoriCore.Commands
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
-        /// <param name="dataMode">If set to <c>true</c> data mode.</param>
-        public UpdateDocument(string instance, string projectId, string identifier, string content, bool dataMode = false)
+        /// <param name="dataMode">If set to <c>true</c> data mode. Internal usage only.</param>
+        public UpdateDocument(string instance, string projectId, string documentId, string content, bool dataMode = false)
         {
             Instance = instance;
             ProjectId = projectId;
-            Identifier = identifier;
+            DocumentId = documentId;
             Content = content;
             DataMode = dataMode;
         }
@@ -63,7 +63,7 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Project Id must be set.");
 
-            if (string.IsNullOrEmpty(Identifier))
+            if (string.IsNullOrEmpty(DocumentId))
                 yield return new ValidationResult("Identifier must be set.");
 
             if (string.IsNullOrEmpty(Content))

@@ -20,9 +20,9 @@ namespace KotoriCore.Database.DocumentDb
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
             
-            var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var documentTypeUri = command.DocumentId.ToKotoriUri(Router.IdentifierType.DocumentType);
             var docType = documentTypeUri.ToDocumentType();
-            var documentUri = command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
+            var documentUri = command.DocumentId.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
 
             long? idx = null;
 
@@ -36,24 +36,24 @@ namespace KotoriCore.Database.DocumentDb
             {
                 var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
                 var transformation = new Transformation(documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType), documentType?.Transformations);
-                var document = new Markdown(command.Identifier, command.Content, transformation);
+                var document = new Markdown(command.DocumentId, command.Content, transformation);
 
                 documentResult = document.Process();
 
                 if (!command.DataMode)
                 {
-                    var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, documentResult.Slug, command.Identifier.ToKotoriUri(Router.IdentifierType.Document));
+                    var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, documentResult.Slug, command.DocumentId.ToKotoriUri(Router.IdentifierType.Document));
 
                     if (slug != null)
-                        throw new KotoriDocumentException(command.Identifier, $"Slug '{documentResult.Slug}' is already being used for another document.");
+                        throw new KotoriDocumentException(command.DocumentId, $"Slug '{documentResult.Slug}' is already being used for another document.");
                 }
 
                 documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, DocumentHelpers.CleanUpMeta(documentResult.Meta));
                 transformation = new Transformation(documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType), documentType.Transformations);
-                document = new Markdown(command.Identifier, command.Content, transformation);
+                document = new Markdown(command.DocumentId, command.Content, transformation);
                 documentResult = document.Process();
 
-                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document, idx), null);
+                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.DocumentId.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document, idx), null);
                 var isNew = d == null;
                 var id = d?.Id;
 
@@ -66,7 +66,7 @@ namespace KotoriCore.Database.DocumentDb
                 }
                 else
                 {
-                    throw new KotoriDocumentException(command.Identifier, $"Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                    throw new KotoriDocumentException(command.DocumentId, $"Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
                 }
 
                 long version = d.Version + 1;
@@ -75,16 +75,16 @@ namespace KotoriCore.Database.DocumentDb
                 (
                     command.Instance,
                     projectUri.ToString(),
-                    command.Identifier.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document).ToString(),
+                    command.DocumentId.ToKotoriUri(command.DataMode ? Router.IdentifierType.Data : Router.IdentifierType.Document).ToString(),
                     documentTypeUri.ToString(),
                     documentResult.Hash,
                     documentResult.Slug,
                     documentResult.Meta,
                     documentResult.Content,
                     documentResult.Date,
-                    command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentForDraftCheck).ToDraftFlag(),
+                    command.DocumentId.ToKotoriUri(Router.IdentifierType.DocumentForDraftCheck).ToDraftFlag(),
                     version,
-                    command.Identifier.ToFilename()
+                    command.DocumentId.ToFilename()
                 )
                 {
                     Id = id
@@ -97,19 +97,19 @@ namespace KotoriCore.Database.DocumentDb
 
             if (docType == Enums.DocumentType.Data)
             {
-                var data = new Data(command.Identifier, command.Content);
+                var data = new Data(command.DocumentId, command.Content);
                 var documents = data.GetDocuments();
 
                 if (!idx.HasValue)
-                    throw new KotoriDocumentException(command.Identifier, $"When updating data document you need specify an index.");
+                    throw new KotoriDocumentException(command.DocumentId, $"When updating data document you need specify an index.");
 
                 if (documents.Count != 1)
-                    throw new KotoriDocumentException(command.Identifier, $"When updating data document at a particular index you can provide just one document only.");    
+                    throw new KotoriDocumentException(command.DocumentId, $"When updating data document at a particular index you can provide just one document only.");    
 
-                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.Identifier.ToKotoriUri(Router.IdentifierType.Data, idx), null);
+                var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.DocumentId.ToKotoriUri(Router.IdentifierType.Data, idx), null);
 
                 if (d == null)
-                    throw new KotoriDocumentException(command.Identifier, $"Data document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                    throw new KotoriDocumentException(command.DocumentId, $"Data document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
                 
                 var tasks = new List<Task>();
 
@@ -119,7 +119,7 @@ namespace KotoriCore.Database.DocumentDb
                     var dic = jo.ToObject<Dictionary<string, object>>();
                     var doc = Markdown.ConstructDocument(dic, null);
 
-                    var ci = command.Identifier.ToKotoriUri(Router.IdentifierType.Data, idx).ToKotoriIdentifier(Router.IdentifierType.Data);
+                    var ci = command.DocumentId.ToKotoriUri(Router.IdentifierType.Data, idx).ToKotoriIdentifier(Router.IdentifierType.Data);
                         
                     tasks.Add
                      (
@@ -142,7 +142,7 @@ namespace KotoriCore.Database.DocumentDb
                 return new CommandResult<string>($"Data document has been updated.");
             }
 
-            throw new KotoriDocumentException(command.Identifier, "Unknown document type.");
+            throw new KotoriDocumentException(command.DocumentId, "Unknown document type.");
         }
     }
 }
