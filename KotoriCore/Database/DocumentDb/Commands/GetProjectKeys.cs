@@ -11,11 +11,11 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<ProjectKey>> HandleAsync(GetProjectKeys command)
         {
-            var projectUri = command.Identifier.ToKotoriUri(Router.IdentifierType.Project);
+            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
             var p = await FindProjectAsync(command.Instance, projectUri);
 
             if (p == null)
-                throw new KotoriProjectException(command.Identifier, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             return new CommandResult<ProjectKey>
             (
