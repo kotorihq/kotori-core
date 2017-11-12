@@ -9,9 +9,14 @@ namespace KotoriCore.Commands
     public class UpdateProject : Command
     {
         /// <summary>
-        /// The identifier.
+        /// Gets the instance.
         /// </summary>
-        public readonly string Identifier;
+        public readonly string Instance;
+
+        /// <summary>
+        /// The project identifier.
+        /// </summary>
+        public readonly string ProjectId;
 
         /// <summary>
         /// The name.
@@ -19,18 +24,15 @@ namespace KotoriCore.Commands
         public readonly string Name;
 
         /// <summary>
-        /// Gets the instance.
-        /// </summary>
-        public readonly string Instance;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpdateProject"/> class.
         /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
         /// <param name="name">Name.</param>
-        public UpdateProject(string instance, string identifier, string name)
+        public UpdateProject(string instance, string projectId, string name)
         {
             Instance = instance;
-            Identifier = identifier;
+            ProjectId = projectId;
             Name = name;
         }
 
@@ -43,8 +45,11 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(Instance))
                 yield return new ValidationResult("Instance must be set.");
 
-            if (string.IsNullOrEmpty(Identifier))
-                yield return new ValidationResult("Identifier must be set.");
+            if (string.IsNullOrEmpty(ProjectId))
+                yield return new ValidationResult("Project Id must be set.");
+
+            if (string.IsNullOrEmpty(Name))
+                yield return new ValidationResult("Name must be set.");
         }
     }
 }

@@ -9,16 +9,16 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(UpdateProject command)
         {
-            var projectUri = command.Identifier.ToKotoriUri(Router.IdentifierType.Project);
+            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
             var p = await FindProjectAsync(command.Instance, projectUri);
 
             if (p == null)
-                throw new KotoriProjectException(command.Identifier, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             if (!string.IsNullOrEmpty(command.Name))
                 p.Name = command.Name;
             else
-                throw new KotoriProjectException(command.Identifier, "No properties provided for a change.");
+                throw new KotoriProjectException(command.ProjectId, "No properties provided for a change.");
 
             p.Identifier = p.Identifier.ToKotoriUri(Router.IdentifierType.Project).ToString();
 
