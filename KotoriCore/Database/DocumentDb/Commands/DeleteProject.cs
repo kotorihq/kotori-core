@@ -13,12 +13,12 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(DeleteProject command)
         {
-            var projectUri = command.Identifier.ToKotoriUri(Router.IdentifierType.Project);
+            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
-                throw new KotoriProjectException(command.Identifier, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
             (
@@ -36,12 +36,12 @@ namespace KotoriCore.Database.DocumentDb
             var count = await CountDocumentsAsync(sql);
 
             if (count > 0)
-                throw new KotoriProjectException(command.Identifier, "Project contains documents.");
+                throw new KotoriProjectException(command.ProjectId, "Project contains documents.");
             
-            var documentTypes = (await HandleAsync(new GetDocumentTypes(command.Instance, command.Identifier))).Data as IEnumerable<SimpleDocumentType>;
+            var documentTypes = (await HandleAsync(new GetDocumentTypes(command.Instance, command.ProjectId))).Data as IEnumerable<SimpleDocumentType>;
 
             if (documentTypes.Any())
-                throw new KotoriProjectException(command.Identifier, "Project contains document types.");
+                throw new KotoriProjectException(command.ProjectId, "Project contains document types.");
 
             await DeleteProjectAsync(project.Id);
 
