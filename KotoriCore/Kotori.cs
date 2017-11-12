@@ -64,12 +64,12 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public string UpdateDocument(string instance, string projectId, string identifier, string content)
+        public string UpdateDocument(string instance, string projectId, string documentId, string content)
         {
-            return AsyncTools.RunSync(() => UpdateDocumentAsync(instance, projectId, identifier, content));
+            return AsyncTools.RunSync(() => UpdateDocumentAsync(instance, projectId, documentId, content));
         }
 
         /// <summary>
@@ -77,12 +77,12 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public async Task<string> UpdateDocumentAsync(string instance, string projectId, string identifier, string content)
+        public async Task<string> UpdateDocumentAsync(string instance, string projectId, string documentId, string content)
         {
-            return (await ProcessAsync(new UpdateDocument(instance, projectId, identifier, content)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpdateDocument(instance, projectId, documentId, content)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -90,12 +90,12 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public string CreateDocument(string instance, string projectId, string identifier, string content)
+        public string CreateDocument(string instance, string projectId, string documentId, string content)
         {
-            return AsyncTools.RunSync(() => CreateDocumentAsync(instance, projectId, identifier, content));
+            return AsyncTools.RunSync(() => CreateDocumentAsync(instance, projectId, documentId, content));
         }
 
         /// <summary>
@@ -103,60 +103,60 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public async Task<string> CreateDocumentAsync(string instance, string projectId, string identifier, string content)
+        public async Task<string> CreateDocumentAsync(string instance, string projectId, string documentId, string content)
         {
-            return (await ProcessAsync(new CreateDocument(instance, projectId, identifier, content)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new CreateDocument(instance, projectId, documentId, content)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
         /// Creates project.
         /// </summary>
         /// <param name="instance">Instance.</param>
-        /// <param name="identifier">Identifier.</param>
-        /// <param name="name">Name.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="name">Project name.</param>
         /// <param name="projectKeys">Project keys.</param>
         /// <returns>Result.</returns>
-        public string CreateProject(string instance, string identifier, string name, IEnumerable<Configurations.ProjectKey> projectKeys)
+        public string CreateProject(string instance, string projectId, string name, IEnumerable<Configurations.ProjectKey> projectKeys)
         {
-            return AsyncTools.RunSync(() => CreateProjectAsync(instance, identifier, name, projectKeys));
+            return AsyncTools.RunSync(() => CreateProjectAsync(instance, projectId, name, projectKeys));
         }
 
         /// <summary>
         /// Creates project.
         /// </summary>
         /// <param name="instance">Instance.</param>
-        /// <param name="identifier">Identifier.</param>
-        /// <param name="name">Name.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="name">Project name.</param>
         /// <param name="projectKeys">Project keys.</param>
         /// <returns>Result.</returns>
-        public async Task<string> CreateProjectAsync(string instance, string identifier, string name, IEnumerable<Configurations.ProjectKey> projectKeys)
+        public async Task<string> CreateProjectAsync(string instance, string projectId, string name, IEnumerable<Configurations.ProjectKey> projectKeys)
         {
-            return (await ProcessAsync(new CreateProject(instance, identifier, name, projectKeys)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new CreateProject(instance, projectId, name, projectKeys)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
         /// Deletes project.
         /// </summary>
         /// <param name="instance">Instance.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="projectId">Project identifier.</param>
         /// <returns>Result.</returns>
-        public string DeleteProject(string instance, string identifier)
+        public string DeleteProject(string instance, string projectId)
         {
-            return AsyncTools.RunSync(() => DeleteProjectAsync(instance, identifier));
+            return AsyncTools.RunSync(() => DeleteProjectAsync(instance, projectId));
         }
 
         /// <summary>
         /// Deletes project.
         /// </summary>
         /// <param name="instance">Instance.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="projectId">Project identifier.</param>
         /// <returns>Result.</returns>
-        public async Task<string> DeleteProjectAsync(string instance, string identifier)
+        public async Task<string> DeleteProjectAsync(string instance, string projectId)
         {
-            return (await ProcessAsync(new DeleteProject(instance, identifier)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new DeleteProject(instance, projectId)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -188,12 +188,12 @@ namespace KotoriCore
         /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Document identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="version">Version.</param>
         /// <param name="format">Format.</param>
-        public SimpleDocument GetDocument(string instance, string projectId, string identifier, long? version = null, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
+        public SimpleDocument GetDocument(string instance, string projectId, string documentId, long? version = null, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
-            return AsyncTools.RunSync(() => GetDocumentAsync(instance, projectId, identifier, version, format));
+            return AsyncTools.RunSync(() => GetDocumentAsync(instance, projectId, documentId, version, format));
         }
 
         /// <summary>
@@ -202,12 +202,12 @@ namespace KotoriCore
         /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Document identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="version">Version.</param>
         /// <param name="format">Format.</param>
-        public async Task<SimpleDocument> GetDocumentAsync(string instance, string projectId, string identifier, long? version = null, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
+        public async Task<SimpleDocument> GetDocumentAsync(string instance, string projectId, string documentId, long? version = null, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
-            return (await ProcessAsync(new GetDocument(instance, projectId, identifier, version, format)) as CommandResult<SimpleDocument>)?.Record;
+            return (await ProcessAsync(new GetDocument(instance, projectId, documentId, version, format)) as CommandResult<SimpleDocument>)?.Record;
         }
 
         /// <summary>
@@ -259,10 +259,10 @@ namespace KotoriCore
         /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Document identifier.</param>
-        public string DeleteDocument(string instance, string projectId, string identifier)
+        /// <param name="documentId">Document identifier.</param>
+        public string DeleteDocument(string instance, string projectId, string documentId)
         {
-            return AsyncTools.RunSync(() => DeleteDocumentAsync(instance, projectId, identifier));
+            return AsyncTools.RunSync(() => DeleteDocumentAsync(instance, projectId, documentId));
         }
 
         /// <summary>
@@ -271,10 +271,10 @@ namespace KotoriCore
         /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Document identifier.</param>
-        public async Task<string> DeleteDocumentAsync(string instance, string projectId, string identifier)
+        /// <param name="documentId">Document identifier.</param>
+        public async Task<string> DeleteDocumentAsync(string instance, string projectId, string documentId)
         {
-            return (await ProcessAsync(new DeleteDocument(instance, projectId, identifier)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new DeleteDocument(instance, projectId, documentId)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -313,10 +313,10 @@ namespace KotoriCore
         /// <returns>The document type.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
-        public SimpleDocumentType GetDocumentType(string instance, string projectId, string identifier)
+        /// <param name="documentTypeId">Document type identifier.</param>
+        public SimpleDocumentType GetDocumentType(string instance, string projectId, string documentTypeId)
         {
-            return AsyncTools.RunSync(() => GetDocumentTypeAsync(instance, projectId, identifier));
+            return AsyncTools.RunSync(() => GetDocumentTypeAsync(instance, projectId, documentTypeId));
         }
 
         /// <summary>
@@ -325,10 +325,10 @@ namespace KotoriCore
         /// <returns>The document type.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
-        public async Task<SimpleDocumentType> GetDocumentTypeAsync(string instance, string projectId, string identifier)
+        /// <param name="documentTypeId">Document type identifier.</param>
+        public async Task<SimpleDocumentType> GetDocumentTypeAsync(string instance, string projectId, string documentTypeId)
         {
-            return (await ProcessAsync(new GetDocumentType(instance, projectId, identifier)) as CommandResult<SimpleDocumentType>)?.Record;
+            return (await ProcessAsync(new GetDocumentType(instance, projectId, documentTypeId)) as CommandResult<SimpleDocumentType>)?.Record;
         }
 
         /// <summary>
@@ -361,10 +361,10 @@ namespace KotoriCore
         /// </summary>
         /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
-        /// <param name="identifier">Document identifier.</param>
-        public SimpleProject GetProject(string instance, string identifier)
+        /// <param name="projectId">Project identifier.</param>
+        public SimpleProject GetProject(string instance, string projectId)
         {
-            return AsyncTools.RunSync(() => GetProjectAsync(instance, identifier));
+            return AsyncTools.RunSync(() => GetProjectAsync(instance, projectId));
         }
 
         /// <summary>
@@ -372,32 +372,32 @@ namespace KotoriCore
         /// </summary>
         /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
-        /// <param name="identifier">Document identifier.</param>
-        public async Task<SimpleProject> GetProjectAsync(string instance, string identifier)
+        /// <param name="projectId">Project identifier.</param>
+        public async Task<SimpleProject> GetProjectAsync(string instance, string projectId)
         {
-            return (await ProcessAsync(new GetProject(instance, identifier)) as CommandResult<SimpleProject>)?.Record;
+            return (await ProcessAsync(new GetProject(instance, projectId)) as CommandResult<SimpleProject>)?.Record;
         }
 
         /// <summary>
         /// Gets project keys.
         /// </summary>
         /// <param name="instance">Instance.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="projectId">Project identifier.</param>
         /// <returns>Result.</returns>
-        public IEnumerable<Domains.ProjectKey> GetProjectKeys(string instance, string identifier)
+        public IEnumerable<Domains.ProjectKey> GetProjectKeys(string instance, string projectId)
         {
-            return AsyncTools.RunSync(() => GetProjectKeysAsync(instance, identifier));
+            return AsyncTools.RunSync(() => GetProjectKeysAsync(instance, projectId));
         }
 
         /// <summary>
         /// Gets project keys.
         /// </summary>
         /// <param name="instance">Instance.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="projectId">Project identifier.</param>
         /// <returns>Result.</returns>
-        public async Task<IEnumerable<Domains.ProjectKey>> GetProjectKeysAsync(string instance, string identifier)
+        public async Task<IEnumerable<Domains.ProjectKey>> GetProjectKeysAsync(string instance, string projectId)
         {
-            var result = await ProcessAsync(new GetProjectKeys(instance, identifier));
+            var result = await ProcessAsync(new GetProjectKeys(instance, projectId));
             var projectKeys = result.Data as IEnumerable<Domains.ProjectKey>;
 
             return projectKeys;
@@ -504,12 +504,12 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public string PartiallyUpdateDocument(string instance, string projectId, string identifier, string content)
+        public string PartiallyUpdateDocument(string instance, string projectId, string documentId, string content)
         {
-            return AsyncTools.RunSync(() => PartiallyUpdateDocumentAsync(instance, projectId, identifier, content));
+            return AsyncTools.RunSync(() => PartiallyUpdateDocumentAsync(instance, projectId, documentId, content));
         }
 
         /// <summary>
@@ -517,12 +517,12 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public async Task<string> PartiallyUpdateDocumentAsync(string instance, string projectId, string identifier, string content)
+        public async Task<string> PartiallyUpdateDocumentAsync(string instance, string projectId, string documentId, string content)
         {
-            return (await ProcessAsync(new PartiallyUpdateDocument(instance, projectId, identifier, content)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new PartiallyUpdateDocument(instance, projectId, documentId, content)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -531,10 +531,10 @@ namespace KotoriCore
         /// <returns>The document versions.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
-        public IEnumerable<SimpleDocumentVersion> GetDocumentVersions(string instance, string projectId, string identifier)
+        /// <param name="documentId">Document identifier.</param>
+        public IEnumerable<SimpleDocumentVersion> GetDocumentVersions(string instance, string projectId, string documentId)
         {
-            return AsyncTools.RunSync(() => GetDocumentVersionsAsync(instance, projectId, identifier));
+            return AsyncTools.RunSync(() => GetDocumentVersionsAsync(instance, projectId, documentId));
         }
 
         /// <summary>
@@ -543,10 +543,10 @@ namespace KotoriCore
         /// <returns>The document versions.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
-        public async Task<IEnumerable<SimpleDocumentVersion>> GetDocumentVersionsAsync(string instance, string projectId, string identifier)
+        /// <param name="documentId">Document identifier.</param>
+        public async Task<IEnumerable<SimpleDocumentVersion>> GetDocumentVersionsAsync(string instance, string projectId, string documentId)
         {
-            var result = await ProcessAsync(new GetDocumentVersions(instance, projectId, identifier));
+            var result = await ProcessAsync(new GetDocumentVersions(instance, projectId, documentId));
             var documentVersions = result.Data as IEnumerable<SimpleDocumentVersion>;
 
             return documentVersions;
@@ -558,10 +558,10 @@ namespace KotoriCore
         /// <returns>The document type transformations.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
-        public IList<DocumentTypeTransformation> GetDocumentTypeTransformations(string instance, string projectId, string identifier)
+        /// <param name="documentTypeId">Document type identifier.</param>
+        public IList<DocumentTypeTransformation> GetDocumentTypeTransformations(string instance, string projectId, string documentTypeId)
         {
-            return AsyncTools.RunSync(() => GetDocumentTypeTransformationsAsync(instance, projectId, identifier));
+            return AsyncTools.RunSync(() => GetDocumentTypeTransformationsAsync(instance, projectId, documentTypeId));
         }
 
         /// <summary>
@@ -570,10 +570,10 @@ namespace KotoriCore
         /// <returns>The document type transformations.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
-        public async Task<IList<DocumentTypeTransformation>> GetDocumentTypeTransformationsAsync(string instance, string projectId, string identifier)
+        /// <param name="documentTypeId">Document type identifier.</param>
+        public async Task<IList<DocumentTypeTransformation>> GetDocumentTypeTransformationsAsync(string instance, string projectId, string documentTypeId)
         {
-            var result = await ProcessAsync(new GetDocumentTypeTransformations(instance, projectId, identifier));
+            var result = await ProcessAsync(new GetDocumentTypeTransformations(instance, projectId, documentTypeId));
             var transformations = result.Data as IList<DocumentTypeTransformation>;
 
             return transformations;
@@ -584,12 +584,12 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="transformations">Transformations.</param>
         /// <returns>Result.</returns>
-        public string CreateDocumentType(string instance, string projectId, string identifier, string transformations)
+        public string CreateDocumentType(string instance, string projectId, string documentTypeId, string transformations)
         {
-            return AsyncTools.RunSync(() => CreateDocumentTypeAsync(instance, projectId, identifier, transformations));
+            return AsyncTools.RunSync(() => CreateDocumentTypeAsync(instance, projectId, documentTypeId, transformations));
         }
 
         /// <summary>
@@ -597,12 +597,12 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="transformations">Transformations.</param>
         /// <returns>Result.</returns>
-        public async Task<string> CreateDocumentTypeAsync(string instance, string projectId, string identifier, string transformations)
+        public async Task<string> CreateDocumentTypeAsync(string instance, string projectId, string documentTypeId, string transformations)
         {
-            return (await ProcessAsync(new CreateDocumentType(instance, projectId, identifier, transformations)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new CreateDocumentType(instance, projectId, documentTypeId, transformations)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
