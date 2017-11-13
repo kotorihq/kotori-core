@@ -20,13 +20,13 @@ namespace KotoriCore.Database.DocumentDb
                 (
                     command.Instance,
                     projectUri,
-                    command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType)
+                    command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType)
                 );
 
             if (docType == null)
-                throw new KotoriDocumentTypeException(command.Identifier, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
-            var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
 
             var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
             (
@@ -44,7 +44,7 @@ namespace KotoriCore.Database.DocumentDb
             var count = await CountDocumentsAsync(sql);
 
             if (count > 0)
-                throw new KotoriDocumentTypeException(command.Identifier, $"{count} document{(count > 1 ? "s" : "")} found of this document type.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriDocumentTypeException(command.DocumentTypeId, $"{count} document{(count > 1 ? "s" : "")} found of this document type.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             await DeleteDocumentTypeAsync(docType.Id);
 
