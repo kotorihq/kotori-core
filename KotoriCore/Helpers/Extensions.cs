@@ -6,6 +6,8 @@ using Sushi2;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using KotoriCore.Database.DocumentDb.Entities;
+using System.Linq;
 
 namespace KotoriCore.Helpers
 {    
@@ -97,6 +99,23 @@ namespace KotoriCore.Helpers
             
             if (result.Meta != null)
                 c += JsonConvert.SerializeObject(result.Meta);
+
+            return HashTools.GetHash(c, HashTools.HashType.SHA1);
+        }
+
+        /// <summary>
+        /// Gets the hash.
+        /// </summary>
+        /// <param name="documentType">Document type.</param>
+        /// <returns>The hash.</returns>
+        public static string ToHash(this DocumentType documentType)
+        {
+            if (documentType == null)
+                throw new ArgumentNullException(nameof(documentType));
+
+            var c = documentType.Type +
+                documentType.Indexes.Select(i => i.From + "-" + i.To).ToImplodedString() +
+                documentType.Transformations.Select(t => t.From + "-" + t.To + "-" + t.Transformations.Select(t2 => t2.ToString()).ToImplodedString());
 
             return HashTools.GetHash(c, HashTools.HashType.SHA1);
         }

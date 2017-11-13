@@ -225,7 +225,7 @@ namespace KotoriCore.Database.DocumentDb
             return document;
         }
 
-        async Task<Entities.DocumentType> FindDocumentTypeByIdAsync(string instance, Uri projectId, Uri documentTypeId)
+        internal async Task<Entities.DocumentType> FindDocumentTypeByIdAsync(string instance, Uri projectId, Uri documentTypeId)
         {
             var q = new DynamicQuery
             (

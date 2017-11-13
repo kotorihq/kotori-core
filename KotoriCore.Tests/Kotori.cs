@@ -1531,7 +1531,14 @@ girl: "" Aoba ""
 
             var docType = _kotori.GetDocumentType("dev", "doctdel", "data/newgame");
 
+            var firstHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
+
+            Assert.IsNotNull(firstHashD);
             Assert.IsNotNull(docType);
+
+            var firstHash = firstHashD.Hash;
+
+            // TODO: update document type and check changed hash
 
             _kotori.DeleteDocument("dev", "doctdel", "data/newgame/girls.md?0");
             _kotori.DeleteDocumentType("dev", "doctdel", "data/newgame");

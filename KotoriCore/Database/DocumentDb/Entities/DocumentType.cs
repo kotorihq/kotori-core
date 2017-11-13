@@ -56,6 +56,12 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public List<DocumentTypeTransformation> Transformations { get; set; }
 
         /// <summary>
+        /// Gets or sets the hash.
+        /// </summary>
+        /// <value>The hash.</value>
+        public string Hash { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.DocumentType"/> class.
         /// </summary>
         public DocumentType()
@@ -79,6 +85,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Type = type;
             Indexes = indexes.ToList();
             Transformations = transformations.ToList();
+            Hash = this.ToHash();
         }
     }
 }

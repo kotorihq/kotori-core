@@ -44,5 +44,11 @@ namespace KotoriCore.Domains
         /// </summary>
         /// <value>The transformations.</value>
         public IList<DocumentTypeTransformation> Transformations { get; set; }
+
+        /// <summary>
+        /// Gets or sets the hash.
+        /// </summary>
+        /// <value>The hash.</value>
+        public string Hash { get; set; }
     }
 }
