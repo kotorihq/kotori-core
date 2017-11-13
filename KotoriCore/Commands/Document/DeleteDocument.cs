@@ -3,6 +3,9 @@ using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
 {
+    /// <summary>
+    /// Delete document command.
+    /// </summary>
     public class DeleteDocument : Command
     {
         /// <summary>

@@ -9,7 +9,7 @@ namespace KotoriCore.Commands
     public class UpdateProject : Command
     {
         /// <summary>
-        /// Gets the instance.
+        /// The instance.
         /// </summary>
         public readonly string Instance;
 

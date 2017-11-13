@@ -9,50 +9,48 @@ namespace KotoriCore.Commands
     public class FindDocuments : Command
     {
         /// <summary>
-        /// Gets the instance.
+        /// The instance.
         /// </summary>
         public readonly string Instance;
 
         /// <summary>
-        /// Gets the project identifier.
+        /// The project identifier.
         /// </summary>
         public readonly string ProjectId;
 
         /// <summary>
-        /// Gets the document type identifier.
+        /// The document type identifier.
         /// </summary>
         public readonly string DocumentTypeId;
 
         /// <summary>
-        /// Gets the selected fields.
+        /// The select.
         /// </summary>
         public readonly string Select;
 
         /// <summary>
-        /// Gets the top (number of documents).
+        /// The top.
         /// </summary>
         public readonly int? Top;
 
         /// <summary>
-        /// Gets the filter (where condition(s)).
+        /// The filter.
         /// </summary>
         public readonly string Filter;
 
         /// <summary>
-        /// Gets the order by.
+        /// The order by.
         /// </summary>
         public readonly string OrderBy;
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.CountDocuments"/> returns drafts.
+        /// The drafts.
         /// </summary>
-        /// <value><c>true</c> if include drafts; otherwise, <c>false</c>.</value>
         public readonly bool Drafts;
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.CountDocuments"/> returns future.
+        /// The future.
         /// </summary>
-        /// <value><c>true</c> if include future; otherwise, <c>false</c>.</value>
         public readonly bool Future;
 
         /// <summary>
@@ -61,7 +59,7 @@ namespace KotoriCore.Commands
         public readonly int? Skip;
 
         /// <summary>
-        /// Gets the format.
+        /// The format.
         /// </summary>
         public readonly Enums.DocumentFormat Format;
 
@@ -75,10 +73,10 @@ namespace KotoriCore.Commands
         /// <param name="select">Select.</param>
         /// <param name="filter">Filter.</param>
         /// <param name="orderBy">Order by.</param>
-        /// <param name="format">Format.</param>
+        /// <param name="drafts">If set to <c>true</c> drafts.</param>
+        /// <param name="future">If set to <c>true</c> future.</param>
         /// <param name="skip">Skip.</param>
-        /// <param name="drafts">Drafts.</param>
-        /// <param name="future">Future.</param>
+        /// <param name="format">Format.</param>
         public FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format)
         {
             Format = format;
@@ -112,7 +110,7 @@ namespace KotoriCore.Commands
                 yield return new ValidationResult("Project Id must be set.");
 
             if (string.IsNullOrEmpty(DocumentTypeId))
-                yield return new ValidationResult("Document type must be set.");
+                yield return new ValidationResult("Document type Id must be set.");
         }
     }
 }

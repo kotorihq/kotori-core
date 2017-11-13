@@ -56,7 +56,7 @@ namespace KotoriCore.Commands
                 yield return new ValidationResult("Project Id must be set.");
 
             if (string.IsNullOrEmpty(DocumentId))
-                yield return new ValidationResult("Identifier must be set.");
+                yield return new ValidationResult("Document Id must be set.");
 
             if (string.IsNullOrEmpty(Content))
                 yield return new ValidationResult("Content must be set.");

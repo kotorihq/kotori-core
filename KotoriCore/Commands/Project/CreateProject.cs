@@ -6,7 +6,7 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Create project.
+    /// Create project command.
     /// </summary>
     public class CreateProject : Command
     {
@@ -21,12 +21,12 @@ namespace KotoriCore.Commands
         public readonly string ProjectId;
 
         /// <summary>
-        /// Gets or sets the project keys.
+        /// The project keys.
         /// </summary>
         public readonly IEnumerable<ProjectKey> ProjectKeys;
 
         /// <summary>
-        /// Gets the instance.
+        /// The instance.
         /// </summary>
         public readonly string Instance;
 

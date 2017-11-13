@@ -4,17 +4,17 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Get document types.
+    /// Get document types command.
     /// </summary>
     public class GetDocumentTypes : Command
     {
         /// <summary>
-        /// Gets the instance.
+        /// The instance.
         /// </summary>
         public readonly string Instance;
 
         /// <summary>
-        /// Gets the project identifier.
+        /// The project identifier.
         /// </summary>
         public readonly string ProjectId;
 

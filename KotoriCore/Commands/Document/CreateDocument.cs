@@ -29,9 +29,10 @@ namespace KotoriCore.Commands
         public readonly string Content;
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.UpsertDocument"/> data mode.
+        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.CreateDocument"/> data mode.
         /// </summary>
         /// <value><c>true</c> if data mode; otherwise, <c>false</c>.</value>
+        /// <remarks>Internal usage.</remarks>
         public bool DataMode { get; }
 
         /// <summary>

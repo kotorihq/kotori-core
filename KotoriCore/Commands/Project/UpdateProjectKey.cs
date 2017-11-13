@@ -10,22 +10,22 @@ namespace KotoriCore.Commands
     public class UpdateProjectKey : Command
     {
         /// <summary>
-        /// Gets the instance.
+        /// The instance.
         /// </summary>
         public readonly string Instance;
 
         /// <summary>
-        /// Gets the project identifier.
+        /// The project identifier.
         /// </summary>
         public readonly string ProjectId;
 
         /// <summary>
-        /// Gets the project key.
+        /// The project key.
         /// </summary>
         public readonly ProjectKey ProjectKey;
 
         /// <summary>
-        /// Creates the project key.
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpdateProjectKey"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>

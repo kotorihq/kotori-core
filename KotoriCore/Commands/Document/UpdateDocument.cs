@@ -9,12 +9,12 @@ namespace KotoriCore.Commands
     public class UpdateDocument : Command
     {
         /// <summary>
-        /// Gets the instance.
+        /// The instance.
         /// </summary>
         public readonly string Instance;
 
         /// <summary>
-        /// Gets the project identifier.
+        /// The project identifier.
         /// </summary>
         public readonly string ProjectId;
 
@@ -24,12 +24,12 @@ namespace KotoriCore.Commands
         public readonly string DocumentId;
 
         /// <summary>
-        /// Gets the content.
+        /// The content.
         /// </summary>
         public readonly string Content;
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.UpsertDocument"/> data mode.
+        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.UpdateDocument"/> data mode.
         /// </summary>
         /// <value><c>true</c> if data mode; otherwise, <c>false</c>.</value>
         public bool DataMode { get; }
@@ -41,7 +41,7 @@ namespace KotoriCore.Commands
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
-        /// <param name="dataMode">If set to <c>true</c> data mode. Internal usage only.</param>
+        /// <param name="dataMode">If set to <c>true</c> data mode.</param>
         public UpdateDocument(string instance, string projectId, string documentId, string content, bool dataMode = false)
         {
             Instance = instance;
@@ -64,7 +64,7 @@ namespace KotoriCore.Commands
                 yield return new ValidationResult("Project Id must be set.");
 
             if (string.IsNullOrEmpty(DocumentId))
-                yield return new ValidationResult("Identifier must be set.");
+                yield return new ValidationResult("Document Id must be set.");
 
             if (string.IsNullOrEmpty(Content))
                 yield return new ValidationResult("Content must be set.");

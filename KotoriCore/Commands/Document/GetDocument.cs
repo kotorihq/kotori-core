@@ -4,7 +4,7 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Get document.
+    /// Get document command.
     /// </summary>
     public class GetDocument : Command
     {
@@ -67,7 +67,7 @@ namespace KotoriCore.Commands
 
             if (Version.HasValue &&
                 Version.Value < 0)
-                yield return new ValidationResult("Minimal version number allowed is 0.");
+                yield return new ValidationResult("Minimal allowed version number is 0.");
         }
     }
 }
