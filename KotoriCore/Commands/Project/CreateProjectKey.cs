@@ -10,17 +10,17 @@ namespace KotoriCore.Commands
     public class CreateProjectKey : Command
     {
         /// <summary>
-        /// Gets the instance.
+        /// The instance.
         /// </summary>
         public readonly string Instance;
 
         /// <summary>
-        /// Gets the project identifier.
+        /// The project identifier.
         /// </summary>
         public readonly string ProjectId;
 
         /// <summary>
-        /// Gets the project key.
+        /// The project key.
         /// </summary>
         public readonly ProjectKey ProjectKey;
 
