@@ -114,8 +114,8 @@ namespace KotoriCore.Helpers
                 throw new ArgumentNullException(nameof(documentType));
 
             var c = documentType.Type +
-                documentType.Indexes.Select(i => i.From + "-" + i.To).ToImplodedString() +
-                documentType.Transformations.Select(t => t.From + "-" + t.To + "-" + t.Transformations.Select(t2 => t2.ToString()).ToImplodedString());
+                documentType.Indexes?.Select(i => i.From + "-" + i.To).ToImplodedString() +
+                documentType.Transformations?.Select(t => t.From + "-" + t.To + "-" + t.Transformations.Select(t2 => t2.ToString()).ToImplodedString());
 
             return HashTools.GetHash(c, HashTools.HashType.SHA1);
         }

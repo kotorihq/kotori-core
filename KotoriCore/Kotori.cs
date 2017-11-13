@@ -580,6 +580,32 @@ namespace KotoriCore
         }
 
         /// <summary>
+        /// Creates the document type transformations.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="transformations">Transformations.</param>
+        public string CreateDocumentTypeTransformations(string instance, string projectId, string documentTypeId, string transformations)
+        {
+            return AsyncTools.RunSync(() => CreateDocumentTypeTransformationsAsync(instance, projectId, documentTypeId, transformations));
+        }
+
+        /// <summary>
+        /// Creates the document type transformations.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="transformations">Transformations.</param>
+        public async Task<string> CreateDocumentTypeTransformationsAsync(string instance, string projectId, string documentTypeId, string transformations)
+        {
+            return (await ProcessAsync(new CreateDocumentTypeTransformations(instance, projectId, documentTypeId, transformations)) as CommandResult<string>)?.Message;
+        }
+
+        /// <summary>
         /// Creates the document type.
         /// </summary>
         /// <param name="instance">Instance.</param>
