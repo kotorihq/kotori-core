@@ -9,34 +9,31 @@ namespace KotoriCore.Commands
     public class GetDocumentVersions : Command
     {
         /// <summary>
-        /// Gets the instance.
+        /// The instance.
         /// </summary>
-        /// <value>The instance.</value>
         public readonly string Instance;
 
         /// <summary>
-        /// Gets the project identifier.
+        /// The project identifier.
         /// </summary>
-        /// <value>The project identifier.</value>
         public readonly string ProjectId;
 
         /// <summary>
-        /// Gets the identifier.
+        /// The document identifier.
         /// </summary>
-        /// <value>The identifier.</value>
-        public readonly string Identifier;
+        public readonly string DocumentId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetDocumentVersions"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="identifier">Identifier.</param>
-        public GetDocumentVersions(string instance, string projectId, string identifier)
+        /// <param name="documentId">Document identifier.</param>
+        public GetDocumentVersions(string instance, string projectId, string documentId)
         {
             Instance = instance;
             ProjectId = projectId;
-            Identifier = identifier;
+            DocumentId = documentId;
         }
 
         /// <summary>
@@ -51,8 +48,8 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Project Id must be set.");
 
-            if (string.IsNullOrEmpty(Identifier))
-                yield return new ValidationResult("Identifier must be set.");
+            if (string.IsNullOrEmpty(DocumentId))
+                yield return new ValidationResult("Document Id must be set.");
         }
     }
 }

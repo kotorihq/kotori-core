@@ -13,9 +13,9 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<SimpleDocumentVersion>> HandleAsync(GetDocumentVersions command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
-            var documentTypeUri = command.Identifier.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var documentTypeUri = command.DocumentId.ToKotoriUri(Router.IdentifierType.DocumentType);
             var docType = documentTypeUri.ToDocumentType();
-            var documentUri = command.Identifier.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
+            var documentUri = command.DocumentId.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 
@@ -25,7 +25,7 @@ namespace KotoriCore.Database.DocumentDb
             var d = await FindDocumentByIdAsync(command.Instance, projectUri, documentUri, null);
 
             if (d == null)
-                throw new KotoriDocumentException(command.Identifier, "Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriDocumentException(command.DocumentId, "Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var q = new DynamicQuery
                 (
