@@ -48,7 +48,15 @@ namespace KotoriCore.Database.DocumentDb
                         throw new KotoriDocumentException(command.DocumentId, $"Slug '{documentResult.Slug}' is already being used for another document.");
                 }
 
-                documentType = await UpsertDocumentTypeAsync(command.Instance, projectUri, documentTypeUri, DocumentHelpers.CleanUpMeta(documentResult.Meta), null);
+                documentType = await UpsertDocumentTypeAsync
+                (
+                   command.Instance, 
+                   projectUri, 
+                   documentTypeUri, 
+                   new UpdateToken<dynamic>(DocumentHelpers.CleanUpMeta(documentResult.Meta), false),
+                   new UpdateToken<string>(null, true)
+                );
+                
                 transformation = new Transformation(documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType), documentType.Transformations);
                 document = new Markdown(command.DocumentId, command.Content, transformation);
                 documentResult = document.Process();

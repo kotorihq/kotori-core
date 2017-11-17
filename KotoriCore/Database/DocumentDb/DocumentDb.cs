@@ -463,11 +463,6 @@ namespace KotoriCore.Database.DocumentDb
             return await _repoDocumentType.CreateAsync(documentType);
         }
 
-        async Task<Entities.DocumentType> ReplaceDocumentTypeAsync(Entities.DocumentType documentType)
-        {
-            return await _repoDocumentType.ReplaceAsync(documentType);
-        }
-
         async Task<Entities.DocumentVersion> CreateDocumentVersionAsync(Entities.DocumentVersion documentVersion)
         {
             return await _repoDocumentVersion.CreateAsync(documentVersion);
@@ -499,8 +494,32 @@ namespace KotoriCore.Database.DocumentDb
             return documentType;
         }
 
-        async Task<Entities.DocumentType> UpsertDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId, dynamic meta, string transformations)
+        /// <summary>
+        /// Upserts the document type async.
+        /// </summary>
+        /// <returns>The document type async.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="meta">Meta.</param>
+        /// <param name="transformations">Transformations.</param>
+        async Task<Entities.DocumentType> UpsertDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId, UpdateToken<dynamic> meta, UpdateToken<string> transformations)
         {
+            if (transformations == null)
+                throw new ArgumentNullException(nameof(transformations));
+            
+            if (meta == null)
+                throw new ArgumentNullException(nameof(meta));
+            
+            if (documentTypeId == null)
+                throw new ArgumentNullException(nameof(documentTypeId));
+            
+            if (projectId == null)
+                throw new ArgumentNullException(nameof(projectId));
+            
+            if (instance == null)
+                throw new ArgumentNullException(nameof(instance));
+            
             var project = await FindProjectAsync(instance, projectId);
 
             if (project == null)
@@ -516,9 +535,14 @@ namespace KotoriCore.Database.DocumentDb
                     throw new KotoriException($"Document type could not be resolved for '{documentTypeId}'.");
 
                 var indexes = new List<DocumentTypeIndex>();
-                indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
 
-                var trans = new Transformation(documentTypeId.ToKotoriIdentifier(Router.IdentifierType.DocumentType), transformations).Transformations;
+                if (!meta.Ignore)
+                    indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta.Value);
+                
+                var trans = new List<DocumentTypeTransformation>();
+
+                if (!transformations.Ignore)
+                    trans = new Transformation(documentTypeId.ToKotoriIdentifier(Router.IdentifierType.DocumentType), transformations.Value).Transformations;
 
                 var dt = new Entities.DocumentType
                 (
@@ -536,18 +560,21 @@ namespace KotoriCore.Database.DocumentDb
             }
             else
             {
-                var docType = documentTypeId.ToDocumentType();
-
-                if (docType == null)
-                    throw new KotoriException($"Document type could not be resolved for {documentTypeId}.");
-
                 var indexes = documentType.Indexes ?? new List<DocumentTypeIndex>();
-                documentType.Indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
 
-                var trans = new Transformation(documentTypeId.ToKotoriIdentifier(Router.IdentifierType.DocumentType), transformations).Transformations;
+                if (!meta.Ignore)
+                    indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta.Value);
+
+                documentType.Indexes = indexes;
+
+                var trans = documentType.Transformations ?? new List<DocumentTypeTransformation>();
+
+                if (!transformations.Ignore)
+                    trans = new Transformation(documentTypeId.ToKotoriIdentifier(Router.IdentifierType.DocumentType), transformations.Value).Transformations;
+                
                 documentType.Transformations = trans;
 
-                await ReplaceDocumentTypeAsync(documentType);
+                await _repoDocumentType.ReplaceAsync(documentType);
 
                 return documentType;
             }

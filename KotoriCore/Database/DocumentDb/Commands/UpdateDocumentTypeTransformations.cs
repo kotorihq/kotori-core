@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using KotoriCore.Commands;
-using KotoriCore.Documents.Transformation;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 
@@ -11,6 +10,8 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<string>> HandleAsync(UpdateDocumentTypeTransformations command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
+            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
+
             var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
@@ -26,11 +27,14 @@ namespace KotoriCore.Database.DocumentDb
             if (docType == null)
                 throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
-            var trans = new Transformation(command.DocumentTypeId, command.Transformations).Transformations;
-
-            docType.Transformations = trans;
-
-            await ReplaceDocumentTypeAsync(docType);
+            await UpsertDocumentTypeAsync
+            (
+                command.Instance,
+                projectUri,
+                documentTypeUri,
+                new UpdateToken<dynamic>(null, true),
+                new UpdateToken<string>(command.Transformations, false)
+            );
 
             return new CommandResult<string>("Document type transformations pipeline has been created.");
         }

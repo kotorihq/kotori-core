@@ -30,8 +30,8 @@ namespace KotoriCore.Database.DocumentDb
                     command.Instance,
                     projectUri,
                     command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType),
-                    null,
-                    command.Transformations
+                    new UpdateToken<dynamic>(null, true),
+                    new UpdateToken<string>(command.Transformations, false)
                 );
             
             return new CommandResult<string>("Document type transformations pipeline has been created.");
