@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using KotoriCore.Domains;
 using KotoriCore.Search;
 using Newtonsoft.Json.Linq;
+using KotoriCore.Documents.Transformation;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -112,6 +113,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(deleteDocumentType);
                 else if (command is CreateDocumentTypeTransformations createDocumentTypeTransformations)
                     result = await HandleAsync(createDocumentTypeTransformations);
+                else if (command is UpdateDocumentTypeTransformations updateDocumentTypeTransformations)
+                    result = await HandleAsync(updateDocumentTypeTransformations);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
@@ -496,7 +499,7 @@ namespace KotoriCore.Database.DocumentDb
             return documentType;
         }
 
-        async Task<Entities.DocumentType> UpsertDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId, dynamic meta)
+        async Task<Entities.DocumentType> UpsertDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId, dynamic meta, string transformations)
         {
             var project = await FindProjectAsync(instance, projectId);
 
@@ -515,6 +518,8 @@ namespace KotoriCore.Database.DocumentDb
                 var indexes = new List<DocumentTypeIndex>();
                 indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
 
+                var trans = new Transformation(documentTypeId.ToKotoriIdentifier(Router.IdentifierType.DocumentType), transformations).Transformations;
+
                 var dt = new Entities.DocumentType
                 (
                      instance,
@@ -522,7 +527,7 @@ namespace KotoriCore.Database.DocumentDb
                      projectId.ToString(),
                      documentTypeId.ToDocumentType().Value,
                      indexes,
-                     new List<DocumentTypeTransformation>()
+                     trans
                 );
 
                 dt = await CreateDocumentTypeAsync(dt);
@@ -538,6 +543,9 @@ namespace KotoriCore.Database.DocumentDb
 
                 var indexes = documentType.Indexes ?? new List<DocumentTypeIndex>();
                 documentType.Indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta);
+
+                var trans = new Transformation(documentTypeId.ToKotoriIdentifier(Router.IdentifierType.DocumentType), transformations).Transformations;
+                documentType.Transformations = trans;
 
                 await ReplaceDocumentTypeAsync(documentType);
 

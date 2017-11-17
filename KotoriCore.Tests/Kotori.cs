@@ -5,7 +5,6 @@ using KotoriCore.Commands;
 using KotoriCore.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Net;
 using Oogi2;
 using Oogi2.Queries;
 using System.Threading.Tasks;
@@ -20,12 +19,12 @@ namespace KotoriCore.Tests
     [TestClass]
     public class Kotori_
     {
-        Kotori _kotori;
-        Connection _con;
-        DocumentDb _documentDb;
+        static Kotori _kotori;
+        static Connection _con;
+        static DocumentDb _documentDb;
 
-        [TestInitialize]
-        public async Task Init()
+        [ClassInitialize]
+        public static void Init(TestContext context)
         {
             var appSettings = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -51,17 +50,11 @@ namespace KotoriCore.Tests
                                     
             _con.CreateCollection();
 
-            try
-            {
-                await _kotori.CreateProjectAsync("dev", "nenecchi/stable", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
-            }
-            catch
-            {
-            }
+            _kotori.CreateProject("dev", "nenecchi/stable", "Nenecchi", new List<ProjectKey> { new ProjectKey("sakura-nene") });
         }
 
-        [TestCleanup]
-        public void Cleanup()
+        [ClassCleanup]
+        public static void Cleanup()
         {
             _con.DeleteCollection();   
         }
@@ -451,7 +444,7 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriProjectException), "No properties were inappropriately accepted.")]
+        [ExpectedException(typeof(KotoriValidationException), "No properties were inappropriately accepted.")]
         public void UpdateProjectFail2()
         {
             _kotori.CreateProject("dev", "failiep", "Nenecchi", null);
@@ -1454,7 +1447,7 @@ girl: Aoba
 ";
             await _kotori.CreateDocumentAsync("dev", "trans001", "data/newgame/girls.md", c);
 
-            _kotori.CreateDocumentType("dev", "trans001", "data/newgame", @"
+            _kotori.UpdateDocumentTypeTransformations("dev", "trans001", "data/newgame", @"
 [
 { ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
 ]           
@@ -1465,7 +1458,7 @@ girl: Aoba
             Assert.AreEqual(1, transformations.Count());
             Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
 
-            _kotori.CreateDocumentType("dev", "trans001", "data/newgame", @"
+            _kotori.UpdateDocumentTypeTransformations("dev", "trans001", "data/newgame", @"
 - from: girl
   to: Girl2
   transformations:
@@ -1492,7 +1485,7 @@ module: "" foo ""
 ";
             await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md", c);
 
-            _kotori.CreateDocumentType("dev", "trans002", "data/newgame", @"
+            _kotori.UpdateDocumentTypeTransformations("dev", "trans002", "data/newgame", @"
 [
 { ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] },
 { ""from"": ""module"", ""to"": ""module"", ""transformations"": [ ""trim"", ""uppercase"" ] }
@@ -1518,8 +1511,7 @@ module: "" foo ""
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriDocumentTypeException))]
-        public async Task DeleteDocumentType()
+        public async Task DocumentTypeHash()
         {
             var result = await _kotori.CreateProjectAsync("dev", "doctdel", "Data", null);
 
@@ -1527,6 +1519,7 @@ module: "" foo ""
 girl: "" Aoba ""
 ---
 ";
+            await _kotori.CreateDocumentTypeAsync("dev", "doctdel", "data/newgame");
             await _kotori.CreateDocumentAsync("dev", "doctdel", "data/newgame/girls.md", c);
 
             var docType = _kotori.GetDocumentType("dev", "doctdel", "data/newgame");
@@ -1538,12 +1531,28 @@ girl: "" Aoba ""
 
             var firstHash = firstHashD.Hash;
 
-            // TODO: update document type and check changed hash
+            await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", @"---
+{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
+---
+");
 
-            _kotori.DeleteDocument("dev", "doctdel", "data/newgame/girls.md?0");
-            _kotori.DeleteDocumentType("dev", "doctdel", "data/newgame");
+            var secondHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
 
-            _kotori.GetDocumentType("dev", "doctdel", "data/newgame");
+            Assert.IsNotNull(secondHashD);
+
+            var secondHash = secondHashD.Hash;
+
+            Assert.AreNotEqual(firstHash, secondHash);
+
+            await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", "");
+
+            var thirdHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
+
+            Assert.IsNotNull(thirdHashD);
+
+            var thirdHash = thirdHashD.Hash;
+
+            Assert.AreEqual("fuck", "ruck");
         }
 
         enum RawDocument

@@ -63,10 +63,21 @@ namespace KotoriCore.Cli
 
                 var c = @"---
 girl: "" Aoba ""
+module: "" foo ""
 ---
 ";
                 await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md", c);
-                c += "foo";
+
+                _kotori.UpdateDocumentTypeTransformations("dev", "trans002", "data/newgame", @"
+[
+{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] },
+{ ""from"": ""module"", ""to"": ""module"", ""transformations"": [ ""trim"", ""uppercase"" ] }
+]
+");
+                await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?0", c);
+                var d = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?0");
+
+                JObject metaObj = JObject.FromObject(d.Meta);
 
                 // --- CODE HERE --
             }

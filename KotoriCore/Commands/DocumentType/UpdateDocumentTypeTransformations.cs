@@ -4,9 +4,9 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Create document type command.
+    /// Update document type transformations command.
     /// </summary>
-    public class CreateDocumentType : Command
+    public class UpdateDocumentTypeTransformations : Command
     {
         /// <summary>
         /// The instance.
@@ -24,16 +24,23 @@ namespace KotoriCore.Commands
         public readonly string DocumentTypeId;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CreateDocumentType"/> class.
+        /// The transformations.
+        /// </summary>
+        public readonly string Transformations;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpdateDocumentTypeTransformations"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        public CreateDocumentType(string instance, string projectId, string documentTypeId)
+        /// <param name="transformations">Transformations.</param>
+        public UpdateDocumentTypeTransformations(string instance, string projectId, string documentTypeId, string transformations)
         {
             Instance = instance;
             ProjectId = projectId;
             DocumentTypeId = documentTypeId;
+            Transformations = transformations;
         }
 
         /// <summary>

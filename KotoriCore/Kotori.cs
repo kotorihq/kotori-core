@@ -606,16 +606,29 @@ namespace KotoriCore
         }
 
         /// <summary>
-        /// Creates the document type.
+        /// Updates the document type transformations.
         /// </summary>
+        /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="transformations">Transformations.</param>
-        /// <returns>Result.</returns>
-        public string CreateDocumentType(string instance, string projectId, string documentTypeId, string transformations)
+        public string UpdateDocumentTypeTransformations(string instance, string projectId, string documentTypeId, string transformations)
         {
-            return AsyncTools.RunSync(() => CreateDocumentTypeAsync(instance, projectId, documentTypeId, transformations));
+            return AsyncTools.RunSync(() => UpdateDocumentTypeTransformationsAsync(instance, projectId, documentTypeId, transformations));
+        }
+
+        /// <summary>
+        /// Updates the document type transformations.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="transformations">Transformations.</param>
+        public async Task<string> UpdateDocumentTypeTransformationsAsync(string instance, string projectId, string documentTypeId, string transformations)
+        {
+            return (await ProcessAsync(new UpdateDocumentTypeTransformations(instance, projectId, documentTypeId, transformations)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -624,11 +637,22 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        /// <param name="transformations">Transformations.</param>
         /// <returns>Result.</returns>
-        public async Task<string> CreateDocumentTypeAsync(string instance, string projectId, string documentTypeId, string transformations)
+        public string CreateDocumentType(string instance, string projectId, string documentTypeId)
         {
-            return (await ProcessAsync(new CreateDocumentType(instance, projectId, documentTypeId, transformations)) as CommandResult<string>)?.Message;
+            return AsyncTools.RunSync(() => CreateDocumentTypeAsync(instance, projectId, documentTypeId));
+        }
+
+        /// <summary>
+        /// Creates the document type.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <returns>Result.</returns>
+        public async Task<string> CreateDocumentTypeAsync(string instance, string projectId, string documentTypeId)
+        {
+            return (await ProcessAsync(new CreateDocumentType(instance, projectId, documentTypeId)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
