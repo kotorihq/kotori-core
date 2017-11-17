@@ -49,9 +49,4 @@
     <PackageReference Include="Sushi2" Version="1.0.5" />
     <PackageReference Include="Oogi2" Version="1.2.5" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Bus\IBus.cs" />
-    <Compile Remove="Bus\IMessage.cs" />
-    <Compile Remove="Configurations\ServiceBusConfiguration.cs" />
-  </ItemGroup>
 </Project>
