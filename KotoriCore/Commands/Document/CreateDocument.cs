@@ -29,27 +29,18 @@ namespace KotoriCore.Commands
         public readonly string Content;
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:KotoriCore.Commands.CreateDocument"/> data mode.
-        /// </summary>
-        /// <value><c>true</c> if data mode; otherwise, <c>false</c>.</value>
-        /// <remarks>Internal usage.</remarks>
-        public bool DataMode { get; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CreateDocument"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
-        /// <param name="dataMode">If set to <c>true</c> data mode.</param>
-        public CreateDocument(string instance, string projectId, string documentId, string content, bool dataMode = false)
+        public CreateDocument(string instance, string projectId, string documentId, string content)
         {
             Instance = instance;
             ProjectId = projectId;
             DocumentId = documentId;
             Content = content;
-            DataMode = dataMode;
         }
 
         /// <summary>
