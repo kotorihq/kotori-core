@@ -540,46 +540,6 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        public void UpdateDocument()
-        {
-            _kotori.CreateProject("dev", "udie", "Udie", null);
-            _kotori.CreateDocument("dev", "udie", "content/x/a",
-                                  @"
----
-test: xxx
-cute: !!bool true
----
-aloha everyone!
-");
-            var d0 = _kotori.GetDocument("dev", "udie", "content/x/a");
-            Assert.AreEqual(@"aloha everyone!".Trim(), d0.Content.Trim());
-            var meta0 = (d0.Meta as JObject);
-            Assert.AreEqual("xxx", meta0.Property("test").Value);
-            Assert.AreEqual(JTokenType.Boolean, meta0["cute"].Type);
-            Assert.AreEqual(true, meta0.Property("cute").Value);
-
-            _kotori.PartiallyUpdateDocument("dev", "udie", "content/x/a", "---\ntest: zzz\n---\n");
-            var d1 = _kotori.GetDocument("dev", "udie", "content/x/a");
-            var meta1 = (d1.Meta as JObject);
-            Assert.AreEqual(@"aloha everyone!".Trim(), d1.Content.Trim());
-            Assert.AreEqual("zzz", meta1.Property("test").Value);
-            Assert.AreEqual(JTokenType.Boolean, meta1["cute"].Type);
-            Assert.AreEqual(true, meta1.Property("cute").Value);
-
-            _kotori.PartiallyUpdateDocument("dev", "udie", "content/x/a", 
-                                   @"---
-test: xxx
-cute: ~
----
-hi everyone!");
-            var d2 = _kotori.GetDocument("dev", "udie", "content/x/a");
-            var meta2 = (d2.Meta as JObject);
-            Assert.AreEqual(@"hi everyone!".Trim(), d2.Content.Trim());
-            Assert.AreEqual(1, meta2.Properties().LongCount());
-            Assert.AreEqual("xxx", meta2.Property("test").Value);
-        }
-
-        [TestMethod]
         public void DocumentVersions()
         {
             _kotori.CreateProject("dev", "vnum", "vnum", null);
@@ -588,38 +548,25 @@ hi everyone!");
             var d0 = _kotori.GetDocument("dev", "vnum", "content/x/a");
             Assert.AreEqual(0, d0.Version);
 
-            _kotori.PartiallyUpdateDocument("dev", "vnum", "content/x/a",
-                                   @"---
-test: zzz
----");
-            var d1 = _kotori.GetDocument("dev", "vnum", "content/x/a");
-            Assert.AreEqual(1, d1.Version);
-
-            _kotori.UpdateDocument("dev", "vnum", "content/x/a", "haha");
+            _kotori.UpdateDocument("dev", "vnum", "content/x/a", "haha2");
             var d2 = _kotori.GetDocument("dev", "vnum", "content/x/a");
-            Assert.AreEqual(2, d2.Version);
+            Assert.AreEqual(1, d2.Version);
 
             var versions = _kotori.GetDocumentVersions("dev", "vnum", "content/x/a");
             Assert.IsNotNull(versions);
-            Assert.AreEqual(3, versions.Count());
+            Assert.AreEqual(2, versions.Count());
 
             var dd0 = _kotori.GetDocument("dev", "vnum", "content/x/a", 0);
             var dd1 = _kotori.GetDocument("dev", "vnum", "content/x/a", 1);
-            var dd2 = _kotori.GetDocument("dev", "vnum", "content/x/a", 2);
 
             Assert.AreEqual("haha", dd0.Content);
-            Assert.AreEqual("haha", dd1.Content);
-            Assert.AreEqual("haha", dd2.Content);
+            Assert.AreEqual("haha2", dd1.Content);
 
             var meta00 = (dd0.Meta as JObject);
             Assert.AreEqual(0, meta00.Properties().LongCount());
 
             var meta11 = (dd1.Meta as JObject);
-            Assert.AreEqual(1, meta11.Properties().LongCount());
-
-            var meta22 = (dd2.Meta as JObject);
-            Assert.AreEqual(0, meta22.Properties().LongCount());
-            Assert.AreEqual(2, dd2.Version);
+            Assert.AreEqual(0, meta11.Properties().LongCount());
         }
 
         [TestMethod]
@@ -629,8 +576,8 @@ test: zzz
             _kotori.CreateDocument("dev", "vnum2", "content/x/a", "haha");
 
             for (var i = 0; i < 5; i++)
-                _kotori.PartiallyUpdateDocument("dev", "vnum2", "content/x/a", @"---
-test: zzz
+                _kotori.UpdateDocument("dev", "vnum2", "content/x/a", $@"---
+test: {i}
 ---");
             
             var repo = new Repository(_con);
@@ -790,21 +737,19 @@ fake: no
             Assert.AreEqual(new JValue("no"), docs.Last().Meta.fake);
             Assert.AreEqual(0, docs.Last().Version);
 
-            _kotori.PartiallyUpdateDocument("dev", "mrdata", "data/newgame/girls.yaml?2", @"---
+            _kotori.UpdateDocument("dev", "mrdata", "data/newgame/girls.yaml?2", @"---
 stars: !!int 3
 approved: !!bool false
-fake: ~
 ---
-xxx");
+");
             doc = _kotori.GetDocument("dev", "mrdata", "data/newgame/girls.yaml?2");
             Assert.AreEqual(1, doc.Version);
-            Assert.AreEqual(new JValue("Momo"), doc.Meta.girl);
             Assert.AreEqual(new JValue(3), doc.Meta.stars);
             Assert.AreEqual(new JValue(false), doc.Meta.approved);
             Assert.IsTrue(string.IsNullOrEmpty(doc.Content));
 
             var meta = (doc.Meta as JObject);
-            Assert.AreEqual(4, meta.Properties().LongCount());
+            Assert.AreEqual(2, meta.Properties().LongCount());
         }
 
         [TestMethod]
@@ -1067,7 +1012,7 @@ x: null
 y: null
 z: null
 ---";
-            _kotori.PartiallyUpdateDocument("dev", "alldata", "data/newgame/2017-02-02-girls.yaml?0", @"");
+            _kotori.UpdateDocument("dev", "alldata", "data/newgame/2017-02-02-girls.yaml?0", @"");
             d = _kotori.GetDocument("dev", "alldata", "data/newgame/2017-02-02-girls.yaml");
             meta = (d.Meta as JObject);
             Assert.AreEqual(0, meta.Properties().LongCount());
@@ -1091,7 +1036,7 @@ hello";
             Assert.AreEqual(3, meta.Properties().LongCount());
             Assert.IsFalse(string.IsNullOrEmpty(d.Content));
 
-            _kotori.PartiallyUpdateDocument("dev", "alldata2", "content/x/foo.md", @"---
+            _kotori.UpdateDocument("dev", "alldata2", "content/x/foo.md", @"---
 x: ~
 y: ~
 z: ~
@@ -1099,17 +1044,17 @@ z: ~
 .");
             d = _kotori.GetDocument("dev", "alldata2", "content/x/foo.md");
             meta = (d.Meta as JObject);
-            Assert.AreEqual(0, meta.Properties().LongCount());
+            Assert.AreEqual(3, meta.Properties().LongCount());
             Assert.AreEqual(".", d.Content.Trim());
 
-            _kotori.PartiallyUpdateDocument("dev", "alldata2", "content/x/foo.md", @"---
+            _kotori.UpdateDocument("dev", "alldata2", "content/x/foo.md", @"---
 yo: yeah
 x: ~
 ---");
             d = _kotori.GetDocument("dev", "alldata2", "content/x/foo.md");
             meta = (d.Meta as JObject);
-            Assert.AreEqual(1, meta.Properties().LongCount());
-            Assert.AreEqual(".", d.Content.Trim());
+            Assert.AreEqual(2, meta.Properties().LongCount());
+            Assert.AreEqual("", d.Content.Trim());
         }
 
         [TestMethod]
@@ -1125,14 +1070,13 @@ rr: ""nxull""
 ---";
 
             _kotori.CreateDocument("dev", "cversions", "content/x/foo", c);
-            _kotori.PartiallyUpdateDocument("dev", "cversions", "content/x/foo", @"---
+            _kotori.UpdateDocument("dev", "cversions", "content/x/foo", @"---
 x: b
 ---");
             var d = _kotori.GetDocument("dev", "cversions", "content/x/foo");
             var meta = (d.Meta as JObject);
-            Assert.AreEqual(3, meta.Properties().LongCount());
+            Assert.AreEqual(1, meta.Properties().LongCount());
             Assert.AreEqual(new JValue("b"), d.Meta.x);
-            Assert.AreEqual(new JValue("33"), d.Meta.b);
             Assert.AreEqual(null, d.Meta.r);
 
             var vers = _kotori.GetDocumentVersions("dev", "cversions", "content/x/foo");
@@ -1175,14 +1119,13 @@ rr: !!str nxull
 ---";
 
             _kotori.CreateDocument("dev", "dversions", "data/x/foo", c);
-            _kotori.PartiallyUpdateDocument("dev", "dversions", "data/x/foo?0", @"---
+            _kotori.UpdateDocument("dev", "dversions", "data/x/foo?0", @"---
 x: b
 ---");
             var d = _kotori.GetDocument("dev", "dversions", "data/x/foo?0");
             var meta = (d.Meta as JObject);
-            Assert.AreEqual(3, meta.Properties().LongCount());
+            Assert.AreEqual(1, meta.Properties().LongCount());
             Assert.AreEqual(new JValue("b"), d.Meta.x);
-            Assert.AreEqual(new JValue("33"), d.Meta.b);
             Assert.AreEqual(null, d.Meta.r);
 
             var vers = _kotori.GetDocumentVersions("dev", "dversions", "data/x/foo?0");
@@ -1226,7 +1169,7 @@ b: 34
 ---";
 
             _kotori.CreateDocument("dev", "dsmart", "data/x/foo", c);
-            _kotori.PartiallyUpdateDocument("dev", "dsmart", "data/x/foo?1", @"---
+            _kotori.UpdateDocument("dev", "dsmart", "data/x/foo?1", @"---
 b: 35
 ---");
             var vers = _kotori.GetDocumentVersions("dev", "dsmart", "data/x/foo?0");
@@ -1531,9 +1474,8 @@ girl: "" Aoba ""
 
             var firstHash = firstHashD.Hash;
 
-            await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", @"---
-{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
----
+            await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", @"
+[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]
 ");
 
             var secondHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
@@ -1552,7 +1494,7 @@ girl: "" Aoba ""
 
             var thirdHash = thirdHashD.Hash;
 
-            Assert.AreEqual("fuck", "ruck");
+            Assert.AreEqual(firstHash, thirdHash);
         }
 
         enum RawDocument

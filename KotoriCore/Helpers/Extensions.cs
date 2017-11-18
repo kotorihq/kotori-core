@@ -47,6 +47,9 @@ namespace KotoriCore.Helpers
 
             content = content.Trim();
 
+            if (content.StartsWith("---", StringComparison.OrdinalIgnoreCase))
+                content = content.Substring(3).Trim();
+            
             if ((content.StartsWith("{", StringComparison.OrdinalIgnoreCase) && content.EndsWith("}", StringComparison.OrdinalIgnoreCase)) ||
                 (content.StartsWith("[", StringComparison.OrdinalIgnoreCase) && content.EndsWith("]", StringComparison.OrdinalIgnoreCase)))
             {
@@ -115,7 +118,7 @@ namespace KotoriCore.Helpers
 
             var c = documentType.Type +
                 documentType.Indexes?.Select(i => i.From + "-" + i.To).ToImplodedString() +
-                documentType.Transformations?.Select(t => t.From + "-" + t.To + "-" + t.Transformations.Select(t2 => t2.ToString()).ToImplodedString());
+                documentType.Transformations?.Select(t => t.From + "-" + t.To + "-" + t.Transformations.Select(t2 => t2.ToString())?.ToImplodedString())?.ToImplodedString();
 
             return HashTools.GetHash(c, HashTools.HashType.SHA1);
         }

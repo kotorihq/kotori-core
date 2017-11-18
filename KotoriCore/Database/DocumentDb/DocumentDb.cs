@@ -97,8 +97,6 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(updateProjectKey);
                 else if (command is DeleteProjectKey deleteProjectKey)
                     result = await HandleAsync(deleteProjectKey);
-                else if (command is PartiallyUpdateDocument partiallyUpdateDocument)
-                    result = await HandleAsync(partiallyUpdateDocument);
                 else if (command is UpdateDocument updateDocument)
                     result = await HandleAsync(updateDocument);
                 else if (command is CreateDocument createDocument)
@@ -552,7 +550,9 @@ namespace KotoriCore.Database.DocumentDb
                      trans
                 );
 
-                dt = await CreateDocumentTypeAsync(dt);
+                dt.Hash = dt.ToHash();
+
+                dt = await _repoDocumentType.CreateAsync(dt);
 
                 return dt;
             }
@@ -572,7 +572,9 @@ namespace KotoriCore.Database.DocumentDb
                 
                 documentType.Transformations = trans;
 
-                await _repoDocumentType.ReplaceAsync(documentType);
+                documentType.Hash = documentType.ToHash();
+
+                documentType = await _repoDocumentType.ReplaceAsync(documentType);
 
                 return documentType;
             }

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
+using KotoriCore.Configurations;
+using KotoriCore.Database.DocumentDb;
 using KotoriCore.Documents;
 using KotoriCore.Documents.Deserializers;
 using KotoriCore.Helpers;
@@ -22,6 +24,7 @@ namespace KotoriCore.Cli
     {
         static Kotori _kotori;
         static Connection _con;
+        static DocumentDb _documentDb;
 
         static string GetContent(string path)
         {
@@ -55,29 +58,47 @@ namespace KotoriCore.Cli
 
             _con.CreateCollection();
 
+            _documentDb = new DocumentDb(new DocumentDbConfiguration
+            {
+                Endpoint = appSettings["Kotori:DocumentDb:Endpoint"],
+                AuthorizationKey = appSettings["Kotori:DocumentDb:AuthorizationKey"],
+                Database = appSettings["Kotori:DocumentDb:Database"],
+                Collection = appSettings["Kotori:DocumentDb:Collection"]
+            });
+
             try
             {
                 // --- CODE HERE --
 
-                var result = await _kotori.CreateProjectAsync("dev", "trans002", "Data", null);
+                var result = await _kotori.CreateProjectAsync("dev", "doctdel", "Data", null);
 
                 var c = @"---
 girl: "" Aoba ""
-module: "" foo ""
 ---
 ";
-                await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md", c);
+                await _kotori.CreateDocumentTypeAsync("dev", "doctdel", "data/newgame");
+                await _kotori.CreateDocumentAsync("dev", "doctdel", "data/newgame/girls.md", c);
 
-                _kotori.UpdateDocumentTypeTransformations("dev", "trans002", "data/newgame", @"
-[
-{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] },
-{ ""from"": ""module"", ""to"": ""module"", ""transformations"": [ ""trim"", ""uppercase"" ] }
-]
+                var docType = _kotori.GetDocumentType("dev", "doctdel", "data/newgame");
+
+                var firstHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
+
+                //Assert.IsNotNull(firstHashD);
+                //Assert.IsNotNull(docType);
+
+                var firstHash = firstHashD.Hash;
+
+                await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", @"
+[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]
 ");
-                await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?0", c);
-                var d = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?0");
 
-                JObject metaObj = JObject.FromObject(d.Meta);
+                var secondHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
+
+                //Assert.IsNotNull(secondHashD);
+
+                var secondHash = secondHashD.Hash;
+
+                //Assert.AreNotEqual(firstHash, secondHash);
 
                 // --- CODE HERE --
             }

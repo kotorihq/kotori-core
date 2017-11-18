@@ -18,11 +18,11 @@ namespace KotoriCore.Database.DocumentDb
                 throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var docType = await FindDocumentTypeByIdAsync
-                (
-                    command.Instance,
-                    projectUri,
-                    command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType)
-                );
+            (
+                command.Instance,
+                projectUri,
+                command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType)
+            );
 
             if (docType == null)
                 throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };

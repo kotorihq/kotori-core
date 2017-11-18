@@ -53,7 +53,7 @@ namespace KotoriCore.Documents.Transformation
             var fmt = content.ToFrontMatterType();
 
             if (fmt == Enums.FrontMatterType.None)
-                throw new KotoriDocumentTypeException(Identifier, "Uknown format of payload.");
+                throw new KotoriDocumentTypeException(Identifier, "Unknown format of payload.");
 
             IDeserializer ds;
 
@@ -62,7 +62,7 @@ namespace KotoriCore.Documents.Transformation
             else if (fmt == Enums.FrontMatterType.Yaml)
                 ds = new Yaml();
             else
-                throw new KotoriDocumentTypeException(Identifier, "Uknown format of payload.");
+                throw new KotoriDocumentTypeException(Identifier, "Unknown format of payload.");
 
             result = ds.Deserialize<List<DocumentTypeTransformation>>(content);
 

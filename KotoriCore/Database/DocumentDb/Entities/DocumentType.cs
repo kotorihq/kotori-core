@@ -85,7 +85,6 @@ namespace KotoriCore.Database.DocumentDb.Entities
             Type = type;
             Indexes = indexes.ToList();
             Transformations = transformations.ToList();
-            Hash = this.ToHash();
         }
     }
 }

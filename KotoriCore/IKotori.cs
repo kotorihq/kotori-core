@@ -47,8 +47,6 @@ namespace KotoriCore
         Task<string> UpdateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey);
         string DeleteProjectKey(string instance, string projectId, string projectKey);
         Task<string> DeleteProjectKeyAsync(string instance, string projectId, string projectKey);
-        string PartiallyUpdateDocument(string instance, string projectId, string identifier, string content);
-        Task<string> PartiallyUpdateDocumentAsync(string instance, string projectId, string identifier, string content);
         IEnumerable<SimpleDocumentVersion> GetDocumentVersions(string instance, string projectId, string identifier);
         Task<IEnumerable<SimpleDocumentVersion>> GetDocumentVersionsAsync(string instance, string projectId, string identifier);
     }

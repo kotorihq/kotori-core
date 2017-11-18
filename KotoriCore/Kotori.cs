@@ -500,32 +500,6 @@ namespace KotoriCore
         }
 
         /// <summary>
-        /// Updates document.
-        /// </summary>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="documentId">Document identifier.</param>
-        /// <param name="content">Content.</param>
-        /// <returns>Result.</returns>
-        public string PartiallyUpdateDocument(string instance, string projectId, string documentId, string content)
-        {
-            return AsyncTools.RunSync(() => PartiallyUpdateDocumentAsync(instance, projectId, documentId, content));
-        }
-
-        /// <summary>
-        /// Updates document.
-        /// </summary>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="documentId">Document identifier.</param>
-        /// <param name="content">Content.</param>
-        /// <returns>Result.</returns>
-        public async Task<string> PartiallyUpdateDocumentAsync(string instance, string projectId, string documentId, string content)
-        {
-            return (await ProcessAsync(new PartiallyUpdateDocument(instance, projectId, documentId, content)) as CommandResult<string>)?.Message;
-        }
-
-        /// <summary>
         /// Gets the document versions.
         /// </summary>
         /// <returns>The document versions.</returns>
