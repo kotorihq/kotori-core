@@ -83,9 +83,6 @@ girl: "" Aoba ""
 
                 var firstHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
 
-                //Assert.IsNotNull(firstHashD);
-                //Assert.IsNotNull(docType);
-
                 var firstHash = firstHashD.Hash;
 
                 await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", @"
@@ -94,11 +91,13 @@ girl: "" Aoba ""
 
                 var secondHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
 
-                //Assert.IsNotNull(secondHashD);
-
                 var secondHash = secondHashD.Hash;
 
-                //Assert.AreNotEqual(firstHash, secondHash);
+                await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", "");
+
+                var thirdHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
+
+                var thirdHash = thirdHashD.Hash;
 
                 // --- CODE HERE --
             }

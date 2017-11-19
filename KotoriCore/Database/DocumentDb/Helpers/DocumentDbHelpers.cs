@@ -1,5 +1,8 @@
 ﻿using System;
 using Sushi2;
+using KotoriCore.Helpers;
+using Newtonsoft.Json;
+using KotoriCore.Exceptions;
 
 namespace KotoriCore.Database.DocumentDb.Helpers
 {
@@ -31,12 +34,15 @@ namespace KotoriCore.Database.DocumentDb.Helpers
         /// <param name="future">If <c>true</c> then show future.</param>
         internal static string CreateDynamicQueryForDocumentSearch(string instance, Uri project, Uri documentType, int? top, string select, string filter, string orderBy, bool drafts, bool future)
         {
+            if (instance == null)
+                throw new ArgumentNullException(nameof(instance));
+            
             var sql = "select ";
 
             if (top.HasValue)
                 sql += $"top {top} ";
 
-            sql += select + " from c where ";
+            sql += (select ?? "*") + " from c where ";
 
             sql += " (c.entity = '" +
                 DocumentDb.DocumentEntity +
@@ -65,6 +71,46 @@ namespace KotoriCore.Database.DocumentDb.Helpers
                 sql += " order by " + orderBy;
             
             return sql;
+        }
+
+        /// <summary>
+        /// Converts to the Json string.
+        /// </summary>
+        /// <returns>The Json string.</returns>
+        /// <param name="document">Document.</param>
+        internal static string ToJsonString(this Entities.Document document)
+        {
+            if (document == null)
+                throw new ArgumentNullException(nameof(document));
+
+            var documentType = new Uri(document.DocumentTypeId).ToDocumentType();
+
+            if (documentType == Enums.DocumentType.Content)
+            {
+                var result = "---" +
+                    Environment.NewLine +
+                    document.Meta == null ? "" : JsonConvert.SerializeObject(document.Meta) +
+                    Environment.NewLine +
+                    "---" +
+                    Environment.NewLine +
+                    document.Content;
+
+                return result;
+            }
+
+            if (documentType == Enums.DocumentType.Data)
+            {
+                var result = "---" +
+                    Environment.NewLine +
+                    JsonConvert.SerializeObject(document.Meta) +
+                    Environment.NewLine +
+                    "---" +
+                    Environment.NewLine;
+
+                return result;
+            }
+
+            throw new KotoriException($"Unknown document type when trying to reconstruct document of type {documentType}.");
         }
     }
 }

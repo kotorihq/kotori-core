@@ -1494,7 +1494,17 @@ girl: "" Aoba ""
 
             var thirdHash = thirdHashD.Hash;
 
-            Assert.AreEqual(firstHash, thirdHash);
+            Assert.AreNotEqual(firstHash, thirdHash);
+
+            await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", @"
+[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]
+");
+            await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", "");
+
+            var fourthHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
+
+            Assert.IsNotNull(fourthHashD);
+            Assert.AreNotEqual(fourthHashD, thirdHash);
         }
 
         enum RawDocument

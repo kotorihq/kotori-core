@@ -6,8 +6,8 @@ using Sushi2;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using KotoriCore.Database.DocumentDb.Entities;
 using System.Linq;
+using KotoriCore.Domains;
 
 namespace KotoriCore.Helpers
 {    
@@ -111,7 +111,7 @@ namespace KotoriCore.Helpers
         /// </summary>
         /// <param name="documentType">Document type.</param>
         /// <returns>The hash.</returns>
-        public static string ToHash(this DocumentType documentType)
+        public static string ToHash(this Database.DocumentDb.Entities.DocumentType documentType)
         {
             if (documentType == null)
                 throw new ArgumentNullException(nameof(documentType));
@@ -119,6 +119,21 @@ namespace KotoriCore.Helpers
             var c = documentType.Type +
                 documentType.Indexes?.Select(i => i.From + "-" + i.To).ToImplodedString() +
                 documentType.Transformations?.Select(t => t.From + "-" + t.To + "-" + t.Transformations.Select(t2 => t2.ToString())?.ToImplodedString())?.ToImplodedString();
+
+            return HashTools.GetHash(c, HashTools.HashType.SHA1);
+        }
+
+        /// <summary>
+        /// Gets the hash.
+        /// </summary>
+        /// <param name="transformations">Transformations.</param>
+        /// <returns>The hash.</returns>
+        public static string ToHash(this IEnumerable<DocumentTypeTransformation> transformations)
+        {
+            if (transformations == null)
+                throw new ArgumentNullException(nameof(transformations));
+            
+            var c = transformations?.Select(t => t.From + "-" + t.To + "-" + t.Transformations.Select(t2 => t2.ToString())?.ToImplodedString())?.ToImplodedString();
 
             return HashTools.GetHash(c, HashTools.HashType.SHA1);
         }

@@ -13,6 +13,7 @@ using KotoriCore.Domains;
 using KotoriCore.Search;
 using Newtonsoft.Json.Linq;
 using KotoriCore.Documents.Transformation;
+using KotoriCore.Database.DocumentDb.Helpers;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -569,12 +570,49 @@ namespace KotoriCore.Database.DocumentDb
 
                 if (!transformations.Ignore)
                     trans = new Transformation(documentTypeId.ToKotoriIdentifier(Router.IdentifierType.DocumentType), transformations.Value).Transformations;
-                
+
+                var oldTransformationsHash = documentType.Transformations.ToHash();
+                    
                 documentType.Transformations = trans;
+
+                var newTransformationsHash = documentType.Transformations.ToHash();
 
                 documentType.Hash = documentType.ToHash();
 
                 documentType = await _repoDocumentType.ReplaceAsync(documentType);
+
+                // new transformations, update all documents because of new transformations
+                if (!oldTransformationsHash.Equals(newTransformationsHash))
+                {
+                    var sql = CreateDynamicQueryForDocumentSearch
+                    (
+                        instance,
+                        projectId,
+                        documentTypeId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        true,
+                        true
+                    );
+
+                    var documents = await GetDocumentsAsync(sql);
+
+                    foreach(var document in documents)
+                    {
+                        await UpdateDocumentHelperAsync
+                        (
+                            new UpdateDocument
+                            (
+                                instance,
+                                projectId.ToKotoriIdentifier(Router.IdentifierType.Project),
+                                new Uri(document.Identifier).ToKotoriIdentifier(documentType.Type == Enums.DocumentType.Data ? Router.IdentifierType.Data : Router.IdentifierType.Document),
+                                document.ToJsonString()
+                            )
+                        );
+                    }
+                }
 
                 return documentType;
             }
