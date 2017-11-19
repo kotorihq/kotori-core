@@ -1426,7 +1426,14 @@ girl: "" Aoba ""
 module: "" foo ""
 ---
 ";
+
+            var c2 = @"---
+girl: "" Nene ""
+module: "" bar ""
+---
+";
             await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md?-1", c);
 
             _kotori.UpdateDocumentTypeTransformations("dev", "trans002", "data/newgame", @"
 [
@@ -1434,13 +1441,32 @@ module: "" foo ""
 { ""from"": ""module"", ""to"": ""module"", ""transformations"": [ ""trim"", ""uppercase"" ] }
 ]
 ");
-            await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?0", c);
             var d = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?0");
+            var d2 = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?1");
 
             JObject metaObj = JObject.FromObject(d.Meta);
+            JObject metaObj2 = JObject.FromObject(d2.Meta);
 
             Assert.AreEqual(new JValue("aoba"), metaObj["girl2"]);
             Assert.AreEqual(new JValue("FOO"), metaObj["module"]);
+
+            Assert.AreEqual(new JValue("nene"), metaObj2["girl2"]);
+            Assert.AreEqual(new JValue("bar"), metaObj2["module"]);
+
+            await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?0", c);
+            await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?1", c2);
+
+            d = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?0");
+            d2 = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?1");
+
+            metaObj = JObject.FromObject(d.Meta);
+            metaObj2 = JObject.FromObject(d2.Meta);
+
+            Assert.AreEqual(new JValue("aoba"), metaObj["girl2"]);
+            Assert.AreEqual(new JValue("FOO"), metaObj["module"]);
+
+            Assert.AreEqual(new JValue("nene"), metaObj2["girl2"]);
+            Assert.AreEqual(new JValue("bar"), metaObj2["module"]);
 
             var dd = await _documentDb.FindDocumentByIdAsync("dev", new Uri("kotori://trans002/"), new Uri("kotori://data/newgame/girls.md?0"), null);
 
@@ -1451,6 +1477,20 @@ module: "" foo ""
             Assert.AreEqual(new JValue(" Aoba "), originalObj["girl"]);
             Assert.AreEqual(new JValue(" foo "), originalObj["module"]);
             Assert.IsNull(originalObj["girl2"]);
+
+            _kotori.UpdateDocumentTypeTransformations("dev", "trans002", "data/newgame", @"[]");
+
+            d = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?0");
+            d2 = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?1");
+
+            metaObj = JObject.FromObject(d.Meta);
+            metaObj2 = JObject.FromObject(d2.Meta);
+
+            Assert.AreEqual(new JValue(" Aoba "), metaObj["girl2"]);
+            Assert.AreEqual(new JValue(" foo "), metaObj["module"]);
+
+            Assert.AreEqual(new JValue(" Nene"), metaObj2["girl2"]);
+            Assert.AreEqual(new JValue(" bar "), metaObj2["module"]);
         }
 
         [TestMethod]
