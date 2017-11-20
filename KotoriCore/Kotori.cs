@@ -117,11 +117,10 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="name">Project name.</param>
-        /// <param name="projectKeys">Project keys.</param>
         /// <returns>Result.</returns>
-        public string CreateProject(string instance, string projectId, string name, IEnumerable<Configurations.ProjectKey> projectKeys)
+        public string CreateProject(string instance, string projectId, string name)
         {
-            return AsyncTools.RunSync(() => CreateProjectAsync(instance, projectId, name, projectKeys));
+            return AsyncTools.RunSync(() => CreateProjectAsync(instance, projectId, name));
         }
 
         /// <summary>
@@ -130,11 +129,10 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="name">Project name.</param>
-        /// <param name="projectKeys">Project keys.</param>
         /// <returns>Result.</returns>
-        public async Task<string> CreateProjectAsync(string instance, string projectId, string name, IEnumerable<Configurations.ProjectKey> projectKeys)
+        public async Task<string> CreateProjectAsync(string instance, string projectId, string name)
         {
-            return (await ProcessAsync(new CreateProject(instance, projectId, name, projectKeys)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertProject(true, instance, projectId, name)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -404,27 +402,27 @@ namespace KotoriCore
         }
 
         /// <summary>
-        /// Updates project.
+        /// Upserts project.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Identifier.</param>
         /// <param name="name">Name.</param>
         /// <returns>Result.</returns>
-        public string UpdateProject(string instance, string projectId, string name)
+        public string UpsertProject(string instance, string projectId, string name)
         {
-            return AsyncTools.RunSync(() => UpdateProjectAsync(instance, projectId, name));
+            return AsyncTools.RunSync(() => UpsertProjectAsync(instance, projectId, name));
         }
 
         /// <summary>
-        /// Updates project.
+        /// Upserts project.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Identifier.</param>
         /// <param name="name">Name.</param>
         /// <returns>Result.</returns>
-        public async Task<string> UpdateProjectAsync(string instance, string projectId, string name)
+        public async Task<string> UpsertProjectAsync(string instance, string projectId, string name)
         {
-            return (await ProcessAsync(new UpdateProject(instance, projectId, name)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertProject(false, instance, projectId, name)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>

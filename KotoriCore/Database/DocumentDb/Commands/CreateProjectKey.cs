@@ -32,7 +32,8 @@ namespace KotoriCore.Database.DocumentDb
             project.Identifier = project.Identifier.ToKotoriUri(Router.IdentifierType.Project).ToString();
             project.ProjectKeys = keys;
 
-            await ReplaceProjectAsync(project);
+            // TODO: inspect - instead of replacing we use usperting
+            await UpsertProjectAsync(project);
 
             return new CommandResult<string>("Project key has been added.");
         }

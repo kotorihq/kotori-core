@@ -53,13 +53,11 @@ namespace KotoriCore.Database.DocumentDb.Entities
         /// <param name="instance">Instance.</param>
         /// <param name="name">Name.</param>
         /// <param name="identifier">Identifier.</param>
-        /// <param name="projectKeys">Project keys.</param>
-        public Project(string instance, string name, string identifier, IEnumerable<ProjectKey> projectKeys)
+        public Project(string instance, string name, string identifier)
         {
             Instance = instance;
             Name = name;
             Identifier = identifier;
-            ProjectKeys = projectKeys ?? new List<ProjectKey>();
         }
     }
 }

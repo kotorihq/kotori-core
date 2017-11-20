@@ -68,8 +68,8 @@ namespace KotoriCore.Database.DocumentDb
                     validationResults.Any())
                     throw new KotoriValidationException(validationResults);
 
-                if (command is CreateProject createProject)
-                    result = await HandleAsync(createProject);
+                if (command is UpsertProject upsertProject)
+                    result = await HandleAsync(upsertProject);
                 else if (command is GetProjects getProjects)
                     result = await HandleAsync(getProjects);
                 else if (command is DeleteProject deleteProject)
@@ -90,7 +90,7 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(getProject);
                 else if (command is GetProjectKeys getProjectKeys)
                     result = await HandleAsync(getProjectKeys);
-                else if (command is UpdateProject updateProject)
+                else if (command is UpsertProject updateProject)
                     result = await HandleAsync(updateProject);
                 else if (command is CreateProjectKey createProjectKey)
                     result = await HandleAsync(createProjectKey);
@@ -284,9 +284,9 @@ namespace KotoriCore.Database.DocumentDb
             return await _repoProject.CreateAsync(project);
         }
 
-        async Task<Entities.Project> ReplaceProjectAsync(Entities.Project project)
+        async Task<Entities.Project> UpsertProjectAsync(Entities.Project project)
         {
-            return await _repoProject.ReplaceAsync(project);
+            return await _repoProject.UpsertAsync(project);
         }
 
         async Task<bool> DeleteDocumentAsync(Entities.Document document)
@@ -608,7 +608,7 @@ namespace KotoriCore.Database.DocumentDb
                                 instance,
                                 projectId.ToKotoriIdentifier(Router.IdentifierType.Project),
                                 new Uri(document.Identifier).ToKotoriIdentifier(documentType.Type == Enums.DocumentType.Data ? Router.IdentifierType.Data : Router.IdentifierType.Document),
-                                document.ToJsonString()
+                                document.ToOriginalJsonString()
                             )
                         );
                     }

@@ -4,9 +4,9 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Update project command.
+    /// Upsert project command.
     /// </summary>
-    public class UpdateProject : Command
+    public class UpsertProject : Command
     {
         /// <summary>
         /// The instance.
@@ -24,13 +24,20 @@ namespace KotoriCore.Commands
         public readonly string Name;
 
         /// <summary>
+        /// The create only flag.
+        /// </summary>
+        public readonly bool CreateOnly;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpdateProject"/> class.
         /// </summary>
+        /// <param name="createOnly">Create only.</param>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="name">Name.</param>
-        public UpdateProject(string instance, string projectId, string name)
+        public UpsertProject(bool createOnly, string instance, string projectId, string name)
         {
+            CreateOnly = createOnly;
             Instance = instance;
             ProjectId = projectId;
             Name = name;

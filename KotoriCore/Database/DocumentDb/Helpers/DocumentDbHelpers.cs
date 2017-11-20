@@ -78,7 +78,7 @@ namespace KotoriCore.Database.DocumentDb.Helpers
         /// </summary>
         /// <returns>The Json string.</returns>
         /// <param name="document">Document.</param>
-        internal static string ToJsonString(this Entities.Document document)
+        internal static string ToOriginalJsonString(this Entities.Document document)
         {
             if (document == null)
                 throw new ArgumentNullException(nameof(document));
@@ -89,7 +89,7 @@ namespace KotoriCore.Database.DocumentDb.Helpers
             {
                 var result = "---" +
                     Environment.NewLine +
-                    document.Meta == null ? "" : JsonConvert.SerializeObject(document.Meta) +
+                    document.OriginalMeta == null ? "" : JsonConvert.SerializeObject(document.OriginalMeta) +
                     Environment.NewLine +
                     "---" +
                     Environment.NewLine +
@@ -102,7 +102,7 @@ namespace KotoriCore.Database.DocumentDb.Helpers
             {
                 var result = "---" +
                     Environment.NewLine +
-                    JsonConvert.SerializeObject(document.Meta) +
+                    JsonConvert.SerializeObject(document.OriginalMeta) +
                     Environment.NewLine +
                     "---" +
                     Environment.NewLine;

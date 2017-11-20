@@ -17,8 +17,8 @@ namespace KotoriCore
         Task<string> UpdateDocumentAsync(string instance, string projectId, string identifier, string content);
         string CreateDocument(string instance, string projectId, string identifier, string content);
         Task<string> CreateDocumentAsync(string instance, string projectId, string identifier, string content);
-        string CreateProject(string instance, string identifier, string name, IEnumerable<Configurations.ProjectKey> projectKeys);
-        Task<string> CreateProjectAsync(string instance, string identifier, string name, IEnumerable<Configurations.ProjectKey> projectKeys);
+        string CreateProject(string instance, string identifier, string name);
+        Task<string> CreateProjectAsync(string instance, string identifier, string name);
         string DeleteProject(string instance, string identifier);
         Task<string> DeleteProjectAsync(string instance, string identifier);
         IEnumerable<SimpleProject> GetProjects(string instance);
@@ -39,8 +39,8 @@ namespace KotoriCore
         Task<SimpleProject> GetProjectAsync(string instance, string identifier);
         IEnumerable<Domains.ProjectKey> GetProjectKeys(string instance, string identifier);
         Task<IEnumerable<Domains.ProjectKey>> GetProjectKeysAsync(string instance, string identifier);
-        string UpdateProject(string instance, string projectId, string name);
-        Task<string> UpdateProjectAsync(string instance, string projectId, string name);
+        string UpsertProject(string instance, string projectId, string name);
+        Task<string> UpsertProjectAsync(string instance, string projectId, string name);
         string CreateProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey);
         Task<string> CreateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey);
         string UpdateProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey);

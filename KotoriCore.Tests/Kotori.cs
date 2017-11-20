@@ -50,7 +50,7 @@ namespace KotoriCore.Tests
                                     
             _con.CreateCollection();
 
-            _kotori.CreateProject("dev", "nenecchi/stable", "Nenecchi", new List<ProjectKey> { new ProjectKey("sakura-nene") });
+            _kotori.CreateProject("dev", "nenecchi/stable", "Nenecchi");
         }
 
         [ClassCleanup]
@@ -63,21 +63,22 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public async Task FailToCreateProjectFirst()
         {
-            await _kotori.CreateProjectAsync("", "", "", null);
+            await _kotori.CreateProjectAsync("", "", "");
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public async Task FailToCreateProjectSecond()
         {
-            await _kotori.CreateProjectAsync("foo", "x x", "bar", null);
+            await _kotori.CreateProjectAsync("foo", "x x", "bar");
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public async Task FailToCreateProjectBadKeys()
         {
-            await _kotori.CreateProjectAsync("foo", "aoba", "bar", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
+            await _kotori.CreateProjectAsync("foo", "aoba", "bar");
+            await _kotori.CreateProjectKeyAsync("foo", "aoba", new ProjectKey(null, true));
         }
 
         [TestMethod]
@@ -88,24 +89,9 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        public void CreateProjectDirectValidations()
-        {
-            var p = new CreateProject("dev", "aoba/ main", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey(null, true) });
-            var vr = p.Validate().ToList();
-
-            Assert.AreEqual(1, vr.Count());
-            Assert.AreEqual("All project keys must be set.", vr[0].Message);
-
-            p = new CreateProject("dev", "aoba-main", "aoba", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
-            vr = p.Validate().ToList();
-
-            Assert.AreEqual(0, vr.Count());
-        }
-
-        [TestMethod]
         public async Task Complex()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi/main", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi/main", "Nenecchi");
 
             Assert.AreEqual("Project has been created.", result);
 
@@ -146,7 +132,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Dupe slug was inappropriately validated as ok.")]
         public async Task DupeSlugs()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dupe", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dupe", "Nenecchi");
 
             var c = GetContent(RawDocument.Matrix);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", "content/movie2/matrix.md", c);
@@ -156,7 +142,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task FindDocuments()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find", "Nenecchi");
 
             var c = GetContent(RawDocument.FlyingWitch);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-find", "content/tv/2017-05-06-flying-witch.md", c);
@@ -190,7 +176,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task FindDocuments2()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find2", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-find2", "Nenecchi");
 
             var c = @"aloha";
             await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", "content/tv/witch.md", c);
@@ -203,7 +189,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task SameHash()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-hash", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-hash", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witch.md", c);
@@ -219,7 +205,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task DeleteDocument()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-del", "content/tv/2017-05-06-flip-flappers.md", c);
@@ -244,7 +230,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Delete command was inappropriately allowed.")]
         public async Task DeleteDocumentThatDoesntExist()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del2", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-del2", "Nenecchi");
 
             _kotori.DeleteDocument("dev", "nenecchi-del2", "content/tv/2017-05-06-flying-witchxxx.md");
         }
@@ -252,7 +238,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task CountDocuments()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-count", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-count", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-count", "content/tv/2017-05-06-flip-flappers.md", c);
@@ -271,7 +257,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task Drafts()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-drafts", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-drafts", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-drafts", "content/tv/2037-05-06-flip-flappers.md", c);
@@ -302,7 +288,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Get non-existent document inappropriately processed.")]
         public async Task GetDocumentBadId()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dn", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dn", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-dn", "content/tv/2117-05-06-flip-flappers.md", c);
@@ -314,7 +300,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentTypeException), "Get non-existent document type inappropriately processed.")]
         public async Task GetDocumentTypeBadId()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-dty", "content/tv/2117-05-06-flip-flappers.md", c);
@@ -325,7 +311,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task GetDocumentType()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty2", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "nenecchi-dty2", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "nenecchi-dty2", "content/tv/2117-05-06-flip-flappers.md", c);
@@ -340,7 +326,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Null document inappropriately processed.")]
         public async Task CreateInvalidDocument()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "inv", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "inv", "Nenecchi");
 
             await _kotori.CreateDocumentAsync("dev", "inv", "content/tv/2117-05-06-flip-flappers.md", null);
         }
@@ -348,7 +334,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task DocumentTypes()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "doctypes", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "doctypes", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "doctypes", "content/tv/2007-05-06-flip-flappers.md", c);
@@ -367,7 +353,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriProjectException), "Non deletable project inappropriately allowed to be deleted.")]
         public async Task ProjectDeleteFail()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "immortal", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "immortal", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "immortal", "content/tv/2007-05-06-flip-flappers.md", c);
@@ -377,7 +363,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task Draft()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "slugdraft", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            var result = await _kotori.CreateProjectAsync("dev", "slugdraft", "Nenecchi");
 
             var c = GetContent(RawDocument.Matrix);
             await _kotori.CreateDocumentAsync("dev", "slugdraft", "content/movie/_matrix.md", c);
@@ -391,7 +377,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task GetProject()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "fantomas", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene") });
+            var result = await _kotori.CreateProjectAsync("dev", "fantomas", "Nenecchi");
             Assert.AreEqual("Project has been created.", result);
             var project = _kotori.GetProject("dev", "fantomas");
 
@@ -401,7 +387,12 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task GetProjectKeys()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "rude", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene"), new Configurations.ProjectKey("aoba", true) });
+            var result = await _kotori.CreateProjectAsync("dev", "rude", "Nenecchi");
+            var keys = new List<ProjectKey> { new ProjectKey("sakura-nene"), new ProjectKey("aoba", true) };
+
+            foreach (var k in keys)
+                _kotori.CreateProjectKey("dev", "rude", k);
+                
             Assert.AreEqual("Project has been created.", result);
             var projectKeys = _kotori.GetProjectKeys("dev", "rude");
 
@@ -422,14 +413,14 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task UpdateProject()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "raw", "Nenecchi", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("sakura-nene"), new Configurations.ProjectKey("aoba", true) });
+            var result = await _kotori.CreateProjectAsync("dev", "raw", "Nenecchi");
             Assert.AreEqual("Project has been created.", result);
 
             var first = _kotori.GetProject("dev", "raw");
 
             Assert.AreEqual("Nenecchi", first.Name);
 
-            _kotori.UpdateProject("dev", "raw", "Aoba");
+            _kotori.UpsertProject("dev", "raw", "Aoba");
 
             first = _kotori.GetProject("dev", "raw");
 
@@ -437,24 +428,17 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriProjectException), "Non existent project was inappropriately accepted.")]
-        public void UpdateProjectFail()
-        {
-            var projectKeys = _kotori.UpdateProject("dev", "rudex-fail", "Hehe");
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(KotoriValidationException), "No properties were inappropriately accepted.")]
         public void UpdateProjectFail2()
         {
-            _kotori.CreateProject("dev", "failiep", "Nenecchi", null);
-            var projectKeys = _kotori.UpdateProject("dev", "failiep", null);
+            _kotori.UpsertProject("dev", "failiep", "Nenecchi");
+            var projectKeys = _kotori.UpsertProject("dev", "failiep", null);
         }
 
         [TestMethod]
         public void DocumentFormat()
         {
-            var result = _kotori.CreateProject("dev", "weformat", "WF", null);
+            var result = _kotori.UpsertProject("dev", "weformat", "WF");
 
             _kotori.CreateDocument("dev", "weformat", "content/tv/rakosnicek.md", "---\n---\nhello *space* **cowboy**!");
 
@@ -469,35 +453,35 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Null project key was inappropriately accepted.")]
         public void CreateProjectKeyFail0()
         {
-            var result = _kotori.CreateProject("dev", "cpkf0", "foo", null);
+            var result = _kotori.CreateProject("dev", "cpkf0", "foo");
 
-            _kotori.CreateProjectKey("dev", "cpkf0", new Configurations.ProjectKey(null));
+            _kotori.CreateProjectKey("dev", "cpkf0", new ProjectKey(null));
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriProjectException), "Duplicate key was inappropriately accepted.")]
         public void CreateProjectKeyFail1()
         {
-            var result = _kotori.CreateProject("dev", "cpkf1", "foo", null);
+            var result = _kotori.CreateProject("dev", "cpkf1", "foo");
 
-            _kotori.CreateProjectKey("dev", "cpkf1", new Configurations.ProjectKey("bar"));
-            _kotori.CreateProjectKey("dev", "cpkf1", new Configurations.ProjectKey("bar"));
+            _kotori.CreateProjectKey("dev", "cpkf1", new ProjectKey("bar"));
+            _kotori.CreateProjectKey("dev", "cpkf1", new ProjectKey("bar"));
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriProjectException), "Non existent key was inappropriately accepted.")]
         public void UpdateProjectKeyFail()
         {
-            var result = _kotori.CreateProject("dev", "cpkf2", "foo", null);
+            var result = _kotori.CreateProject("dev", "cpkf2", "foo");
 
-            _kotori.UpdateProjectKey("dev", "cpkf2", new Configurations.ProjectKey("bar", true));
+            _kotori.UpdateProjectKey("dev", "cpkf2", new ProjectKey("bar", true));
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriProjectException), "Non existent key was inappropriately accepted for deletion.")]
         public void DeleteProjectKeyFail()
         {
-            var result = _kotori.CreateProject("dev", "delprok", "foo", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("xxx") });
+            var result = _kotori.CreateProject("dev", "delprok", "foo");
 
             _kotori.DeleteProjectKey("dev", "delprok", "oh-ah-la-la-la");
         }
@@ -505,10 +489,15 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void CreateProjectKeys()
         {
-            var result = _kotori.CreateProject("dev", "cpkeys", "Foobar", new List<Configurations.ProjectKey> { new Configurations.ProjectKey("aaa", true), new Configurations.ProjectKey("bbb", false) });
+                var result = _kotori.CreateProject("dev", "cpkeys", "Foobar");
 
-            _kotori.CreateProjectKey("dev", "cpkeys", new Configurations.ProjectKey("ccc", true));
-            _kotori.CreateProjectKey("dev", "cpkeys", new Configurations.ProjectKey("ddd", false));
+            var kkk = new List<ProjectKey> { new ProjectKey("aaa", true), new ProjectKey("bbb", false) };
+
+            foreach (var k in kkk)
+                _kotori.CreateProjectKey("dev", "cpkeys", k);
+                
+            _kotori.CreateProjectKey("dev", "cpkeys", new ProjectKey("ccc", true));
+            _kotori.CreateProjectKey("dev", "cpkeys", new ProjectKey("ddd", false));
 
             var keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
 
@@ -522,7 +511,7 @@ namespace KotoriCore.Tests
             Assert.AreEqual("ddd", keys[3].Key);
             Assert.AreEqual(false, keys[3].IsReadonly);
 
-            _kotori.UpdateProjectKey("dev", "cpkeys", new Configurations.ProjectKey("aaa", false));
+            _kotori.UpdateProjectKey("dev", "cpkeys", new ProjectKey("aaa", false));
 
             keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
 
@@ -542,7 +531,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void DocumentVersions()
         {
-            _kotori.CreateProject("dev", "vnum", "vnum", null);
+            _kotori.CreateProject("dev", "vnum", "vnum");
             _kotori.CreateDocument("dev", "vnum", "content/x/a", "haha");
 
             var d0 = _kotori.GetDocument("dev", "vnum", "content/x/a");
@@ -572,7 +561,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void DeleteDocumentVersions()
         {
-            _kotori.CreateProject("dev", "vnum2", "vnum", null);
+            _kotori.CreateProject("dev", "vnum2", "vnum");
             _kotori.CreateDocument("dev", "vnum2", "content/x/a", "haha");
 
             for (var i = 0; i < 5; i++)
@@ -606,7 +595,7 @@ test: {i}
         [TestMethod]
         public void DraftAndNonDraft()
         {
-            _kotori.CreateProject("dev", "drnodr", "Udie", null);
+            _kotori.UpsertProject("dev", "drnodr", "Udie");
             _kotori.CreateDocument("dev", "drnodr", "content/x/_a", "hello");
 
             var d0 = _kotori.GetDocument("dev", "drnodr", "content/x/a");
@@ -632,7 +621,7 @@ test: {i}
         [TestMethod]
         public async Task ComplexData()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "mrdata", "MrData", null);
+            var result = await _kotori.CreateProjectAsync("dev", "mrdata", "MrData");
 
             var c = @"---
 girl: Aoba
@@ -756,7 +745,7 @@ approved: !!bool false
         [ExpectedException(typeof(KotoriDocumentException), "Upserting at index should allow only 1 document.")]
         public void UpsertDataAtIndexFail()
         {
-            _kotori.CreateProject("dev", "data-fff", "Udie", null);
+            _kotori.CreateProject("dev", "data-fff", "Udie");
 
             var c = @"---
 girl: Aoba
@@ -772,7 +761,7 @@ approved: !!bool true
         [ExpectedException(typeof(KotoriDocumentException), "Upserting at index should allow only 1 document.")]
         public void UpsertDataAtIndexSemiOk()
         {
-            _kotori.CreateProject("dev", "data-fff-v2", "Udie", null);
+            _kotori.CreateProject("dev", "data-fff-v2", "Udie");
 
             var c = @"---
 girl: Aoba
@@ -818,7 +807,7 @@ approved: !!bool false
         [TestMethod]
         public void UpsertDocumentsWithSpecialIndex()
         {
-            _kotori.CreateProject("dev", "data-woho", "Udie", null);
+            _kotori.CreateProject("dev", "data-woho", "Udie");
 
             var c = @"---
 girl: Aoba
@@ -846,7 +835,7 @@ approved: !!bool false
         [ExpectedException(typeof(KotoriDocumentException), "Deleting without index was allowed to be deleted.")]
         public void DeleteDataWithoutIndex()
         {
-            _kotori.CreateProject("dev", "data-woho2", "Udie", null);
+            _kotori.CreateProject("dev", "data-woho2", "Udie");
 
             var c = @"---
 girl: Aoba
@@ -873,7 +862,7 @@ approved: !!bool false
         [ExpectedException(typeof(KotoriDocumentException), "Deleting with bad index was allowed to be deleted.")]
         public void DeleteDataWithBadIndex()
         {
-            _kotori.CreateProject("dev", "data-woho3", "Udie", null);
+            _kotori.CreateProject("dev", "data-woho3", "Udie");
 
             var c = @"---
 girl: Aoba
@@ -899,7 +888,7 @@ approved: !!bool false
         [TestMethod]
         public async Task WeirdDataDocument()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "mrdataf", "MrData", null);
+            var result = await _kotori.CreateProjectAsync("dev", "mrdataf", "MrData");
 
             var c = @"---
 foo: bar
@@ -913,7 +902,7 @@ foo: bar
         [TestMethod]
         public async Task WeirdDataDocument2()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "mrdataf2", "MrData", null);
+            var result = await _kotori.CreateProjectAsync("dev", "mrdataf2", "MrData");
 
             var c = @"
 foo: bar
@@ -928,7 +917,7 @@ foo: bar
         [ExpectedException(typeof(KotoriDocumentException), "Invalid yaml data inappropriately accepted.")]
         public async Task BadDataDocumentYaml()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "mrdataf3", "MrData", null);
+            var result = await _kotori.CreateProjectAsync("dev", "mrdataf3", "MrData");
 
             var c = @"---
 ---
@@ -940,7 +929,7 @@ foo: bar
         [ExpectedException(typeof(KotoriDocumentException), "Invalid json data inappropriately accepted.")]
         public async Task BadDataDocumentJson()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "mrdataf4", "MrData", null);
+            var result = await _kotori.CreateProjectAsync("dev", "mrdataf4", "MrData");
 
             var c = @"[
 { ""test"": true },
@@ -954,7 +943,7 @@ foo: bar
         [ExpectedException(typeof(KotoriException), "Invalid date was accepted.")]
         public async Task DocumentWithBadDate()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "bad-bat", "Nenecchi", null);
+            var result = await _kotori.CreateProjectAsync("dev", "bad-bat", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
             await _kotori.CreateDocumentAsync("dev", "bad-bat", "content/tv/2007-02-32-flip-flappers.md", c);
@@ -963,7 +952,7 @@ foo: bar
         [TestMethod]
         public void DefaultDateForData()
         {
-            _kotori.CreateProject("dev", "data-inv", "Udie", null);
+            _kotori.CreateProject("dev", "data-inv", "Udie");
 
             var c = @"---
 mr: x
@@ -978,7 +967,7 @@ mr: x
         [ExpectedException(typeof(KotoriDocumentException), "Internal fields accepted for data document.")]
         public void InternalPropsForData()
         {
-            _kotori.CreateProject("dev", "data-inv2", "Udie", null);
+            _kotori.CreateProject("dev", "data-inv2", "Udie");
 
             var c = @"---
 $date: 2017-03-03
@@ -992,7 +981,7 @@ $slug: haha
         [ExpectedException(typeof(KotoriDocumentException), "Data document with no meta was accepted and upserted.")]
         public void UpdateSetNullForAllFieldsData()
         {
-            _kotori.CreateProject("dev", "alldata", "Udie", null);
+            _kotori.CreateProject("dev", "alldata", "Udie");
 
             var c = @"---
 { ""x"": a,
@@ -1021,7 +1010,7 @@ z: null
         [TestMethod]
         public void UpdateSetNullForAllFieldsContent()
         {
-            _kotori.CreateProject("dev", "alldata2", "Udie", null);
+            _kotori.CreateProject("dev", "alldata2", "Udie");
 
             var c = @"---
 x: a
@@ -1060,7 +1049,7 @@ x: ~
         [TestMethod]
         public void ContentVersions()
         {
-            _kotori.CreateProject("dev", "cversions", "Udie", null);
+            _kotori.CreateProject("dev", "cversions", "Udie");
 
             var c = @"---
 x: a
@@ -1109,7 +1098,7 @@ x: b
         [TestMethod]
         public void DataVersions()
         {
-            _kotori.CreateProject("dev", "dversions", "Udie", null);
+            _kotori.CreateProject("dev", "dversions", "Udie");
 
             var c = @"---
 x: a
@@ -1158,7 +1147,7 @@ x: b
         [TestMethod]
         public void DataReindexAndVersions()
         {
-            _kotori.CreateProject("dev", "dsmart", "Udie", null);
+            _kotori.CreateProject("dev", "dsmart", "Udie");
 
             var c = @"---
 x: a
@@ -1189,7 +1178,7 @@ b: 35
         [ExpectedException(typeof(KotoriDocumentException), "No data content was incorrectly permitted.")]
         public void UpsertingNoData()
         {
-            _kotori.CreateProject("dev", "nodata", "Udie", null);
+            _kotori.CreateProject("dev", "nodata", "Udie");
 
             var c = @"---";
 
@@ -1200,7 +1189,7 @@ b: 35
         [ExpectedException(typeof(KotoriDocumentException), "No data content was incorrectly permitted.")]
         public void UpsertingNoData2()
         {
-            _kotori.CreateProject("dev", "nodata2", "Udie", null);
+            _kotori.CreateProject("dev", "nodata2", "Udie");
 
             var c = @"---";
 
@@ -1210,7 +1199,7 @@ b: 35
         [TestMethod]
         public void AutoDeleteDocumentTypeContent()
         {
-            _kotori.CreateProject("dev", "auto-content", "Udie", null);
+            _kotori.CreateProject("dev", "auto-content", "Udie");
 
             var c = @"hello!";
 
@@ -1227,7 +1216,7 @@ b: 35
         [TestMethod]
         public void AutoDeleteDocumentTypeData()
         {
-            _kotori.CreateProject("dev", "auto-data", "Udie", null);
+            _kotori.CreateProject("dev", "auto-data", "Udie");
 
             var c = @"---
             a: b
@@ -1247,7 +1236,7 @@ b: 35
         [ExpectedException(typeof(KotoriDocumentException), "Creating over an existing document has been allowed.")]
         public async Task CreateOverExistingContent()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "exicon", "Content", null);
+            var result = await _kotori.CreateProjectAsync("dev", "exicon", "Content");
 
             var c = @"---
 girl: Aoba
@@ -1267,7 +1256,7 @@ Hello.
         [ExpectedException(typeof(KotoriDocumentException), "Creating over a non-existing document has been allowed.")]
         public async Task UpdateOverNonExistingContent()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "exicon2", "Content", null);
+            var result = await _kotori.CreateProjectAsync("dev", "exicon2", "Content");
 
             var c = @"---
 girl: Aoba
@@ -1281,7 +1270,7 @@ Hello.
         [ExpectedException(typeof(KotoriDocumentException), "Creating over an existing data document has been allowed.")]
         public async Task CreateOverExistingData()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "exicond", "Data", null);
+            var result = await _kotori.CreateProjectAsync("dev", "exicond", "Data");
 
             var c = @"---
 girl: Aoba
@@ -1311,7 +1300,7 @@ girl: Umiko
         [ExpectedException(typeof(KotoriValidationException), "Changing of meta field type was allowed.")]
         public async Task ChangingMetaTypeFail()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "f-a-i-l", "f-a-i-l", null);
+            var result = await _kotori.CreateProjectAsync("dev", "f-a-i-l", "f-a-i-l");
 
             var c = @"girl: Aoba";
             await _kotori.CreateDocumentAsync("dev", "f-a-i-l", "data/newgame/girls.md", c);
@@ -1324,7 +1313,7 @@ girl: Umiko
         [ExpectedException(typeof(KotoriValidationException), "Changing of meta field type was allowed.")]
         public async Task ChangingMetaTypeFail2()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "f-a-i-l2", "f-a-i-l2", null);
+            var result = await _kotori.CreateProjectAsync("dev", "f-a-i-l2", "f-a-i-l2");
 
             var c = @"---
 girl: Aoba
@@ -1342,7 +1331,7 @@ haha";
         [TestMethod]
         public async Task AutoDeleteIndex()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "f", "f-a-i-l2", null);
+            var result = await _kotori.CreateProjectAsync("dev", "f", "f-a-i-l2");
 
             var c = @"---
 girl: Aoba
@@ -1382,7 +1371,7 @@ haha";
         [TestMethod]
         public async Task CreateAndGetDocumentTypeTransformations()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "trans001", "Data", null);
+            var result = await _kotori.CreateProjectAsync("dev", "trans001", "Data");
 
             var c = @"---
 girl: Aoba
@@ -1419,7 +1408,7 @@ girl: Aoba
         [TestMethod]
         public async Task DocumentTransformations()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "trans002", "Data", null);
+            var result = await _kotori.CreateProjectAsync("dev", "trans002", "Data");
 
             var c = @"---
 girl: "" Aoba ""
@@ -1433,7 +1422,7 @@ module: "" bar ""
 ---
 ";
             await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md", c);
-            await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md?-1", c);
+            await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md?-1", c2);
 
             _kotori.UpdateDocumentTypeTransformations("dev", "trans002", "data/newgame", @"
 [
@@ -1451,7 +1440,7 @@ module: "" bar ""
             Assert.AreEqual(new JValue("FOO"), metaObj["module"]);
 
             Assert.AreEqual(new JValue("nene"), metaObj2["girl2"]);
-            Assert.AreEqual(new JValue("bar"), metaObj2["module"]);
+            Assert.AreEqual(new JValue("BAR"), metaObj2["module"]);
 
             await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?0", c);
             await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?1", c2);
@@ -1466,7 +1455,7 @@ module: "" bar ""
             Assert.AreEqual(new JValue("FOO"), metaObj["module"]);
 
             Assert.AreEqual(new JValue("nene"), metaObj2["girl2"]);
-            Assert.AreEqual(new JValue("bar"), metaObj2["module"]);
+            Assert.AreEqual(new JValue("BAR"), metaObj2["module"]);
 
             var dd = await _documentDb.FindDocumentByIdAsync("dev", new Uri("kotori://trans002/"), new Uri("kotori://data/newgame/girls.md?0"), null);
 
@@ -1486,17 +1475,19 @@ module: "" bar ""
             metaObj = JObject.FromObject(d.Meta);
             metaObj2 = JObject.FromObject(d2.Meta);
 
-            Assert.AreEqual(new JValue(" Aoba "), metaObj["girl2"]);
+            Assert.AreEqual(new JValue(" Aoba "), metaObj["girl"]);
             Assert.AreEqual(new JValue(" foo "), metaObj["module"]);
+            Assert.IsNull(metaObj["girl2"]);
 
-            Assert.AreEqual(new JValue(" Nene"), metaObj2["girl2"]);
+            Assert.AreEqual(new JValue(" Nene "), metaObj2["girl"]);
             Assert.AreEqual(new JValue(" bar "), metaObj2["module"]);
+            Assert.IsNull(metaObj2["girl2"]);
         }
 
         [TestMethod]
         public async Task DocumentTypeHash()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "doctdel", "Data", null);
+            var result = await _kotori.CreateProjectAsync("dev", "doctdel", "Data");
 
             var c = @"---
 girl: "" Aoba ""
