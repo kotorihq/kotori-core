@@ -10,7 +10,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(CreateProjectKey command)
+        async Task<CommandResult<string>> HandleAsync(UpsertProjectKey command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
 
@@ -23,19 +23,26 @@ namespace KotoriCore.Database.DocumentDb
                 project.ProjectKeys = new List<ProjectKey>();
 
             var keys = project.ProjectKeys.ToList();
+            var existingKey = keys.FirstOrDefault(key => key.Key == command.ProjectKey.Key);
 
-            if (keys.Any(key => key.Key == command.ProjectKey.Key))
-                throw new KotoriProjectException(command.ProjectId, "Project key already exists.");
-            
-            keys.Add(command.ProjectKey);
+            if (existingKey != null)
+            {
+                if (command.CreateOnly)
+                    throw new KotoriProjectException(command.ProjectId, "Project key already exists.");
+
+                existingKey.IsReadonly = command.ProjectKey.IsReadonly;
+            }
+            else
+            {
+                keys.Add(command.ProjectKey);
+            }
 
             project.Identifier = project.Identifier.ToKotoriUri(Router.IdentifierType.Project).ToString();
             project.ProjectKeys = keys;
 
-            // TODO: inspect - instead of replacing we use usperting
             await UpsertProjectAsync(project);
 
-            return new CommandResult<string>("Project key has been added.");
+            return new CommandResult<string>(existingKey == null ? "Project key has been added." : "Project key has been updated.");
         }
     }
 }

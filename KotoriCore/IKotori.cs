@@ -43,8 +43,8 @@ namespace KotoriCore
         Task<string> UpsertProjectAsync(string instance, string projectId, string name);
         string CreateProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey);
         Task<string> CreateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey);
-        string UpdateProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey);
-        Task<string> UpdateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey);
+        string UpsertProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey);
+        Task<string> UpsertProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey);
         string DeleteProjectKey(string instance, string projectId, string projectKey);
         Task<string> DeleteProjectKeyAsync(string instance, string projectId, string projectKey);
         IEnumerable<SimpleDocumentVersion> GetDocumentVersions(string instance, string projectId, string identifier);

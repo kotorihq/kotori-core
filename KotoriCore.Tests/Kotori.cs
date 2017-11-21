@@ -469,15 +469,6 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriProjectException), "Non existent key was inappropriately accepted.")]
-        public void UpdateProjectKeyFail()
-        {
-            var result = _kotori.CreateProject("dev", "cpkf2", "foo");
-
-            _kotori.UpdateProjectKey("dev", "cpkf2", new ProjectKey("bar", true));
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(KotoriProjectException), "Non existent key was inappropriately accepted for deletion.")]
         public void DeleteProjectKeyFail()
         {
@@ -511,7 +502,7 @@ namespace KotoriCore.Tests
             Assert.AreEqual("ddd", keys[3].Key);
             Assert.AreEqual(false, keys[3].IsReadonly);
 
-            _kotori.UpdateProjectKey("dev", "cpkeys", new ProjectKey("aaa", false));
+            _kotori.UpsertProjectKey("dev", "cpkeys", new ProjectKey("aaa", false));
 
             keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
 
