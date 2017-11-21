@@ -4,9 +4,9 @@ using KotoriCore.Helpers;
 namespace KotoriCore.Commands
 {
     /// <summary>
-    /// Create document type command.
+    /// Upsert document type command.
     /// </summary>
-    public class CreateDocumentType : Command
+    public class UpsertDocumentType : Command
     {
         /// <summary>
         /// The instance.
@@ -24,13 +24,20 @@ namespace KotoriCore.Commands
         public readonly string DocumentTypeId;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CreateDocumentType"/> class.
+        /// The create only flag.
         /// </summary>
+        public readonly bool CreateOnly;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocumentType"/> class.
+        /// </summary>
+        /// <param name="createOnly">Create only flag.</param>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        public CreateDocumentType(string instance, string projectId, string documentTypeId)
+        public UpsertDocumentType(bool createOnly, string instance, string projectId, string documentTypeId)
         {
+            CreateOnly = createOnly;
             Instance = instance;
             ProjectId = projectId;
             DocumentTypeId = documentTypeId;

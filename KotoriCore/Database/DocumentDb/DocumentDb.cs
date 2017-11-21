@@ -102,8 +102,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(createDocument);
                 else if (command is GetDocumentVersions getDocumentVersions)
                     result = await HandleAsync(getDocumentVersions);
-                else if (command is CreateDocumentType createDocumentType)
-                    result = await HandleAsync(createDocumentType);
+                else if (command is UpsertDocumentType upsertDocumentType)
+                    result = await HandleAsync(upsertDocumentType);
                 else if (command is GetDocumentTypeTransformations getDocumentTypeTransformations)
                     result = await HandleAsync(getDocumentTypeTransformations);
                 else if (command is DeleteDocumentType deleteDocumentType)

@@ -598,7 +598,31 @@ namespace KotoriCore
         /// <returns>Result.</returns>
         public async Task<string> CreateDocumentTypeAsync(string instance, string projectId, string documentTypeId)
         {
-            return (await ProcessAsync(new CreateDocumentType(instance, projectId, documentTypeId)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocumentType(true, instance, projectId, documentTypeId)) as CommandResult<string>)?.Message;
+        }
+
+        /// <summary>
+        /// Upserts the document type.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <returns>Result.</returns>
+        public string UpsertDocumentType(string instance, string projectId, string documentTypeId)
+        {
+            return AsyncTools.RunSync(() => UpsertDocumentTypeAsync(instance, projectId, documentTypeId));
+        }
+
+        /// <summary>
+        /// Upserts the document type.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <returns>Result.</returns>
+        public async Task<string> UpsertDocumentTypeAsync(string instance, string projectId, string documentTypeId)
+        {
+            return (await ProcessAsync(new UpsertDocumentType(false, instance, projectId, documentTypeId)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
