@@ -531,7 +531,7 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        public IList<DocumentTypeTransformation> GetDocumentTypeTransformations(string instance, string projectId, string documentTypeId)
+        public IEnumerable<DocumentTypeTransformation> GetDocumentTypeTransformations(string instance, string projectId, string documentTypeId)
         {
             return AsyncTools.RunSync(() => GetDocumentTypeTransformationsAsync(instance, projectId, documentTypeId));
         }
@@ -543,7 +543,7 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        public async Task<IList<DocumentTypeTransformation>> GetDocumentTypeTransformationsAsync(string instance, string projectId, string documentTypeId)
+        public async Task<IEnumerable<DocumentTypeTransformation>> GetDocumentTypeTransformationsAsync(string instance, string projectId, string documentTypeId)
         {
             var result = await ProcessAsync(new GetDocumentTypeTransformations(instance, projectId, documentTypeId));
             var transformations = result.Data as IList<DocumentTypeTransformation>;
