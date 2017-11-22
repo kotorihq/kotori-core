@@ -198,7 +198,7 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual("Document has been created.", resultok);
 
-            var resulthash = await _kotori.UpdateDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witchx.md", c);
+            var resulthash = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witchx.md", c);
             Assert.AreEqual("Document saving skipped. Hash is the same one as in the database.", resulthash);
         }
 
@@ -528,7 +528,7 @@ namespace KotoriCore.Tests
             var d0 = _kotori.GetDocument("dev", "vnum", "content/x/a");
             Assert.AreEqual(0, d0.Version);
 
-            _kotori.UpdateDocument("dev", "vnum", "content/x/a", "haha2");
+            _kotori.UpsertDocument("dev", "vnum", "content/x/a", "haha2");
             var d2 = _kotori.GetDocument("dev", "vnum", "content/x/a");
             Assert.AreEqual(1, d2.Version);
 
@@ -556,7 +556,7 @@ namespace KotoriCore.Tests
             _kotori.CreateDocument("dev", "vnum2", "content/x/a", "haha");
 
             for (var i = 0; i < 5; i++)
-                _kotori.UpdateDocument("dev", "vnum2", "content/x/a", $@"---
+                _kotori.UpsertDocument("dev", "vnum2", "content/x/a", $@"---
 test: {i}
 ---");
             
@@ -594,14 +594,14 @@ test: {i}
             Assert.AreEqual(true, d0.Draft);
             Assert.AreEqual("content/x/_a", d0.Filename);
 
-            _kotori.UpdateDocument("dev", "drnodr", "content/x/a", "hello");
+            _kotori.UpsertDocument("dev", "drnodr", "content/x/a", "hello");
             var d1 = _kotori.GetDocument("dev", "drnodr", "content/x/_2017-01-01-a");
             Assert.IsNotNull(d1);
             Assert.AreEqual(false, d1.Draft);
             Assert.AreEqual(1, d1.Version);
             Assert.AreEqual("content/x/a", d1.Filename);
 
-            _kotori.UpdateDocument("dev", "drnodr", "content/x/2017-01-01-a", "hello");
+            _kotori.UpsertDocument("dev", "drnodr", "content/x/2017-01-01-a", "hello");
             var d2 = _kotori.GetDocument("dev", "drnodr", "content/x/a");
             Assert.IsNotNull(d2);
             Assert.AreEqual(false, d2.Draft);
@@ -645,7 +645,7 @@ approved: !!bool true
 ---
 ";
 
-            await _kotori.UpdateDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml?1", c);
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml?1", c);
             doc = _kotori.GetDocument("dev", "mrdata", "data/newgame/girls.yaml?1");
             Assert.IsNotNull(doc);
             Assert.AreEqual(1, doc.Version);
@@ -679,7 +679,7 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            await _kotori.UpdateDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml?1", c);
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml?1", c);
 
             docs = _kotori.FindDocuments("dev", "mrdata", "data/newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(2, docs.Count());
@@ -691,7 +691,7 @@ position: programmer
 stars: !!int 4
 approved: !!bool true
 ---";
-            await _kotori.UpdateDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml?1", c);
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", "data/newgame/girls.yaml?1", c);
 
             docs = _kotori.FindDocuments("dev", "mrdata", "data/newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(2, docs.Count());
@@ -717,7 +717,7 @@ fake: no
             Assert.AreEqual(new JValue("no"), docs.Last().Meta.fake);
             Assert.AreEqual(0, docs.Last().Version);
 
-            _kotori.UpdateDocument("dev", "mrdata", "data/newgame/girls.yaml?2", @"---
+            _kotori.UpsertDocument("dev", "mrdata", "data/newgame/girls.yaml?2", @"---
 stars: !!int 3
 approved: !!bool false
 ---
@@ -749,7 +749,6 @@ approved: !!bool true
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriDocumentException), "Upserting at index should allow only 1 document.")]
         public void UpsertDataAtIndexSemiOk()
         {
             _kotori.CreateProject("dev", "data-fff-v2", "Udie");
@@ -776,7 +775,7 @@ approved: !!bool false
             Assert.AreEqual(3, n);
 
             var c2 = "girl: Aoba";
-            _kotori.UpdateDocument("dev", "data-fff-v2", "data/newgame/girls.yaml?0", c2);
+            _kotori.UpsertDocument("dev", "data-fff-v2", "data/newgame/girls.yaml?0", c2);
 
             n = _kotori.CountDocuments("dev", "data-fff-v2", "data/newgame", null, false, false);
             Assert.AreEqual(3, n);
@@ -791,8 +790,6 @@ approved: !!bool false
 
             vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", "data/newgame/girls.yaml?0");
             Assert.AreEqual(2, vc.Count());
-
-            _kotori.UpdateDocument("dev", "data-fff-v2", "data/newgame/girls.yaml?0", c);
         }
 
         [TestMethod]
@@ -992,7 +989,7 @@ x: null
 y: null
 z: null
 ---";
-            _kotori.UpdateDocument("dev", "alldata", "data/newgame/2017-02-02-girls.yaml?0", @"");
+            _kotori.UpsertDocument("dev", "alldata", "data/newgame/2017-02-02-girls.yaml?0", @"");
             d = _kotori.GetDocument("dev", "alldata", "data/newgame/2017-02-02-girls.yaml");
             meta = (d.Meta as JObject);
             Assert.AreEqual(0, meta.Properties().LongCount());
@@ -1016,7 +1013,7 @@ hello";
             Assert.AreEqual(3, meta.Properties().LongCount());
             Assert.IsFalse(string.IsNullOrEmpty(d.Content));
 
-            _kotori.UpdateDocument("dev", "alldata2", "content/x/foo.md", @"---
+            _kotori.UpsertDocument("dev", "alldata2", "content/x/foo.md", @"---
 x: ~
 y: ~
 z: ~
@@ -1027,7 +1024,7 @@ z: ~
             Assert.AreEqual(3, meta.Properties().LongCount());
             Assert.AreEqual(".", d.Content.Trim());
 
-            _kotori.UpdateDocument("dev", "alldata2", "content/x/foo.md", @"---
+            _kotori.UpsertDocument("dev", "alldata2", "content/x/foo.md", @"---
 yo: yeah
 x: ~
 ---");
@@ -1050,7 +1047,7 @@ rr: ""nxull""
 ---";
 
             _kotori.CreateDocument("dev", "cversions", "content/x/foo", c);
-            _kotori.UpdateDocument("dev", "cversions", "content/x/foo", @"---
+            _kotori.UpsertDocument("dev", "cversions", "content/x/foo", @"---
 x: b
 ---");
             var d = _kotori.GetDocument("dev", "cversions", "content/x/foo");
@@ -1099,7 +1096,7 @@ rr: !!str nxull
 ---";
 
             _kotori.CreateDocument("dev", "dversions", "data/x/foo", c);
-            _kotori.UpdateDocument("dev", "dversions", "data/x/foo?0", @"---
+            _kotori.UpsertDocument("dev", "dversions", "data/x/foo?0", @"---
 x: b
 ---");
             var d = _kotori.GetDocument("dev", "dversions", "data/x/foo?0");
@@ -1149,7 +1146,7 @@ b: 34
 ---";
 
             _kotori.CreateDocument("dev", "dsmart", "data/x/foo", c);
-            _kotori.UpdateDocument("dev", "dsmart", "data/x/foo?1", @"---
+            _kotori.UpsertDocument("dev", "dsmart", "data/x/foo?1", @"---
 b: 35
 ---");
             var vers = _kotori.GetDocumentVersions("dev", "dsmart", "data/x/foo?0");
@@ -1244,21 +1241,26 @@ Hello.
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriDocumentException), "Creating over a non-existing document has been allowed.")]
-        public async Task UpdateOverNonExistingContent()
+        [ExpectedException(typeof(KotoriDocumentException), "Creating over an existing document has been allowed.")]
+        public async Task CreateOverExistingData0()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "exicon2", "Content");
+            var result = await _kotori.CreateProjectAsync("dev", "exicondx", "Content");
 
             var c = @"---
 girl: Aoba
 ---
-Hello.
 ";
-            await _kotori.UpdateDocumentAsync("dev", "exicon2", "content/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "exicondx", "data/newgame/girls.md", c);
+
+            var doc = _kotori.GetDocument("dev", "exicondx", "data/newgame/girls.md");
+            Assert.IsNotNull(doc);
+            Assert.AreEqual(0, doc.Version);
+
+            await _kotori.CreateDocumentAsync("dev", "exicondx", "data/newgame/girls.md?0", c);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriDocumentException), "Creating over an existing data document has been allowed.")]
+        [ExpectedException(typeof(KotoriDocumentException), "Bad index when upserting data documents was accepted.")]
         public async Task CreateOverExistingData()
         {
             var result = await _kotori.CreateProjectAsync("dev", "exicond", "Data");
@@ -1279,12 +1281,12 @@ girl: Umiko
             var n = _kotori.CountDocuments("dev", "exicond", "data/newgame", null, false, false);
             Assert.AreEqual(3, n);
 
-            await _kotori.CreateDocumentAsync("dev", "exicond", "data/newgame/girls.md?3", c);
+            await _kotori.CreateDocumentAsync("dev", "exicond", "data/newgame/girls.md?2", c);
 
             n = _kotori.CountDocuments("dev", "exicond", "data/newgame", null, false, false);
-            Assert.AreEqual(5, n);
+            Assert.AreEqual(4, n);
 
-            await _kotori.CreateDocumentAsync("dev", "exicond", "data/newgame/girls.md", c);
+            await _kotori.CreateDocumentAsync("dev", "exicond", "data/newgame/girls.md?5", c);
         }
 
         [TestMethod]
@@ -1316,7 +1318,7 @@ haha";
 girl: !!int 6502
 ---
 haha";
-            await _kotori.UpdateDocumentAsync("dev", "f-a-i-l2", "content/newgame/girls.md", c);
+            await _kotori.UpsertDocumentAsync("dev", "f-a-i-l2", "content/newgame/girls.md", c);
         }
 
         [TestMethod]
@@ -1433,8 +1435,8 @@ module: "" bar ""
             Assert.AreEqual(new JValue("nene"), metaObj2["girl2"]);
             Assert.AreEqual(new JValue("BAR"), metaObj2["module"]);
 
-            await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?0", c);
-            await _kotori.UpdateDocumentAsync("dev", "trans002", "data/newgame/girls.md?1", c2);
+            await _kotori.UpsertDocumentAsync("dev", "trans002", "data/newgame/girls.md?0", c);
+            await _kotori.UpsertDocumentAsync("dev", "trans002", "data/newgame/girls.md?1", c2);
 
             d = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?0");
             d2 = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?1");

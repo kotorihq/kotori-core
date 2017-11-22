@@ -96,10 +96,8 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(upsertProjectKey);
                 else if (command is DeleteProjectKey deleteProjectKey)
                     result = await HandleAsync(deleteProjectKey);
-                else if (command is UpdateDocument updateDocument)
-                    result = await HandleAsync(updateDocument);
-                else if (command is CreateDocument createDocument)
-                    result = await HandleAsync(createDocument);
+                else if (command is UpsertDocument upsertDocument)
+                    result = await HandleAsync(upsertDocument);
                 else if (command is GetDocumentVersions getDocumentVersions)
                     result = await HandleAsync(getDocumentVersions);
                 else if (command is UpsertDocumentType upsertDocumentType)
@@ -402,11 +400,11 @@ namespace KotoriCore.Database.DocumentDb
             return projects;
         }
 
-        async Task<Entities.Document> ReplaceDocumentAsync(Entities.Document document)
+        async Task<Entities.Document> UpsertDocumentAsync(Entities.Document document)
         {
             await CreateDocumentVersionAsync(document);
 
-            return await _repoDocument.ReplaceAsync(document);
+            return await _repoDocument.UpsertAsync(document);
         }
 
         async Task<Entities.Document> ReindexDocumentAsync(Entities.Document document, long index)
@@ -444,13 +442,6 @@ namespace KotoriCore.Database.DocumentDb
             document.Identifier = id + "?" + index;
 
             return await _repoDocument.ReplaceAsync(document);
-        }
-
-        async Task<Entities.Document> CreateDocumentAsync(Entities.Document document)
-        {
-            await CreateDocumentVersionAsync(document);
-
-            return await _repoDocument.CreateAsync(document);
         }
 
         async Task<Entities.DocumentType> CreateDocumentTypeAsync(Entities.DocumentType documentType)
@@ -599,10 +590,11 @@ namespace KotoriCore.Database.DocumentDb
 
                     foreach(var document in documents)
                     {
-                        await UpdateDocumentHelperAsync
+                        await UpsertDocumentHelperAsync
                         (
-                            new UpdateDocument
+                            new UpsertDocument
                             (
+                                false,
                                 instance,
                                 projectId.ToKotoriIdentifier(Router.IdentifierType.Project),
                                 new Uri(document.Identifier).ToKotoriIdentifier(documentType.Type == Enums.DocumentType.Data ? Router.IdentifierType.Data : Router.IdentifierType.Document),

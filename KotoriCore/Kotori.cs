@@ -60,29 +60,29 @@ namespace KotoriCore
         }
 
         /// <summary>
-        /// Updates document.
+        /// Upserts document.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public string UpdateDocument(string instance, string projectId, string documentId, string content)
+        public string UpsertDocument(string instance, string projectId, string documentId, string content)
         {
-            return AsyncTools.RunSync(() => UpdateDocumentAsync(instance, projectId, documentId, content));
+            return AsyncTools.RunSync(() => UpsertDocumentAsync(instance, projectId, documentId, content));
         }
 
         /// <summary>
-        /// Updates document.
+        /// Upserts document.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public async Task<string> UpdateDocumentAsync(string instance, string projectId, string documentId, string content)
+        public async Task<string> UpsertDocumentAsync(string instance, string projectId, string documentId, string content)
         {
-            return (await ProcessAsync(new UpdateDocument(instance, projectId, documentId, content)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocument(false, instance, projectId, documentId, content)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace KotoriCore
         /// <returns>Result.</returns>
         public async Task<string> CreateDocumentAsync(string instance, string projectId, string documentId, string content)
         {
-            return (await ProcessAsync(new CreateDocument(instance, projectId, documentId, content)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocument(true, instance, projectId, documentId, content)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>

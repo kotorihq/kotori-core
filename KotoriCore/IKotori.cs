@@ -13,8 +13,8 @@ namespace KotoriCore
     {
         IKotoriConfiguration Configuration { get; }
 
-        string UpdateDocument(string instance, string projectId, string identifier, string content);
-        Task<string> UpdateDocumentAsync(string instance, string projectId, string identifier, string content);
+        string UpsertDocument(string instance, string projectId, string identifier, string content);
+        Task<string> UpsertDocumentAsync(string instance, string projectId, string identifier, string content);
         string CreateDocument(string instance, string projectId, string identifier, string content);
         Task<string> CreateDocumentAsync(string instance, string projectId, string identifier, string content);
         string CreateProject(string instance, string identifier, string name);
