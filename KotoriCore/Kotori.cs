@@ -552,29 +552,55 @@ namespace KotoriCore
         }
 
         /// <summary>
-        /// Updates the document type transformations.
+        /// Creates the document type transformations.
         /// </summary>
         /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="transformations">Transformations.</param>
-        public string UpdateDocumentTypeTransformations(string instance, string projectId, string documentTypeId, string transformations)
+        public string CreateDocumentTypeTransformations(string instance, string projectId, string documentTypeId, string transformations)
         {
-            return AsyncTools.RunSync(() => UpdateDocumentTypeTransformationsAsync(instance, projectId, documentTypeId, transformations));
+            return AsyncTools.RunSync(() => CreateDocumentTypeTransformationsAsync(instance, projectId, documentTypeId, transformations));
         }
 
         /// <summary>
-        /// Updates the document type transformations.
+        /// Creates the document type transformations.
         /// </summary>
         /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="transformations">Transformations.</param>
-        public async Task<string> UpdateDocumentTypeTransformationsAsync(string instance, string projectId, string documentTypeId, string transformations)
+        public async Task<string> CreateDocumentTypeTransformationsAsync(string instance, string projectId, string documentTypeId, string transformations)
         {
-            return (await ProcessAsync(new UpdateDocumentTypeTransformations(instance, projectId, documentTypeId, transformations)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocumentTypeTransformations(true, instance, projectId, documentTypeId, transformations)) as CommandResult<string>)?.Message;
+        }
+
+        /// <summary>
+        /// Upserts the document type transformations.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="transformations">Transformations.</param>
+        public string UpsertDocumentTypeTransformations(string instance, string projectId, string documentTypeId, string transformations)
+        {
+            return AsyncTools.RunSync(() => UpsertDocumentTypeTransformationsAsync(instance, projectId, documentTypeId, transformations));
+        }
+
+        /// <summary>
+        /// Upserts the document type transformations.
+        /// </summary>
+        /// <returns>Result.</returns>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="transformations">Transformations.</param>
+        public async Task<string> UpsertDocumentTypeTransformationsAsync(string instance, string projectId, string documentTypeId, string transformations)
+        {
+            return (await ProcessAsync(new UpsertDocumentTypeTransformations(false, instance, projectId, documentTypeId, transformations)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>

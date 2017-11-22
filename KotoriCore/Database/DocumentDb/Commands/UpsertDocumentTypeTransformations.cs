@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
@@ -7,7 +8,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(UpdateDocumentTypeTransformations command)
+        async Task<CommandResult<string>> HandleAsync(UpsertDocumentTypeTransformations command)
         {
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
             var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
@@ -25,7 +26,13 @@ namespace KotoriCore.Database.DocumentDb
             );
 
             if (docType == null)
-                throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+
+            if (command.CreateOnly &&
+                docType.Transformations.Any())
+            {
+                throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type transformations already exist.");
+            }
 
             await UpsertDocumentTypeAsync
             (
@@ -36,7 +43,7 @@ namespace KotoriCore.Database.DocumentDb
                 new UpdateToken<string>(command.Transformations, false)
             );
 
-            return new CommandResult<string>("Document type transformations pipeline has been created.");
+            return new CommandResult<string>(docType == null ? "Document type transformations pipeline has been created." : "Document type transformations pipeline has been updated.");
         }
     }
 }

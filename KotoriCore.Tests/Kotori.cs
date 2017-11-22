@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using KotoriCore.Commands;
 using KotoriCore.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -79,6 +78,39 @@ namespace KotoriCore.Tests
         {
             await _kotori.CreateProjectAsync("foo", "aoba", "bar");
             await _kotori.CreateProjectKeyAsync("foo", "aoba", new ProjectKey(null, true));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriCore.Exceptions.KotoriDocumentTypeException))]
+        public void CreateDocumentTypeTransformations()
+        {
+            _kotori.CreateProject("dev", "lalala", "La la la");
+
+            _kotori.CreateDocumentType("dev", "lalala", "content/hm");
+            var dt = _kotori.GetDocumentType("dev", "lalala", "content/hm");
+            Assert.IsNotNull(dt);
+
+            _kotori.CreateDocumentTypeTransformations("dev", "lalala", "content/hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
+            var dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", "content/hm");
+
+            Assert.AreEqual(1, dtt.Count());
+
+            _kotori.UpsertDocumentTypeTransformations("dev", "lalala", "content/hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
+            dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", "content/hm");
+
+            Assert.AreEqual(1, dtt.Count());
+
+            _kotori.UpsertDocumentTypeTransformations("dev", "lalala", "content/hm", @"[]");
+            dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", "content/hm");
+
+            Assert.AreEqual(0, dtt.Count());
+
+            _kotori.CreateDocumentTypeTransformations("dev", "lalala", "content/hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
+            dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", "content/hm");
+
+            Assert.AreEqual(1, dtt.Count());
+
+            _kotori.CreateDocumentTypeTransformations("dev", "lalala", "content/hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
         }
 
         [TestMethod]
@@ -1372,7 +1404,7 @@ girl: Aoba
 ";
             await _kotori.CreateDocumentAsync("dev", "trans001", "data/newgame/girls.md", c);
 
-            _kotori.UpdateDocumentTypeTransformations("dev", "trans001", "data/newgame", @"
+            _kotori.UpsertDocumentTypeTransformations("dev", "trans001", "data/newgame", @"
 [
 { ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }
 ]           
@@ -1383,7 +1415,7 @@ girl: Aoba
             Assert.AreEqual(1, transformations.Count());
             Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
 
-            _kotori.UpdateDocumentTypeTransformations("dev", "trans001", "data/newgame", @"
+            _kotori.UpsertDocumentTypeTransformations("dev", "trans001", "data/newgame", @"
 - from: girl
   to: Girl2
   transformations:
@@ -1417,7 +1449,7 @@ module: "" bar ""
             await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md", c);
             await _kotori.CreateDocumentAsync("dev", "trans002", "data/newgame/girls.md?-1", c2);
 
-            _kotori.UpdateDocumentTypeTransformations("dev", "trans002", "data/newgame", @"
+            _kotori.UpsertDocumentTypeTransformations("dev", "trans002", "data/newgame", @"
 [
 { ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] },
 { ""from"": ""module"", ""to"": ""module"", ""transformations"": [ ""trim"", ""uppercase"" ] }
@@ -1460,7 +1492,7 @@ module: "" bar ""
             Assert.AreEqual(new JValue(" foo "), originalObj["module"]);
             Assert.IsNull(originalObj["girl2"]);
 
-            _kotori.UpdateDocumentTypeTransformations("dev", "trans002", "data/newgame", @"[]");
+            _kotori.UpsertDocumentTypeTransformations("dev", "trans002", "data/newgame", @"[]");
 
             d = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?0");
             d2 = _kotori.GetDocument("dev", "trans002", "data/newgame/girls.md?1");
@@ -1498,7 +1530,7 @@ girl: "" Aoba ""
 
             var firstHash = firstHashD.Hash;
 
-            await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", @"
+            await _kotori.UpsertDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", @"
 [{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]
 ");
 
@@ -1510,7 +1542,7 @@ girl: "" Aoba ""
 
             Assert.AreNotEqual(firstHash, secondHash);
 
-            await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", "");
+            await _kotori.UpsertDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", "");
 
             var thirdHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
 
@@ -1520,10 +1552,10 @@ girl: "" Aoba ""
 
             Assert.AreNotEqual(firstHash, thirdHash);
 
-            await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", @"
+            await _kotori.UpsertDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", @"
 [{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]
 ");
-            await _kotori.UpdateDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", "");
+            await _kotori.UpsertDocumentTypeTransformationsAsync("dev", "doctdel", "data/newgame", "");
 
             var fourthHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", new Uri("kotori://doctdel/"), new Uri("kotori://data/newgame/"));
 
