@@ -115,24 +115,22 @@ namespace KotoriCore
         /// Creates project.
         /// </summary>
         /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
         /// <param name="name">Project name.</param>
         /// <returns>Result.</returns>
-        public string CreateProject(string instance, string projectId, string name)
+        public string CreateProject(string instance, string name)
         {
-            return AsyncTools.RunSync(() => CreateProjectAsync(instance, projectId, name));
+            return AsyncTools.RunSync(() => CreateProjectAsync(instance, name));
         }
 
         /// <summary>
         /// Creates project.
         /// </summary>
         /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
         /// <param name="name">Project name.</param>
         /// <returns>Result.</returns>
-        public async Task<string> CreateProjectAsync(string instance, string projectId, string name)
+        public async Task<string> CreateProjectAsync(string instance, string name)
         {
-            return (await ProcessAsync(new UpsertProject(true, instance, projectId, name)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertProject(true, instance, null, name)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>

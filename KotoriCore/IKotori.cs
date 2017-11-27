@@ -17,8 +17,8 @@ namespace KotoriCore
         Task<string> UpsertDocumentAsync(string instance, string projectId, string documentId, string content);
         string CreateDocument(string instance, string projectId, string documentId, string content);
         Task<string> CreateDocumentAsync(string instance, string projectId, string documentId, string content);
-        string CreateProject(string instance, string projectId, string name);
-        Task<string> CreateProjectAsync(string instance, string projectId, string name);
+        string CreateProject(string instance, string name);
+        Task<string> CreateProjectAsync(string instance, string name);
         string DeleteProject(string instance, string projectId);
         Task<string> DeleteProjectAsync(string instance, string projectId);
         IEnumerable<SimpleProject> GetProjects(string instance);

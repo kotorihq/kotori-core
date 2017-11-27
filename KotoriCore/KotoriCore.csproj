@@ -48,5 +48,6 @@
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.1" />
     <PackageReference Include="Sushi2" Version="1.0.5" />
     <PackageReference Include="Oogi2" Version="1.2.5" />
+    <PackageReference Include="shortid" Version="1.0.3" />
   </ItemGroup>
 </Project>

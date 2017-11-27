@@ -41,6 +41,9 @@ namespace KotoriCore.Commands
             Instance = instance;
             ProjectId = projectId;
             Name = name;
+
+            if (CreateOnly)
+                ProjectId = RandomGenerator.GetId();
         }
 
         /// <summary>
