@@ -19,6 +19,21 @@ namespace KotoriCore.Commands
         public readonly string ProjectId;
 
         /// <summary>
+        /// The create only flag.
+        /// </summary>
+        public readonly bool CreateOnly;
+
+        /// <summary>
+        /// The type of the document.
+        /// </summary>
+        public readonly Enums.DocumentType DocumentType;
+
+        /// <summary>
+        /// The document type identifier.
+        /// </summary>
+        public readonly string DocumentTypeId;
+
+        /// <summary>
         /// The document identifier.
         /// </summary>
         public readonly string DocumentId;
@@ -29,9 +44,9 @@ namespace KotoriCore.Commands
         public readonly string Content;
 
         /// <summary>
-        /// The create only flag.
+        /// The index.
         /// </summary>
-        public readonly bool CreateOnly;
+        public readonly long? Index;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocument"/> class.
@@ -39,15 +54,23 @@ namespace KotoriCore.Commands
         /// <param name="createOnly">Create only flag.</param>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentType">Document type.</param>
+        /// <param name="documentTypeId">Document type id.</param>
         /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
-        public UpsertDocument(bool createOnly, string instance, string projectId, string documentId, string content)
+        public UpsertDocument(bool createOnly, string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content)
         {
             CreateOnly = createOnly;
             Instance = instance;
             ProjectId = projectId;
+            DocumentType = documentType;
+            DocumentTypeId = documentTypeId;
             DocumentId = documentId;
+            Index = index;
             Content = content;
+
+            if (CreateOnly)
+                DocumentId = RandomGenerator.GetId();
         }
 
         /// <summary>

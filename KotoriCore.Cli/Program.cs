@@ -140,14 +140,6 @@ Dragged along by the energetic stranger, Cocona finds herself in the world of Pu
             {
                 // --- CODE HERE --
 
-                var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-hash", "Nenecchi");
-
-                var c = GetContent(RawDocument.FlipFlappers);
-                await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witch.md", c);
-
-                var resultok = await _kotori.CreateDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witchx.md", c);
-
-                var resulthash = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", "content/tv/2017-05-06-flying-witchx.md", c);
 
                 // --- CODE HERE --
             }
@@ -157,7 +149,8 @@ Dragged along by the energetic stranger, Cocona finds herself in the world of Pu
             }
             finally
             {
-                _con.DeleteCollection();
+                if (_con.CollectionId != "hub")
+                    _con.DeleteCollection();
             }
         }
     }

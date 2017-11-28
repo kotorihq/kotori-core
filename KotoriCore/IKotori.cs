@@ -13,10 +13,10 @@ namespace KotoriCore
     {
         IKotoriConfiguration Configuration { get; }
 
-        string UpsertDocument(string instance, string projectId, string documentId, string content);
-        Task<string> UpsertDocumentAsync(string instance, string projectId, string documentId, string content);
-        string CreateDocument(string instance, string projectId, string documentId, string content);
-        Task<string> CreateDocumentAsync(string instance, string projectId, string documentId, string content);
+        string UpsertDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content);
+        Task<string> UpsertDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content);
+        string CreateDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content);
+        Task<string> CreateDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content);
         string CreateProject(string instance, string name);
         Task<string> CreateProjectAsync(string instance, string name);
         string DeleteProject(string instance, string projectId);

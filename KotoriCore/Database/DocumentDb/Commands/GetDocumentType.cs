@@ -32,7 +32,7 @@ namespace KotoriCore.Database.DocumentDb
             (
                 new SimpleDocumentType
                 (
-                    new Uri(docType.Identifier).ToKotoriIdentifier(Router.IdentifierType.DocumentType),
+                    new Uri(docType.Identifier).ToKotoriDocumentTypeIdentifier(),
                     docType.Type,
                     docType.Indexes.Select(i => i.From)
                 )

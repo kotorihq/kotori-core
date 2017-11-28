@@ -48,7 +48,7 @@ namespace KotoriCore.Database.DocumentDb
 
             var simpleDocuments = documents.Select(d => new SimpleDocument
                 (
-                    d.Identifier != null ? new Uri(d.Identifier).ToKotoriIdentifier(Router.IdentifierType.Document) : null,
+                    d.Identifier != null ? new Uri(d.Identifier).ToKotoriDocumentIdentifier().DocumentId : null,
                     d.Slug,
                     d.Meta,
                     DocumentHelpers.PostProcessedContent(d.Content, d.Meta, command.Format),

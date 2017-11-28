@@ -36,7 +36,7 @@ namespace KotoriCore.Database.DocumentDb
             (
             p => new SimpleDocumentType
             (
-            new Uri(p.Identifier).ToKotoriIdentifier(Router.IdentifierType.DocumentType),
+            new Uri(p.Identifier).ToKotoriDocumentTypeIdentifier(),
             p.Type,
             p.Indexes.Select(i => i.From)
             )

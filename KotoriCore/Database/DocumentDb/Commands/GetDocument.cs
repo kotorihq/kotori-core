@@ -41,7 +41,7 @@ namespace KotoriCore.Database.DocumentDb
             (
                 new SimpleDocument
                 (
-                    new Uri(d.Identifier).ToKotoriIdentifier(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data),
+                    new Uri(d.Identifier).ToKotoriDocumentIdentifier().DocumentId,
                     d.Slug,
                     d.Meta,
                     DocumentHelpers.PostProcessedContent(d.Content, d.Meta, command.Format),

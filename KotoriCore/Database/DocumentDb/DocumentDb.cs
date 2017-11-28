@@ -258,7 +258,7 @@ namespace KotoriCore.Database.DocumentDb
             var project = await _repoProject.GetFirstOrDefaultAsync(q);
 
             if (project != null)
-                project.Identifier = new Uri(project.Identifier).ToKotoriIdentifier(Router.IdentifierType.Project);
+                project.Identifier = new Uri(project.Identifier).ToKotoriProjectIdentifier();
 
             return project;
         }
@@ -509,7 +509,7 @@ namespace KotoriCore.Database.DocumentDb
             var project = await FindProjectAsync(instance, projectId);
 
             if (project == null)
-                throw new KotoriProjectException(projectId.ToKotoriIdentifier(Router.IdentifierType.Project), "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriProjectException(projectId.ToKotoriProjectIdentifier(), "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var documentType = await FindDocumentTypeAsync(instance, projectId, documentTypeId);
 
@@ -528,7 +528,7 @@ namespace KotoriCore.Database.DocumentDb
                 var trans = new List<DocumentTypeTransformation>();
 
                 if (!transformations.Ignore)
-                    trans = new Transformation(documentTypeId.ToKotoriIdentifier(Router.IdentifierType.DocumentType), transformations.Value).Transformations;
+                    trans = new Transformation(documentTypeId.ToKotoriDocumentTypeIdentifier(), transformations.Value).Transformations;
 
                 var dt = new Entities.DocumentType
                 (
@@ -558,7 +558,7 @@ namespace KotoriCore.Database.DocumentDb
                 var trans = documentType.Transformations ?? new List<DocumentTypeTransformation>();
 
                 if (!transformations.Ignore)
-                    trans = new Transformation(documentTypeId.ToKotoriIdentifier(Router.IdentifierType.DocumentType), transformations.Value).Transformations;
+                    trans = new Transformation(documentTypeId.ToKotoriDocumentTypeIdentifier(), transformations.Value).Transformations;
 
                 var oldTransformationsHash = documentType.Transformations.ToHash();
                     
@@ -590,14 +590,19 @@ namespace KotoriCore.Database.DocumentDb
 
                     foreach(var document in documents)
                     {
+                        var documentToken = new Uri(document.Identifier).ToKotoriDocumentIdentifier();
+
                         await UpsertDocumentHelperAsync
                         (
                             new UpsertDocument
                             (
                                 false,
                                 instance,
-                                projectId.ToKotoriIdentifier(Router.IdentifierType.Project),
-                                new Uri(document.Identifier).ToKotoriIdentifier(documentType.Type == Enums.DocumentType.Data ? Router.IdentifierType.Data : Router.IdentifierType.Document),
+                                projectId.ToKotoriProjectIdentifier(),
+                                documentType.Type,
+                                new Uri(documentType.Identifier).ToKotoriDocumentTypeIdentifier(),
+                                documentToken.DocumentId,
+                                documentToken.Index,
                                 document.ToOriginalJsonString()
                             )
                         );

@@ -82,9 +82,7 @@ namespace KotoriCore.Database.DocumentDb
                     var dic = jo.ToObject<Dictionary<string, object>>();
                     var doc = Markdown.ConstructDocument(dic, null);
 
-                    var ci = idx == null ?
-                        command.DocumentId.ToKotoriUri(Router.IdentifierType.Data, dc).ToKotoriIdentifier(Router.IdentifierType.Data) :
-                        command.DocumentId.ToKotoriUri(Router.IdentifierType.Data, idx + dc).ToKotoriIdentifier(Router.IdentifierType.Data);
+                    var finalIndex = idx == null ? dc : idx + dc;                       
 
                     await UpsertDocumentHelperAsync(
                     (
@@ -93,7 +91,10 @@ namespace KotoriCore.Database.DocumentDb
                             command.CreateOnly,
                             command.Instance,
                             command.ProjectId,
-                            ci,
+                            command.DocumentType,
+                            command.DocumentTypeId,
+                            command.DocumentId,
+                            finalIndex,                            
                             doc
                            )
                         )
@@ -111,7 +112,7 @@ namespace KotoriCore.Database.DocumentDb
             var documentTypeUri = command.DocumentId.ToKotoriUri(Router.IdentifierType.DocumentType);
             var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
             var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
-            var transformation = new Transformation(documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType), documentType?.Transformations);
+            var transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier(), documentType?.Transformations);
             var document = new Markdown(command.DocumentId, command.Content, transformation);
             var docType = documentTypeUri.ToDocumentType();
             var documentUri = command.DocumentId.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
@@ -142,7 +143,7 @@ namespace KotoriCore.Database.DocumentDb
                new UpdateToken<string>(null, true)
             );
 
-            transformation = new Transformation(documentTypeUri.ToKotoriIdentifier(Router.IdentifierType.DocumentType), documentType.Transformations);
+            transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier(), documentType.Transformations);
             document = new Markdown(command.DocumentId, command.Content, transformation);
             documentResult = document.Process();
 

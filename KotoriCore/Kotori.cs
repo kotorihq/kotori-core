@@ -64,12 +64,16 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentType">Document type.</param>
+        /// <param name="documentTypeId">Document type id.</param>
         /// <param name="documentId">Document identifier.</param>
+        /// <param name="index">Index.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public string UpsertDocument(string instance, string projectId, string documentId, string content)
+        public string UpsertDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, 
+                                     long? index, string content)
         {
-            return AsyncTools.RunSync(() => UpsertDocumentAsync(instance, projectId, documentId, content));
+            return AsyncTools.RunSync(() => UpsertDocumentAsync(instance, projectId, documentType, documentTypeId, documentId, index, content));
         }
 
         /// <summary>
@@ -77,12 +81,16 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentType">Document type.</param>
+        /// <param name="documentTypeId">Document type id.</param>
         /// <param name="documentId">Document identifier.</param>
+        /// <param name="index">Index.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public async Task<string> UpsertDocumentAsync(string instance, string projectId, string documentId, string content)
+        public async Task<string> UpsertDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, 
+                                                      string documentId, long? index, string content)
         {
-            return (await ProcessAsync(new UpsertDocument(false, instance, projectId, documentId, content)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocument(false, instance, projectId, documentType, documentTypeId, documentId, index, content)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>
@@ -90,12 +98,13 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="documentId">Document identifier.</param>
+        /// <param name="documentType">Document type.</param>
+        /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public string CreateDocument(string instance, string projectId, string documentId, string content)
+        public string CreateDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content)
         {
-            return AsyncTools.RunSync(() => CreateDocumentAsync(instance, projectId, documentId, content));
+            return AsyncTools.RunSync(() => CreateDocumentAsync(instance, projectId, documentType, documentTypeId, content));
         }
 
         /// <summary>
@@ -103,12 +112,11 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <param name="documentId">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <returns>Result.</returns>
-        public async Task<string> CreateDocumentAsync(string instance, string projectId, string documentId, string content)
+        public async Task<string> CreateDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content)
         {
-            return (await ProcessAsync(new UpsertDocument(true, instance, projectId, documentId, content)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocument(true, instance, projectId, documentType, documentTypeId, null, null, content)) as CommandResult<string>)?.Message;
         }
 
         /// <summary>

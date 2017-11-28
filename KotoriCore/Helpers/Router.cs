@@ -134,15 +134,14 @@ namespace KotoriCore.Helpers
         }
 
         /// <summary>
-        /// Converts the kotori URI to identifier.
+        /// Converts the kotori URI to project identifier.
         /// </summary>
-        /// <returns>The kotori identifier.</returns>
-        /// <param name="uri">URI.</param>
-        /// <param name="identifierType">Identifier type.</param>
-        internal static string ToKotoriIdentifier(this Uri uri, IdentifierType identifierType)
+        /// <returns>The project identifier.</returns>
+        /// <param name="uri">Uri.</param>
+        internal static string ToKotoriProjectIdentifier(this Uri uri)
         {
             if (uri == null)
-                throw new KotoriValidationException("Identifier (null) is not valid URI string.");
+                throw new KotoriValidationException("Identifier (null) is not valid Uri string.");
             
             var u = uri.ToString();
 
@@ -151,10 +150,48 @@ namespace KotoriCore.Helpers
 
             u = u.RemoveTrailingSlashes(true, true);
 
-            if (identifierType == IdentifierType.DocumentType)
-                u += "/";
-            
             return u;
+        }
+
+        /// <summary>
+        /// Converts the kotori URI to document type identifier.
+        /// </summary>
+        /// <returns>The document type identifier.</returns>
+        /// <param name="uri">Uri.</param>
+        internal static string ToKotoriDocumentTypeIdentifier(this Uri uri)
+        {
+            if (uri == null)
+                throw new KotoriValidationException("Identifier (null) is not valid Uri string.");
+
+            var u = uri.ToString();
+
+            if (u.StartsWith(UriScheme, StringComparison.OrdinalIgnoreCase))
+                u = u.Substring(UriScheme.Length);
+
+            u = u.RemoveTrailingSlashes(true, true);
+
+            return u;
+        }
+
+        /// <summary>
+        /// Converts the kotori URI to document identifier token.
+        /// </summary>
+        /// <returns>The document identifier tijeb.</returns>
+        /// <param name="uri">Uri.</param>
+        internal static DocumentIdentifierToken ToKotoriDocumentIdentifier(this Uri uri)
+        {
+            if (uri == null)
+                throw new KotoriValidationException("Identifier (null) is not valid Uri string.");
+
+            var u = uri.ToString();
+
+            if (u.StartsWith(UriScheme, StringComparison.OrdinalIgnoreCase))
+                u = u.Substring(UriScheme.Length);
+
+            u = u.RemoveTrailingSlashes(true, true);
+
+            // TODO: implement
+            return null;
         }
 
         /// <summary>
