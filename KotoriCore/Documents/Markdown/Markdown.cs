@@ -139,14 +139,18 @@ namespace KotoriCore.Documents
                 }
             }
 
-            markdownResult.Date = markdownResult.DocumentIdentifier.DocumentId.ToDateTime(null);
-
             ProcessMeta(markdownResult, DocumentIdentifier.DocumentType);
 
             if (DocumentIdentifier.DocumentType == Enums.DocumentType.Data)
             {
-                markdownResult.Date = DateTime.MinValue;
+                markdownResult.Date = DateTime.MinValue.Date;
                 markdownResult.Slug = null;
+            }
+
+            if (DocumentIdentifier.DocumentType == Enums.DocumentType.Content &&
+               markdownResult.Date == null)
+            {
+                markdownResult.Date = DateTime.MinValue;
             }
 
             markdownResult.Hash = markdownResult.ToHash();
@@ -191,7 +195,7 @@ namespace KotoriCore.Documents
                         if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Date))
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is used more than once.");
                         
-                        result.Date = DocumentIdentifier.DocumentId.ToDateTime(meta[key].ToString());
+                        result.Date = meta[key].ToString().ToDateTime();
 
                         usedPropertyTypes.Add(Enums.DocumentPropertyType.Date);
                     }
@@ -203,8 +207,11 @@ namespace KotoriCore.Documents
                         
                         if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Slug))
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is used more than once.");
+
+                        if (!meta[key].ToString().IsValidSlug())
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Slug is not valid.");
                         
-                        result.Slug = DocumentIdentifier.DocumentId.ToDocumentSlug(meta[key].ToString());
+                        result.Slug = meta[key].ToString();
 
                         usedPropertyTypes.Add(Enums.DocumentPropertyType.Slug);
                     }
@@ -277,7 +284,10 @@ namespace KotoriCore.Documents
             // no slug, set from filename
             if (result.Slug == null)
             {
-                result.Slug = DocumentIdentifier.DocumentId.ToDocumentSlug(null);
+                if (!DocumentIdentifier.DocumentId.IsValidSlug())
+                    throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document identifier {DocumentIdentifier.DocumentId} is not valid as a slug.");
+                
+                result.Slug = DocumentIdentifier.DocumentId;
             }
 
             result.OriginalMeta = originalExpando;

@@ -36,47 +36,6 @@ namespace KotoriCore.Documents
         }
 
         /// <summary>
-        /// Gets date from filename prefix, $date property.
-        /// </summary>
-        /// <returns>The date time.</returns>
-        /// <param name="identifier">Identifier.</param>
-        /// <param name="date">Date.</param>
-        /// <remarks>Always returns date, if none found then returns just current date.</remarks>
-        internal static DateTime ToDateTime(this string identifier, string date)
-        {
-            var now = DateTime.MinValue.Date;
-            var dt = now;
-
-            var r = new Regex(@"^.*/_?(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})-.*$", RegexOptions.Singleline);
-
-            var match = r.Match(identifier);
-
-            if (match.Success)
-            {
-                dt = new DateTime
-                (
-                    match.Groups["year"].Value.ToInt32() ?? now.Year,
-                    match.Groups["month"].Value.ToInt32() ?? now.Month,
-                    match.Groups["day"].Value.ToInt32() ?? now.Day
-                );
-            }
-
-            if (!string.IsNullOrEmpty(date))
-            {
-                if (DateTime.TryParse(date, out DateTime fullDate))
-                {
-                    dt = fullDate;
-                }
-                else
-                {
-                    throw new KotoriDocumentException(identifier, $"Date {date} could not be parsed.");
-                }
-            }
-
-            return dt;
-        }
-
-        /// <summary>
         /// Post processes the content.
         /// </summary>
         /// <returns>The post processed content.</returns>
@@ -127,6 +86,52 @@ namespace KotoriCore.Documents
             }
 
             return metaFinal;
+        }
+
+        /// <summary>
+        /// Gets date from filename prefix, $date property.
+        /// </summary>
+        /// <returns>The date time.</returns>
+        /// <param name="date">Date.</param>
+        /// <remarks>Always returns date, if none found then returns min date.</remarks>
+        internal static DateTime ToDateTime(this string date)
+        {
+            var now = DateTime.MinValue.Date;
+            var dt = now;
+
+            var r = new Regex(@"^(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})$", RegexOptions.Singleline);
+
+            var match = r.Match(date);
+
+            if (match.Success)
+            {
+                try
+                {
+                    dt = new DateTime
+                    (
+                        match.Groups["year"].Value.ToInt32() ?? now.Year,
+                        match.Groups["month"].Value.ToInt32() ?? now.Month,
+                        match.Groups["day"].Value.ToInt32() ?? now.Day
+                    );
+                }
+                catch
+                {
+                    throw new KotoriValidationException($"Date {match.Groups["year"].Value}-{match.Groups["month"].Value}-{match.Groups["day"].Value} is not a valid date.");
+                }
+            }
+            else if (!string.IsNullOrEmpty(date))
+            {
+                if (DateTime.TryParse(date, out DateTime fullDate))
+                {
+                    dt = fullDate;
+                }
+                else
+                {
+                    throw new KotoriValidationException($"Date {date} could not be parsed.");
+                }
+            }
+
+            return dt;
         }
     }
 }

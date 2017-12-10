@@ -89,7 +89,9 @@ namespace KotoriCore.Database.DocumentDb
                             command.DocumentTypeId,
                             command.DocumentId,
                             finalIndex,                            
-                            doc
+                            doc,
+                            command.Date,
+                            command.Draft
                            )
                         )
                     );
@@ -170,7 +172,7 @@ namespace KotoriCore.Database.DocumentDb
                 documentResult.Meta,
                 documentResult.Content,
                 documentResult.Date,
-                command.DocumentId.ToDraftFlag(),
+                command.Draft ?? false,
                 version,
                 command.DocumentId.ToFilename()
             )

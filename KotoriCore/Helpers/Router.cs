@@ -120,10 +120,16 @@ namespace KotoriCore.Helpers
                 throw new KotoriProjectException(projectId, $"Project slug {projectId} is not valid.");
 
             if (!documentTypeId.IsValidSlug())
-                throw new KotoriDocumentTypeException(projectId, $"Document type slug {documentTypeId} is not valid.");
+                throw new KotoriDocumentTypeException(documentTypeId, $"Document type slug {documentTypeId} is not valid.");
+
+            if (!documentId.IsValidSlug())
+                throw new KotoriDocumentException(documentId, $"Document slug {documentId} is not valid.");
+
+            if (index.HasValue &&
+               index < 0)
+                throw new KotoriDocumentException(documentId, $"Index must equals or be greater than 0.");
             
-            var id = documentId.ToDocumentSlug(null);
-            var uri = UriScheme + "api/projects/" + projectId + "/types/" + documentType.ToString().ToLower() + "/document-types/" + documentTypeId + "/documents/" + id;
+            var uri = UriScheme + "api/projects/" + projectId + "/types/" + documentType.ToString().ToLower() + "/document-types/" + documentTypeId + "/documents/" + documentId;
 
             if (index != null)
                 uri += "/indices/" + index;
@@ -231,54 +237,6 @@ namespace KotoriCore.Helpers
         }
 
         /// <summary>
-        /// Converts the document identifier to draft flag.
-        /// </summary>
-        /// <param name="documentId">Document identifier.</param>
-        /// <returns>The draft flag.</returns>
-        internal static bool ToDraftFlag(this string documentId)
-        {
-            if (documentId == null)
-                throw new ArgumentNullException(nameof(documentId));
-
-            if (documentId.StartsWith("_", StringComparison.Ordinal))
-                return true;
-
-            return false;
-        }
-
-        /// <summary>
-        /// Determines the document slug.
-        /// </summary>
-        /// <returns>The slug.</returns>
-        /// <param name="identifier">Identifier.</param>
-        /// <param name="slug">Slug.</param>
-        internal static string ToDocumentSlug(this string identifier, string slug)
-        {
-            string sl = null;
-            var r = new Regex(@"^_?(\d{4}-\d{1,2}-\d{1,2}-)?(?<url>[^\.]+)", RegexOptions.Compiled);
-
-            var match = r.Match(identifier);
-
-            if (match.Success)
-            {
-                sl = match.Groups["url"].Value;
-            }
-
-            if (!string.IsNullOrEmpty(slug))
-            {
-                sl = slug.Trim();
-            }
-
-            if (string.IsNullOrEmpty(sl))
-                throw new KotoriDocumentException(identifier, $"Slug could not be determined for {identifier}.");
-
-            if (!sl.IsValidSlug())
-                throw new KotoriDocumentException(identifier, $"Slug {sl} is not valid.");
-            
-            return sl;
-        }
-
-        /// <summary>
         /// Checks if the slug is valid.
         /// </summary>
         /// <returns><c>true</c>, if slug is valid, <c>false</c> otherwise.</returns>
@@ -291,6 +249,7 @@ namespace KotoriCore.Helpers
             return r.IsMatch(slug);
         }
 
+        // TODO: delete
         /// <summary>
         /// Converts identifier to the filename.
         /// </summary>

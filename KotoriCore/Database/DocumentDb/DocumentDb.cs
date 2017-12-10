@@ -597,7 +597,9 @@ namespace KotoriCore.Database.DocumentDb
                                 new Uri(documentType.Identifier).ToKotoriDocumentTypeIdentifier().DocumentTypeId,
                                 documentToken.DocumentId,
                                 documentToken.Index,
-                                document.ToOriginalJsonString()
+                                document.ToOriginalJsonString(),
+                                document.Date?.DateTime,
+                                document.Draft
                             )
                         );
                     }

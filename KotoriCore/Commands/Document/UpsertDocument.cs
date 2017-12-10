@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using KotoriCore.Helpers;
 
 namespace KotoriCore.Commands
@@ -49,6 +50,16 @@ namespace KotoriCore.Commands
         public readonly long? Index;
 
         /// <summary>
+        /// The date.
+        /// </summary>
+        public readonly DateTime? Date;
+
+        /// <summary>
+        /// The draft flag.
+        /// </summary>
+        public readonly bool? Draft;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocument"/> class.
         /// </summary>
         /// <param name="createOnly">Create only flag.</param>
@@ -57,9 +68,14 @@ namespace KotoriCore.Commands
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type id.</param>
         /// <param name="documentId">Document identifier.</param>
+        /// <param name="index">Document index.</param>
         /// <param name="content">Content.</param>
-        public UpsertDocument(bool createOnly, string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content)
+        /// <param name="date">Date.</param>
+        /// <param name="draft">Draft flag.</param>
+        public UpsertDocument(bool createOnly, string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? date, bool? draft)
         {
+            Draft = draft;
+            Date = date;
             CreateOnly = createOnly;
             Instance = instance;
             ProjectId = projectId;

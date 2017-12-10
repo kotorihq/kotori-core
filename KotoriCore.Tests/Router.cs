@@ -43,31 +43,10 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        public void Drafts()
-        {
-            Assert.AreEqual(false, "2017-08-12-flip-flappers.md".ToDraftFlag());
-            Assert.AreEqual(true, "_2017-08-12-flip-flappers.md".ToDraftFlag());
-        }
-
-        [TestMethod]
-        public void Slugs()
-        {
-            Assert.AreEqual("matrix", "matrix".ToDocumentSlug(null));
-            Assert.AreEqual("matrix", "_matrix.md".ToDocumentSlug(null));
-            Assert.AreEqual("matrix", "_2000-01-01-matrix.md".ToDocumentSlug(null));
-            Assert.AreEqual("matrix", "2000-01-01-matrix.md".ToDocumentSlug(null));
-            Assert.AreEqual("the-matrix", "matrix".ToDocumentSlug("the-matrix"));
-        }
-
-        [TestMethod]
         public void DocumentUri()
         {
-            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/content/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "2017-08-12-flip-flappers.md", null));
-            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/content/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "_2017-08-12-flip-flappers.md", null));
-            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/content/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "_flip-flappers", null));
-            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/content/document-types/tv/documents/flip-flappers/indices/6502"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "2017-08-12-flip-flappers.md", 6502));
-            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/data/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Data, "tv", "2017-08-12-flip-flappers.md", null));
-            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/data/document-types/tv/documents/flip-flappers/indices/6502"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Data, "tv", "2017-08-12-flip-flappers.md", 6502));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/content/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "flip-flappers", null));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/content/document-types/tv/documents/flip-flappers/indices/6502"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "flip-flappers", 6502));
         }
 
         [TestMethod]
