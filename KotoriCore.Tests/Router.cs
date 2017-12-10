@@ -2,86 +2,86 @@
 using KotoriCore.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using KotoriCore.Documents;
 
 namespace KotoriCore.Tests
 {
     [TestClass]
-    public class VariousHelpers
+    public class Router
     {
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "Bad formatted URI has been inappropriately validated as ok.")]
+        [ExpectedException(typeof(KotoriProjectException))]
         public void RouterBad0()
         {
-            "x x".ToKotoriUri(Router.IdentifierType.Project);
+            "x x".ToKotoriProjectUri();
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "Bad formatted URI has been inappropriately validated as ok.")]
+        [ExpectedException(typeof(KotoriProjectException))]
         public void RouterBad1()
         {
-            "čačačááá\\\\".ToKotoriUri(Router.IdentifierType.Project);
+            "čačačááá\\\\".ToKotoriProjectUri();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriProjectException))]
+        public void RouterBad2()
+        {
+            "čačačááá\\\\".ToKotoriDocumentTypeUri(Enums.DocumentType.Content, "x");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentTypeException))]
+        public void RouterBad3()
+        {
+            "a".ToKotoriDocumentTypeUri(Enums.DocumentType.Content, "foo/bar");
         }
 
         [TestMethod]
         public void RouterOk0()
         {
-            Assert.AreEqual(new Uri("kotori://something-sweet/"), "something-sweet".ToKotoriUri(Router.IdentifierType.Project));
+            Assert.AreEqual(new Uri("kotori://api/projects/something-sweet"), "something-sweet".ToKotoriProjectUri());
         }
 
         [TestMethod]
         public void Drafts()
         {
-            Assert.AreEqual(false, new Uri("kotori://content/tv/2017-08-12-flip-flappers.md").ToDraftFlag());
-            Assert.AreEqual(true, new Uri("kotori://content/tv/_2017-08-12-flip-flappers.md").ToDraftFlag());
+            Assert.AreEqual(false, "2017-08-12-flip-flappers.md".ToDraftFlag());
+            Assert.AreEqual(true, "_2017-08-12-flip-flappers.md".ToDraftFlag());
         }
 
         [TestMethod]
         public void Slugs()
         {
-            Assert.AreEqual("matrix", "content/movie/matrix".ToSlug(null));
-            Assert.AreEqual("matrix", "content/movie/matrix.md".ToSlug(null));
-            Assert.AreEqual("the-matrix", "content/movie/matrix".ToSlug("the-matrix"));
-            Assert.AreEqual("the-matrix", "content/movie/.matrix".ToSlug("the-matrix"));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(KotoriDocumentException), "Bad formatted slug has been inappropriately validated as ok.")]
-        public void SlugFail()
-        {
-            Assert.AreEqual("matrix", "content/movie/sci-fi/.matrix".ToSlug(null));
+            Assert.AreEqual("matrix", "matrix".ToDocumentSlug(null));
+            Assert.AreEqual("matrix", "_matrix.md".ToDocumentSlug(null));
+            Assert.AreEqual("matrix", "_2000-01-01-matrix.md".ToDocumentSlug(null));
+            Assert.AreEqual("matrix", "2000-01-01-matrix.md".ToDocumentSlug(null));
+            Assert.AreEqual("the-matrix", "matrix".ToDocumentSlug("the-matrix"));
         }
 
         [TestMethod]
         public void DocumentUri()
         {
-            Assert.AreEqual(new Uri("kotori://content/tv/flip-flappers.md"), "content/tv/2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
-            Assert.AreEqual(new Uri("kotori://content/tv/new/fresh/flip-flappers.md"), "content/tv/new/fresh/2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
-            Assert.AreEqual(new Uri("kotori://content/tv/flip-flappers.md"), "content/tv/_2017-08-12-flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
-            Assert.AreEqual(new Uri("kotori://content/tv/flip-flappers.md"), "content/tv/flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
-            Assert.AreEqual(new Uri("kotori://content/tv/yo/ya/ye/flip-flappers.md"), "content/tv/yo/ya/ye/flip-flappers.md".ToKotoriUri(Router.IdentifierType.Document));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/content/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "2017-08-12-flip-flappers.md", null));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/content/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "_2017-08-12-flip-flappers.md", null));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/content/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "_flip-flappers", null));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/content/document-types/tv/documents/flip-flappers/indices/6502"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "2017-08-12-flip-flappers.md", 6502));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/data/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Data, "tv", "2017-08-12-flip-flappers.md", null));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/types/data/document-types/tv/documents/flip-flappers/indices/6502"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Data, "tv", "2017-08-12-flip-flappers.md", 6502));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriException), "Bad formatted identifier has been inappropriately validated as ok.")]
+        [ExpectedException(typeof(KotoriDocumentException))]
         public void DocumentUriFail()
         {
-            "content/tv/_".ToKotoriUri(Router.IdentifierType.Document);
+            "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "_", null);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriException), "Bad formatted identifier has been inappropriately validated as ok.")]
+        [ExpectedException(typeof(KotoriDocumentException))]
         public void DocumentUriFail2()
         {
-            "content/tv/_.md".ToKotoriUri(Router.IdentifierType.Document);
-        }
-
-        [TestMethod]
-        public void DataUri()
-        {
-            Assert.AreEqual(new Uri("kotori://content/tv/flip-flappers.md"), "content/tv/2017-08-12-flip-flappers.md?x=3".ToKotoriUri(Router.IdentifierType.Document));
-            Assert.AreEqual(new Uri("kotori://content/tv/flip-flappers.md"), "content/tv/2017-08-12-flip-flappers.md?3".ToKotoriUri(Router.IdentifierType.Document));
-            Assert.AreEqual(new Uri("kotori://content/tv/flip-flappers.md?426"), "content/tv/2017-08-12-flip-flappers.md?426".ToKotoriUri(Router.IdentifierType.Data));
+            "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "_.md", null);
         }
 
         [TestMethod]

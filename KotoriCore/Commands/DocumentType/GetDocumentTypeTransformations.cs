@@ -19,6 +19,11 @@ namespace KotoriCore.Commands
         public readonly string ProjectId;
 
         /// <summary>
+        /// The type of the document.
+        /// </summary>
+        public readonly Enums.DocumentType DocumentType;
+
+        /// <summary>
         /// The document type identifier.
         /// </summary>
         public readonly string DocumentTypeId;
@@ -29,10 +34,11 @@ namespace KotoriCore.Commands
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        public GetDocumentTypeTransformations(string instance, string projectId, string documentTypeId)
+        public GetDocumentTypeTransformations(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
             Instance = instance;
             ProjectId = projectId;
+            DocumentType = documentType;
             DocumentTypeId = documentTypeId;
         }
 

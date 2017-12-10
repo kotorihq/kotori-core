@@ -83,7 +83,7 @@ namespace KotoriCore.Database.DocumentDb.Helpers
             if (document == null)
                 throw new ArgumentNullException(nameof(document));
 
-            var documentType = new Uri(document.DocumentTypeId).ToDocumentType();
+            var documentType = document.DocumentTypeId.ToDocumentType();
 
             if (documentType == Enums.DocumentType.Content)
             {

@@ -149,8 +149,8 @@ Dragged along by the energetic stranger, Cocona finds herself in the world of Pu
             }
             finally
             {
-                if (_con.CollectionId != "hub")
-                    _con.DeleteCollection();
+                //if (_con.CollectionId != "hub")
+                    //_con.DeleteCollection();
             }
         }
     }

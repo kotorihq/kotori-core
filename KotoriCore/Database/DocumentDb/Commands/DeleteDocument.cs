@@ -4,7 +4,6 @@ using KotoriCore.Commands;
 using KotoriCore.Database.DocumentDb.Helpers;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
-using Sushi2;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -12,30 +11,25 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(DeleteDocument command)
         {
-            var documentTypeUri = command.DocumentId.ToKotoriUri(Router.IdentifierType.DocumentType);
-            var docType = documentTypeUri.ToDocumentType();
-            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
-            var documentUri = command.DocumentId.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
+            var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
+            var projectUri = command.ProjectId.ToKotoriProjectUri();
+            var documentUri = command.ProjectId.ToKotoriDocumentUri(command.DocumentType, command.DocumentTypeId, command.DocumentId, command.Index);
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
-            
-            long? idx = null;
 
-            if (docType == Enums.DocumentType.Data)
+            if (command.DocumentType == Enums.DocumentType.Data)
             {
-                idx = documentUri.Query?.Replace("?", "").ToInt64();
-
-                if (!idx.HasValue)
+                if (!command.Index.HasValue)
                     throw new KotoriDocumentException(command.DocumentId, "Data document cannot be deleted without index.");
             }
 
             var document = await FindDocumentByIdAsync
                 (
                     command.Instance, 
-                    command.ProjectId.ToKotoriUri(Router.IdentifierType.Project), 
+                    projectUri,
                     documentUri, 
                     null
                 );
@@ -43,7 +37,7 @@ namespace KotoriCore.Database.DocumentDb
             if (document == null)
                 throw new KotoriDocumentException(command.DocumentId, "Document does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
-            if (docType == Enums.DocumentType.Data)
+            if (command.DocumentType == Enums.DocumentType.Data)
             {
                 var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
                 (
@@ -65,14 +59,15 @@ namespace KotoriCore.Database.DocumentDb
                 if (!result)
                     throw new KotoriDocumentException(command.DocumentId, "Document has not been deleted.");
                 
-                if (idx.HasValue &&
-                   idx.Value != count - 1)    
+                if (command.Index.HasValue &&
+                   command.Index.Value != count - 1)    
                 {
                     var reindexTasks = new List<Task>();
 
-                    for (var i = idx.Value + 1; i < count; i++)
+                    for (var i = command.Index.Value + 1; i < count; i++)
                     {
-                        var d = await FindDocumentByIdAsync(command.Instance, projectUri, command.DocumentId.ToKotoriUri(Router.IdentifierType.Data, i), null);
+                        var durl = command.ProjectId.ToKotoriDocumentUri(command.DocumentType, command.DocumentTypeId, command.DocumentId, i);
+                        var d = await FindDocumentByIdAsync(command.Instance, projectUri, durl, null);
 
                         if (d != null)
                         {

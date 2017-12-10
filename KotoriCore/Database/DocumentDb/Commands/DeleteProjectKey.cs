@@ -12,7 +12,7 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(DeleteProjectKey command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
+            var projectUri = command.ProjectId.ToKotoriProjectUri();
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 
@@ -32,7 +32,7 @@ namespace KotoriCore.Database.DocumentDb
             
             keys.RemoveAll(key => key.Key == command.ProjectKey);
 
-            project.Identifier = project.Identifier.ToKotoriUri(Router.IdentifierType.Project).ToString();
+            project.Identifier = projectUri.ToString();
             project.ProjectKeys = keys;
 
             // TODO: inspect - instead of replacing we use usperting

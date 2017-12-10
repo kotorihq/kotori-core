@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using KotoriCore.Documents;
 using KotoriCore.Exceptions;
+using KotoriCore.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
@@ -15,7 +16,8 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Invalid front matter was inappropriately accepted.")]
         public void InvalidFrontMatter()
         {
-            var md = new Documents.Markdown("content/foo/bar.md",
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "bar", null);
+            var md = new Documents.Markdown(di,
 @"---
 name: Ami Kawashima (川嶋 亜美)",
 null
@@ -28,7 +30,8 @@ null
         [ExpectedException(typeof(KotoriDocumentException), "Invalid front matter was inappropriately accepted.")]
         public void InvalidFrontMatter2()
         {
-            var md = new Documents.Markdown("content/foo/bar.md",
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "bar", null);
+            var md = new Documents.Markdown(di,
 @"---name: Ami Kawashima (川嶋 亜美)
 ---
 a",
@@ -41,25 +44,27 @@ null
         [TestMethod]
         public void MdWithoutFrontMatter()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "bar", null);
             var c = @"hello
 space
 cowboy";
-            var md = new Documents.Markdown("content/foo/bar.md", c, null);
+            var md = new Documents.Markdown(di, c, null);
 
             var result = md.Process();
 
-            Assert.AreEqual("content/foo/bar.md", result.Identifier);
+            Assert.AreEqual("bar", result.DocumentIdentifier.DocumentId);
 
             var mdr = result as MarkdownResult;
 
             Assert.IsNotNull(mdr);
             Assert.AreEqual(c, mdr.Content);
-            Assert.AreEqual(Helpers.Enums.FrontMatterType.None, mdr.FrontMatterType);
+            Assert.AreEqual(Enums.FrontMatterType.None, mdr.FrontMatterType);
         }
 
         [TestMethod]
         public void MdWithFrontMatterYaml()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "bar", null);
             var c = @"hello
 space
 cowboy
@@ -71,7 +76,7 @@ bwh: { b: !!int 90, w: !!int 58, h: !!int 88 }
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("content/foo/bar.md", all, null);
+            var md = new Documents.Markdown(di, all, null);
 
             var result = md.Process();
 
@@ -83,12 +88,13 @@ bwh: { b: !!int 90, w: !!int 58, h: !!int 88 }
             Assert.AreEqual((Int64)88, ((JValue)mdr.Meta.bwh.h).Value);
             Assert.AreEqual(true, ((JValue)mdr.Meta.fun).Value);
             Assert.AreEqual(c, mdr.Content);
-            Assert.AreEqual(Helpers.Enums.FrontMatterType.Yaml, mdr.FrontMatterType);
+            Assert.AreEqual(Enums.FrontMatterType.Yaml, mdr.FrontMatterType);
         }
 
         [TestMethod]
         public void MdWithFrontMatterJson()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "bar", null);
             var c = @"hello
 space
 cowboy
@@ -100,7 +106,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("content/foo/bar.md", all, null);
+            var md = new Documents.Markdown(di, all, null);
 
             var result = md.Process();
 
@@ -112,12 +118,13 @@ cowboy
             Assert.AreEqual((Int64)88, ((JValue)mdr.Meta.bwh.h).Value);
             Assert.AreEqual(true, ((JValue)mdr.Meta.fun).Value);
             Assert.AreEqual(c, mdr.Content);
-            Assert.AreEqual(Helpers.Enums.FrontMatterType.Json, mdr.FrontMatterType);
+            Assert.AreEqual(Enums.FrontMatterType.Json, mdr.FrontMatterType);
         }
 
         [TestMethod]
         public void NoDate()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "bar", null);
             var c = @"hello";
             var m = @"{ ""name"": ""gremlin"",
 ""age"": 3,
@@ -126,7 +133,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("content/foo/bar.md", all, null);
+            var md = new Documents.Markdown(di, all, null);
 
             var result = md.Process();
 
@@ -138,6 +145,7 @@ cowboy
         [TestMethod]
         public void DateInMeta()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"hello";
             var m = @"{ ""name"": ""gremlin"",
 ""age"": 3,
@@ -147,53 +155,13 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown("content/foo/2016-03-04-bar.md", all, null);
+            var md = new Documents.Markdown(di, all, null);
 
             var result = md.Process();
 
             var mdr = result as MarkdownResult;
 
             Assert.AreEqual(new DateTime(2011, 11, 23).Date, mdr.Date);
-        }
-
-        [TestMethod]
-        public void DateInIdentifier()
-        {
-            var c = @"hello";
-            var m = @"{ ""name"": ""gremlin"",
-""age"": 3,
-""fun"": true,
-""bwh"": { b: 90, w: 58, h: 88 } }
-";
-            var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
-
-            var md = new Documents.Markdown("content/foo/2016-03-04-bar.md", all, null);
-
-            var result = md.Process();
-
-            var mdr = result as MarkdownResult;
-
-            Assert.AreEqual(new DateTime(2016, 03, 04).Date, mdr.Date);
-        }
-
-        [TestMethod]
-        public void DateInDraft()
-        {
-            var c = @"hello";
-            var m = @"{ ""name"": ""gremlin"",
-""age"": 3,
-""fun"": true,
-""bwh"": { b: 90, w: 58, h: 88 } }
-";
-            var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
-
-            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", all, null);
-
-            var result = md.Process();
-
-            var mdr = result as MarkdownResult;
-
-            Assert.AreEqual(new DateTime(2016, 03, 04).Date, mdr.Date);
         }
 
         [TestMethod]
@@ -275,12 +243,13 @@ hello!", c);
         [ExpectedException(typeof(KotoriDocumentException), "Invalid internal tag was inappropriately accepted.")]
         public void BadInternalTag()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"---
 $nenecchi: damn
 ---
 hm
 ";
-            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", c, null);
+            var md = new Documents.Markdown(di, c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -291,6 +260,7 @@ hm
         [ExpectedException(typeof(KotoriDocumentException), "Invalid yaml was inappropriately accepted.")]
         public void DetectHeaderFormatAsBadYaml()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"---
 rom lll:
 xx
@@ -298,7 +268,7 @@ aaa /// // /
 ---
 hm
 ";
-            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", c, null);
+            var md = new Documents.Markdown(di, c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -307,13 +277,14 @@ hm
         [ExpectedException(typeof(KotoriDocumentException), "Duplicated meta fields were inappropriately accepted.")]
         public void DuplicatedMetaFields()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"---
 $slug: x
 $Slug: X
 ---
 hm
 ";
-            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", c, null);
+            var md = new Documents.Markdown(di, c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -322,13 +293,14 @@ hm
         [ExpectedException(typeof(KotoriDocumentException), "Duplicated meta fields were inappropriately accepted.")]
         public void DuplicatedMetaFields2()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"---
 slugie: x
 Slugie: X
 ---
 hm
 ";
-            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", c, null);
+            var md = new Documents.Markdown(di, c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -336,6 +308,7 @@ hm
         [TestMethod]
         public void MetaCamelCasing()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"---
 Raw: 123
 a-l-o-h-a : 345
@@ -343,7 +316,7 @@ Sakura_Nene: true
 ---
 hm
 ";
-            var md = new Documents.Markdown("content/foo/_2016-03-04-bar.md", c, null);
+            var md = new Documents.Markdown(di, c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -358,8 +331,9 @@ hm
         [TestMethod]
         public void NoFrontMatter()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"aloha";
-            var md = new Documents.Markdown("content/foo/bar.md", c, null);
+            var md = new Documents.Markdown(di, c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -369,10 +343,11 @@ hm
         [TestMethod]
         public void NoContent()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"---
 foo: bar
 ---";
-            var md = new Documents.Markdown("content/foo/bar.md", c, null);
+            var md = new Documents.Markdown(di, c, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -382,13 +357,14 @@ foo: bar
         [TestMethod]
         public void Transformations()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"---
 foo: "" BAR ""
 Normalize: žLUťoučký!
 sort: čuník
 date: 2001-12-15T02:59:43.1Z
 ---";
-            var md = new Documents.Markdown("content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+            var md = new Documents.Markdown(di, c, new Documents.Transformation.Transformation("x", @"
 - from: foo
   to: foo2
   transformations:
@@ -427,10 +403,11 @@ date: 2001-12-15T02:59:43.1Z
         [ExpectedException(typeof(KotoriDocumentException))]
         public void TransformationsFail0()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"---
 foo: "" BAR ""
 ---";
-            var md = new Documents.Markdown("content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+            var md = new Documents.Markdown(di, c, new Documents.Transformation.Transformation("x", @"
 - from: $slug
   to: foo2
   transformations:
@@ -444,10 +421,11 @@ foo: "" BAR ""
         [ExpectedException(typeof(KotoriDocumentException))]
         public void TransformationsFail1()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"---
 foo: "" BAR ""
 ---";
-            var md = new Documents.Markdown("content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+            var md = new Documents.Markdown(di, c, new Documents.Transformation.Transformation("x", @"
 - from: foo2
   to: $slug
   transformations:
@@ -461,10 +439,11 @@ foo: "" BAR ""
         [ExpectedException(typeof(KotoriDocumentTypeException))]
         public void TransformationsFail2()
         {
+            var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"---
 foo: "" x ""
 ---";
-            var md = new Documents.Markdown("content/foo/bar.md", c, new Documents.Transformation.Transformation("x", @"
+            var md = new Documents.Markdown(di, c, new Documents.Transformation.Transformation("x", @"
 - from: foo
   to: $slug
   transformations:

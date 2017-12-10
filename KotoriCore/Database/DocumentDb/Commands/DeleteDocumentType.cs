@@ -10,8 +10,9 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(DeleteDocumentType command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
+            var projectUri = command.ProjectId.ToKotoriProjectUri();
             var project = await FindProjectAsync(command.Instance, projectUri);
+            var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -20,13 +21,11 @@ namespace KotoriCore.Database.DocumentDb
                 (
                     command.Instance,
                     projectUri,
-                    command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType)
+                    documentTypeUri
                 );
 
             if (docType == null)
                 throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
-
-            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
 
             var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
             (

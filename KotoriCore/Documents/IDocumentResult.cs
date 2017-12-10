@@ -6,13 +6,12 @@ namespace KotoriCore.Documents
     /// <summary>
     /// Document result interface.
     /// </summary>
-    public interface IDocumentResult
-    {       
+    interface IDocumentResult
+    {
         /// <summary>
-        /// Gets the document identifier.
+        /// The document identifier.
         /// </summary>
-        /// <value>The document identifier.</value>
-        string Identifier { get; }
+        DocumentIdentifierToken DocumentIdentifier { get; }
 
         /// <summary>
         /// Gets or sets the type of the front matter.

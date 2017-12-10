@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using KotoriCore.Domains;
+using KotoriCore.Exceptions;
 
 namespace KotoriCore.Helpers
 {    
@@ -67,19 +68,21 @@ namespace KotoriCore.Helpers
         }
 
         /// <summary>
-        /// Identify the type of the document.
+        /// Identifies the type of the document.
         /// </summary>
         /// <returns>The document type.</returns>
         /// <param name="identifier">Identifier.</param>
-        public static Enums.DocumentType? ToDocumentType(this Uri identifier)
+        public static Enums.DocumentType? ToDocumentType(this string identifier)
         {
-            if (identifier.Host == null)
-                return null;
-            
-            if (!Constants.DocumentTypes.ContainsKey(identifier.Host))
-                return null;
+            if (identifier == null)
+                throw new ArgumentNullException(nameof(identifier));
 
-            return Constants.DocumentTypes[identifier.Host];
+            var id = identifier.ToLower();
+
+            if (!Constants.DocumentTypes.ContainsKey(id))
+                throw new KotoriException($"Type {identifier} has not been identified as a valid document type.");
+
+            return Constants.DocumentTypes[identifier.ToLower()];
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace KotoriCore.Helpers
         /// </summary>
         /// <returns>The hash.</returns>
         /// <param name="result">Result.</param>
-        public static string ToHash(this IDocumentResult result)
+        internal static string ToHash(this IDocumentResult result)
         {
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
@@ -95,7 +98,11 @@ namespace KotoriCore.Helpers
             var c = (result.Content?.ToString() ?? string.Empty) +
                 (result.Date == null ? "(none)" : result.Date.Value.ToEpoch().ToString()) +
                 (result.Slug ?? "(none)") +
-                (result.Identifier ?? "(none)");
+                (result.DocumentIdentifier.ProjectId ?? "(none)") +
+                (result.DocumentIdentifier.DocumentType.ToString() ?? "(none)") +
+                (result.DocumentIdentifier.DocumentTypeId ?? "(none)") +
+                (result.DocumentIdentifier.DocumentId ?? "(none)") +
+                ((result.DocumentIdentifier.Index ?? 0).ToString());
 
             if (result.OriginalMeta != null)
                 c += JsonConvert.SerializeObject(result.OriginalMeta);

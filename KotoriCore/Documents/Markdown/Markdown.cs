@@ -20,30 +20,23 @@ namespace KotoriCore.Documents
     class Markdown : IDocument
     {
         readonly string _content;
-        readonly Enums.DocumentType _documentType;
         readonly Transformation.Transformation _transformation;
 
         /// <summary>
-        /// Gets the identifier.
+        /// Gets the document identifier.
         /// </summary>
-        /// <value>The identifier.</value>
-        public string Identifier { get; }
+        /// <value>The document identifier.</value>
+        public DocumentIdentifierToken DocumentIdentifier { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Documents.Markdown"/> class.
         /// </summary>
-        /// <param name="identifier">Identifier.</param>
+        /// <param name="documentIdentifier">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <param name="transformation">Transformation.</param>
-        public Markdown(string identifier, string content, Transformation.Transformation transformation)
+        public Markdown(DocumentIdentifierToken documentIdentifier, string content, Transformation.Transformation transformation)
         {
-            Identifier = identifier;
-            var docType = Identifier.ToKotoriUri(Router.IdentifierType.DocumentType).ToDocumentType();
-
-            if (!docType.HasValue)
-                throw new KotoriDocumentException(Identifier, "Unknown document type.");
-
-            _documentType = docType.Value;
+            DocumentIdentifier = documentIdentifier;
             _content = content;
             _transformation = transformation;
         }
@@ -63,7 +56,7 @@ namespace KotoriCore.Documents
         /// <returns>The result.</returns>
         public async Task<IDocumentResult> ProcessAsync()
         {
-            var markdownResult = new MarkdownResult(Identifier);
+            var markdownResult = new MarkdownResult(DocumentIdentifier);
 
             var tr = new StringReader(_content);
 
@@ -113,7 +106,7 @@ namespace KotoriCore.Documents
             if (frontMatterStart.HasValue &&
                !frontMatterEnd.HasValue)
             {
-                throw new KotoriDocumentException(Identifier, "Invalid front matter. There is a starting tag --- that is not closed.");
+                throw new KotoriDocumentException(DocumentIdentifier.DocumentId, "Invalid front matter. There is a starting tag --- that is not closed.");
             }
 
             // no front matter
@@ -142,15 +135,15 @@ namespace KotoriCore.Documents
                 }
                 catch
                 {
-                    throw new KotoriDocumentException(Identifier, "Document parsing error.");
+                    throw new KotoriDocumentException(DocumentIdentifier.DocumentId, "Document parsing error.");
                 }
             }
 
-            markdownResult.Date = markdownResult.Identifier.ToDateTime(null);
+            markdownResult.Date = markdownResult.DocumentIdentifier.DocumentId.ToDateTime(null);
 
-            ProcessMeta(markdownResult, _documentType);
+            ProcessMeta(markdownResult, DocumentIdentifier.DocumentType);
 
-            if (_documentType == Enums.DocumentType.Data)
+            if (DocumentIdentifier.DocumentType == Enums.DocumentType.Data)
             {
                 markdownResult.Date = DateTime.MinValue;
                 markdownResult.Slug = null;
@@ -188,17 +181,17 @@ namespace KotoriCore.Documents
                     var dpt = key.ToDocumentPropertyType();
 
                     if (dpt == Enums.DocumentPropertyType.Invalid)
-                        throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is not recognized.");
+                        throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is not recognized.");
 
                     if (dpt == Enums.DocumentPropertyType.Date)
                     {
                         if (documentType == Enums.DocumentType.Data)
-                            throw new KotoriDocumentException(Identifier, $"$Date is not allowed for data documents.");
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Date is not allowed for data documents.");
                         
                         if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Date))
-                            throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is used more than once.");
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is used more than once.");
                         
-                        result.Date = Identifier.ToDateTime(meta[key].ToString());
+                        result.Date = DocumentIdentifier.DocumentId.ToDateTime(meta[key].ToString());
 
                         usedPropertyTypes.Add(Enums.DocumentPropertyType.Date);
                     }
@@ -206,12 +199,12 @@ namespace KotoriCore.Documents
                     if (dpt == Enums.DocumentPropertyType.Slug)
                     {
                         if (documentType == Enums.DocumentType.Data)
-                            throw new KotoriDocumentException(Identifier, $"$Slug is not allowed for data documents.");
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Slug is not allowed for data documents.");
                         
                         if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Slug))
-                            throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is used more than once.");
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is used more than once.");
                         
-                        result.Slug = Identifier.ToSlug(meta[key].ToString());
+                        result.Slug = DocumentIdentifier.DocumentId.ToDocumentSlug(meta[key].ToString());
 
                         usedPropertyTypes.Add(Enums.DocumentPropertyType.Slug);
                     }
@@ -226,7 +219,7 @@ namespace KotoriCore.Documents
                         }
                         else
                         {
-                            throw new KotoriDocumentException(Identifier, $"Document parsing error. Property {key} is used more than once.");
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is used more than once.");
                         }
                     }
                 }
@@ -247,16 +240,16 @@ namespace KotoriCore.Documents
                         var dtpTo = t.From.ToDocumentPropertyType();
 
                         if (dtpFrom == Enums.DocumentPropertyType.Invalid)
-                            throw new KotoriDocumentException(Identifier, $"Transformation error. Property {t.From} is not valid for transformation (from).");
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Transformation error. Property {t.From} is not valid for transformation (from).");
 
                         if (dtpTo == Enums.DocumentPropertyType.Invalid)
-                            throw new KotoriDocumentException(Identifier, $"Transformation error. Property {t.From} is not valid for transformation (to).");
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Transformation error. Property {t.From} is not valid for transformation (to).");
 
                         if (dtpTo != Enums.DocumentPropertyType.UserDefined)
-                            throw new KotoriDocumentException(Identifier, $"Transformation error. Property {t.From} is not valid for transformation (to). Don't use system fields.");
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Transformation error. Property {t.From} is not valid for transformation (to). Don't use system fields.");
 
                         if (!dictionary.ContainsKey(from))
-                            throw new KotoriDocumentException(Identifier, $"Transformation error. Property {t.From} is not valid for transformation (to). Source doesn't exist in meta fields.");
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Transformation error. Property {t.From} is not valid for transformation (to). Source doesn't exist in meta fields.");
 
                         var val = dictionary[from];
 
@@ -284,7 +277,7 @@ namespace KotoriCore.Documents
             // no slug, set from filename
             if (result.Slug == null)
             {
-                result.Slug = Identifier.ToSlug(null);
+                result.Slug = DocumentIdentifier.DocumentId.ToDocumentSlug(null);
             }
 
             result.OriginalMeta = originalExpando;

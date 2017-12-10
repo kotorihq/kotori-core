@@ -9,8 +9,8 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(UpsertDocumentType command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
-            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var projectUri = command.ProjectId.ToKotoriProjectUri();
+            var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
 
             if (command.CreateOnly)
             {

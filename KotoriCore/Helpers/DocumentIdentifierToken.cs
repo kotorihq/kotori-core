@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace KotoriCore.Helpers
+﻿namespace KotoriCore.Helpers
 {
     /// <summary>
     /// Document identifier token.
     /// </summary>
-    internal class DocumentIdentifierToken
+    class DocumentIdentifierToken
     {
         /// <summary>
         /// The project identifier.

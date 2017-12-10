@@ -13,7 +13,7 @@ namespace KotoriCore.Helpers
         /// <returns>The identifier.</returns>
         internal static string GetId()
         {
-            return ShortId.Generate(true, true, 16);
+            return ShortId.Generate(true, false, 16).ToLower();
         }
     }
 }

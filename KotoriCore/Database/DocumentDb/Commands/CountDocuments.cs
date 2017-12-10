@@ -10,14 +10,14 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<long>> HandleAsync(CountDocuments command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
+            var projectUri = command.ProjectId.ToKotoriProjectUri();
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
-            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
             var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
 
             if (documentType == null)

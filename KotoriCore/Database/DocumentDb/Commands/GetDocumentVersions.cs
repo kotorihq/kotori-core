@@ -12,10 +12,9 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<SimpleDocumentVersion>> HandleAsync(GetDocumentVersions command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
-            var documentTypeUri = command.DocumentId.ToKotoriUri(Router.IdentifierType.DocumentType);
-            var docType = documentTypeUri.ToDocumentType();
-            var documentUri = command.DocumentId.ToKotoriUri(docType == Enums.DocumentType.Content ? Router.IdentifierType.Document : Router.IdentifierType.Data);
+            var projectUri = command.ProjectId.ToKotoriProjectUri();
+            var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
+            var documentUri = command.ProjectId.ToKotoriDocumentUri(command.DocumentType, command.DocumentTypeId, command.DocumentId, command.Index);
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 

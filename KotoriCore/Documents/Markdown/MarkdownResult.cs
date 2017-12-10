@@ -6,13 +6,13 @@ namespace KotoriCore.Documents
     /// <summary>
     /// Markdown result.
     /// </summary>
-    public class MarkdownResult : IDocumentResult
+    class MarkdownResult : IDocumentResult
     {
         /// <summary>
-        /// Gets or sets the identifier.
+        /// Gets or sets the document identifier.
         /// </summary>
-        /// <value>The identifier.</value>
-        public string Identifier { get; internal set; }
+        /// <value>The document identifier.</value>
+        public DocumentIdentifierToken DocumentIdentifier { get; internal set; }
 
         /// <summary>
         /// Gets or sets the type of the front matter.
@@ -59,10 +59,10 @@ namespace KotoriCore.Documents
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Documents.MarkdownResult"/> class.
         /// </summary>
-        /// <param name="identifier">Identifier.</param>
-        public MarkdownResult(string identifier)
+        /// <param name="documentIdentifier">Document identifier.</param>
+        public MarkdownResult(DocumentIdentifierToken documentIdentifier)
         {
-            Identifier = identifier;
+            DocumentIdentifier = documentIdentifier;
         }
     }
 }

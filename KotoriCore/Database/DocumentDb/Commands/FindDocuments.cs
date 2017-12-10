@@ -15,8 +15,8 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<SimpleDocument>> HandleAsync(FindDocuments command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
-            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var projectUri = command.ProjectId.ToKotoriProjectUri();
+            var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 

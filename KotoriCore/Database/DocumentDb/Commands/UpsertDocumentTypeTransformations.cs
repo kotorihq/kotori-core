@@ -10,8 +10,8 @@ namespace KotoriCore.Database.DocumentDb
     {
         async Task<CommandResult<string>> HandleAsync(UpsertDocumentTypeTransformations command)
         {
-            var projectUri = command.ProjectId.ToKotoriUri(Router.IdentifierType.Project);
-            var documentTypeUri = command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType);
+            var projectUri = command.ProjectId.ToKotoriProjectUri();
+            var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 
@@ -22,7 +22,7 @@ namespace KotoriCore.Database.DocumentDb
             (
                 command.Instance,
                 projectUri,
-                command.DocumentTypeId.ToKotoriUri(Router.IdentifierType.DocumentType)
+                documentTypeUri
             );
 
             if (docType == null)

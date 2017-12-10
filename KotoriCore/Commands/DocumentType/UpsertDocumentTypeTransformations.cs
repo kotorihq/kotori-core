@@ -34,18 +34,25 @@ namespace KotoriCore.Commands
         public readonly bool CreateOnly;
 
         /// <summary>
+        /// The type of the document.
+        /// </summary>
+        public Enums.DocumentType DocumentType;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocumentTypeTransformations"/> class.
         /// </summary>
         /// <param name="createOnly">Create only flag.</param>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="transformations">Transformations.</param>
-        public UpsertDocumentTypeTransformations(bool createOnly, string instance, string projectId, string documentTypeId, string transformations)
+        public UpsertDocumentTypeTransformations(bool createOnly, string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
         {
             CreateOnly = createOnly;
             Instance = instance;
             ProjectId = projectId;
+            DocumentType = documentType;
             DocumentTypeId = documentTypeId;
             Transformations = transformations;
         }

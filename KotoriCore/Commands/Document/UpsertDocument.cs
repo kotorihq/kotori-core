@@ -85,6 +85,9 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Project Id must be set.");
 
+            if (string.IsNullOrEmpty(DocumentTypeId))
+                yield return new ValidationResult("Document type Id must be set.");
+            
             if (string.IsNullOrEmpty(DocumentId))
                 yield return new ValidationResult("Document Id must be set.");
 

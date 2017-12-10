@@ -1,17 +1,18 @@
 ﻿using System.Threading.Tasks;
+using KotoriCore.Helpers;
 
 namespace KotoriCore.Documents
 {
     /// <summary>
     /// Document interface.
     /// </summary>
-    public interface IDocument
+    interface IDocument
     {
         /// <summary>
         /// Gets the document identifier.
         /// </summary>
         /// <value>The document identifier.</value>
-        string Identifier { get; }
+        DocumentIdentifierToken DocumentIdentifier { get; }
 
         /// <summary>
         /// Processes the document.

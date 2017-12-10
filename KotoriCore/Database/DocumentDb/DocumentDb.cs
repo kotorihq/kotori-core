@@ -257,9 +257,6 @@ namespace KotoriCore.Database.DocumentDb
 
             var project = await _repoProject.GetFirstOrDefaultAsync(q);
 
-            if (project != null)
-                project.Identifier = new Uri(project.Identifier).ToKotoriProjectIdentifier();
-
             return project;
         }
 
@@ -515,10 +512,7 @@ namespace KotoriCore.Database.DocumentDb
 
             if (documentType == null)
             {
-                var docType = documentTypeId.ToDocumentType();
-
-                if (docType == null)
-                    throw new KotoriException($"Document type could not be resolved for '{documentTypeId}'.");
+                var docType = documentTypeId.ToKotoriDocumentTypeIdentifier().DocumentType;
 
                 var indexes = new List<DocumentTypeIndex>();
 
@@ -528,14 +522,14 @@ namespace KotoriCore.Database.DocumentDb
                 var trans = new List<DocumentTypeTransformation>();
 
                 if (!transformations.Ignore)
-                    trans = new Transformation(documentTypeId.ToKotoriDocumentTypeIdentifier(), transformations.Value).Transformations;
+                    trans = new Transformation(documentTypeId.ToKotoriDocumentTypeIdentifier().DocumentTypeId, transformations.Value).Transformations;
 
                 var dt = new Entities.DocumentType
                 (
                      instance,
                      documentTypeId.ToString(),
                      projectId.ToString(),
-                     documentTypeId.ToDocumentType().Value,
+                     documentTypeId.ToKotoriDocumentTypeIdentifier().DocumentType,
                      indexes,
                      trans
                 );
@@ -558,7 +552,7 @@ namespace KotoriCore.Database.DocumentDb
                 var trans = documentType.Transformations ?? new List<DocumentTypeTransformation>();
 
                 if (!transformations.Ignore)
-                    trans = new Transformation(documentTypeId.ToKotoriDocumentTypeIdentifier(), transformations.Value).Transformations;
+                    trans = new Transformation(documentTypeId.ToKotoriDocumentTypeIdentifier().DocumentTypeId, transformations.Value).Transformations;
 
                 var oldTransformationsHash = documentType.Transformations.ToHash();
                     
@@ -600,7 +594,7 @@ namespace KotoriCore.Database.DocumentDb
                                 instance,
                                 projectId.ToKotoriProjectIdentifier(),
                                 documentType.Type,
-                                new Uri(documentType.Identifier).ToKotoriDocumentTypeIdentifier(),
+                                new Uri(documentType.Identifier).ToKotoriDocumentTypeIdentifier().DocumentTypeId,
                                 documentToken.DocumentId,
                                 documentToken.Index,
                                 document.ToOriginalJsonString()

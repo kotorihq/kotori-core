@@ -77,35 +77,6 @@ namespace KotoriCore.Documents
         }
 
         /// <summary>
-        /// Determines the slug.
-        /// </summary>
-        /// <returns>The slug.</returns>
-        /// <param name="identifier">Identifier.</param>
-        /// <param name="slug">Slug.</param>
-        internal static string ToSlug(this string identifier, string slug)
-        {
-            string sl = null;
-            var r = new Regex(@"^.*\/_?(\d{4}-\d{1,2}-\d{1,2}-)?(?<url>[^\.\/]+)[^\/]*$");
-
-            var match = r.Match(identifier);
-
-            if (match.Success)
-            {
-                sl = match.Groups["url"].Value;
-            }
-
-            if (!string.IsNullOrEmpty(slug))
-            {
-                sl = slug.Trim();
-            }
-
-            if (sl == null)
-                throw new KotoriDocumentException(identifier, $"Slug could not be determined for {identifier}.");
-
-            return sl;
-        }
-
-        /// <summary>
         /// Post processes the content.
         /// </summary>
         /// <returns>The post processed content.</returns>

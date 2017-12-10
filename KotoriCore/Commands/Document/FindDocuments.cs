@@ -64,10 +64,16 @@ namespace KotoriCore.Commands
         public readonly Enums.DocumentFormat Format;
 
         /// <summary>
+        /// The type of the document.
+        /// </summary>
+        public readonly Enums.DocumentType DocumentType;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.FindDocuments"/> class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
+        /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="top">Top.</param>
         /// <param name="select">Select.</param>
@@ -77,11 +83,13 @@ namespace KotoriCore.Commands
         /// <param name="future">If set to <c>true</c> future.</param>
         /// <param name="skip">Skip.</param>
         /// <param name="format">Format.</param>
-        public FindDocuments(string instance, string projectId, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format)
+        public FindDocuments(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, int? top, string select, 
+                             string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format)
         {
             Format = format;
             Instance = instance;
             ProjectId = projectId;
+            DocumentType = documentType;
             DocumentTypeId = documentTypeId;
 
             if (string.IsNullOrEmpty(select))
