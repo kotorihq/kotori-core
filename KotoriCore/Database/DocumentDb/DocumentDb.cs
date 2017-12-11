@@ -406,12 +406,6 @@ namespace KotoriCore.Database.DocumentDb
 
         async Task<Entities.Document> ReindexDocumentAsync(Entities.Document document, long index)
         {
-            var id = document.Identifier;
-            var li = id.LastIndexOf("?", StringComparison.OrdinalIgnoreCase);
-
-            if (li != -1)
-                id = id.Substring(0, li);
-
             var q = new DynamicQuery
                (
                    "select * from c where c.entity = @entity and c.instance = @instance " +
@@ -427,16 +421,18 @@ namespace KotoriCore.Database.DocumentDb
 
             var documentVersions = await GetDocumentVersionsAsync(q);
             var docv = new List<Task>();
+            var di = new Uri(document.Identifier).ToKotoriDocumentIdentifier();
+            var docId = di.ProjectId.ToKotoriDocumentUri(di.DocumentType, di.DocumentTypeId, di.DocumentId, index).ToString();
 
             foreach(var dv in documentVersions)
             {
-                dv.DocumentId = id + "?" + index;
+                dv.DocumentId = docId;
                 docv.Add(_repoDocumentVersion.UpsertAsync(dv));
             }
 
             Task.WaitAll(docv.ToArray());
 
-            document.Identifier = id + "?" + index;
+            document.Identifier = docId;
 
             return await _repoDocument.ReplaceAsync(document);
         }

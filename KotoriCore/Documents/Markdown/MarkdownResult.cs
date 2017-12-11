@@ -57,6 +57,12 @@ namespace KotoriCore.Documents
         public string Slug { get; internal set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:KotoriCore.Documents.MarkdownResult"/> is draft.
+        /// </summary>
+        /// <value><c>true</c> if draft; otherwise, <c>false</c>.</value>
+        public bool Draft { get; internal set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Documents.MarkdownResult"/> class.
         /// </summary>
         /// <param name="documentIdentifier">Document identifier.</param>

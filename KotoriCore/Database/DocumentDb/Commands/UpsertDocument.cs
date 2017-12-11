@@ -110,7 +110,7 @@ namespace KotoriCore.Database.DocumentDb
             var documentUri = command.ProjectId.ToKotoriDocumentUri(command.DocumentType, command.DocumentTypeId, command.DocumentId, command.Index);
             var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
             var transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier().DocumentTypeId, documentType?.Transformations);
-            var document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), command.Content, transformation);
+            var document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), command.Content, transformation, command.Date, command.Draft);
 
             IDocumentResult documentResult = null;
 
@@ -134,7 +134,7 @@ namespace KotoriCore.Database.DocumentDb
             );
 
             transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier().DocumentTypeId, documentType.Transformations);
-            document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), command.Content, transformation);
+            document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), command.Content, transformation, command.Date, command.Draft);
             documentResult = document.Process();
 
             var d = await FindDocumentByIdAsync(command.Instance, projectUri, documentUri, null);
@@ -172,7 +172,7 @@ namespace KotoriCore.Database.DocumentDb
                 documentResult.Meta,
                 documentResult.Content,
                 documentResult.Date,
-                command.Draft ?? false,
+                documentResult.Draft,
                 version,
                 command.DocumentId.ToFilename()
             )

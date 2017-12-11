@@ -20,6 +20,8 @@ namespace KotoriCore.Tests
             var md = new Documents.Markdown(di,
 @"---
 name: Ami Kawashima (川嶋 亜美)",
+null,
+null,
 null
 );
 
@@ -35,6 +37,8 @@ null
 @"---name: Ami Kawashima (川嶋 亜美)
 ---
 a",
+null,
+null,
 null
 );
 
@@ -48,7 +52,7 @@ null
             var c = @"hello
 space
 cowboy";
-            var md = new Documents.Markdown(di, c, null);
+            var md = new Documents.Markdown(di, c, null, null, null);
 
             var result = md.Process();
 
@@ -76,7 +80,7 @@ bwh: { b: !!int 90, w: !!int 58, h: !!int 88 }
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown(di, all, null);
+            var md = new Documents.Markdown(di, all, null, null, null);
 
             var result = md.Process();
 
@@ -106,7 +110,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown(di, all, null);
+            var md = new Documents.Markdown(di, all, null, null, null);
 
             var result = md.Process();
 
@@ -133,7 +137,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown(di, all, null);
+            var md = new Documents.Markdown(di, all, null, null, null);
 
             var result = md.Process();
 
@@ -155,7 +159,7 @@ cowboy
 ";
             var all = "---" + Environment.NewLine + m + "---" + Environment.NewLine + c;
 
-            var md = new Documents.Markdown(di, all, null);
+            var md = new Documents.Markdown(di, all, null, null, null);
 
             var result = md.Process();
 
@@ -249,7 +253,7 @@ $nenecchi: damn
 ---
 hm
 ";
-            var md = new Documents.Markdown(di, c, null);
+            var md = new Documents.Markdown(di, c, null, null, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -268,7 +272,7 @@ aaa /// // /
 ---
 hm
 ";
-            var md = new Documents.Markdown(di, c, null);
+            var md = new Documents.Markdown(di, c, null, null, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -284,7 +288,7 @@ $Slug: X
 ---
 hm
 ";
-            var md = new Documents.Markdown(di, c, null);
+            var md = new Documents.Markdown(di, c, null, null, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -300,7 +304,7 @@ Slugie: X
 ---
 hm
 ";
-            var md = new Documents.Markdown(di, c, null);
+            var md = new Documents.Markdown(di, c, null, null, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
         }
@@ -316,7 +320,7 @@ Sakura_Nene: true
 ---
 hm
 ";
-            var md = new Documents.Markdown(di, c, null);
+            var md = new Documents.Markdown(di, c, null, null, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -333,7 +337,7 @@ hm
         {
             var di = new DocumentIdentifierToken("x", Enums.DocumentType.Content, "foo", "2016-03-04-bar", null);
             var c = @"aloha";
-            var md = new Documents.Markdown(di, c, null);
+            var md = new Documents.Markdown(di, c, null, null, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -347,7 +351,7 @@ hm
             var c = @"---
 foo: bar
 ---";
-            var md = new Documents.Markdown(di, c, null);
+            var md = new Documents.Markdown(di, c, null, null, null);
             var result = md.Process();
             var mdr = result as MarkdownResult;
 
@@ -386,7 +390,8 @@ date: 2001-12-15T02:59:43.1Z
   to: dateAsEpoch
   transformations:
   - epoch
-"));
+"), null, null);
+
             var result = md.Process();
             var mdr = result as MarkdownResult;
             JObject metaObj = JObject.FromObject(result.Meta);
@@ -413,7 +418,7 @@ foo: "" BAR ""
   transformations:
   - trim
   - lowercase
-"));
+"), null, null);
             var result = md.Process();
         }
 
@@ -431,7 +436,7 @@ foo: "" BAR ""
   transformations:
   - trim
   - lowercase
-"));
+"), null, null);
             var result = md.Process();
         }
 
@@ -448,7 +453,7 @@ foo: "" x ""
   to: $slug
   transformations:
   - epoch
-"));
+"), null, null);
             var result = md.Process();
         }
     }

@@ -54,5 +54,11 @@ namespace KotoriCore.Documents
         /// </summary>
         /// <value>The slug.</value>
         string Slug { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="T:KotoriCore.Documents.IDocumentResult"/> is draft.
+        /// </summary>
+        /// <value><c>true</c> if draft; otherwise, <c>false</c>.</value>
+        bool Draft { get; }
     }
 }

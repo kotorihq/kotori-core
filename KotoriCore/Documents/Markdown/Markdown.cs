@@ -21,6 +21,8 @@ namespace KotoriCore.Documents
     {
         readonly string _content;
         readonly Transformation.Transformation _transformation;
+        readonly DateTime? _date;
+        readonly bool? _draft;
 
         /// <summary>
         /// Gets the document identifier.
@@ -34,11 +36,15 @@ namespace KotoriCore.Documents
         /// <param name="documentIdentifier">Document identifier.</param>
         /// <param name="content">Content.</param>
         /// <param name="transformation">Transformation.</param>
-        public Markdown(DocumentIdentifierToken documentIdentifier, string content, Transformation.Transformation transformation)
+        /// <param name="date">Date.</param>
+        /// <param name="draft">Draft flag.</param>
+        public Markdown(DocumentIdentifierToken documentIdentifier, string content, Transformation.Transformation transformation, DateTime? date, bool? draft)
         {
             DocumentIdentifier = documentIdentifier;
             _content = content;
             _transformation = transformation;
+            _draft = draft;
+            _date = date;
         }
 
         /// <summary>
@@ -138,6 +144,9 @@ namespace KotoriCore.Documents
                     throw new KotoriDocumentException(DocumentIdentifier.DocumentId, "Document parsing error.");
                 }
             }
+
+            markdownResult.Date = _date;
+            markdownResult.Draft = _draft ?? false;
 
             ProcessMeta(markdownResult, DocumentIdentifier.DocumentType);
 
