@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Domains;
 using KotoriCore.Exceptions;
@@ -21,7 +22,7 @@ namespace KotoriCore.Database.DocumentDb
                 new SimpleProject
                 (
                     p.Name,
-                    p.Identifier
+                    new Uri(p.Identifier).ToKotoriProjectIdentifier()
                 )
             );
         }
