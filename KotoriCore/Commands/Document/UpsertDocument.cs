@@ -109,6 +109,10 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(Content))
                 yield return new ValidationResult("Content must be set.");
+
+            if (Index.HasValue && 
+               Index < 0)
+                yield return new ValidationResult("Index must be set to 0 or higher.");
         }
     }
 }

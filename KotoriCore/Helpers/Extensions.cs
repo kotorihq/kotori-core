@@ -98,6 +98,7 @@ namespace KotoriCore.Helpers
             var c = (result.Content?.ToString() ?? string.Empty) +
                 (result.Date == null ? "(none)" : result.Date.Value.ToEpoch().ToString()) +
                 (result.Slug ?? "(none)") +
+                (result.Draft) +
                 (result.DocumentIdentifier.ProjectId ?? "(none)") +
                 (result.DocumentIdentifier.DocumentType.ToString() ?? "(none)") +
                 (result.DocumentIdentifier.DocumentTypeId ?? "(none)") +

@@ -36,38 +36,27 @@ namespace KotoriCore.Database.DocumentDb
                 var data = new Data(command.DocumentId, command.Content);
                 var documents = data.GetDocuments();
 
-                if (command.CreateOnly)
+                var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
+                (
+                   command.Instance,
+                   projectUri,
+                   documentTypeUri,
+                   null,
+                   "count(1) as number",
+                   null,
+                   null,
+                   true,
+                   true
+                );
+
+                var count = await CountDocumentsAsync(sql);
+
+                if (idx == null)
+                    idx = count;
+
+                if (idx > count)
                 {
-                    var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
-                    (
-                       command.Instance,
-                       projectUri,
-                       documentTypeUri,
-                       null,
-                       "count(1) as number",
-                       null,
-                       null,
-                       true,
-                       true
-                    );
-
-                    var count = await CountDocumentsAsync(sql);
-
-                    if (idx == count)
-                        idx = -1;
-
-                    if (idx < 0)
-                    {
-                        if (count == 0)
-                            idx = null;
-                        else
-                            idx = count;
-                    }
-
-                    if (idx > count)
-                    {
-                        throw new KotoriDocumentException(command.DocumentId, $"When creating data document at a particular index, your index must be -1 - {count}.");
-                    }
+                    throw new KotoriDocumentException(command.DocumentId, $"When creating data document at a particular index, your index must be 0 - {count}.");
                 }
 
                 for (var dc = 0; dc < documents.Count; dc++)

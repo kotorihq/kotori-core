@@ -83,9 +83,9 @@ namespace KotoriCore.Database.DocumentDb.Helpers
             if (document == null)
                 throw new ArgumentNullException(nameof(document));
 
-            var documentType = document.DocumentTypeId.ToDocumentType();
+            var documentType = new Uri(document.DocumentTypeId).ToKotoriDocumentTypeIdentifier();
 
-            if (documentType == Enums.DocumentType.Content)
+            if (documentType.DocumentType == Enums.DocumentType.Content)
             {
                 var result = "---" +
                     Environment.NewLine +
@@ -98,7 +98,7 @@ namespace KotoriCore.Database.DocumentDb.Helpers
                 return result;
             }
 
-            if (documentType == Enums.DocumentType.Data)
+            if (documentType.DocumentType == Enums.DocumentType.Data)
             {
                 var result = "---" +
                     Environment.NewLine +
