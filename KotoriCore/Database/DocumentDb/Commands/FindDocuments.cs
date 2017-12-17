@@ -55,8 +55,7 @@ namespace KotoriCore.Database.DocumentDb
                     d.Date?.DateTime,
                     d.Modified?.DateTime,
                     d.Draft,
-                    d.Version,
-                    d.Identifier.ToFilename()
+                    d.Version
                 ));
 
             if (command.Skip.HasValue)

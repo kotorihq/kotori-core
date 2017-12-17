@@ -248,27 +248,5 @@ namespace KotoriCore.Helpers
 
             return r.IsMatch(slug);
         }
-
-        // TODO: delete
-        /// <summary>
-        /// Converts identifier to the filename.
-        /// </summary>
-        /// <returns>The filename.</returns>
-        /// <param name="identifier">Identifier.</param>
-        internal static string ToFilename(this string identifier)
-        {
-            if (identifier == null)
-                return null;
-            
-            var filename = identifier.RemoveTrailingSlashes(true, true);
-            var parts = filename.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
-            var finalname = parts.ToImplodedString("/");
-            var li = finalname.LastIndexOf('?');
-
-            if (li != -1)
-                finalname = finalname.Substring(0, li);
-            
-            return finalname;
-        }
     }
 }

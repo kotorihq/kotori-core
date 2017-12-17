@@ -49,11 +49,6 @@ namespace KotoriCore.Domains
         public readonly long Version;
 
         /// <summary>
-        /// Gets or sets the filename.
-        /// </summary>
-        public readonly string Filename;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocument"/> class.
         /// </summary>
         /// <param name="identifier">Identifier.</param>
@@ -64,8 +59,7 @@ namespace KotoriCore.Domains
         /// <param name="modified">Modified.</param>
         /// <param name="draft">If set to <c>true</c> draft.</param>
         /// <param name="version">Version.</param>
-        /// <param name="filename">Filename.</param>
-        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime? date, DateTime? modified, bool? draft, long version, string filename)
+        public SimpleDocument(string identifier, string slug, dynamic meta, string content, DateTime? date, DateTime? modified, bool? draft, long version)
         {
             Identifier = identifier;
             Slug = slug;
@@ -75,7 +69,6 @@ namespace KotoriCore.Domains
             Modified = modified;
             Draft = draft;
             Version = version;
-            Filename = filename;
         }
     }
 }

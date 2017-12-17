@@ -162,8 +162,7 @@ namespace KotoriCore.Database.DocumentDb
                 documentResult.Content,
                 documentResult.Date,
                 documentResult.Draft,
-                version,
-                command.DocumentId.ToFilename()
+                version
             )
             {
                 Id = id

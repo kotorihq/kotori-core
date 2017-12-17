@@ -62,13 +62,5 @@ namespace KotoriCore.Tests
         {
             "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "_.md", null);
         }
-
-        [TestMethod]
-        public void ToFilename()
-        {
-            Assert.AreEqual("content/tv/trick.md", "content/tv/trick.md".ToFilename());
-            Assert.AreEqual("content/tv/old/trick.md", "content/tv/old/trick.md".ToFilename());
-            Assert.AreEqual("content/tv/old/trick.md", "content/tv/old/trick.md?777".ToFilename());
-        }
     }
 }

@@ -47,8 +47,7 @@ namespace KotoriCore.Database.DocumentDb
                     d.Date.DateTime,
                     d.Modified.DateTime,
                     d.Draft,
-                    d.Version,
-                    d.Filename
+                    d.Version
                 )
             );
         }

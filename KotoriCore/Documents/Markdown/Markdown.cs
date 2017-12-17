@@ -290,7 +290,7 @@ namespace KotoriCore.Documents
                 result.Date = DateTime.MinValue.Date;
             }
 
-            // no slug, set from filename
+            // no slug, set from document identifier
             if (result.Slug == null)
             {
                 if (!DocumentIdentifier.DocumentId.IsValidSlug())

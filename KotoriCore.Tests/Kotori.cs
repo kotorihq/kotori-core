@@ -612,21 +612,18 @@ test: {i}
             var d0 = _kotori.GetDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a");
             Assert.IsNotNull(d0);
             Assert.AreEqual(true, d0.Draft);
-            Assert.AreEqual("a", d0.Filename);
 
             _kotori.UpsertDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a", null, "hello", null, false);
             var d1 = _kotori.GetDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a");
             Assert.IsNotNull(d1);
             Assert.AreEqual(false, d1.Draft);
             Assert.AreEqual(1, d1.Version);
-            Assert.AreEqual("a", d1.Filename);
 
             _kotori.UpsertDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a", null, "hello");
             var d2 = _kotori.GetDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a");
             Assert.IsNotNull(d2);
             Assert.AreEqual(false, d2.Draft);
             Assert.AreEqual(1, d2.Version);
-            Assert.AreEqual("a", d2.Filename);
         }
 
         [TestMethod]

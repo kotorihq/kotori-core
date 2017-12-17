@@ -78,11 +78,5 @@ namespace KotoriCore.Domains
         /// </summary>
         /// <value>The version.</value>
         public long Version { get; set; }
-
-        /// <summary>
-        /// Gets or sets the filename.
-        /// </summary>
-        /// <value>The filename.</value>
-        public string Filename { get; set; }
     }
 }

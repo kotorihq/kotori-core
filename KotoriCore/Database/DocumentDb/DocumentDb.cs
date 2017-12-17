@@ -196,8 +196,7 @@ namespace KotoriCore.Database.DocumentDb
                     documentVersion.Document.Content,
                     documentVersion.Document.Date == null ? (DateTime?)null : documentVersion.Document.Date.DateTime,
                     documentVersion.Document.Draft,
-                    documentVersion.Version,
-                    documentVersion.Filename
+                    documentVersion.Version
                );
 
             return newDocument;
