@@ -16,6 +16,11 @@ namespace KotoriCore.Documents.Deserializers
         /// <param name="meta">Meta.</param>
         internal static void CheckMeta(dynamic meta)
         {
+            var metaType = meta.GetType();
+
+            if (metaType != typeof(JObject))
+                return;
+
             JObject metaObj = JObject.FromObject(meta);
             var props = metaObj.Properties();
             var usedPropNames = new List<string>();

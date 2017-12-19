@@ -1557,6 +1557,8 @@ Stars: !!int 4
         }
 
         [TestMethod]
+        // TODO: would be fine to fix some day and expect an exception
+        // NewtonSoft.Json unfortunately auto-fix multiple props and uses the last one
         public async Task MultipleFields3()
         {
             var result = await _kotori.UpsertProjectAsync("dev", "mulfi4", "haha");
