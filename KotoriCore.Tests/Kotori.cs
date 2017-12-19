@@ -1557,6 +1557,28 @@ Stars: !!int 4
         }
 
         [TestMethod]
+        [ExpectedException(typeof(KotoriException))]
+        public async Task MultipleFields2More()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "mulfi3more", "haha");
+
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Aoba 2
+position: designer 2
+stars: !!int 4
+approved: !!bool false
+Stars: !!int 4
+---
+";
+            await _kotori.UpsertDocumentAsync("dev", "mulfi3more", Enums.DocumentType.Data, "newgame", "girls", null, c);
+        }
+
+        [TestMethod]
         // TODO: would be fine to fix some day and expect an exception
         // NewtonSoft.Json unfortunately auto-fix multiple props and uses the last one
         public async Task MultipleFields3()
@@ -1571,6 +1593,19 @@ Stars: !!int 4
 ""Stars"": 4
 }]";
             await _kotori.UpsertDocumentAsync("dev", "mulfi4", Enums.DocumentType.Data, "newgame", "girls", null, c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentTypeException))]
+        public async Task BadIdForDocument()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "dddbad", "Data");
+
+            var c = @"---
+girl: "" Aoba ""
+---
+";
+            await _kotori.CreateDocumentAsync("dev", "dddbad", Enums.DocumentType.Data, "newgame/", c);
         }
 
         enum RawDocument
