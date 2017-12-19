@@ -1649,6 +1649,21 @@ Matrix has you!";
             Assert.AreEqual(false, d.Draft);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException))]
+        public async Task InvalidSlugType()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "invslg", "MrData");
+
+            var c = @"---
+test: abc
+$slug: !!int 13456
+---
+Matrix has you!";
+
+            await _kotori.UpsertDocumentAsync("dev", "invslg", Enums.DocumentType.Content, "movie", "matrix", null, c);
+        }
+
         enum RawDocument
         {
             Matrix,

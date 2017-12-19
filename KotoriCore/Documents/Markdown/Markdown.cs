@@ -203,6 +203,10 @@ namespace KotoriCore.Documents
                         
                         if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Date))
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is used more than once.");
+
+                        if (meta[key].GetType() != typeof(string) &&
+                            meta[key].GetType() != typeof(DateTime))
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Date is not valid string/date.");
                         
                         result.Date = meta[key].ToString().ToDateTime();
 
@@ -217,6 +221,9 @@ namespace KotoriCore.Documents
                         if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Slug))
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is used more than once.");
 
+                        if (meta[key].GetType() != typeof(string))
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Slug is not valid string.");
+                        
                         if (!meta[key].ToString().IsValidSlug())
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Slug is not valid.");
                         
