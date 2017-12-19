@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using YamlDotNet.Serialization;
 
 namespace KotoriCore.Documents.Deserializers
@@ -22,8 +23,9 @@ namespace KotoriCore.Documents.Deserializers
                 .Build();
 
             var json = serializer.Serialize(yamlObject);
-
             var d = JsonConvert.DeserializeObject(json);
+
+            DeserializerHelpers.CheckMeta(d);
 
             return d;
         }
@@ -45,8 +47,9 @@ namespace KotoriCore.Documents.Deserializers
                 .Build();
 
             var json = serializer.Serialize(yamlObject);
-
             var d = JsonConvert.DeserializeObject<T>(json);
+         
+            DeserializerHelpers.CheckMeta(d);
 
             return d;
         }

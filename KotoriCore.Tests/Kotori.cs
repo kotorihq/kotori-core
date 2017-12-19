@@ -1521,6 +1521,56 @@ girl: "" Aoba ""
             Assert.AreNotEqual(fourthHashD, thirdHash);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException))]
+        public async Task MultipleFields()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "mulfi", "haha");
+
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 4
+approved: !!bool true
+$Slug: ab
+$slug: ab
+---
+";
+            await _kotori.UpsertDocumentAsync("dev", "mulfi", Enums.DocumentType.Content, "newgame", "girls", null, c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriException))]
+        public async Task MultipleFields2()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "mulfi3", "haha");
+
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 4
+approved: !!bool true
+Stars: !!int 4
+---
+";
+            await _kotori.UpsertDocumentAsync("dev", "mulfi3", Enums.DocumentType.Data, "newgame", "girls", null, c);
+        }
+
+        [TestMethod]
+        public async Task MultipleFields3()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "mulfi4", "haha");
+
+            var c = @"[{
+""girl"": ""Aoba"",
+""position"": ""designer"",
+""stars"": 4,
+""approved"": true,
+""Stars"": 4
+}]";
+            await _kotori.UpsertDocumentAsync("dev", "mulfi4", Enums.DocumentType.Data, "newgame", "girls", null, c);
+        }
+
         enum RawDocument
         {
             Matrix,

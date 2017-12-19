@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace KotoriCore.Documents.Deserializers
 {
@@ -19,7 +20,9 @@ namespace KotoriCore.Documents.Deserializers
             if (content == null)
                 throw new System.ArgumentNullException(nameof(content));
             
-            return JsonConvert.DeserializeObject<T>(content);
+            var d =  JsonConvert.DeserializeObject<T>(content);
+
+            return d;
         }
     }
 }
