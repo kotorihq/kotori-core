@@ -61,6 +61,10 @@ namespace KotoriCore.Helpers
             /// </summary>
             Slug = 2,
             /// <summary>
+            /// The draft.
+            /// </summary>
+            Draft = 3,
+            /// <summary>
             /// The invalid property to be ignored.
             /// </summary>
             Invalid = 999
@@ -117,7 +121,7 @@ namespace KotoriCore.Helpers
             [EnumMember(Value = "search")]
             Search = 4,
             [EnumMember(Value = "epoch")]
-            Epoch = 5
+            Epoch = 5,
         }
     }
 }

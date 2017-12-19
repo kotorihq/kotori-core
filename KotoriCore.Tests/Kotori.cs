@@ -1608,6 +1608,47 @@ girl: "" Aoba ""
             await _kotori.CreateDocumentAsync("dev", "dddbad", Enums.DocumentType.Data, "newgame/", c);
         }
 
+        [TestMethod]
+        public async Task DraftFlag()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "draftpr", "MrData");
+
+            var c = @"---
+test: abc
+---
+Matrix has you!";
+            
+            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c);
+            var d = _kotori.GetDocument("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix");
+
+            Assert.IsNotNull(d);
+            Assert.AreEqual(false, d.Draft);
+
+            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c, null, true);
+            d = _kotori.GetDocument("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix");
+
+            Assert.IsNotNull(d);
+            Assert.AreEqual(true, d.Draft);
+
+            c = @"---
+test: abc
+$draft: !!bool false
+---
+Matrix has you!";
+            
+            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c, null);
+            d = _kotori.GetDocument("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix");
+
+            Assert.IsNotNull(d);
+            Assert.AreEqual(false, d.Draft);
+
+            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c, null, true);
+            d = _kotori.GetDocument("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix");
+
+            Assert.IsNotNull(d);
+            Assert.AreEqual(false, d.Draft);
+        }
+
         enum RawDocument
         {
             Matrix,

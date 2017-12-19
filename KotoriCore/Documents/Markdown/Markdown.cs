@@ -225,6 +225,22 @@ namespace KotoriCore.Documents
                         usedPropertyTypes.Add(Enums.DocumentPropertyType.Slug);
                     }
 
+                    if (dpt == Enums.DocumentPropertyType.Draft)
+                    {
+                        if (documentType == Enums.DocumentType.Data)
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Draft is not allowed for data documents.");
+
+                        if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Draft))
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is used more than once.");
+
+                        if (meta[key].GetType() != typeof(bool))
+                            throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Draft is not valid boolean.");
+
+                        result.Draft = (bool)meta[key];
+
+                        usedPropertyTypes.Add(Enums.DocumentPropertyType.Draft);
+                    }
+
                     if (dpt == Enums.DocumentPropertyType.UserDefined)
                     {
                         var newKey = key.ToCamelCase();
