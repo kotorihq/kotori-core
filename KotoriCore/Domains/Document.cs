@@ -74,6 +74,12 @@ namespace KotoriCore.Domains
         public bool Draft { get; set; }
 
         /// <summary>
+        /// Gets or sets the index.
+        /// </summary>
+        /// <value>The index.</value>
+        public int? Index { get; set; }
+
+        /// <summary>
         /// Gets or sets the version.
         /// </summary>
         /// <value>The version.</value>
