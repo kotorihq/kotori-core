@@ -100,6 +100,7 @@ namespace KotoriCore.Database.DocumentDb
             var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
             var transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier().DocumentTypeId, documentType?.Transformations);
             var document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), command.Content, transformation, command.Date, command.Draft);
+            var documentTypeId = documentTypeUri.ToKotoriDocumentTypeIdentifier();
 
             IDocumentResult documentResult = null;
 
@@ -116,8 +117,7 @@ namespace KotoriCore.Database.DocumentDb
             documentType = await UpsertDocumentTypeAsync
             (
                command.Instance,
-               projectUri,
-               documentTypeUri,
+               documentTypeId,
                new UpdateToken<dynamic>(DocumentHelpers.CleanUpMeta(documentResult.Meta), false),
                new UpdateToken<string>(null, true)
             );

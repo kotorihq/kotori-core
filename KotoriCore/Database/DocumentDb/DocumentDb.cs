@@ -477,11 +477,10 @@ namespace KotoriCore.Database.DocumentDb
         /// </summary>
         /// <returns>The document type async.</returns>
         /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="documentTypeId">Document type identifier.</param>
+        /// <param name="documentTypeId">Document type identifier token.</param>
         /// <param name="meta">Meta.</param>
         /// <param name="transformations">Transformations.</param>
-        async Task<Entities.DocumentType> UpsertDocumentTypeAsync(string instance, Uri projectId, Uri documentTypeId, UpdateToken<dynamic> meta, UpdateToken<string> transformations)
+        async Task<Entities.DocumentType> UpsertDocumentTypeAsync(string instance, DocumentTypeIdentifierToken documentTypeId, UpdateToken<dynamic> meta, UpdateToken<string> transformations)
         {
             if (transformations == null)
                 throw new ArgumentNullException(nameof(transformations));
@@ -492,23 +491,21 @@ namespace KotoriCore.Database.DocumentDb
             if (documentTypeId == null)
                 throw new ArgumentNullException(nameof(documentTypeId));
             
-            if (projectId == null)
-                throw new ArgumentNullException(nameof(projectId));
-            
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
-            
-            var project = await FindProjectAsync(instance, projectId);
+
+            var projectUri = documentTypeId.ProjectId.ToKotoriProjectUri();
+            var documentTypeUri = documentTypeId.ProjectId.ToKotoriDocumentTypeUri(documentTypeId.DocumentType, documentTypeId.DocumentTypeId);
+
+            var project = await FindProjectAsync(instance, projectUri);
 
             if (project == null)
-                throw new KotoriProjectException(projectId.ToKotoriProjectIdentifier(), "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+                throw new KotoriProjectException(documentTypeId.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
-            var documentType = await FindDocumentTypeAsync(instance, projectId, documentTypeId);
+            var documentType = await FindDocumentTypeAsync(instance, projectUri, documentTypeUri);
 
             if (documentType == null)
             {
-                var docType = documentTypeId.ToKotoriDocumentTypeIdentifier().DocumentType;
-
                 var indexes = new List<DocumentTypeIndex>();
 
                 if (!meta.Ignore)
@@ -517,14 +514,14 @@ namespace KotoriCore.Database.DocumentDb
                 var trans = new List<DocumentTypeTransformation>();
 
                 if (!transformations.Ignore)
-                    trans = new Transformation(documentTypeId.ToKotoriDocumentTypeIdentifier().DocumentTypeId, transformations.Value).Transformations;
+                    trans = new Transformation(documentTypeId.DocumentTypeId, transformations.Value).Transformations;
 
                 var dt = new Entities.DocumentType
                 (
                      instance,
-                     documentTypeId.ToString(),
-                     projectId.ToString(),
-                     documentTypeId.ToKotoriDocumentTypeIdentifier().DocumentType,
+                     documentTypeUri.ToString(),
+                     projectUri.ToString(),
+                     documentTypeId.DocumentType,
                      indexes,
                      trans
                 );
@@ -547,7 +544,7 @@ namespace KotoriCore.Database.DocumentDb
                 var trans = documentType.Transformations ?? new List<DocumentTypeTransformation>();
 
                 if (!transformations.Ignore)
-                    trans = new Transformation(documentTypeId.ToKotoriDocumentTypeIdentifier().DocumentTypeId, transformations.Value).Transformations;
+                    trans = new Transformation(documentTypeId.DocumentTypeId, transformations.Value).Transformations;
 
                 var oldTransformationsHash = documentType.Transformations.ToHash();
                     
@@ -565,8 +562,8 @@ namespace KotoriCore.Database.DocumentDb
                     var sql = CreateDynamicQueryForDocumentSearch
                     (
                         instance,
-                        projectId,
-                        documentTypeId,
+                        projectUri,
+                        documentTypeUri,
                         null,
                         null,
                         null,
@@ -587,9 +584,9 @@ namespace KotoriCore.Database.DocumentDb
                             (
                                 false,
                                 instance,
-                                projectId.ToKotoriProjectIdentifier(),
+                                documentTypeId.ProjectId,
                                 documentType.Type,
-                                new Uri(documentType.Identifier).ToKotoriDocumentTypeIdentifier().DocumentTypeId,
+                                documentTypeId.DocumentTypeId,
                                 documentToken.DocumentId,
                                 documentToken.Index,
                                 document.ToOriginalJsonString(),

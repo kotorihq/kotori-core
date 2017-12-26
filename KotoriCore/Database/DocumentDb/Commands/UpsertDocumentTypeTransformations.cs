@@ -12,6 +12,7 @@ namespace KotoriCore.Database.DocumentDb
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
+            var documentTypeId = documentTypeUri.ToKotoriDocumentTypeIdentifier();
 
             var project = await FindProjectAsync(command.Instance, projectUri);
 
@@ -37,8 +38,7 @@ namespace KotoriCore.Database.DocumentDb
             await UpsertDocumentTypeAsync
             (
                 command.Instance,
-                projectUri,
-                documentTypeUri,
+                documentTypeId,
                 new UpdateToken<dynamic>(null, true),
                 new UpdateToken<string>(command.Transformations, false)
             );
