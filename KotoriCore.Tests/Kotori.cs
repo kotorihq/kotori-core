@@ -65,7 +65,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public async Task FailToCreateProjectFirst()
         {
-            await _kotori.CreateProjectAsync("", "");
+            await _kotori.CreateProjectAsync("", "", "");
         }
 
         [TestMethod]
@@ -1305,7 +1305,7 @@ haha";
         [TestMethod]
         public async Task CreateProject()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "hihi");
+            var result = await _kotori.CreateProjectAsync("dev", "hihi", "HI HI");
             var projects = _kotori.GetProjects("dev");
 
             Assert.AreEqual(1, projects.Count(x => x.Identifier.Length == 16));

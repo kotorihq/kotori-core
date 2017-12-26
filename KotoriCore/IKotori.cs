@@ -18,8 +18,8 @@ namespace KotoriCore
         Task<string> UpsertDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? date, bool? draft);
         string CreateDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? date, bool? draft);
         Task<string> CreateDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? date, bool? draft);
-        string CreateProject(string instance, string name);
-        Task<string> CreateProjectAsync(string instance, string name);
+        string CreateProject(string instance, string projectId, string name);
+        Task<string> CreateProjectAsync(string instance, string projectId, string name);
         string DeleteProject(string instance, string projectId);
         Task<string> DeleteProjectAsync(string instance, string projectId);
         IEnumerable<SimpleProject> GetProjects(string instance);
