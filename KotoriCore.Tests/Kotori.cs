@@ -1540,7 +1540,7 @@ $slug: ab
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriException))]
+        [ExpectedException(typeof(KotoriDocumentException))]
         public async Task MultipleFields2()
         {
             var result = await _kotori.UpsertProjectAsync("dev", "mulfi3", "haha");
@@ -1557,7 +1557,7 @@ Stars: !!int 4
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriException))]
+        [ExpectedException(typeof(KotoriDocumentException))]
         public async Task MultipleFields2More()
         {
             var result = await _kotori.UpsertProjectAsync("dev", "mulfi3more", "haha");
