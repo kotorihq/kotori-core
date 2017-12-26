@@ -54,14 +54,16 @@ namespace KotoriCore.Helpers
             if ((content.StartsWith("{", StringComparison.OrdinalIgnoreCase) && content.EndsWith("}", StringComparison.OrdinalIgnoreCase)) ||
                 (content.StartsWith("[", StringComparison.OrdinalIgnoreCase) && content.EndsWith("]", StringComparison.OrdinalIgnoreCase)))
             {
-                try
-                {
-                    var obj = JToken.Parse(content);
-                    return Enums.FrontMatterType.Json;
-                }
-                catch (JsonReaderException)
-                {
-                }
+                return Enums.FrontMatterType.Json;
+
+                //try
+                //{
+                //    var obj = JToken.Parse(content);
+                //    return Enums.FrontMatterType.Json;
+                //}
+                //catch (JsonReaderException)
+                //{
+                //}
             }
 
             return Enums.FrontMatterType.Yaml;

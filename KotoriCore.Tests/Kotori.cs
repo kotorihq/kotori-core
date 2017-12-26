@@ -1686,6 +1686,34 @@ Matrix has you!";
             var result = await _kotori.UpsertProjectAsync("dev", "baddrr/2", "MrData");
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException))]
+        public async Task DataWithContentYaml()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "datacont", "MrData");
+
+            var c = @"---
+test: abc
+---
+Matrix has you!";
+
+            await _kotori.UpsertDocumentAsync("dev", "datacont", Enums.DocumentType.Data, "movie", "matrix", null, c);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriException))]
+        public async Task DataWithContentJson()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "datacont2", "MrData");
+
+            var c = @"[{
+""test"": ""abc""
+}, { xxx }]
+";
+
+            await _kotori.UpsertDocumentAsync("dev", "datacont2", Enums.DocumentType.Data, "movie", "matrix", null, c);
+        }
+
         enum RawDocument
         {
             Matrix,

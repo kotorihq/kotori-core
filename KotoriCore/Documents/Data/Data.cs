@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using KotoriCore.Documents.Deserializers;
 using KotoriCore.Exceptions;
@@ -56,14 +57,30 @@ namespace KotoriCore.Documents
             {
                 IDeserializer des = new Yaml();
 
-                var items = _content.Split("---", System.StringSplitOptions.RemoveEmptyEntries).ToList();
+                var items = _content.Split("---", StringSplitOptions.RemoveEmptyEntries).ToList();
 
                 items.RemoveAll(x => x.Trim() == string.Empty);
 
                 if (items.Any(x => string.IsNullOrWhiteSpace(x.Replace("\r", "").Replace("\n", "").Replace(" ", ""))))
                     throw new KotoriDocumentException(_identifier, "Data contains document with no meta fields.");
-                
-                var items2 = items.Select(i => des.Deserialize(i)).ToList();
+
+                List<dynamic> items2 = new List<dynamic>();
+                var c = 0;
+
+                foreach(var i in items)
+                {
+                    try
+                    {
+                        var d = des.Deserialize(i);
+                        items2.Add(d);
+                    }
+                    catch(Exception ex)
+                    {
+                        throw new KotoriDocumentException(_identifier, $"Deserialization of data document at index {c} failed with a message: {ex.Message}");
+                    }
+
+                    c++;
+                }
 
                 if (!items2.Any())
                     throw new KotoriDocumentException(_identifier, "Data contains no document.");
