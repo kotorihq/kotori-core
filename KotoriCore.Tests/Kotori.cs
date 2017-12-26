@@ -1714,6 +1714,33 @@ Matrix has you!";
             await _kotori.UpsertDocumentAsync("dev", "datacont2", Enums.DocumentType.Data, "movie", "matrix", null, c);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentException))]
+        public async Task FindDataAtBadIndex()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "mrdatabinx", "MrData");
+
+            var c = @"---
+girl: Aoba
+position: designer
+stars: !!int 4
+approved: !!bool true
+---
+girl: Nenecchi
+position: programmer
+stars: !!int 5
+approved: !!bool true
+---
+girl: Umiko
+position: head programmer
+stars: !!int 3
+approved: !!bool false
+---";
+         
+            await _kotori.UpsertDocumentAsync("dev", "mrdatabinx", Enums.DocumentType.Data, "newgame", "girls", null, c);
+            _kotori.GetDocument("dev", "mrdatabinx", Enums.DocumentType.Data, "newgame", "girls", -1);
+        }
+
         enum RawDocument
         {
             Matrix,
