@@ -1679,6 +1679,13 @@ Matrix has you!";
             await _kotori.UpsertDocumentAsync("dev", "baddrr", Enums.DocumentType.Content, "movie", "matrix", null, c);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(KotoriProjectException))]
+        public async Task BadProjectId()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "baddrr/2", "MrData");
+        }
+
         enum RawDocument
         {
             Matrix,
