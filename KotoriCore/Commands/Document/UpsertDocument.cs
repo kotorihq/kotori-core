@@ -85,7 +85,8 @@ namespace KotoriCore.Commands
             Index = index;
             Content = content;
 
-            if (CreateOnly)
+            if (CreateOnly &&
+               DocumentType == Enums.DocumentType.Content)
                 DocumentId = RandomGenerator.GetId();
         }
 
@@ -104,15 +105,25 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(DocumentTypeId))
                 yield return new ValidationResult("Document type Id must be set.");
             
-            if (string.IsNullOrEmpty(DocumentId))
+            if (DocumentType == Enums.DocumentType.Content &&
+                string.IsNullOrEmpty(DocumentId))
                 yield return new ValidationResult("Document Id must be set.");
 
+            if (DocumentType == Enums.DocumentType.Data &&
+                !string.IsNullOrEmpty(DocumentId))
+                yield return new ValidationResult("Document Id cannot be set for data documents.");
+            
             if (string.IsNullOrEmpty(Content))
                 yield return new ValidationResult("Content must be set.");
 
-            if (Index.HasValue && 
-               Index < 0)
+            if (DocumentType == Enums.DocumentType.Data &&
+                Index.HasValue && 
+                Index < 0)
                 yield return new ValidationResult("Index must be set to 0 or higher.");
+
+            if (DocumentType == Enums.DocumentType.Content &&
+                Index.HasValue)
+                yield return new ValidationResult("Index is not valid for content documents.");
         }
     }
 }

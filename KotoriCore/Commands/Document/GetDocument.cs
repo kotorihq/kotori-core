@@ -56,7 +56,7 @@ namespace KotoriCore.Commands
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="documentId">Document identifier.</param>
-        /// <param name="Index">Index.</param>
+        /// <param name="index">Index.</param>
         /// <param name="version">Version.</param>
         /// <param name="format">Format.</param>
         public GetDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, long? version, Enums.DocumentFormat format)
@@ -86,8 +86,13 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(DocumentTypeId))
                 yield return new ValidationResult("Document type Id must be set.");
             
-            if (string.IsNullOrEmpty(DocumentId))
+            if (DocumentType == Enums.DocumentType.Content &&
+                string.IsNullOrEmpty(DocumentId))
                 yield return new ValidationResult("Document Id must be set.");
+
+            if (DocumentType == Enums.DocumentType.Data &&
+                !string.IsNullOrEmpty(DocumentId))
+                yield return new ValidationResult("Document Id cannot be set for data documents.");
 
             if (Version.HasValue &&
                 Version.Value < 0)

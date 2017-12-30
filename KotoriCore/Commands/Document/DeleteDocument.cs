@@ -69,8 +69,13 @@ namespace KotoriCore.Commands
             if (string.IsNullOrEmpty(DocumentTypeId))
                 yield return new ValidationResult("Document type Id must be set.");
             
-            if (string.IsNullOrEmpty(DocumentId))
+            if (DocumentType == Enums.DocumentType.Content &&
+                string.IsNullOrEmpty(DocumentId))
                 yield return new ValidationResult("Document Id must be set.");
+
+            if (DocumentType == Enums.DocumentType.Data &&
+                !string.IsNullOrEmpty(DocumentId))
+                yield return new ValidationResult("Document Id cannot be set for data documents.");
         }
     }
 }

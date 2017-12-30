@@ -6,7 +6,8 @@ using Sushi2;
 namespace KotoriCore.Helpers
 {
     // TODO: remove
-    // /api/projects/[projectid]/types/[content|data]/document-types/[documenttypeid]/documents/[documentid]/indices/[index]
+    // /api/projects/[projectid]/content/document-types/[documenttypeid]/documents/[documentid]
+    // /api/projects/[projectid]/data/document-types/[documenttypeid]/indices/[index]
 
     /// <summary>
     /// Router.
@@ -33,27 +34,6 @@ namespace KotoriCore.Helpers
             Document,
             DocumentForDraftCheck,
             Data
-        }
-
-        // TODO: delete
-        /// <summary>
-        /// Converts the identifier to the version without date.
-        /// </summary>
-        /// <returns>The identifier without date.</returns>
-        /// <param name="id">Identifier.</param>
-        static string ToIdentifierWithoutDate(this string id)
-        {
-            if (id == null)
-                throw new ArgumentNullException(nameof(id));
-
-            var r = new Regex(@"^(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})-(?<id>.*)$", RegexOptions.Singleline | RegexOptions.Compiled);
-
-            var match = r.Match(id);
-
-            if (match.Success)
-                return match.Groups["id"].Value;
-
-            return id;
         }
 
         /// <summary>
@@ -93,7 +73,7 @@ namespace KotoriCore.Helpers
             if (!documentTypeId.IsValidSlug())
                 throw new KotoriDocumentTypeException(projectId, $"Document type slug {documentTypeId} is not valid.");
             
-            return new Uri(UriScheme + "api/projects/" + projectId + "/types/" + documentType.ToString().ToLower() + "/document-types/" + documentTypeId);
+            return new Uri(UriScheme + "api/projects/" + projectId + "/" + documentType.ToString().ToLower() + "/document-types/" + documentTypeId);
         }
 
         /// <summary>
@@ -107,8 +87,13 @@ namespace KotoriCore.Helpers
         /// <param name="index">Index.</param>
         internal static Uri ToKotoriDocumentUri(this string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index)
         {
-            if (documentId == null)
+            if (documentType == Enums.DocumentType.Content &&
+                documentId == null)
                 throw new ArgumentNullException(nameof(documentId));
+
+            if (documentType == Enums.DocumentType.Data &&
+                !string.IsNullOrEmpty(documentId))
+                throw new ArgumentException("Document Id cannot be set for data documents.", nameof(documentId));
             
             if (documentTypeId == null)
                 throw new ArgumentNullException(nameof(documentTypeId));
@@ -122,18 +107,23 @@ namespace KotoriCore.Helpers
             if (!documentTypeId.IsValidSlug())
                 throw new KotoriDocumentTypeException(documentTypeId, $"Document type slug {documentTypeId} is not valid.");
 
-            if (!documentId.IsValidSlug())
+            if (documentType == Enums.DocumentType.Content &&
+                !documentId.IsValidSlug())
                 throw new KotoriDocumentException(documentId, $"Document slug {documentId} is not valid.");
 
             if (index.HasValue &&
-               index < 0)
+                index < 0)
                 throw new KotoriDocumentException(documentId, $"Index must equals or be greater than 0.");
+
+            string uri = string.Empty;
+
+            if (documentType == Enums.DocumentType.Content)
+                uri = UriScheme + "api/projects/" + projectId + "/" + documentType.ToString().ToLower() + "/document-types/" + documentTypeId + "/documents/" + documentId;
+            else if (documentType == Enums.DocumentType.Data)
+                uri = UriScheme + "api/projects/" + projectId + "/" + documentType.ToString().ToLower() + "/document-types/" + documentTypeId + "/indices/" + index;
+            else
+                throw new KotoriException($"Uri scheme generator is not defined for document type {documentType}.");
             
-            var uri = UriScheme + "api/projects/" + projectId + "/types/" + documentType.ToString().ToLower() + "/document-types/" + documentTypeId + "/documents/" + documentId;
-
-            if (index != null)
-                uri += "/indices/" + index;
-
             return new Uri(uri);
         }
 
@@ -171,7 +161,7 @@ namespace KotoriCore.Helpers
 
             var u = uri.ToString();
 
-            var r = new Regex($@"^kotori:\/\/api\/projects\/(?<projectid>{OneSlug})\/types\/(?<documenttype>{OneSlug})\/document-types\/(?<id>{OneSlug})", 
+            var r = new Regex($@"^kotori:\/\/api\/projects\/(?<projectid>{OneSlug})\/(?<documenttype>{OneSlug})\/document-types\/(?<id>{OneSlug})", 
                               RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             var match = r.Match(u);
@@ -206,18 +196,30 @@ namespace KotoriCore.Helpers
 
             var u = uri.ToString();
 
-            var r = new Regex($@"^kotori:\/\/api\/projects\/(?<projectid>{OneSlug})\/types\/(?<type>{OneSlug})\/document-types\/(?<documenttype>{OneSlug})\/documents\/(?<id>{OneSlug})(\/indices\/(?<index>[\d]+))?", 
+            var r = new Regex($@"^kotori:\/\/api\/projects\/(?<projectid>{OneSlug})\/content\/document-types\/(?<documenttype>{OneSlug})\/documents\/(?<id>{OneSlug})", 
                               RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             var match = r.Match(u);
 
             if (match.Success)
             {
-                var dt = match.Groups["type"].Value.RemoveTrailingSlashes(true, true).ToDocumentType();
+                return new DocumentIdentifierToken
+                    (
+                        match.Groups["projectid"].Value.RemoveTrailingSlashes(true, true),
+                        Enums.DocumentType.Content,
+                        match.Groups["documenttype"].Value.RemoveTrailingSlashes(true, true),
+                        match.Groups["id"].Value.RemoveTrailingSlashes(true, true),
+                        null
+                    );
+            }
 
-                if (dt == null)
-                    throw new KotoriException($"{match.Groups["type"].Value} is an invalid document type.");
+            r = new Regex($@"^kotori:\/\/api\/projects\/(?<projectid>{OneSlug})\/data\/document-types\/(?<documenttype>{OneSlug})\/indices\/(?<index>[\d]+)",
+                              RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+            match = r.Match(u);
+
+            if (match.Success)
+            {
                 long? index = null;
 
                 if (match.Groups["index"] != null)
@@ -226,9 +228,9 @@ namespace KotoriCore.Helpers
                 return new DocumentIdentifierToken
                     (
                         match.Groups["projectid"].Value.RemoveTrailingSlashes(true, true),
-                        dt.Value,
+                        Enums.DocumentType.Data,
                         match.Groups["documenttype"].Value.RemoveTrailingSlashes(true, true),
-                        match.Groups["id"].Value.RemoveTrailingSlashes(true, true),
+                        null,
                         index
                     );
             }

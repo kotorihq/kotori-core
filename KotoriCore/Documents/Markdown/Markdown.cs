@@ -314,7 +314,8 @@ namespace KotoriCore.Documents
             }
 
             // no slug, set from document identifier
-            if (result.Slug == null)
+            if (documentType == Enums.DocumentType.Content &&
+                result.Slug == null)
             {
                 if (!DocumentIdentifier.DocumentId.IsValidSlug())
                     throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document identifier {DocumentIdentifier.DocumentId} is not valid as a slug.");
