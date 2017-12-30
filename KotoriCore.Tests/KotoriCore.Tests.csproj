@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <UserSecretsId>kotori-server</UserSecretsId>
+    <UserSecretsId>kotori-core</UserSecretsId>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

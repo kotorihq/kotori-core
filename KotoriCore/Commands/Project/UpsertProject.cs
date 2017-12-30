@@ -42,8 +42,11 @@ namespace KotoriCore.Commands
             ProjectId = projectId;
             Name = name;
 
-            if (CreateOnly)
+            if (CreateOnly &&
+                string.IsNullOrEmpty(projectId))
+            {
                 ProjectId = RandomGenerator.GetId();
+            }
         }
 
         /// <summary>
