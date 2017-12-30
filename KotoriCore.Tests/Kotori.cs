@@ -29,7 +29,7 @@ namespace KotoriCore.Tests
             var appSettings = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("AppSettings.json")
-                .AddUserSecrets("kotori-server")
+                .AddUserSecrets("kotori-core")
                 .AddEnvironmentVariables()
                 .Build();
 
@@ -1305,7 +1305,7 @@ haha";
         [TestMethod]
         public async Task CreateProject()
         {
-            var result = await _kotori.CreateProjectAsync("dev", "hihi", "HI HI");
+            var result = await _kotori.CreateProjectAsync("dev", null, "HI HI");
             var projects = _kotori.GetProjects("dev");
 
             Assert.AreEqual(1, projects.Count(x => x.Identifier.Length == 16));
@@ -1699,6 +1699,16 @@ Matrix has you!";
 ";
 
             await _kotori.UpsertDocumentAsync("dev", "datacont2", Enums.DocumentType.Data, "movie", null, null, c);
+        }
+
+        [TestMethod]
+        public async Task CreateProjectWithId()
+        {
+            _kotori.CreateProject("dev", "guruguru", "Guru !");
+            var p = await _kotori.GetProjectAsync("dev", "guruguru");
+
+            Assert.AreEqual("guruguru", p.Identifier);
+            Assert.AreEqual("Guru !", p.Name);
         }
 
         [TestMethod]
