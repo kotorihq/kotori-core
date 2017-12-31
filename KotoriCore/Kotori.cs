@@ -71,8 +71,8 @@ namespace KotoriCore
         /// <param name="content">Content.</param>
         /// <param name="date">Date.</param>
         /// <param name="draft">Draft flag.</param>
-        /// <returns>Result.</returns>
-        public string UpsertDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, 
+        /// <returns>Operation result.</returns>
+        public OperationResult UpsertDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, 
                                      long? index, string content, DateTime? date = null, bool? draft = null)
         {
             return AsyncTools.RunSync(() => UpsertDocumentAsync(instance, projectId, documentType, documentTypeId, documentId, index, content, date, draft));
@@ -90,11 +90,11 @@ namespace KotoriCore
         /// <param name="content">Content.</param>
         /// <param name="date">Date.</param>
         /// <param name="draft">Draft flag.</param>
-        /// <returns>Result.</returns>
-        public async Task<string> UpsertDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, 
+        /// <returns>Operation result.</returns>
+        public async Task<OperationResult> UpsertDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, 
                                                       string documentId, long? index, string content, DateTime? date = null, bool? draft = null)
         {
-            return (await ProcessAsync(new UpsertDocument(false, instance, projectId, documentType, documentTypeId, documentId, index, content, date, draft)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocument(false, instance, projectId, documentType, documentTypeId, documentId, index, content, date, draft)) as CommandResult<string>).Result;
         }
 
         /// <summary>
@@ -107,8 +107,8 @@ namespace KotoriCore
         /// <param name="content">Content.</param>
         /// <param name="date">Date.</param>
         /// <param name="draft">Draft flag.</param>
-        /// <returns>Result.</returns>
-        public string CreateDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? date = null, bool? draft = null)
+        /// <returns>Operation result.</returns>
+        public OperationResult CreateDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? date = null, bool? draft = null)
         {
             return AsyncTools.RunSync(() => CreateDocumentAsync(instance, projectId, documentType, documentTypeId, content, date, draft));
         }
@@ -123,10 +123,10 @@ namespace KotoriCore
         /// <param name="content">Content.</param>
         /// <param name="date">Date.</param>
         /// <param name="draft">Draft flag.</param>
-        /// <returns>Result.</returns>
-        public async Task<string> CreateDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? date = null, bool? draft = null)
+        /// <returns>Operation result.</returns>
+        public async Task<OperationResult> CreateDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? date = null, bool? draft = null)
         {
-            return (await ProcessAsync(new UpsertDocument(true, instance, projectId, documentType, documentTypeId, null, null, content, date, draft)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocument(true, instance, projectId, documentType, documentTypeId, null, null, content, date, draft)) as CommandResult<string>).Result;
         }
 
         /// <summary>
@@ -135,8 +135,8 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="name">Project name.</param>
-        /// <returns>Result.</returns>
-        public string CreateProject(string instance, string projectId, string name)
+        /// <returns>Operation result.</returns>
+        public OperationResult CreateProject(string instance, string projectId, string name)
         {
             return AsyncTools.RunSync(() => CreateProjectAsync(instance, projectId, name));
         }
@@ -147,10 +147,10 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="name">Project name.</param>
-        /// <returns>Result.</returns>
-        public async Task<string> CreateProjectAsync(string instance, string projectId, string name)
+        /// <returns>Operation result.</returns>
+        public async Task<OperationResult> CreateProjectAsync(string instance, string projectId, string name)
         {
-            return (await ProcessAsync(new UpsertProject(true, instance, projectId, name)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertProject(true, instance, projectId, name)) as CommandResult<string>).Result;
         }
 
         /// <summary>
@@ -158,10 +158,9 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <returns>Result.</returns>
-        public string DeleteProject(string instance, string projectId)
+        public void DeleteProject(string instance, string projectId)
         {
-            return AsyncTools.RunSync(() => DeleteProjectAsync(instance, projectId));
+            AsyncTools.RunSync(() => DeleteProjectAsync(instance, projectId));
         }
 
         /// <summary>
@@ -169,10 +168,9 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <returns>Result.</returns>
-        public async Task<string> DeleteProjectAsync(string instance, string projectId)
+        public async Task DeleteProjectAsync(string instance, string projectId)
         {
-            return (await ProcessAsync(new DeleteProject(instance, projectId)) as CommandResult<string>)?.Message;
+            await ProcessAsync(new DeleteProject(instance, projectId));
         }
 
         /// <summary>
@@ -231,7 +229,7 @@ namespace KotoriCore
         public async Task<SimpleDocument> GetDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, 
                                                            string documentId, long? index = null, long? version = null, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
-            return (await ProcessAsync(new GetDocument(instance, projectId, documentType, documentTypeId, documentId, index, version, format)) as CommandResult<SimpleDocument>)?.Record;
+            return (await ProcessAsync(new GetDocument(instance, projectId, documentType, documentTypeId, documentId, index, version, format)) as CommandResult<SimpleDocument>).Record;
         }
 
         /// <summary>
@@ -282,31 +280,29 @@ namespace KotoriCore
         /// <summary>
         /// Deletes the document.
         /// </summary>
-        /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type id.</param>
         /// <param name="documentId">Document identifier.</param>
         /// <param name="index">Index.</param>
-        public string DeleteDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index = null)
+        public void DeleteDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index = null)
         {
-            return AsyncTools.RunSync(() => DeleteDocumentAsync(instance, projectId, documentType, documentTypeId, documentId, index));
+            AsyncTools.RunSync(() => DeleteDocumentAsync(instance, projectId, documentType, documentTypeId, documentId, index));
         }
 
         /// <summary>
         /// Deletes the document.
         /// </summary>
-        /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type id.</param>
         /// <param name="documentId">Document identifier.</param>
         /// <param name="index">Index.</param>
-        public async Task<string> DeleteDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index = null)
+        public async Task DeleteDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index = null)
         {
-            return (await ProcessAsync(new DeleteDocument(instance, projectId, documentType, documentTypeId, documentId, index)) as CommandResult<string>)?.Message;
+            await ProcessAsync(new DeleteDocument(instance, projectId, documentType, documentTypeId, documentId, index));
         }
 
         /// <summary>
@@ -366,7 +362,7 @@ namespace KotoriCore
         /// <param name="documentTypeId">Document type identifier.</param>
         public async Task<SimpleDocumentType> GetDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            return (await ProcessAsync(new GetDocumentType(instance, projectId, documentType, documentTypeId)) as CommandResult<SimpleDocumentType>)?.Record;
+            return (await ProcessAsync(new GetDocumentType(instance, projectId, documentType, documentTypeId)) as CommandResult<SimpleDocumentType>).Record;
         }
 
         /// <summary>
@@ -413,7 +409,7 @@ namespace KotoriCore
         /// <param name="projectId">Project identifier.</param>
         public async Task<SimpleProject> GetProjectAsync(string instance, string projectId)
         {
-            return (await ProcessAsync(new GetProject(instance, projectId)) as CommandResult<SimpleProject>)?.Record;
+            return (await ProcessAsync(new GetProject(instance, projectId)) as CommandResult<SimpleProject>).Record;
         }
 
         /// <summary>
@@ -447,8 +443,8 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Identifier.</param>
         /// <param name="name">Name.</param>
-        /// <returns>Result.</returns>
-        public string UpsertProject(string instance, string projectId, string name)
+        /// <returns>Operation result.</returns>
+        public OperationResult UpsertProject(string instance, string projectId, string name)
         {
             return AsyncTools.RunSync(() => UpsertProjectAsync(instance, projectId, name));
         }
@@ -459,20 +455,20 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Identifier.</param>
         /// <param name="name">Name.</param>
-        /// <returns>Result.</returns>
-        public async Task<string> UpsertProjectAsync(string instance, string projectId, string name)
+        /// <returns>Operation result.</returns>
+        public async Task<OperationResult> UpsertProjectAsync(string instance, string projectId, string name)
         {
-            return (await ProcessAsync(new UpsertProject(false, instance, projectId, name)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertProject(false, instance, projectId, name)) as CommandResult<string>).Result;
         }
 
         /// <summary>
         /// Creates the project key.
         /// </summary>
-        /// <returns>Result.</returns>
+        /// <returns>Operation result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="projectKey">Project key.</param>
-        public string CreateProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey)
+        public OperationResult CreateProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey)
         {
             return AsyncTools.RunSync(() => CreateProjectKeyAsync(instance, projectId, projectKey));
         }
@@ -480,23 +476,23 @@ namespace KotoriCore
         /// <summary>
         /// Creates the project key.
         /// </summary>
-        /// <returns>Result.</returns>
+        /// <returns>Operation result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="projectKey">Project key.</param>
-        public async Task<string> CreateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey)
+        public async Task<OperationResult> CreateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey)
         {
-            return (await ProcessAsync(new UpsertProjectKey(true, instance, projectId, projectKey)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertProjectKey(true, instance, projectId, projectKey)) as CommandResult<string>).Result;
         }
 
         /// <summary>
         /// Upserts the project key.
         /// </summary>
-        /// <returns>Result.</returns>
+        /// <returns>Operation result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="projectKey">Project key.</param>
-        public string UpsertProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey)
+        public OperationResult UpsertProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey)
         {
             return AsyncTools.RunSync(() => UpsertProjectKeyAsync(instance, projectId, projectKey));
         }
@@ -504,37 +500,35 @@ namespace KotoriCore
         /// <summary>
         /// Upserts the project key.
         /// </summary>
-        /// <returns>Result.</returns>
+        /// <returns>Operation result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="projectKey">Project key.</param>
-        public async Task<string> UpsertProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey)
+        public async Task<OperationResult> UpsertProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey)
         {
-            return (await ProcessAsync(new UpsertProjectKey(false, instance, projectId, projectKey)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertProjectKey(false, instance, projectId, projectKey)) as CommandResult<string>).Result;
         }
 
         /// <summary>
         /// Deletes the project key.
         /// </summary>
-        /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="projectKey">Project key.</param>
-        public string DeleteProjectKey(string instance, string projectId, string projectKey)
+        public void DeleteProjectKey(string instance, string projectId, string projectKey)
         {
-            return AsyncTools.RunSync(() => DeleteProjectKeyAsync(instance, projectId, projectKey));
+            AsyncTools.RunSync(() => DeleteProjectKeyAsync(instance, projectId, projectKey));
         }
 
         /// <summary>
         /// Deletes the project key.
         /// </summary>
-        /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="projectKey">Project key.</param>
-        public async Task<string> DeleteProjectKeyAsync(string instance, string projectId, string projectKey)
+        public async Task DeleteProjectKeyAsync(string instance, string projectId, string projectKey)
         {
-            return (await ProcessAsync(new DeleteProjectKey(instance, projectId, projectKey)) as CommandResult<string>)?.Message;
+            await ProcessAsync(new DeleteProjectKey(instance, projectId, projectKey));
         }
 
         /// <summary>
@@ -602,13 +596,13 @@ namespace KotoriCore
         /// <summary>
         /// Creates the document type transformations.
         /// </summary>
-        /// <returns>Result.</returns>
+        /// <returns>Operation result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="transformations">Transformations.</param>
-        public string CreateDocumentTypeTransformations(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
+        public OperationResult CreateDocumentTypeTransformations(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
         {
             return AsyncTools.RunSync(() => CreateDocumentTypeTransformationsAsync(instance, projectId, documentType, documentTypeId, transformations));
         }
@@ -616,27 +610,27 @@ namespace KotoriCore
         /// <summary>
         /// Creates the document type transformations.
         /// </summary>
-        /// <returns>Result.</returns>
+        /// <returns>Operation result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="transformations">Transformations.</param>
-        public async Task<string> CreateDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
+        public async Task<OperationResult> CreateDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
         {
-            return (await ProcessAsync(new UpsertDocumentTypeTransformations(true, instance, projectId, documentType, documentTypeId, transformations)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocumentTypeTransformations(true, instance, projectId, documentType, documentTypeId, transformations)) as CommandResult<string>).Result;
         }
 
         /// <summary>
         /// Upserts the document type transformations.
         /// </summary>
-        /// <returns>Result.</returns>
+        /// <returns>Operation result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="transformations">Transformations.</param>
-        public string UpsertDocumentTypeTransformations(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
+        public OperationResult UpsertDocumentTypeTransformations(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
         {
             return AsyncTools.RunSync(() => UpsertDocumentTypeTransformationsAsync(instance, projectId, documentType, documentTypeId, transformations));
         }
@@ -644,15 +638,15 @@ namespace KotoriCore
         /// <summary>
         /// Upserts the document type transformations.
         /// </summary>
-        /// <returns>Result.</returns>
+        /// <returns>Operation result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
         /// <param name="transformations">Transformations.</param>
-        public async Task<string> UpsertDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
+        public async Task<OperationResult> UpsertDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
         {
-            return (await ProcessAsync(new UpsertDocumentTypeTransformations(false, instance, projectId, documentType, documentTypeId, transformations)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocumentTypeTransformations(false, instance, projectId, documentType, documentTypeId, transformations)) as CommandResult<string>).Result;
         }
 
         /// <summary>
@@ -661,8 +655,8 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        /// <returns>Result.</returns>
-        public string CreateDocumentType(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
+        /// <returns>Operation result.</returns>
+        public OperationResult CreateDocumentType(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
             return AsyncTools.RunSync(() => CreateDocumentTypeAsync(instance, projectId, documentType, documentTypeId));
         }
@@ -674,10 +668,10 @@ namespace KotoriCore
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        /// <returns>Result.</returns>
-        public async Task<string> CreateDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
+        /// <returns>Operation result.</returns>
+        public async Task<OperationResult> CreateDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            return (await ProcessAsync(new UpsertDocumentType(true, instance, projectId, documentType, documentTypeId)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocumentType(true, instance, projectId, documentType, documentTypeId)) as CommandResult<string>).Result;
         }
 
         /// <summary>
@@ -687,8 +681,8 @@ namespace KotoriCore
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        /// <returns>Result.</returns>
-        public string UpsertDocumentType(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
+        /// <returns>Operation result.</returns>
+        public OperationResult UpsertDocumentType(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
             return AsyncTools.RunSync(() => UpsertDocumentTypeAsync(instance, projectId, documentType, documentTypeId));
         }
@@ -700,36 +694,34 @@ namespace KotoriCore
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        /// <returns>Result.</returns>
-        public async Task<string> UpsertDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
+        /// <returns>Operation result.</returns>
+        public async Task<OperationResult> UpsertDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            return (await ProcessAsync(new UpsertDocumentType(false, instance, projectId, documentType, documentTypeId)) as CommandResult<string>)?.Message;
+            return (await ProcessAsync(new UpsertDocumentType(false, instance, projectId, documentType, documentTypeId)) as CommandResult<string>)?.Result;
         }
 
         /// <summary>
         /// Deletes the document type.
         /// </summary>
-        /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        public string DeleteDocumentType(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
+        public void DeleteDocumentType(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            return AsyncTools.RunSync(() => DeleteDocumentTypeAsync(instance, projectId, documentType, documentTypeId));
+            AsyncTools.RunSync(() => DeleteDocumentTypeAsync(instance, projectId, documentType, documentTypeId));
         }
 
         /// <summary>
         /// Deletes the document type.
         /// </summary>
-        /// <returns>Result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        public async Task<string> DeleteDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
+        public async Task DeleteDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            return (await ProcessAsync(new DeleteDocumentType(instance, projectId, documentType, documentTypeId)) as CommandResult<string>)?.Message;
+            await ProcessAsync(new DeleteDocumentType(instance, projectId, documentType, documentTypeId));
         }
 
         /// <summary>

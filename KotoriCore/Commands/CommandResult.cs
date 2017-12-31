@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using KotoriCore.Domains;
 
 namespace KotoriCore.Commands
 {
@@ -13,10 +14,10 @@ namespace KotoriCore.Commands
         T _record { get; set; }
 
         /// <summary>
-        /// Gets or sets the message.
+        /// Gets the result.
         /// </summary>
-        /// <value>The message.</value>
-        public string Message { get; set; }        
+        /// <value>The result.</value>
+        public OperationResult Result { get; }
 
         /// <summary>
         /// Gets the type of the element.
@@ -39,10 +40,10 @@ namespace KotoriCore.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CommandResult`1"/> class.
         /// </summary>
-        /// <param name="message">Message.</param>
-        public CommandResult(string message)
+        /// <param name="result">Result.</param>
+        public CommandResult(OperationResult result)
         {
-            Message = message;
+            Result = result;
         }
 
         /// <summary>

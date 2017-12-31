@@ -135,7 +135,7 @@ namespace KotoriCore.Tests
             //Assert.AreEqual(2, projects.Count());
             Assert.AreEqual("Nenecchi", projects.First().Name);
 
-            result = await _kotori.DeleteProjectAsync("dev", "nenecchi-main");
+            await _kotori.DeleteProjectAsync("dev", "nenecchi-main");
 
             Assert.AreEqual("Project has been deleted.", result);
 
@@ -249,9 +249,7 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual(2, docs.Count());
 
-            var resd2 = _kotori.DeleteDocument("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", "2017-05-06-flying-witch", null);
-
-            Assert.AreEqual("Document has been deleted.", resd2);
+            _kotori.DeleteDocument("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", "2017-05-06-flying-witch", null);
 
             docs = _kotori.FindDocuments("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", null, null, null, null, false, false, null);
 

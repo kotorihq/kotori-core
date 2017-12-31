@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using KotoriCore.Domains;
 
 namespace KotoriCore.Commands
 {
@@ -21,9 +22,9 @@ namespace KotoriCore.Commands
         IEnumerable Data { get; }
 
         /// <summary>
-        /// Gets the message.
+        /// Gets the result.
         /// </summary>
-        /// <value>The message.</value>
-        string Message { get; }
+        /// <value>The result.</value>
+        OperationResult Result { get; }
     }
 }
