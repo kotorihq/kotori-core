@@ -8,7 +8,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(DeleteDocumentType command)
+        async Task<CommandResult> HandleAsync(DeleteDocumentType command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var project = await FindProjectAsync(command.Instance, projectUri);
@@ -47,7 +47,7 @@ namespace KotoriCore.Database.DocumentDb
 
             await DeleteDocumentTypeAsync(docType.Id);
 
-            return new CommandResult<string>("Document type has been deleted.");
+            return new CommandResult();
         }
     }
 }
