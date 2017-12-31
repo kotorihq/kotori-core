@@ -1704,7 +1704,11 @@ Matrix has you!";
         [TestMethod]
         public async Task CreateProjectWithId()
         {
-            _kotori.CreateProject("dev", "guruguru", "Guru !");
+            var result = _kotori.CreateProject("dev", "guruguru", "Guru !");
+
+            Assert.AreEqual("guruguru", result.Id);
+            Assert.AreEqual("/api/projects/guruguru", result.Url);
+
             var p = await _kotori.GetProjectAsync("dev", "guruguru");
 
             Assert.AreEqual("guruguru", p.Identifier);
