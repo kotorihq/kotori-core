@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using KotoriCore.Commands;
+using KotoriCore.Domains;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 
@@ -7,10 +8,9 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(UpsertProject command)
+        async Task<CommandResult<OperationResult>> HandleAsync(UpsertProject command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
-            var isNew = false;
 
             var p = await FindProjectAsync(command.Instance, projectUri);
 
@@ -22,7 +22,6 @@ namespace KotoriCore.Database.DocumentDb
                (!command.CreateOnly && p == null))
             {
                 p = new Entities.Project(command.Instance, command.Name, projectUri.ToString());
-                isNew = true;
             }
             else
             {
@@ -30,9 +29,10 @@ namespace KotoriCore.Database.DocumentDb
                 p.Name = command.Name;
             }
 
-            await UpsertProjectAsync(p);
+            var project = await UpsertProjectAsync(p);
+            var result = new CommandResult<OperationResult>(new OperationResult(project));
 
-            return new CommandResult<string>(isNew ? "Project has been created." : "Project has been updated.");
+            return result;
         }
     }
 }

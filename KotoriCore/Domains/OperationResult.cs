@@ -1,4 +1,7 @@
-﻿namespace KotoriCore.Domains
+﻿using System;
+using KotoriCore.Helpers;
+
+namespace KotoriCore.Domains
 {
     /// <summary>
     /// Operation result.
@@ -18,12 +21,6 @@
         public string Url { get; set; }
 
         /// <summary>
-        /// Gets or sets the message.
-        /// </summary>
-        /// <value>The message.</value>
-        public string Message { get; set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.OperationResult"/> class.
         /// </summary>
         public OperationResult()
@@ -35,12 +32,23 @@
         /// </summary>
         /// <param name="id">Identifier.</param>
         /// <param name="url">URL.</param>
-        /// <param name="message">Message.</param>
-        public OperationResult(string id, string url, string message)
+        public OperationResult(string id, string url)
         {
             Id = id;
             Url = url;
-            Message = message;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.OperationResult"/> class.
+        /// </summary>
+        /// <param name="project">Project.</param>
+        public OperationResult(Database.DocumentDb.Entities.Project project)
+        {
+            var projectUri = new Uri(project.Identifier);
+            var projectId = projectUri.ToKotoriProjectIdentifier();
+
+            Id = projectId;
+            Url = projectUri.ToAbsoluteUri();
         }
     }
 }

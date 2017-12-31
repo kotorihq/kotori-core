@@ -5,10 +5,6 @@ using Sushi2;
 
 namespace KotoriCore.Helpers
 {
-    // TODO: remove
-    // /api/projects/[projectid]/content/document-types/[documenttypeid]/documents/[documentid]
-    // /api/projects/[projectid]/data/document-types/[documenttypeid]/indices/[index]
-
     /// <summary>
     /// Router.
     /// </summary>
@@ -249,6 +245,18 @@ namespace KotoriCore.Helpers
             var r = new Regex($@"^{OneSlug}$", RegexOptions.Compiled);
 
             return r.IsMatch(slug);
+        }
+
+        /// <summary>
+        /// Gets absolute part of URI.
+        /// </summary>
+        /// <returns>The absolute URI.</returns>
+        /// <param name="uri">URI.</param>
+        internal static string ToAbsoluteUri(this Uri uri)
+        {
+            var protocol = uri.Scheme;
+
+            return uri.ToString().Substring(protocol.Length + 2);
         }
     }
 }

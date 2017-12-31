@@ -128,8 +128,8 @@ namespace KotoriCore.Tests
         {
             var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-main", "Nenecchi");
 
-            // TODO: parse real result
-            //Assert.AreEqual("Project has been created.", result);
+            Assert.AreEqual("nenecchi-main", result.Id);
+            Assert.AreEqual("/api/projects/nenecchi-main", result.Url);
 
             var projects = await _kotori.GetProjectsAsync("dev");
 
@@ -137,9 +137,6 @@ namespace KotoriCore.Tests
             Assert.AreEqual("Nenecchi", projects.First().Name);
 
             await _kotori.DeleteProjectAsync("dev", "nenecchi-main");
-
-            // TODO: parse real result
-            //Assert.AreEqual("Project has been deleted.", result);
 
             projects = await _kotori.GetProjectsAsync("dev");
 
