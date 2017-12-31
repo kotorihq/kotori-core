@@ -9,7 +9,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(DeleteDocument command)
+        async Task<CommandResult> HandleAsync(DeleteDocument command)
         {
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
             var projectUri = command.ProjectId.ToKotoriProjectUri();
@@ -77,9 +77,9 @@ namespace KotoriCore.Database.DocumentDb
 
                     Task.WaitAll(reindexTasks.ToArray());
                 }
-                
+
                 if (result)
-                    return new CommandResult<string>("Document has been deleted.");
+                    return new CommandResult();
             }
             else
             {
@@ -98,7 +98,7 @@ namespace KotoriCore.Database.DocumentDb
                        true
                     );
 
-                    return new CommandResult<string>("Document has been deleted.");
+                    return new CommandResult();
                 }
             }
 
