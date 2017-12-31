@@ -448,11 +448,10 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "No properties were inappropriately accepted.")]
+        [ExpectedException(typeof(KotoriValidationException))]
         public void UpdateProjectFail2()
         {
-            _kotori.UpsertProject("dev", "failiep", "Nenecchi");
-            var projectKeys = _kotori.UpsertProject("dev", "failiep", null);
+            _kotori.UpsertProject("dev", null, null);
         }
 
         [TestMethod]
@@ -1709,6 +1708,16 @@ Matrix has you!";
 
             Assert.AreEqual("guruguru", p.Identifier);
             Assert.AreEqual("Guru !", p.Name);
+        }
+
+        [TestMethod]
+        public async Task CreateProjectWithNoName()
+        {
+            _kotori.CreateProject("dev", "guruguru2", null);
+            var p = await _kotori.GetProjectAsync("dev", "guruguru2");
+
+            Assert.AreEqual("guruguru2", p.Identifier);
+            Assert.IsNull(p.Name);
         }
 
         [TestMethod]

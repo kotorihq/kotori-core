@@ -60,9 +60,6 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Project Id must be set.");
-
-            if (string.IsNullOrEmpty(Name))
-                yield return new ValidationResult("Name must be set.");
         }
     }
 }
