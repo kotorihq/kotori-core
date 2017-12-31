@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using KotoriCore.Domains;
 
 namespace KotoriCore.Commands
 {
@@ -20,11 +19,5 @@ namespace KotoriCore.Commands
         /// </summary>
         /// <value>The data.</value>
         IEnumerable Data { get; }
-
-        /// <summary>
-        /// Gets the result.
-        /// </summary>
-        /// <value>The result.</value>
-        OperationResult Result { get; }
     }
 }

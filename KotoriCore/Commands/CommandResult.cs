@@ -1,10 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using KotoriCore.Domains;
 
 namespace KotoriCore.Commands
 {
+    /// <summary>
+    /// Command result.
+    /// </summary>
+    /// <remarks>For commands without proper command result.</remarks>
+    public class CommandResult : ICommandResult
+    {
+        public Type ElementType => throw new NotImplementedException();
+        public IEnumerable Data => throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Command result.
     /// </summary>
@@ -12,12 +21,6 @@ namespace KotoriCore.Commands
     {
         IEnumerable<T> _data { get; set; }
         T _record { get; set; }
-
-        /// <summary>
-        /// Gets the result.
-        /// </summary>
-        /// <value>The result.</value>
-        public OperationResult Result { get; }
 
         /// <summary>
         /// Gets the type of the element.
@@ -36,15 +39,6 @@ namespace KotoriCore.Commands
         /// </summary>
         /// <value>The data.</value>
         public IEnumerable Data => _data;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CommandResult`1"/> class.
-        /// </summary>
-        /// <param name="result">Result.</param>
-        public CommandResult(OperationResult result)
-        {
-            Result = result;
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CommandResult`1"/> class.
