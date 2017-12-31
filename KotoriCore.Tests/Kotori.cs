@@ -839,7 +839,10 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            _kotori.CreateDocument("dev", "data-woho", Enums.DocumentType.Data, "newgame", c);
+            var res = _kotori.CreateDocument("dev", "data-woho", Enums.DocumentType.Data, "newgame", c);
+            Assert.AreEqual("2", res.Id);
+            Assert.AreEqual("/api/projects/data-woho/data/document-types/newgame/indices/2", res.Url);
+
             var n = _kotori.CountDocuments("dev", "data-woho", Enums.DocumentType.Data, "newgame", null, false, false);
             Assert.AreEqual(3, n);
         }
@@ -1731,6 +1734,18 @@ Matrix has you!";
 
             Assert.AreEqual("guruguru2", p.Identifier);
             Assert.IsNull(p.Name);
+        }
+
+        [TestMethod]
+        public async Task CreateProjectWithGeneratedId()
+        {
+            var res = await _kotori.CreateProjectAsync("dev", null, null);
+            Assert.IsNotNull(res.Id);
+            Assert.AreEqual($"/api/projects/{res.Id}", res.Url);
+
+            var res2 = _kotori.CreateDocument("dev", res.Id, Enums.DocumentType.Content, "movies", GetContent(RawDocument.Matrix));
+            Assert.IsNotNull(res2.Id);
+            Assert.AreEqual($"/api/projects/{res.Id}/content/document-types/movies/documents/{res2.Id}", res2.Url);
         }
 
         [TestMethod]
