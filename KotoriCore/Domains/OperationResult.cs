@@ -50,5 +50,22 @@ namespace KotoriCore.Domains
             Id = projectId;
             Url = projectUri.ToAbsoluteUri();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.OperationResult"/> class.
+        /// </summary>
+        /// <param name="document">Document.</param>
+        public OperationResult(Database.DocumentDb.Entities.Document document)
+        {
+            var documentUri = new Uri(document.Identifier);
+            var documentId = documentUri.ToKotoriDocumentIdentifier();
+
+            Id = documentId.DocumentId;
+
+            if (Id == null)
+                Id = documentId.Index.ToString();
+            
+            Url = documentUri.ToAbsoluteUri();
+        }
     }
 }

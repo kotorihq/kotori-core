@@ -613,17 +613,23 @@ test: {i}
             Assert.IsNotNull(d0);
             Assert.AreEqual(true, d0.Draft);
 
-            _kotori.UpsertDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a", null, "hello", null, false);
+            var r1 = _kotori.UpsertDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a", null, "hello", null, false);
+            Assert.AreEqual("a", r1.Id);
+            Assert.AreEqual("/api/projects/drnodr/content/document-types/x/documents/a", r1.Url);
+
             var d1 = _kotori.GetDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a");
             Assert.IsNotNull(d1);
             Assert.AreEqual(false, d1.Draft);
             Assert.AreEqual(1, d1.Version);
 
-            _kotori.UpsertDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a", null, "hello");
+            var r2 = _kotori.UpsertDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a", null, "hello");
+            Assert.AreEqual("a", r2.Id);
+            Assert.AreEqual("/api/projects/drnodr/content/document-types/x/documents/a", r2.Url);
+
             var d2 = _kotori.GetDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a");
             Assert.IsNotNull(d2);
             Assert.AreEqual(false, d2.Draft);
-            Assert.AreEqual(1, d2.Version);
+            Assert.AreEqual(2, d2.Version);
         }
 
         [TestMethod]
@@ -647,7 +653,9 @@ position: head programmer
 stars: !!int 3
 approved: !!bool false
 ---";
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, c);
+            var res = await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, c);
+            Assert.AreEqual("2", res.Id);
+            Assert.AreEqual("/api/projects/mrdata/data/document-types/newgame/indices/2", res.Url);
 
             var doc = _kotori.GetDocument("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1);
             Assert.IsNotNull(doc);

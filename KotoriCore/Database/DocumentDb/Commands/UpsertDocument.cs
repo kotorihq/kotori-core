@@ -4,6 +4,7 @@ using KotoriCore.Commands;
 using KotoriCore.Database.DocumentDb.Helpers;
 using KotoriCore.Documents;
 using KotoriCore.Documents.Transformation;
+using KotoriCore.Domains;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 using Newtonsoft.Json.Linq;
@@ -12,7 +13,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(UpsertDocument command)
+        async Task<CommandResult<OperationResult>> HandleAsync(UpsertDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
@@ -59,6 +60,8 @@ namespace KotoriCore.Database.DocumentDb
                     throw new KotoriDocumentException(command.DocumentId, $"When creating data document at a particular index, your index must be 0 - {count}.");
                 }
 
+                CommandResult<OperationResult> lastResult = null;
+
                 for (var dc = 0; dc < documents.Count; dc++)
                 {
                     var jo = JObject.FromObject(documents[dc]);
@@ -67,7 +70,7 @@ namespace KotoriCore.Database.DocumentDb
 
                     var finalIndex = idx == null ? dc : idx + dc;                       
 
-                    await UpsertDocumentHelperAsync(
+                    lastResult = await UpsertDocumentHelperAsync(
                     (
                         new UpsertDocument
                         (
@@ -86,13 +89,13 @@ namespace KotoriCore.Database.DocumentDb
                     );
                 }
 
-                return new CommandResult<string>(command.CreateOnly ? "Data document(s) has been created." : "Data document(s) has been upserted.");
+                return lastResult;
             }
 
             throw new KotoriDocumentException(command.DocumentId, "Unknown document type.");
         }
 
-        async Task<CommandResult<string>> UpsertDocumentHelperAsync(UpsertDocument command)
+        async Task<CommandResult<OperationResult>> UpsertDocumentHelperAsync(UpsertDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
@@ -138,10 +141,10 @@ namespace KotoriCore.Database.DocumentDb
                     throw new KotoriDocumentException(command.DocumentId, "Document cannot be created. It already exists.");    
                 }
 
-                if (d.Hash.Equals(documentResult.Hash))
-                {
-                    return new CommandResult<string>("Document saving skipped. Hash is the same one as in the database.");
-                }
+                //if (d.Hash.Equals(documentResult.Hash))
+                //{
+                //    return new CommandResult<string>("Document saving skipped. Hash is the same one as in the database.");
+                //}
             }
 
             long version = 0;
@@ -168,19 +171,11 @@ namespace KotoriCore.Database.DocumentDb
                 Id = id
             };
 
-            await UpsertDocumentAsync(d);
+            var newDocument = await UpsertDocumentAsync(d);
 
-            if (command.DocumentType == Enums.DocumentType.Content)
-            {
-                return new CommandResult<string>(isNew ? "Document has been created." : "Document has been updated.");
-            }
+            var result = new CommandResult<OperationResult>(new OperationResult(newDocument));
 
-            if (command.DocumentType == Enums.DocumentType.Data)
-            {
-                return new CommandResult<string>(isNew ? "Data document has been created." : "Data document has been updated.");
-            }
-
-            return new CommandResult<string>("Ok.");
+            return result;
         }
     }
 }
