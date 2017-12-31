@@ -10,7 +10,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(DeleteProjectKey command)
+        async Task<CommandResult> HandleAsync(DeleteProjectKey command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
 
@@ -35,10 +35,10 @@ namespace KotoriCore.Database.DocumentDb
             project.Identifier = projectUri.ToString();
             project.ProjectKeys = keys;
 
-            // TODO: inspect - instead of replacing we use usperting
+            // TODO: inspect - instead of replacing we use upserting
             await UpsertProjectAsync(project);
 
-            return new CommandResult<string>("Project key has been deleted.");
+            return new CommandResult();
         }
     }
 }
