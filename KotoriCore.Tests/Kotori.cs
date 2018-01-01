@@ -89,7 +89,10 @@ namespace KotoriCore.Tests
         {
             _kotori.UpsertProject("dev", "lalala", "La la la");
 
-            _kotori.CreateDocumentType("dev", "lalala", Enums.DocumentType.Content, "hm");
+            var res = _kotori.CreateDocumentType("dev", "lalala", Enums.DocumentType.Content, "hm");
+            Assert.AreEqual("hm", res.Id);
+            Assert.AreEqual("/api/projects/lalala/content/document-types/hm", res.Url);
+
             var dt = _kotori.GetDocumentType("dev", "lalala", Enums.DocumentType.Content, "hm");
             Assert.IsNotNull(dt);
 
@@ -1486,13 +1489,16 @@ module: "" bar ""
         [TestMethod]
         public async Task DocumentTypeHash()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "doctdel", "Data");
+            await _kotori.UpsertProjectAsync("dev", "doctdel", "Data");
 
             var c = @"---
 girl: "" Aoba ""
 ---
 ";
-            await _kotori.CreateDocumentTypeAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame");
+            var res = await _kotori.CreateDocumentTypeAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame");
+            Assert.AreEqual("newgame", res.Id);
+            Assert.AreEqual("/api/projects/doctdel/data/document-types/newgame", res.Url);
+                             
             await _kotori.CreateDocumentAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", c);
 
             var docType = _kotori.GetDocumentType("dev", "doctdel", Enums.DocumentType.Data, "newgame");

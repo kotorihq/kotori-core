@@ -67,5 +67,14 @@ namespace KotoriCore.Domains
             
             Url = documentUri.ToAbsoluteUri();
         }
+
+        public OperationResult(Database.DocumentDb.Entities.DocumentType documentType)
+        {
+            var documentTypeUri = new Uri(documentType.Identifier);
+            var documentTypeId = documentTypeUri.ToKotoriDocumentTypeIdentifier();
+
+            Id = documentTypeId.DocumentTypeId;
+            Url = documentTypeUri.ToAbsoluteUri();
+        }
     }
 }
