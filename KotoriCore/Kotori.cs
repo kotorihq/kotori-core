@@ -308,7 +308,7 @@ namespace KotoriCore
         /// <summary>
         /// Counts the documents.
         /// </summary>
-        /// <returns>Result.</returns>
+        /// <returns>Count result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
@@ -316,7 +316,7 @@ namespace KotoriCore
         /// <param name="filter">Document filter.</param>
         /// <param name="drafts">If set to <c>true</c> returns drafts.</param>
         /// <param name="future">If set to <c>true</c> returns future.</param>
-        public long CountDocuments(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string filter, bool drafts, bool future)
+        public CountResult CountDocuments(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string filter, bool drafts, bool future)
         {
             return AsyncTools.RunSync(() => CountDocumentsAsync(instance, projectId, documentType, documentTypeId, filter, drafts, future));
         }
@@ -324,7 +324,7 @@ namespace KotoriCore
         /// <summary>
         /// Counts the documents.
         /// </summary>
-        /// <returns>Result.</returns>
+        /// <returns>Count result.</returns>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
@@ -332,9 +332,9 @@ namespace KotoriCore
         /// <param name="filter">Document filter.</param>
         /// <param name="drafts">If set to <c>true</c> returns drafts.</param>
         /// <param name="future">If set to <c>true</c> returns future.</param>
-        public async Task<long> CountDocumentsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string filter, bool drafts, bool future)
+        public async Task<CountResult> CountDocumentsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string filter, bool drafts, bool future)
         {
-            var result = await ProcessAsync(new CountDocuments(instance, projectId, documentType, documentTypeId, filter, drafts, future)) as CommandResult<long>;
+            var result = await ProcessAsync(new CountDocuments(instance, projectId, documentType, documentTypeId, filter, drafts, future)) as CommandResult<CountResult>;
 
             return result.Record;
         }

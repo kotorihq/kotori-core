@@ -291,10 +291,10 @@ namespace KotoriCore.Tests
 
             var docs = _kotori.CountDocuments("dev", "nenecchi-count", Enums.DocumentType.Content, "tv", null, false, false);
 
-            Assert.AreEqual(2, docs);
+            Assert.AreEqual(2, docs.Count);
 
             var docs2 = _kotori.CountDocuments("dev", "nenecchi-count", Enums.DocumentType.Content, "tv", "c.meta.rating in (8)", false, false);
-            Assert.AreEqual(1, docs2);
+            Assert.AreEqual(1, docs2.Count);
         }
 
         [TestMethod]
@@ -315,16 +315,16 @@ namespace KotoriCore.Tests
             Assert.AreEqual(true, draftDoc.Draft);
 
             var count0 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, false, false);
-            Assert.AreEqual(0, count0);
+            Assert.AreEqual(0, count0.Count);
 
             var count1 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, true, false);
-            Assert.AreEqual(1, count1);
+            Assert.AreEqual(1, count1.Count);
 
             var count2 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, false, true);
-            Assert.AreEqual(1, count2);
+            Assert.AreEqual(1, count2.Count);
 
             var count3 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, true, true);
-            Assert.AreEqual(2, count3);
+            Assert.AreEqual(2, count3.Count);
         }
 
         [TestMethod]
@@ -695,10 +695,10 @@ approved: !!bool true
             Assert.AreEqual(new JValue(4), doc.Meta.stars);
 
             var n = _kotori.CountDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, false, false);
-            Assert.AreEqual(3, n);
+            Assert.AreEqual(3, n.Count);
 
             n = _kotori.CountDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", "c.meta.stars = 4", false, false);
-            Assert.AreEqual(2, n);
+            Assert.AreEqual(2, n.Count);
 
             var docs = _kotori.FindDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", 1, null, null, "c.meta.stars asc", false, false, null, Enums.DocumentFormat.Html);
             Assert.AreEqual(1, docs.Count());
@@ -815,13 +815,13 @@ approved: !!bool false
 
             _kotori.UpsertDocument("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, 0, c);
             var n = _kotori.CountDocuments("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, false, false);
-            Assert.AreEqual(3, n);
+            Assert.AreEqual(3, n.Count);
 
             var c2 = "girl: Aoba";
             _kotori.UpsertDocument("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, 0, c2);
 
             n = _kotori.CountDocuments("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, false, false);
-            Assert.AreEqual(3, n);
+            Assert.AreEqual(3, n.Count);
 
             var vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, 0);
             Assert.AreEqual(2, vc.Count());
@@ -829,7 +829,7 @@ approved: !!bool false
             _kotori.UpsertDocument("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, 3, c);
 
             n = _kotori.CountDocuments("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, false, false);
-            Assert.AreEqual(6, n);
+            Assert.AreEqual(6, n.Count);
 
             vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, 0);
             Assert.AreEqual(2, vc.Count());
@@ -862,7 +862,7 @@ approved: !!bool false
             Assert.AreEqual("/api/projects/data-woho/data/document-types/newgame/indices/2", res.Url);
 
             var n = _kotori.CountDocuments("dev", "data-woho", Enums.DocumentType.Data, "newgame", null, false, false);
-            Assert.AreEqual(3, n);
+            Assert.AreEqual(3, n.Count);
         }
 
         [TestMethod]
@@ -1205,7 +1205,7 @@ b: 35
 
             _kotori.DeleteDocument("dev", "dsmart", Enums.DocumentType.Data, "x", null, 0);
             var n = _kotori.CountDocuments("dev", "dsmart", Enums.DocumentType.Data, "x", null, false, false);
-            Assert.AreEqual(1, n);
+            Assert.AreEqual(1, n.Count);
 
             vers = _kotori.GetDocumentVersions("dev", "dsmart", Enums.DocumentType.Data, "x", null, 0);
             Assert.AreEqual(2, vers.Count());
@@ -1289,12 +1289,12 @@ girl: Umiko
 ";
             await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, null, c);
             var n = _kotori.CountDocuments("dev", "exicond", Enums.DocumentType.Data, "newgame", null, false, false);
-            Assert.AreEqual(3, n);
+            Assert.AreEqual(3, n.Count);
 
             await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, 2, c);
 
             n = _kotori.CountDocuments("dev", "exicond", Enums.DocumentType.Data, "newgame", null, false, false);
-            Assert.AreEqual(4, n);
+            Assert.AreEqual(4, n.Count);
 
             await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, 5, c);
         }

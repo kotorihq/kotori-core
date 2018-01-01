@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Database.DocumentDb.Helpers;
+using KotoriCore.Domains;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 
@@ -8,7 +9,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<long>> HandleAsync(CountDocuments command)
+        async Task<CommandResult<CountResult>> HandleAsync(CountDocuments command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
 
@@ -38,7 +39,7 @@ namespace KotoriCore.Database.DocumentDb
 
             var count = await CountDocumentsAsync(sql);
 
-            return new CommandResult<long>(count);
+            return new CommandResult<CountResult>(new CountResult(count));
         }
     }
 }
