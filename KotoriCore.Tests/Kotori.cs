@@ -108,7 +108,10 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual(1, dtt.Count());
 
-            _kotori.UpsertDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
+            res = _kotori.UpsertDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
+            Assert.AreEqual("hm", res.Id);
+            Assert.AreEqual("/api/projects/lalala/content/document-types/hm/transformations", res.Url);
+
             dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm");
 
             Assert.AreEqual(1, dtt.Count());
