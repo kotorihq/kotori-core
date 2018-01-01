@@ -3,7 +3,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>kotori-core</PackageId>
     <Title>kotori core</Title>
-    <Version>1.5.4</Version>
+    <Version>1.5.5</Version>
     <Authors>frohikey</Authors>
     <PackageLicenseUrl>https://github.com/kotorihq/kotori-core/blob/master/LICENSE</PackageLicenseUrl>
     <Owners>Goto10</Owners>
@@ -41,13 +41,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="YamlDotNet" Version="4.2.2" />
     <PackageReference Include="Shushu" Version="2.0.5" />
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />
-    <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.4.0" />
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.1" />
     <PackageReference Include="Sushi2" Version="1.0.5" />
     <PackageReference Include="Oogi2" Version="1.2.5" />
     <PackageReference Include="shortid" Version="1.0.3" />
+    <PackageReference Include="YamlDotNet" Version="4.2.3" />
+    <PackageReference Include="NuGet.Build.Tasks.Pack" Version="4.5.0" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" />
   </ItemGroup>
 </Project>
