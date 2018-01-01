@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
+using KotoriCore.Domains;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
 
@@ -8,7 +9,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(UpsertDocumentTypeTransformations command)
+        async Task<CommandResult<OperationResult>> HandleAsync(UpsertDocumentTypeTransformations command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
@@ -35,7 +36,7 @@ namespace KotoriCore.Database.DocumentDb
                 throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type transformations already exist.");
             }
 
-            await UpsertDocumentTypeAsync
+            var documentType = await UpsertDocumentTypeAsync
             (
                 command.Instance,
                 documentTypeId,
@@ -43,7 +44,9 @@ namespace KotoriCore.Database.DocumentDb
                 new UpdateToken<string>(command.Transformations, false)
             );
 
-            return new CommandResult<string>(docType == null ? "Document type transformations pipeline has been created." : "Document type transformations pipeline has been updated.");
+            var result = new OperationResult(documentTypeId.DocumentTypeId, documentTypeUri.AddRelativePath("/transformations").ToAbsoluteUri());
+
+            return new CommandResult<OperationResult>(result);
         }
     }
 }
