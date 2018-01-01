@@ -93,6 +93,10 @@ namespace KotoriCore.Tests
             Assert.AreEqual("hm", res.Id);
             Assert.AreEqual("/api/projects/lalala/content/document-types/hm", res.Url);
 
+            res = _kotori.UpsertDocumentType("dev", "lalala", Enums.DocumentType.Content, "hm");
+            Assert.AreEqual("hm", res.Id);
+            Assert.AreEqual("/api/projects/lalala/content/document-types/hm", res.Url);
+
             var dt = _kotori.GetDocumentType("dev", "lalala", Enums.DocumentType.Content, "hm");
             Assert.IsNotNull(dt);
 
@@ -1498,7 +1502,11 @@ girl: "" Aoba ""
             var res = await _kotori.CreateDocumentTypeAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame");
             Assert.AreEqual("newgame", res.Id);
             Assert.AreEqual("/api/projects/doctdel/data/document-types/newgame", res.Url);
-                             
+
+            res = await _kotori.UpsertDocumentTypeAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame");
+            Assert.AreEqual("newgame", res.Id);
+            Assert.AreEqual("/api/projects/doctdel/data/document-types/newgame", res.Url);
+
             await _kotori.CreateDocumentAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", c);
 
             var docType = _kotori.GetDocumentType("dev", "doctdel", Enums.DocumentType.Data, "newgame");
