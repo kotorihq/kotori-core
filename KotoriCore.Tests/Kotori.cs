@@ -500,14 +500,17 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void CreateProjectKeys()
         {
-            var result = _kotori.UpsertProject("dev", "cpkeys", "Foobar");
+            _kotori.UpsertProject("dev", "cpkeys", "Foobar");
 
             var kkk = new List<ProjectKey> { new ProjectKey("aaa", true), new ProjectKey("bbb", false) };
 
             foreach (var k in kkk)
                 _kotori.CreateProjectKey("dev", "cpkeys", k);
                 
-            _kotori.CreateProjectKey("dev", "cpkeys", new ProjectKey("ccc", true));
+            var res = _kotori.CreateProjectKey("dev", "cpkeys", new ProjectKey("ccc", true));
+            Assert.AreEqual("ccc", res.Id);
+            Assert.AreEqual("/api/projects/cpkeys/project-keys/ccc", res.Url);
+
             _kotori.CreateProjectKey("dev", "cpkeys", new ProjectKey("ddd", false));
 
             var keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
@@ -522,7 +525,9 @@ namespace KotoriCore.Tests
             Assert.AreEqual("ddd", keys[3].Key);
             Assert.AreEqual(false, keys[3].IsReadonly);
 
-            _kotori.UpsertProjectKey("dev", "cpkeys", new ProjectKey("aaa", false));
+            res = _kotori.UpsertProjectKey("dev", "cpkeys", new ProjectKey("aaa", false));
+            Assert.AreEqual("aaa", res.Id);
+            Assert.AreEqual("/api/projects/cpkeys/project-keys/aaa", res.Url);
 
             keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
 

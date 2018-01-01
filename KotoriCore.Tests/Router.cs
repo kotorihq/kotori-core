@@ -63,5 +63,16 @@ namespace KotoriCore.Tests
         {
             "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "_.md", null);
         }
+
+        [TestMethod]
+        public void RelativeAndAbsolute()
+        {
+            var projectUri = "umiko".ToKotoriProjectUri();
+
+            Assert.AreEqual("kotori://api/projects/umiko", projectUri.ToString());
+            Assert.AreEqual("/api/projects/umiko", projectUri.ToAbsoluteUri());
+            Assert.AreEqual("kotori://api/projects/umiko/project-keys/foo", projectUri.AddRelativePath("/project-keys/foo").ToString());
+            Assert.AreEqual("kotori://api/projects/umiko/project-keys/foo", projectUri.AddRelativePath("project-keys/foo").ToString());
+        }
     }
 }

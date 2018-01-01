@@ -258,5 +258,26 @@ namespace KotoriCore.Helpers
 
             return uri.ToString().Substring(protocol.Length + 2);
         }
+
+        /// <summary>
+        /// Adds the relative path to URI.
+        /// </summary>
+        /// <returns>The URI with a relative path.</returns>
+        /// <param name="uri">URI.</param>
+        /// <param name="path">Relative path.</param>
+        internal static Uri AddRelativePath(this Uri uri, string path)
+        {
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+
+            if (string.IsNullOrEmpty(path))
+                return uri;
+
+            var u = uri.ToString();
+
+            u += (u.EndsWith("/") ? (path.StartsWith("/") ? path.Substring(1) : path) : (path.StartsWith("/") ? path : "/" + path));
+
+            return new Uri(u);
+        }
     }
 }

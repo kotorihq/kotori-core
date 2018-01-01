@@ -10,7 +10,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<string>> HandleAsync(UpsertProjectKey command)
+        async Task<CommandResult<Domains.OperationResult>> HandleAsync(UpsertProjectKey command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
 
@@ -40,9 +40,11 @@ namespace KotoriCore.Database.DocumentDb
             project.Identifier = projectUri.ToString();
             project.ProjectKeys = keys;
 
-            await UpsertProjectAsync(project);
+            var newProject = await UpsertProjectAsync(project);
 
-            return new CommandResult<string>(existingKey == null ? "Project key has been added." : "Project key has been updated.");
+            var result = new Domains.OperationResult(command.ProjectKey.Key, projectUri.AddRelativePath($"/project-keys/{command.ProjectKey.Key}").ToAbsoluteUri());
+
+            return new CommandResult<Domains.OperationResult>(result);
         }
     }
 }
