@@ -94,7 +94,7 @@ namespace KotoriCore
         public async Task<OperationResult> UpsertDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, 
                                                       string documentId, long? index, string content, DateTime? date = null, bool? draft = null)
         {
-            return (await ProcessAsync(new UpsertDocument(false, instance, projectId, documentType, documentTypeId, documentId, index, content, date, draft)) as CommandResult<OperationResult>)?.Record;
+            return (await ProcessAsync(new UpsertDocument(false, instance, projectId, documentType, documentTypeId, documentId, index, content, date, draft)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> CreateDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? date = null, bool? draft = null)
         {
-            return (await ProcessAsync(new UpsertDocument(true, instance, projectId, documentType, documentTypeId, null, null, content, date, draft)) as CommandResult<OperationResult>)?.Record;
+            return (await ProcessAsync(new UpsertDocument(true, instance, projectId, documentType, documentTypeId, null, null, content, date, draft)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> CreateProjectAsync(string instance, string projectId, string name)
         {
-            return (await ProcessAsync(new UpsertProject(true, instance, projectId, name)) as CommandResult<OperationResult>)?.Record;
+            return (await ProcessAsync(new UpsertProject(true, instance, projectId, name)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -458,7 +458,7 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> UpsertProjectAsync(string instance, string projectId, string name)
         {
-            return (await ProcessAsync(new UpsertProject(false, instance, projectId, name)) as CommandResult<OperationResult>)?.Record;
+            return (await ProcessAsync(new UpsertProject(false, instance, projectId, name)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -482,7 +482,7 @@ namespace KotoriCore
         /// <param name="projectKey">Project key.</param>
         public async Task<OperationResult> CreateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey)
         {
-            return (await ProcessAsync(new UpsertProjectKey(true, instance, projectId, projectKey)) as CommandResult<OperationResult>)?.Record;
+            return (await ProcessAsync(new UpsertProjectKey(true, instance, projectId, projectKey)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -506,7 +506,7 @@ namespace KotoriCore
         /// <param name="projectKey">Project key.</param>
         public async Task<OperationResult> UpsertProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey)
         {
-            return (await ProcessAsync(new UpsertProjectKey(false, instance, projectId, projectKey)) as CommandResult<OperationResult>)?.Record;
+            return (await ProcessAsync(new UpsertProjectKey(false, instance, projectId, projectKey)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -618,7 +618,7 @@ namespace KotoriCore
         /// <param name="transformations">Transformations.</param>
         public async Task<OperationResult> CreateDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
         {
-            return (await ProcessAsync(new UpsertDocumentTypeTransformations(true, instance, projectId, documentType, documentTypeId, transformations)) as CommandResult<OperationResult>)?.Record;
+            return (await ProcessAsync(new UpsertDocumentTypeTransformations(true, instance, projectId, documentType, documentTypeId, transformations)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -646,7 +646,7 @@ namespace KotoriCore
         /// <param name="transformations">Transformations.</param>
         public async Task<OperationResult> UpsertDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
         {
-            return (await ProcessAsync(new UpsertDocumentTypeTransformations(false, instance, projectId, documentType, documentTypeId, transformations)) as CommandResult<OperationResult>)?.Record;
+            return (await ProcessAsync(new UpsertDocumentTypeTransformations(false, instance, projectId, documentType, documentTypeId, transformations)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -671,7 +671,7 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> CreateDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            return (await ProcessAsync(new UpsertDocumentType(true, instance, projectId, documentType, documentTypeId)) as CommandResult<OperationResult>)?.Record;
+            return (await ProcessAsync(new UpsertDocumentType(true, instance, projectId, documentType, documentTypeId)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -697,7 +697,7 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> UpsertDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            return (await ProcessAsync(new UpsertDocumentType(false, instance, projectId, documentType, documentTypeId)) as CommandResult<OperationResult>)?.Record;
+            return (await ProcessAsync(new UpsertDocumentType(false, instance, projectId, documentType, documentTypeId)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
