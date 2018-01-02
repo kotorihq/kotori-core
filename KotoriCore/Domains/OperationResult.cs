@@ -23,13 +23,6 @@ namespace KotoriCore.Domains
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.OperationResult"/> class.
         /// </summary>
-        public OperationResult()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.OperationResult"/> class.
-        /// </summary>
         /// <param name="id">Identifier.</param>
         /// <param name="url">URL.</param>
         public OperationResult(string id, string url)
