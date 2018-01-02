@@ -24,6 +24,7 @@ namespace KotoriCore.Database.DocumentDb
 
             var keys = project.ProjectKeys.ToList();
             var existingKey = keys.FirstOrDefault(key => key.Key == command.ProjectKey.Key);
+            var isNew = existingKey == null;
 
             if (existingKey != null)
             {
@@ -42,7 +43,7 @@ namespace KotoriCore.Database.DocumentDb
 
             var newProject = await UpsertProjectAsync(project);
 
-            var result = new Domains.OperationResult(command.ProjectKey.Key, projectUri.AddRelativePath($"/project-keys/{command.ProjectKey.Key}").ToAbsoluteUri());
+            var result = new Domains.OperationResult(command.ProjectKey.Key, projectUri.AddRelativePath($"/project-keys/{command.ProjectKey.Key}").ToAbsoluteUri(), isNew);
 
             return new CommandResult<Domains.OperationResult>(result);
         }

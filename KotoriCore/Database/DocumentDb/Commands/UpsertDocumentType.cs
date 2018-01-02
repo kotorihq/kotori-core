@@ -13,13 +13,13 @@ namespace KotoriCore.Database.DocumentDb
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
             var documentTypeId = documentTypeUri.ToKotoriDocumentTypeIdentifier();
+            var docType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
+            var isNew = docType == null;
 
-            if (command.CreateOnly)
+            if (command.CreateOnly &&
+                docType != null)
             {
-                var docType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
-
-                if (docType != null)
-                    throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type already exists.");
+                throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type already exists.");
             }
 
             var documentType = await UpsertDocumentTypeAsync
@@ -30,7 +30,7 @@ namespace KotoriCore.Database.DocumentDb
                 new UpdateToken<string>(null, true)
             );
 
-            return new CommandResult<OperationResult>(new OperationResult(documentType));
+            return new CommandResult<OperationResult>(new OperationResult(documentType, isNew));
         }
     }
 }

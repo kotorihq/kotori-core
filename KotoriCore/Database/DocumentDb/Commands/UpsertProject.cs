@@ -13,6 +13,7 @@ namespace KotoriCore.Database.DocumentDb
             var projectUri = command.ProjectId.ToKotoriProjectUri();
 
             var p = await FindProjectAsync(command.Instance, projectUri);
+            var isNew = p == null;
 
             if (p != null &&
                 command.CreateOnly)
@@ -30,7 +31,7 @@ namespace KotoriCore.Database.DocumentDb
             }
 
             var project = await UpsertProjectAsync(p);
-            var result = new CommandResult<OperationResult>(new OperationResult(project));
+            var result = new CommandResult<OperationResult>(new OperationResult(project, isNew));
 
             return result;
         }

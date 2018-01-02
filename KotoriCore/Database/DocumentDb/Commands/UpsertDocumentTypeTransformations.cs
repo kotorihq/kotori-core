@@ -30,6 +30,8 @@ namespace KotoriCore.Database.DocumentDb
             if (docType == null)
                 throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
+            var isNew = !docType.Transformations.Any();
+
             if (command.CreateOnly &&
                 docType.Transformations.Any())
             {
@@ -44,7 +46,7 @@ namespace KotoriCore.Database.DocumentDb
                 new UpdateToken<string>(command.Transformations, false)
             );
 
-            var result = new OperationResult(documentTypeId.DocumentTypeId, documentTypeUri.AddRelativePath("/transformations").ToAbsoluteUri());
+            var result = new OperationResult(documentTypeId.DocumentTypeId, documentTypeUri.AddRelativePath("/transformations").ToAbsoluteUri(), isNew);
 
             return new CommandResult<OperationResult>(result);
         }

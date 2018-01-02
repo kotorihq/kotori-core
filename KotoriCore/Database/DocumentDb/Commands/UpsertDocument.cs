@@ -173,7 +173,7 @@ namespace KotoriCore.Database.DocumentDb
 
             var newDocument = await UpsertDocumentAsync(d);
 
-            var result = new CommandResult<OperationResult>(new OperationResult(newDocument));
+            var result = new CommandResult<OperationResult>(new OperationResult(newDocument, isNew));
 
             return result;
         }
