@@ -140,11 +140,6 @@ namespace KotoriCore.Database.DocumentDb
                 {
                     throw new KotoriDocumentException(command.DocumentId, "Document cannot be created. It already exists.");    
                 }
-
-                //if (d.Hash.Equals(documentResult.Hash))
-                //{
-                //    return new CommandResult<string>("Document saving skipped. Hash is the same one as in the database.");
-                //}
             }
 
             long version = 0;
