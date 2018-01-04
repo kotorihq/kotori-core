@@ -76,11 +76,19 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
+        [ExpectedException(typeof(KotoriValidationException))]
         public async Task FailToCreateProjectBadKeys()
         {
             await _kotori.UpsertProjectAsync("foo", "aoba", "bar");
             await _kotori.CreateProjectKeyAsync("foo", "aoba", new ProjectKey(null, true));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriValidationException))]
+        public async Task FailToCreateProjectBadKeys2()
+        {
+            await _kotori.UpsertProjectAsync("dev", "aobaba", "hm");
+            await _kotori.CreateProjectKeyAsync("dev", "aobababa", new ProjectKey("oh no", true));
         }
 
         [TestMethod]

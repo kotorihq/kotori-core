@@ -58,7 +58,13 @@ namespace KotoriCore.Commands
 
             if (ProjectKey == null ||
                 string.IsNullOrEmpty(ProjectKey.Key))
+            {
                 yield return new ValidationResult("Project key must be set.");
+            }
+            else if (!ProjectKey.Key.IsValidSlug())
+            {
+                yield return new ValidationResult("Project key is not a valid slug.");
+            }
         }
     }
 }
