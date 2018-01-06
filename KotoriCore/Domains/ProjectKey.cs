@@ -3,7 +3,7 @@
     /// <summary>
     /// Project key.
     /// </summary>
-    public class ProjectKey
+    public class ProjectKey : IDomain
     {
         /// <summary>
         /// Gets or sets the key.

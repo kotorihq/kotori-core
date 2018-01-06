@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace KotoriCore.Domains
 {
     /// <summary>
     /// Document type transformation.
     /// </summary>
-    public class DocumentTypeTransformation
+    public class DocumentTypeTransformation : IDomain
     {
         /// <summary>
         /// Gets or sets from.

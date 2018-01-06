@@ -3,7 +3,7 @@
     /// <summary>
     /// Simple project.
     /// </summary>
-    public class SimpleProject
+    public class SimpleProject : IDomain
     {
         /// <summary>
         /// Gets or sets the name.

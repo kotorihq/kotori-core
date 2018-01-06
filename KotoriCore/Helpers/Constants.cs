@@ -15,5 +15,10 @@ namespace KotoriCore.Helpers
             { "content", Enums.DocumentType.Content },
             { "data", Enums.DocumentType.Data }
         };
+
+        /// <summary>
+        /// The max projects.
+        /// </summary>
+        public const int MaxProjects = 100;
     }
 }

@@ -151,14 +151,11 @@ namespace KotoriCore.Tests
 
             var projects = await _kotori.GetProjectsAsync("dev");
 
-            //Assert.AreEqual(2, projects.Count());
-            Assert.AreEqual("Nenecchi", projects.First().Name);
+            Assert.AreEqual("Nenecchi", projects.Items.First().Name);
 
             await _kotori.DeleteProjectAsync("dev", "nenecchi-main");
 
             projects = await _kotori.GetProjectsAsync("dev");
-
-            //Assert.AreEqual(1, projects.Count());
 
             var c = GetContent(RawDocument.Matrix);
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-stable", Enums.DocumentType.Content, "movie", "matrix", null, c);
@@ -1341,7 +1338,7 @@ haha";
             var result = await _kotori.CreateProjectAsync("dev", null, "HI HI");
             var projects = _kotori.GetProjects("dev");
 
-            Assert.AreEqual(1, projects.Count(x => x.Identifier.Length == 16));
+            Assert.AreEqual(1, projects.Items.Count(x => x.Identifier.Length == 16));
         }
 
         [TestMethod]
@@ -1382,6 +1379,20 @@ haha";
 
             dt = await _kotori.GetDocumentTypeAsync("dev", "f", Enums.DocumentType.Content, "newgame");
             Assert.AreEqual(3, dt.Fields.Count());
+        }
+
+        [TestMethod]
+        public async Task CountProjects()
+        {
+            for (var i = 0; i < Constants.MaxProjects + 10; i++)
+            {
+                await _kotori.CreateProjectAsync("kong", null, null);
+            }
+
+            var projects = await _kotori.GetProjectsAsync("kong");
+
+            Assert.AreEqual(Constants.MaxProjects, projects.Items.Count());
+            Assert.AreEqual(Constants.MaxProjects + 10, projects.Count);
         }
 
         [TestMethod]

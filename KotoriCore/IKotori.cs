@@ -22,8 +22,8 @@ namespace KotoriCore
         Task<OperationResult> CreateProjectAsync(string instance, string projectId, string name);
         void DeleteProject(string instance, string projectId);
         Task DeleteProjectAsync(string instance, string projectId);
-        IEnumerable<SimpleProject> GetProjects(string instance);
-        Task<IEnumerable<SimpleProject>> GetProjectsAsync(string instance);
+        ComplexCountResult<SimpleProject> GetProjects(string instance);
+        Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(string instance);
         SimpleDocument GetDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index = null, long? version = null, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown);
         Task<SimpleDocument> GetDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index = null, long? version = null, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown);
         IEnumerable<SimpleDocument> FindDocuments(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown);

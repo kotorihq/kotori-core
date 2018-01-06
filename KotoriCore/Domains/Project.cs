@@ -5,7 +5,7 @@ namespace KotoriCore.Domains
     /// <summary>
     /// Project.
     /// </summary>
-    public class Project
+    public class Project : IDomain
     {
         /// <summary>
         /// Gets or sets the instance.

@@ -178,7 +178,7 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <returns>Result.</returns>
-        public IEnumerable<SimpleProject> GetProjects(string instance)
+        public ComplexCountResult<SimpleProject> GetProjects(string instance)
         {
             return AsyncTools.RunSync(() => GetProjectsAsync((instance)));
         }
@@ -188,12 +188,11 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <returns>Result.</returns>
-        public async Task<IEnumerable<SimpleProject>> GetProjectsAsync(string instance)
+        public async Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(string instance)
         {
             var result = await ProcessAsync(new GetProjects(instance));
-            var projects = result.Data as IEnumerable<SimpleProject>;
-
-            return projects;
+            var projects = result as CommandResult<ComplexCountResult<SimpleProject>>;
+            return projects.Record;
         }
 
         /// <summary>

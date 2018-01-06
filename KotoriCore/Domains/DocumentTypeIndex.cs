@@ -3,7 +3,7 @@
     /// <summary>
     /// Document type index.
     /// </summary>
-    public class DocumentTypeIndex
+    public class DocumentTypeIndex : IDomain
     {
         /// <summary>
         /// Gets or sets "from" property.

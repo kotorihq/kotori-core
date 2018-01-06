@@ -6,7 +6,7 @@ namespace KotoriCore.Domains
     /// <summary>
     /// Simple document type.
     /// </summary>
-    public class SimpleDocumentType
+    public class SimpleDocumentType : IDomain
     {
         /// <summary>
         /// Gets the identifier.

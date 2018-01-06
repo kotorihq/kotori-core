@@ -1,7 +1,7 @@
 ﻿using System;
 namespace KotoriCore.Domains
 {
-    public class SimpleDocumentVersion
+    public class SimpleDocumentVersion : IDomain
     {
         /// <summary>
         /// Gets or sets the version.

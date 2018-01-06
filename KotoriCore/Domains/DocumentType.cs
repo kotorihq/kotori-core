@@ -6,7 +6,7 @@ namespace KotoriCore.Domains
     /// <summary>
     /// Document type.
     /// </summary>
-    public class DocumentType
+    public class DocumentType : IDomain
     {
         /// <summary>
         /// Gets or sets the instance.

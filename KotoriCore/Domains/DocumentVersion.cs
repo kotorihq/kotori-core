@@ -5,7 +5,7 @@ namespace KotoriCore.Domains
     /// <summary>
     /// Document.
     /// </summary>
-    public class DocumentVersion
+    public class DocumentVersion : IDomain
     {
         /// <summary>
         /// Gets or sets the identifier.
