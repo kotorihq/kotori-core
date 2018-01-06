@@ -72,22 +72,14 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriProjectException))]
         public async Task FailToCreateProjectSecond()
         {
-            await _kotori.UpsertProjectAsync("foo", "x x", "bar");
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException))]
-        public async Task FailToCreateProjectBadKeys()
-        {
-            await _kotori.UpsertProjectAsync("foo", "aoba", "bar");
-            await _kotori.CreateProjectKeyAsync("foo", "aoba", new ProjectKey(null, true));
+            await _kotori.UpsertProjectAsync("dev", "x x", "bar");
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException))]
         public async Task FailToCreateProjectBadKeys2()
         {
-            await _kotori.UpsertProjectAsync("dev", "aobaba", "hm");
+            await _kotori.UpsertProjectAsync("dev", "aobababa", "hm");
             await _kotori.CreateProjectKeyAsync("dev", "aobababa", new ProjectKey("oh no", true));
         }
 
@@ -244,20 +236,6 @@ namespace KotoriCore.Tests
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-find2", Enums.DocumentType.Content, "tv", 2, null, null, null, false, false, null);
             Assert.AreEqual(2, docs.Count());
-        }
-
-        [TestMethod]
-        public async Task SameHash()
-        {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-hash", "Nenecchi");
-
-            var c = GetContent(RawDocument.FlipFlappers);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", Enums.DocumentType.Content, "tv", "2017-05-06-flying-witchx", null, c);
-
-            var resultok = await _kotori.UpsertDocumentAsync("dev", "nenecchi-hash", Enums.DocumentType.Content, "tv", "2017-05-06-flying-witchx", null, c);
-
-            // TODO: don't know how to handle this atm
-            //Assert.AreEqual("Document saving skipped. Hash is the same one as in the database.", resultok);
         }
 
         [TestMethod]
@@ -496,12 +474,19 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "Null project key was inappropriately accepted.")]
-        public void CreateProjectKeyFail0()
+        public void CreateProjectKeyNull()
         {
             var result = _kotori.UpsertProject("dev", "cpkf0", "foo");
 
             _kotori.CreateProjectKey("dev", "cpkf0", new ProjectKey(null));
+            _kotori.CreateProjectKey("dev", "cpkf0", null);
+            _kotori.CreateProjectKey("dev", "cpkf0", new ProjectKey(null, true));
+
+            var keys = _kotori.GetProjectKeys("dev", "cpkf0");
+
+            Assert.IsNotNull(keys);
+            Assert.AreEqual(3, keys.Count());
+            Assert.AreEqual(1, keys.Where(k => k.IsReadonly).Count());
         }
 
         [TestMethod]

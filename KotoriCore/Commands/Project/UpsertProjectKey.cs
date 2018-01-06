@@ -22,7 +22,7 @@ namespace KotoriCore.Commands
         /// <summary>
         /// The project key.
         /// </summary>
-        public readonly ProjectKey ProjectKey;
+        public ProjectKey ProjectKey;
 
         /// <summary>
         /// The create only flag.
@@ -42,6 +42,18 @@ namespace KotoriCore.Commands
             Instance = instance;
             ProjectId = projectId;
             ProjectKey = projectKey;
+
+            if (CreateOnly &&
+                ProjectKey == null)
+            {
+                ProjectKey = new ProjectKey(RandomGenerator.GetId());
+            }
+
+            if (CreateOnly &&
+                string.IsNullOrEmpty(ProjectKey.Key))
+            {
+                ProjectKey.Key = RandomGenerator.GetId();
+            }
         }
 
         /// <summary>
@@ -55,13 +67,14 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Project Id must be set.");
-
+            
             if (ProjectKey == null ||
                 string.IsNullOrEmpty(ProjectKey.Key))
             {
                 yield return new ValidationResult("Project key must be set.");
             }
-            else if (!ProjectKey.Key.IsValidSlug())
+
+            if (!ProjectKey.Key.IsValidSlug())
             {
                 yield return new ValidationResult("Project key is not a valid slug.");
             }
