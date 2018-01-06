@@ -48,6 +48,12 @@ namespace KotoriCore.Commands
             ProjectId = projectId;
             DocumentType = documentType;
             DocumentTypeId = documentTypeId;
+
+            if (CreateOnly &&
+                string.IsNullOrEmpty(documentTypeId))
+            {
+                DocumentTypeId = RandomGenerator.GetId();
+            }
         }
 
         /// <summary>

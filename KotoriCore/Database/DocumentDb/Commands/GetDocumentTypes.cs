@@ -21,7 +21,7 @@ namespace KotoriCore.Database.DocumentDb
             
             var q = new DynamicQuery
                 (
-                    "select @maxDocumentTypes * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId",
+                    "select top @maxDocumentTypes * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId",
                     new
                     {
                         entity = DocumentTypeEntity,
