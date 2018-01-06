@@ -28,6 +28,7 @@ namespace KotoriCore.Database.DocumentDb
         readonly Repository<Entities.DocumentVersion> _repoDocumentVersion;
         readonly Repository<Count> _repoDocumentCount;
         readonly Repository<Count> _repoProjectCount;
+        readonly Repository<Count> _repoDocumentTypeCount;
         readonly Repository<dynamic> _repoDynamic;
         readonly Connection _connection;
 
@@ -50,6 +51,7 @@ namespace KotoriCore.Database.DocumentDb
             _repoDocumentCount = new Repository<Count>(_connection);
             _repoProjectCount = new Repository<Count>(_connection);
             _repoDynamic = new Repository<dynamic>(_connection);
+            _repoDocumentTypeCount = new Repository<Count>(_connection);
         }
 
         /// <summary>
@@ -281,6 +283,18 @@ namespace KotoriCore.Database.DocumentDb
 
             if (projects.Any())
                 count = projects.Sum(x => x.Number);
+
+            return count;
+        }
+
+        async Task<long> CountDocumentTypesAsync(DynamicQuery q)
+        {
+            var documentTypes = await _repoDocumentTypeCount.GetListAsync(q);
+
+            long count = 0;
+
+            if (documentTypes.Any())
+                count = documentTypes.Sum(x => x.Number);
 
             return count;
         }

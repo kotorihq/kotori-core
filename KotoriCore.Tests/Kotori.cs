@@ -375,11 +375,12 @@ namespace KotoriCore.Tests
 
             var docTypes = await _kotori.GetDocumentTypesAsync("dev", "doctypes");
 
-            Assert.AreEqual(3, docTypes.Count());
-            Assert.AreEqual("content", docTypes.First().Type);
-            Assert.AreEqual("tv", docTypes.First().Identifier);
-            Assert.AreEqual("tv1", docTypes.Skip(1).First().Identifier);
-            Assert.AreEqual("tv2", docTypes.Last().Identifier);
+            Assert.AreEqual(3, docTypes.Count);
+            Assert.AreEqual(3, docTypes.Items.Count());
+            Assert.AreEqual("content", docTypes.Items.First().Type);
+            Assert.AreEqual("tv", docTypes.Items.First().Identifier);
+            Assert.AreEqual("tv1", docTypes.Items.Skip(1).First().Identifier);
+            Assert.AreEqual("tv2", docTypes.Items.Last().Identifier);
         }
 
         [TestMethod]
@@ -1393,6 +1394,22 @@ haha";
 
             Assert.AreEqual(Constants.MaxProjects, projects.Items.Count());
             Assert.AreEqual(Constants.MaxProjects + 10, projects.Count);
+        }
+
+        [TestMethod]
+        public async Task CountDocumentTypes()
+        {
+            await _kotori.CreateProjectAsync("dev", "countdt1", null);
+
+            for (var i = 0; i < Constants.MaxDocumentTypes + 10; i++)
+            {
+                await _kotori.CreateDocumentTypeAsync("dev", "countdt1", Enums.DocumentType.Data, null);
+            }
+
+            var documentTypes = await _kotori.GetDocumentTypesAsync("dev", "countdt1");
+
+            Assert.AreEqual(Constants.MaxDocumentTypes, documentTypes.Items.Count());
+            Assert.AreEqual(Constants.MaxDocumentTypes + 10, documentTypes.Count);
         }
 
         [TestMethod]

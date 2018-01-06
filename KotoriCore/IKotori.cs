@@ -34,8 +34,8 @@ namespace KotoriCore
         Task<CountResult> CountDocumentsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string filter, bool drafts, bool future);
         SimpleDocumentType GetDocumentType(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId);
         Task<SimpleDocumentType> GetDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId);
-        IEnumerable<SimpleDocumentType> GetDocumentTypes(string instance, string projectId);
-        Task<IEnumerable<SimpleDocumentType>> GetDocumentTypesAsync(string instance, string projectId);
+        ComplexCountResult<SimpleDocumentType> GetDocumentTypes(string instance, string projectId);
+        Task<ComplexCountResult<SimpleDocumentType>> GetDocumentTypesAsync(string instance, string projectId);
         SimpleProject GetProject(string instance, string projectId);
         Task<SimpleProject> GetProjectAsync(string instance, string projectId);
         IEnumerable<Domains.ProjectKey> GetProjectKeys(string instance, string projectId);

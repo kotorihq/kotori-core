@@ -370,7 +370,7 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <returns>Result.</returns>
-        public IEnumerable<SimpleDocumentType> GetDocumentTypes(string instance, string projectId)
+        public ComplexCountResult<SimpleDocumentType> GetDocumentTypes(string instance, string projectId)
         {
             return AsyncTools.RunSync(() => GetDocumentTypesAsync(instance, projectId));
         }
@@ -381,12 +381,11 @@ namespace KotoriCore
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <returns>Result.</returns>
-        public async Task<IEnumerable<SimpleDocumentType>> GetDocumentTypesAsync(string instance, string projectId)
+        public async Task<ComplexCountResult<SimpleDocumentType>> GetDocumentTypesAsync(string instance, string projectId)
         {
             var result = await ProcessAsync(new GetDocumentTypes(instance, projectId));
-            var documentTypes = result.Data as IEnumerable<SimpleDocumentType>;
-
-            return documentTypes;
+            var documentTypes = result as CommandResult<ComplexCountResult<SimpleDocumentType>>;
+            return documentTypes.Record;
         }
 
         /// <summary>
