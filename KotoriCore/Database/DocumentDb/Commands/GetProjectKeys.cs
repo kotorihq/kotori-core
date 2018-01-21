@@ -9,18 +9,19 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<ProjectKey>> HandleAsync(GetProjectKeys command)
+        async Task<CommandResult<ComplexCountResult<ProjectKey>>> HandleAsync(GetProjectKeys command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var p = await FindProjectAsync(command.Instance, projectUri);
 
             if (p == null)
                 throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
+            
+            var projectKeys = p.ProjectKeys.Select(k => new ProjectKey(k.Key, k.IsReadonly));
+            var count = projectKeys.Count();
+            var filteredProjectKeys = projectKeys.Take(Constants.MaxProjectKeys);
 
-            return new CommandResult<ProjectKey>
-            (
-                p.ProjectKeys.Select(k => new ProjectKey(k.Key, k.IsReadonly))
-            );
+            return new CommandResult<ComplexCountResult<ProjectKey>>(new ComplexCountResult<ProjectKey>(count, filteredProjectKeys));
         }
     }
 }

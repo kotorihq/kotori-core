@@ -412,17 +412,37 @@ namespace KotoriCore.Tests
             var keys = new List<ProjectKey> { new ProjectKey("sakura-nene"), new ProjectKey("aoba", true) };
 
             foreach (var k in keys)
-                _kotori.CreateProjectKey("dev", "rude", k);
-                
-            // TODO: use real result
-            //Assert.AreEqual("Project has been created.", result);
+            {
+                var r = _kotori.CreateProjectKey("dev", "rude", k);
+
+                Assert.AreEqual(k.Key, r.Id);
+                Assert.AreEqual($"/api/projects/rude/project-keys/{k.Key}", r.Url);
+                Assert.IsTrue(r.NewResource);
+            }
+
             var projectKeys = _kotori.GetProjectKeys("dev", "rude");
 
-            Assert.AreEqual(2, projectKeys.Count());
-            Assert.AreEqual("sakura-nene", projectKeys.First().Key);
-            Assert.IsFalse(projectKeys.First().IsReadonly);
-            Assert.AreEqual("aoba", projectKeys.Last().Key);
-            Assert.IsTrue(projectKeys.Last().IsReadonly);
+            Assert.AreEqual(2, projectKeys.Count);
+            Assert.AreEqual("sakura-nene", projectKeys.Items.First().Key);
+            Assert.IsFalse(projectKeys.Items.First().IsReadonly);
+            Assert.AreEqual("aoba", projectKeys.Items.Last().Key);
+            Assert.IsTrue(projectKeys.Items.Last().IsReadonly);
+        }
+
+        [TestMethod]
+        public async Task GetProjectKeysLimit()
+        {
+            var result = await _kotori.UpsertProjectAsync("dev", "rudenude", "Nenecchi");
+
+            for (int i = 0; i < Constants.MaxProjectKeys + 10; i++)
+            {
+                var r = _kotori.CreateProjectKey("dev", "rudenude", new ProjectKey($"key-{i}"));
+            }
+
+            var projectKeys = _kotori.GetProjectKeys("dev", "rudenude");
+
+            Assert.AreEqual(Constants.MaxProjectKeys + 10, projectKeys.Count);
+            Assert.AreEqual(Constants.MaxProjectKeys, projectKeys.Items.Count());
         }
 
         [TestMethod]
@@ -483,8 +503,8 @@ namespace KotoriCore.Tests
             var keys = _kotori.GetProjectKeys("dev", "cpkf0");
 
             Assert.IsNotNull(keys);
-            Assert.AreEqual(3, keys.Count());
-            Assert.AreEqual(1, keys.Where(k => k.IsReadonly).Count());
+            Assert.AreEqual(3, keys.Count);
+            Assert.AreEqual(1, keys.Items.Where(k => k.IsReadonly).Count());
         }
 
         [TestMethod]
@@ -523,7 +543,7 @@ namespace KotoriCore.Tests
 
             _kotori.CreateProjectKey("dev", "cpkeys", new ProjectKey("ddd", false));
 
-            var keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
+            var keys = _kotori.GetProjectKeys("dev", "cpkeys").Items.ToList();
 
             Assert.AreEqual(4, keys.Count);
             Assert.AreEqual("aaa", keys[0].Key);
@@ -540,13 +560,13 @@ namespace KotoriCore.Tests
             Assert.AreEqual("/api/projects/cpkeys/project-keys/aaa", res.Url);
             Assert.IsFalse(res.NewResource);
 
-            keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
+            keys = _kotori.GetProjectKeys("dev", "cpkeys").Items.ToList();
 
             Assert.AreEqual(false, keys[0].IsReadonly);
 
             _kotori.DeleteProjectKey("dev", "cpkeys", "ccc");
 
-            keys = _kotori.GetProjectKeys("dev", "cpkeys").ToList();
+            keys = _kotori.GetProjectKeys("dev", "cpkeys").Items.ToList();
 
             Assert.AreEqual(3, keys.Count());
 

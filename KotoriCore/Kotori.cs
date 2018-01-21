@@ -415,8 +415,8 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <returns>Result.</returns>
-        public IEnumerable<Domains.ProjectKey> GetProjectKeys(string instance, string projectId)
+        /// <returns>Project keys.</returns>
+        public ComplexCountResult<Domains.ProjectKey> GetProjectKeys(string instance, string projectId)
         {
             return AsyncTools.RunSync(() => GetProjectKeysAsync(instance, projectId));
         }
@@ -426,13 +426,12 @@ namespace KotoriCore
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
-        /// <returns>Result.</returns>
-        public async Task<IEnumerable<Domains.ProjectKey>> GetProjectKeysAsync(string instance, string projectId)
+        /// <returns>Project keys.</returns>
+        public async Task<ComplexCountResult<Domains.ProjectKey>> GetProjectKeysAsync(string instance, string projectId)
         {
             var result = await ProcessAsync(new GetProjectKeys(instance, projectId));
-            var projectKeys = result.Data as IEnumerable<Domains.ProjectKey>;
-
-            return projectKeys;
+            var projectKeys = result as CommandResult<ComplexCountResult<Domains.ProjectKey>>;
+            return projectKeys.Record;
         }
 
         /// <summary>

@@ -30,5 +30,10 @@ namespace KotoriCore.Helpers
         /// The max document versions.
         /// </summary>
         public const int MaxDocumentVersions = 100;
+
+        /// <summary>
+        /// The max project keys.
+        /// </summary>
+        public const int MaxProjectKeys = 100;
     }
 }

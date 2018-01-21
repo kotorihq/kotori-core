@@ -38,8 +38,8 @@ namespace KotoriCore
         Task<ComplexCountResult<SimpleDocumentType>> GetDocumentTypesAsync(string instance, string projectId);
         SimpleProject GetProject(string instance, string projectId);
         Task<SimpleProject> GetProjectAsync(string instance, string projectId);
-        IEnumerable<Domains.ProjectKey> GetProjectKeys(string instance, string projectId);
-        Task<IEnumerable<Domains.ProjectKey>> GetProjectKeysAsync(string instance, string projectId);
+        ComplexCountResult<Domains.ProjectKey> GetProjectKeys(string instance, string projectId);
+        Task<ComplexCountResult<Domains.ProjectKey>> GetProjectKeysAsync(string instance, string projectId);
         OperationResult UpsertProject(string instance, string projectId, string name);
         Task<OperationResult> UpsertProjectAsync(string instance, string projectId, string name);
         OperationResult CreateProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey);
