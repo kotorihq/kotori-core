@@ -4,12 +4,13 @@ using KotoriCore.Commands;
 using KotoriCore.Domains;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
+using System.Linq;
 
 namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<DocumentTypeTransformation>> HandleAsync(GetDocumentTypeTransformations command)
+        async Task<CommandResult<ComplexCountResult<DocumentTypeTransformation>>> HandleAsync(GetDocumentTypeTransformations command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
@@ -28,9 +29,13 @@ namespace KotoriCore.Database.DocumentDb
             if (docType == null)
                 throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
-            return new CommandResult<DocumentTypeTransformation>
+            var transformations = docType.Transformations ?? new List<DocumentTypeTransformation>();
+            var count = transformations.Count;
+            var filteredTransformations = transformations.Take(Constants.MaxDocumentTypeTransformations);
+
+            return new CommandResult<ComplexCountResult<DocumentTypeTransformation>>
             (
-                docType.Transformations ?? new List<DocumentTypeTransformation>()
+                    new ComplexCountResult<DocumentTypeTransformation>(count, filteredTransformations)
             );
         }
     }

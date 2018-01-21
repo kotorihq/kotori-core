@@ -568,7 +568,7 @@ namespace KotoriCore
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        public IEnumerable<DocumentTypeTransformation> GetDocumentTypeTransformations(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
+        public ComplexCountResult<DocumentTypeTransformation> GetDocumentTypeTransformations(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
             return AsyncTools.RunSync(() => GetDocumentTypeTransformationsAsync(instance, projectId, documentType, documentTypeId));
         }
@@ -581,12 +581,12 @@ namespace KotoriCore
         /// <param name="projectId">Project identifier.</param>
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type identifier.</param>
-        public async Task<IEnumerable<DocumentTypeTransformation>> GetDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
+        public async Task<ComplexCountResult<DocumentTypeTransformation>> GetDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
             var result = await ProcessAsync(new GetDocumentTypeTransformations(instance, projectId, documentType, documentTypeId));
-            var transformations = result.Data as IList<DocumentTypeTransformation>;
+            var transformations = result as CommandResult<ComplexCountResult<DocumentTypeTransformation>>;
 
-            return transformations;
+            return transformations.Record;
         }
 
         /// <summary>

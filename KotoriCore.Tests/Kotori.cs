@@ -109,7 +109,7 @@ namespace KotoriCore.Tests
 
             var dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm");
 
-            Assert.AreEqual(1, dtt.Count());
+            Assert.AreEqual(1, dtt.Count);
 
             res = _kotori.UpsertDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
             Assert.AreEqual("hm", res.Id);
@@ -118,19 +118,47 @@ namespace KotoriCore.Tests
 
             dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm");
 
-            Assert.AreEqual(1, dtt.Count());
+            Assert.AreEqual(1, dtt.Count);
 
             _kotori.UpsertDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm", @"[]");
             dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm");
 
-            Assert.AreEqual(0, dtt.Count());
+            Assert.AreEqual(0, dtt.Count);
 
             _kotori.CreateDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
             dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm");
 
-            Assert.AreEqual(1, dtt.Count());
+            Assert.AreEqual(1, dtt.Count);
 
             _kotori.CreateDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
+        }
+
+        [TestMethod]
+        public void CreateDocumentTypeTransformationsMax()
+        {
+            _kotori.UpsertProject("dev", "cdtmax", "La la la");
+
+            var res = _kotori.CreateDocumentType("dev", "cdtmax", Enums.DocumentType.Content, "hm");
+            res = _kotori.UpsertDocumentType("dev", "cdtmax", Enums.DocumentType.Content, "hm");
+
+            var t = "[";
+
+            for (var i = 0; i < Constants.MaxDocumentTypeTransformations + 10; i++)
+            {
+                t += @"{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }";
+
+                if (i != Constants.MaxDocumentTypeTransformations + 9)
+                    t += ",";
+            }
+
+            t += "]";
+
+            _kotori.UpsertDocumentTypeTransformations("dev", "cdtmax", Enums.DocumentType.Content, "hm", t);
+
+            var trans = _kotori.GetDocumentTypeTransformations("dev", "cdtmax", Enums.DocumentType.Content, "hm");
+
+            Assert.AreEqual(Constants.MaxDocumentTypeTransformations, trans.Items.Count());
+            Assert.AreEqual(Constants.MaxDocumentTypeTransformations + 10, trans.Count);
         }
 
         [TestMethod]
@@ -1455,8 +1483,8 @@ girl: Aoba
             var transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", Enums.DocumentType.Data, "newgame");
 
             Assert.IsNotNull(transformations);
-            Assert.AreEqual(1, transformations.Count());
-            Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
+            Assert.AreEqual(1, transformations.Count);
+            Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations.Items));
 
             _kotori.UpsertDocumentTypeTransformations("dev", "trans001", Enums.DocumentType.Data, "newgame", @"
 - from: girl
@@ -1468,8 +1496,8 @@ girl: Aoba
             transformations = _kotori.GetDocumentTypeTransformations("dev", "trans001", Enums.DocumentType.Data, "newgame");
 
             Assert.IsNotNull(transformations);
-            Assert.AreEqual(1, transformations.Count());
-            Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations));
+            Assert.AreEqual(1, transformations.Count);
+            Assert.AreEqual("[{\"from\":\"girl\",\"to\":\"girl2\",\"transformations\":[\"trim\",\"lowercase\"]}]", JsonConvert.SerializeObject(transformations.Items));
         }
 
 
