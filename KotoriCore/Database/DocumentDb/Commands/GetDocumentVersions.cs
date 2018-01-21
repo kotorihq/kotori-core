@@ -10,7 +10,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<SimpleDocumentVersion>> HandleAsync(GetDocumentVersions command)
+        async Task<CommandResult<ComplexCountResult<SimpleDocumentVersion>>> HandleAsync(GetDocumentVersions command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
@@ -28,9 +28,23 @@ namespace KotoriCore.Database.DocumentDb
 
             var q = new DynamicQuery
                 (
-                    "select c.version, c.hash, c.date from c where c.entity = @entity and c.instance = @instance " +
+                    "select top @maxDocumentVersions c.version, c.hash, c.date from c where c.entity = @entity and c.instance = @instance " +
                     "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
                     new 
+                    {
+                        entity = DocumentVersionEntity,
+                        instance = command.Instance,
+                        projectId = projectUri.ToString(),
+                        documentId = d.Identifier,
+                        maxDocumentVersions = Constants.MaxDocumentVersions
+                    }
+                );
+
+            var q2 = new DynamicQuery
+                (
+                    "select count(1) as number from c where c.entity = @entity and c.instance = @instance " +
+                    "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
+                    new
                     {
                         entity = DocumentVersionEntity,
                         instance = command.Instance,
@@ -40,9 +54,11 @@ namespace KotoriCore.Database.DocumentDb
                 );
 
             var documentVersions = await GetDocumentVersionsAsync(q);
+            var count = await CountDocumentVersionsAsync(q2);
+
             var simpleDocumentVersions = documentVersions.Select(dv => new SimpleDocumentVersion(dv.Version, dv.Hash, dv.Date.DateTime));
 
-            return new CommandResult<SimpleDocumentVersion>(simpleDocumentVersions);
+            return new CommandResult<ComplexCountResult<SimpleDocumentVersion>>(new ComplexCountResult<SimpleDocumentVersion>(count, simpleDocumentVersions));
         }
     }
 }

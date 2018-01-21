@@ -2,8 +2,6 @@
 using KotoriCore.Commands;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
-using System.Linq;
-using System.Collections.Generic;
 using KotoriCore.Domains;
 using KotoriCore.Database.DocumentDb.Helpers;
 
@@ -38,9 +36,9 @@ namespace KotoriCore.Database.DocumentDb
             if (count > 0)
                 throw new KotoriProjectException(command.ProjectId, "Project contains documents.");
             
-            var documentTypes = (await HandleAsync(new GetDocumentTypes(command.Instance, command.ProjectId))).Data as IEnumerable<SimpleDocumentType>;
+            var documentTypes = (await HandleAsync(new GetDocumentTypes(command.Instance, command.ProjectId))).Record;
 
-            if (documentTypes.Any())
+            if (documentTypes.Count > 0)
                 throw new KotoriProjectException(command.ProjectId, "Project contains document types.");
 
             await DeleteProjectAsync(project.Id);

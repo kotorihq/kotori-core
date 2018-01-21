@@ -570,7 +570,8 @@ namespace KotoriCore.Tests
 
             var versions = _kotori.GetDocumentVersions("dev", "vnum", Enums.DocumentType.Content, "x", "a");
             Assert.IsNotNull(versions);
-            Assert.AreEqual(2, versions.Count());
+            Assert.AreEqual(2, versions.Items.Count());
+            Assert.AreEqual(2, versions.Count);
 
             var dd0 = _kotori.GetDocument("dev", "vnum", Enums.DocumentType.Content, "x", "a", null, 0);
             var dd1 = _kotori.GetDocument("dev", "vnum", Enums.DocumentType.Content, "x", "a", null, 1);
@@ -825,7 +826,8 @@ approved: !!bool false
             Assert.AreEqual(3, n.Count);
 
             var vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, 0);
-            Assert.AreEqual(2, vc.Count());
+            Assert.AreEqual(2, vc.Items.Count());
+            Assert.AreEqual(2, vc.Count);
 
             _kotori.UpsertDocument("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, 3, c);
 
@@ -833,7 +835,8 @@ approved: !!bool false
             Assert.AreEqual(6, n.Count);
 
             vc = _kotori.GetDocumentVersions("dev", "data-fff-v2", Enums.DocumentType.Data, "newgame", null, 0);
-            Assert.AreEqual(2, vc.Count());
+            Assert.AreEqual(2, vc.Items.Count());
+            Assert.AreEqual(2, vc.Count);
         }
 
         [TestMethod]
@@ -1108,7 +1111,8 @@ x: b
             Assert.AreEqual(null, d.Meta.r);
 
             var vers = _kotori.GetDocumentVersions("dev", "cversions", Enums.DocumentType.Content, "x", "foo");
-            Assert.AreEqual(2, vers.Count());
+            Assert.AreEqual(2, vers.Items.Count());
+            Assert.AreEqual(2, vers.Count);
 
             var q = new DynamicQuery
                 (
@@ -1126,7 +1130,7 @@ x: b
             var repo = new Repository<Database.DocumentDb.Entities.DocumentVersion>(_con);
             var documentVersions = repo.GetList(q);
 
-            Assert.AreEqual(vers.Count(), documentVersions.Count());
+            Assert.AreEqual(vers.Count, documentVersions.Count());
 
             _kotori.DeleteDocument("dev", "cversions", Enums.DocumentType.Content, "x", "foo");
 
@@ -1157,7 +1161,7 @@ x: b
             Assert.AreEqual(null, d.Meta.r);
 
             var vers = _kotori.GetDocumentVersions("dev", "dversions", Enums.DocumentType.Data, "x", null, 0);
-            Assert.AreEqual(2, vers.Count());
+            Assert.AreEqual(2, vers.Count);
 
             var q = new DynamicQuery
                 (
@@ -1175,7 +1179,7 @@ x: b
             var repo = new Repository<Database.DocumentDb.Entities.DocumentVersion>(_con);
             var documentVersions = repo.GetList(q);
 
-            Assert.AreEqual(vers.Count(), documentVersions.Count());
+            Assert.AreEqual(vers.Count, documentVersions.Count());
 
             _kotori.DeleteDocument("dev", "dversions", Enums.DocumentType.Data, "x", null, 0);
 
@@ -1201,16 +1205,16 @@ b: 34
 b: 35
 ---");
             var vers = _kotori.GetDocumentVersions("dev", "dsmart", Enums.DocumentType.Data, "x", null, 0);
-            Assert.AreEqual(1, vers.Count());
+            Assert.AreEqual(1, vers.Count);
             vers = _kotori.GetDocumentVersions("dev", "dsmart", Enums.DocumentType.Data, "x", null, 1);
-            Assert.AreEqual(2, vers.Count());
+            Assert.AreEqual(2, vers.Count);
 
             _kotori.DeleteDocument("dev", "dsmart", Enums.DocumentType.Data, "x", null, 0);
             var n = _kotori.CountDocuments("dev", "dsmart", Enums.DocumentType.Data, "x", null, false, false);
             Assert.AreEqual(1, n.Count);
 
             vers = _kotori.GetDocumentVersions("dev", "dsmart", Enums.DocumentType.Data, "x", null, 0);
-            Assert.AreEqual(2, vers.Count());
+            Assert.AreEqual(2, vers.Count);
         }
 
         [TestMethod]

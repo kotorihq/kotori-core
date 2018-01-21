@@ -538,7 +538,7 @@ namespace KotoriCore
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type id.</param>
         /// <param name="documentId">Document identifier.</param>
-        public IEnumerable<SimpleDocumentVersion> GetDocumentVersions(string instance, string projectId, Enums.DocumentType documentType, 
+        public ComplexCountResult<SimpleDocumentVersion> GetDocumentVersions(string instance, string projectId, Enums.DocumentType documentType, 
                                                                       string documentTypeId, string documentId, long? index = null)
         {
             return AsyncTools.RunSync(() => GetDocumentVersionsAsync(instance, projectId, documentType, documentTypeId, documentId, index));
@@ -553,13 +553,12 @@ namespace KotoriCore
         /// <param name="documentType">Document type.</param>
         /// <param name="documentTypeId">Document type id.</param>
         /// <param name="documentId">Document identifier.</param>
-        public async Task<IEnumerable<SimpleDocumentVersion>> GetDocumentVersionsAsync(string instance, string projectId, Enums.DocumentType documentType, 
+        public async Task<ComplexCountResult<SimpleDocumentVersion>> GetDocumentVersionsAsync(string instance, string projectId, Enums.DocumentType documentType, 
                                                                                        string documentTypeId, string documentId, long? index = null)
         {
             var result = await ProcessAsync(new GetDocumentVersions(instance, projectId, documentType, documentTypeId, documentId, index));
-            var documentVersions = result.Data as IEnumerable<SimpleDocumentVersion>;
-
-            return documentVersions;
+            var documentVersions = result as CommandResult<ComplexCountResult<SimpleDocumentVersion>>;
+            return documentVersions.Record;
         }
 
         /// <summary>

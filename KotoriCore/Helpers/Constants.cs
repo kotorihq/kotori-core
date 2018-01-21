@@ -25,5 +25,10 @@ namespace KotoriCore.Helpers
         /// The max document types.
         /// </summary>
         public const int MaxDocumentTypes = 100;
+
+        /// <summary>
+        /// The max document versions.
+        /// </summary>
+        public const int MaxDocumentVersions = 100;
     }
 }
