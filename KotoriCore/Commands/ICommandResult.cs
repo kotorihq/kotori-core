@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 
 namespace KotoriCore.Commands
 {
@@ -13,11 +12,5 @@ namespace KotoriCore.Commands
         /// </summary>
         /// <value>The type of the element.</value>
         Type ElementType { get; }
-
-        /// <summary>
-        /// Gets the data.
-        /// </summary>
-        /// <value>The data.</value>
-        IEnumerable Data { get; }
     }
 }

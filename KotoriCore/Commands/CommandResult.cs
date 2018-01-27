@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace KotoriCore.Commands
 {
@@ -11,7 +9,6 @@ namespace KotoriCore.Commands
     public class CommandResult : ICommandResult
     {
         public Type ElementType => throw new NotImplementedException();
-        public IEnumerable Data => throw new NotImplementedException();
     }
 
     /// <summary>
@@ -19,7 +16,6 @@ namespace KotoriCore.Commands
     /// </summary>
     public class CommandResult<T> : ICommandResult
     {
-        IEnumerable<T> _data { get; set; }
         T _record { get; set; }
 
         /// <summary>
@@ -33,21 +29,6 @@ namespace KotoriCore.Commands
         /// </summary>
         /// <value>The record.</value>
         public T Record => _record;
-
-        /// <summary>
-        /// Gets the data.
-        /// </summary>
-        /// <value>The data.</value>
-        public IEnumerable Data => _data;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CommandResult`1"/> class.
-        /// </summary>
-        /// <param name="data">Data.</param>
-        public CommandResult(IEnumerable<T> data)
-        {
-            _data = data;
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CommandResult`1"/> class.

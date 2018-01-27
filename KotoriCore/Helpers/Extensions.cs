@@ -1,11 +1,9 @@
-﻿using KotoriCore.Commands;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using KotoriCore.Documents;
 using Sushi2;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Linq;
 using KotoriCore.Domains;
 using KotoriCore.Exceptions;
@@ -17,25 +15,6 @@ namespace KotoriCore.Helpers
     /// </summary>
     public static class Extensions
     {
-        /// <summary>
-        /// Convers common result to the data list.
-        /// </summary>
-        /// <returns>The data list.</returns>
-        /// <param name="result">The command result.</param>
-        /// <typeparam name="T">The item in the collection type parameter.</typeparam>
-        public static IList<T> ToDataList<T>(this ICommandResult result)
-        {
-            if (result.Data == null)
-                return null;
-
-            var r = new List<T>();
-
-            foreach (var d in result.Data)
-                r.Add((T)d);
-
-            return r;
-        }
-
         /// <summary>
         /// Identify the type of the front matter.
         /// </summary>
