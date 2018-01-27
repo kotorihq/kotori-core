@@ -13,7 +13,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<SimpleDocument>> HandleAsync(FindDocuments command)
+        async Task<CommandResult<ComplexCountResult<SimpleDocument>>> HandleAsync(FindDocuments command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
@@ -63,7 +63,7 @@ namespace KotoriCore.Database.DocumentDb
                 var skip = command.Skip.Value;
 
                 if (skip >= simpleDocuments.Count()) 
-                    return new CommandResult<SimpleDocument>(new List<SimpleDocument>());
+                    return new CommandResult<ComplexCountResult<SimpleDocument>>(new ComplexCountResult<SimpleDocument>(0, new List<SimpleDocument>()));
 
                 if (top.HasValue)
                     simpleDocuments = simpleDocuments.Skip(skip).Take(top.Value);
@@ -71,7 +71,10 @@ namespace KotoriCore.Database.DocumentDb
                     simpleDocuments = simpleDocuments.Skip(skip);
             }
 
-            return new CommandResult<SimpleDocument>(simpleDocuments);
+            var count = simpleDocuments.Count();
+            var finalSimpleDocuments = simpleDocuments.Take(Constants.MaxDocuments);
+
+            return new CommandResult<ComplexCountResult<SimpleDocument>>(new ComplexCountResult<SimpleDocument>(count, finalSimpleDocuments));
         }
     }
 }

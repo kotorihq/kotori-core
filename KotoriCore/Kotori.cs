@@ -247,7 +247,7 @@ namespace KotoriCore
         /// <param name="future">If set to <c>true</c> returns future.</param>
         /// <param name="skip">Skip.</param>
         /// <param name="format">Format.</param>
-        public IEnumerable<SimpleDocument> FindDocuments(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
+        public ComplexCountResult<SimpleDocument> FindDocuments(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
             return AsyncTools.RunSync(() => FindDocumentsAsync(instance, projectId, documentType, documentTypeId, top, select, filter, orderBy, drafts, future, skip, format));
         }
@@ -268,12 +268,12 @@ namespace KotoriCore
         /// <param name="future">If set to <c>true</c> returns future.</param>
         /// <param name="skip">Skip.</param>
         /// <param name="format">Format</param>
-        public async Task<IEnumerable<SimpleDocument>> FindDocumentsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
+        public async Task<ComplexCountResult<SimpleDocument>> FindDocumentsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, int? top, string select, string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format = Enums.DocumentFormat.Markdown)
         {
-            var result = await ProcessAsync(new FindDocuments(instance, projectId, documentType, documentTypeId, top, select, filter, orderBy, drafts, future, skip, format)) as CommandResult<SimpleDocument>;
-            var documents = result.Data as IEnumerable<SimpleDocument>;
+            var result = await ProcessAsync(new FindDocuments(instance, projectId, documentType, documentTypeId, top, select, filter, orderBy, drafts, future, skip, format));
+            var documents = result as CommandResult<ComplexCountResult<SimpleDocument>>;
 
-            return documents;
+            return documents.Record;
         }
 
         /// <summary>

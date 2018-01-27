@@ -206,6 +206,24 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
+        public async Task TooManyDocuments()
+        {
+            await _kotori.UpsertProjectAsync("dev", "toomuch", "Nenecchi");
+
+            var c = GetContent(RawDocument.Matrix);
+
+            for (var i = 0; i < Constants.MaxDocuments + 10; i++)
+            {
+                await _kotori.CreateDocumentAsync("dev", "toomuch", Enums.DocumentType.Content, "x", c);    
+            }
+
+            var result = _kotori.FindDocuments("dev", "toomuch", Enums.DocumentType.Content, "x", null, null, null, null, true, true, null);
+
+            Assert.AreEqual(Constants.MaxDocuments + 10, result.Count);
+            Assert.AreEqual(Constants.MaxDocuments, result.Items.Count());
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(KotoriDocumentException), "Dupe slug was inappropriately validated as ok.")]
         public async Task DupeSlugs()
         {
@@ -228,26 +246,26 @@ namespace KotoriCore.Tests
             await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", "2017-08-12-flip-flappers", null, c);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", 1, null, null, null, false, false, null);
-            Assert.AreEqual(1, docs.Count());
+            Assert.AreEqual(1, docs.Count);
 
             docs = _kotori.FindDocuments("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", 1, "c.slug", null, "c.meta.rating asc", false, false, null);
-            Assert.AreEqual(1, docs.Count());
-            Assert.AreEqual(null, docs.First().Identifier);
-            Assert.AreEqual("2017-08-12-flip-flappers", docs.First().Slug);
+                            Assert.AreEqual(1, docs.Count);
+            Assert.AreEqual(null, docs.Items.First().Identifier);
+            Assert.AreEqual("2017-08-12-flip-flappers", docs.Items.First().Slug);
 
             docs = _kotori.FindDocuments("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", null, null, "c.meta.rating = 8", null, false, false, null);
-            Assert.AreEqual(1, docs.Count());
-            Assert.AreEqual("2017-08-12-flip-flappers", docs.First().Slug);
+            Assert.AreEqual(1, docs.Count);
+            Assert.AreEqual("2017-08-12-flip-flappers", docs.Items.First().Slug);
 
             docs = _kotori.FindDocuments("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", null, null, null, null, false, false, 3);
-            Assert.AreEqual(0, docs.Count());
+            Assert.AreEqual(0, docs.Count);
 
             docs = _kotori.FindDocuments("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", 1, null, null, "c.meta.rating asc", false, false, 1);
-            Assert.AreEqual(1, docs.Count());
-            Assert.AreEqual("flying-witch-2016", docs.First().Slug);
+            Assert.AreEqual(1, docs.Count);
+            Assert.AreEqual("flying-witch-2016", docs.Items.First().Slug);
 
             docs = _kotori.FindDocuments("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", 1, null, null, "c.meta.rating asc", false, false, 2);
-            Assert.AreEqual(0, docs.Count());
+            Assert.AreEqual(0, docs.Count);
         }
 
         [TestMethod]
@@ -260,7 +278,7 @@ namespace KotoriCore.Tests
             await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", Enums.DocumentType.Content, "tv", c);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-find2", Enums.DocumentType.Content, "tv", 2, null, null, null, false, false, null);
-            Assert.AreEqual(2, docs.Count());
+            Assert.AreEqual(2, docs.Count);
         }
 
         [TestMethod]
@@ -276,13 +294,13 @@ namespace KotoriCore.Tests
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", null, null, null, null, false, false, null);
 
-            Assert.AreEqual(2, docs.Count());
+            Assert.AreEqual(2, docs.Count);
 
             _kotori.DeleteDocument("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", "2017-05-06-flying-witch", null);
 
             docs = _kotori.FindDocuments("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", null, null, null, null, false, false, null);
 
-            Assert.AreEqual(1, docs.Count());
+            Assert.AreEqual(1, docs.Count);
         }
 
         [TestMethod]
@@ -751,19 +769,19 @@ approved: !!bool true
             Assert.AreEqual(2, n.Count);
 
             var docs = _kotori.FindDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", 1, null, null, "c.meta.stars asc", false, false, null, Enums.DocumentFormat.Html);
-            Assert.AreEqual(1, docs.Count());
-            doc = docs.First();
+            Assert.AreEqual(1, docs.Count);
+            doc = docs.Items.First();
             Assert.AreEqual(new JValue(3), doc.Meta.stars);
             Assert.AreEqual(new JValue("Umiko"), doc.Meta.girl);
 
             _kotori.DeleteDocument("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 0);
 
             docs = _kotori.FindDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, null, "c.identifier", false, false, null);
-            Assert.AreEqual(2, docs.Count());
-            Assert.AreEqual(new JValue("Nenecchi"), docs.First().Meta.girl);
-            Assert.AreEqual(null, docs.First().Identifier);
-            Assert.AreEqual(new JValue("Umiko"), docs.Last().Meta.girl);
-            Assert.AreEqual(null, docs.Last().Identifier);
+            Assert.AreEqual(2, docs.Count);
+            Assert.AreEqual(new JValue("Nenecchi"), docs.Items.First().Meta.girl);
+            Assert.AreEqual(null, docs.Items.First().Identifier);
+            Assert.AreEqual(new JValue("Umiko"), docs.Items.Last().Meta.girl);
+            Assert.AreEqual(null, docs.Items.Last().Identifier);
 
             c = @"---
 girl: Umikox
@@ -775,8 +793,8 @@ approved: !!bool false
             await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1, c);
 
             docs = _kotori.FindDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, null, "c.identifier", false, false, null);
-            Assert.AreEqual(2, docs.Count());
-            Assert.AreEqual(new JValue("Umikox"), docs.Last().Meta.girl);
+            Assert.AreEqual(2, docs.Count);
+            Assert.AreEqual(new JValue("Umikox"), docs.Items.Last().Meta.girl);
 
             c = @"---
 girl: Nenecchi v.2
@@ -787,8 +805,8 @@ approved: !!bool true
             await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1, c);
 
             docs = _kotori.FindDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, null, "c.identifier", false, false, null);
-            Assert.AreEqual(2, docs.Count());
-            Assert.AreEqual(new JValue("Nenecchi v.2"), docs.Skip(1).First().Meta.girl);
+            Assert.AreEqual(2, docs.Count);
+            Assert.AreEqual(new JValue("Nenecchi v.2"), docs.Items.Skip(1).First().Meta.girl);
 
             doc = _kotori.GetDocument("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1);
             Assert.IsNotNull(doc);
@@ -805,10 +823,10 @@ fake: no
             await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, c);
 
             docs = _kotori.FindDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, null, "c.identifier", false, false, null);
-            Assert.AreEqual(3, docs.Count());
-            Assert.AreEqual(new JValue("Momo"), docs.Last().Meta.girl);
-            Assert.AreEqual(new JValue("no"), docs.Last().Meta.fake);
-            Assert.AreEqual(0, docs.Last().Version);
+            Assert.AreEqual(3, docs.Count);
+            Assert.AreEqual(new JValue("Momo"), docs.Items.Last().Meta.girl);
+            Assert.AreEqual(new JValue("no"), docs.Items.Last().Meta.fake);
+            Assert.AreEqual(0, docs.Items.Last().Version);
 
             _kotori.UpsertDocument("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 2, @"---
 stars: !!int 3
@@ -982,8 +1000,8 @@ foo: bar
 ";
             await _kotori.CreateDocumentAsync("dev", "mrdataf", Enums.DocumentType.Data, "newgame", c);
             var docs = _kotori.FindDocuments("dev", "mrdataf", Enums.DocumentType.Data, "newgame", null, null, null, null, false, false, null);
-            Assert.AreEqual(1, docs.Count());
-            Assert.AreEqual(new JValue("bar"), docs.First().Meta.foo);
+            Assert.AreEqual(1, docs.Count);
+            Assert.AreEqual(new JValue("bar"), docs.Items.First().Meta.foo);
         }
 
         [TestMethod]
@@ -996,8 +1014,8 @@ foo: bar
 ";
             await _kotori.CreateDocumentAsync("dev", "mrdataf2", Enums.DocumentType.Data, "newgame", c);
             var docs = _kotori.FindDocuments("dev", "mrdataf2", Enums.DocumentType.Data, "newgame", null, null, null, null, false, false, null);
-            Assert.AreEqual(1, docs.Count());
-            Assert.AreEqual(new JValue("bar"), docs.First().Meta.foo);
+            Assert.AreEqual(1, docs.Count);
+            Assert.AreEqual(new JValue("bar"), docs.Items.First().Meta.foo);
         }
 
         [TestMethod]

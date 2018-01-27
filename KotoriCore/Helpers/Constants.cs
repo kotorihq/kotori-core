@@ -40,5 +40,10 @@ namespace KotoriCore.Helpers
         /// The max document type transformations.
         /// </summary>
         public const int MaxDocumentTypeTransformations = 100;
+
+        /// <summary>
+        /// The max documents.
+        /// </summary>
+        public const int MaxDocuments = 100;
     }
 }
