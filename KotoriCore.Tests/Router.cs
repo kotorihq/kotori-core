@@ -45,9 +45,9 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void DocumentUri()
         {
-            Assert.AreEqual(new Uri("kotori://api/projects/abc/content/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "flip-flappers", null));
-            Assert.AreEqual(new Uri("kotori://api/projects/abc/content/document-types/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "flip-flappers", 6502));
-            Assert.AreEqual(new Uri("kotori://api/projects/abc/data/document-types/tv/indices/6502"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Data, "tv", null, 6502));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/content/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "flip-flappers", null));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/content/tv/documents/flip-flappers"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Content, "tv", "flip-flappers", 6502));
+            Assert.AreEqual(new Uri("kotori://api/projects/abc/data/tv/indices/6502"), "abc".ToKotoriDocumentUri(Enums.DocumentType.Data, "tv", null, 6502));
         }
 
         [TestMethod]

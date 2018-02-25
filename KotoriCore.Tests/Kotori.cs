@@ -91,12 +91,12 @@ namespace KotoriCore.Tests
 
             var res = _kotori.CreateDocumentType("dev", "lalala", Enums.DocumentType.Content, "hm");
             Assert.AreEqual("hm", res.Id);
-            Assert.AreEqual("/api/projects/lalala/content/document-types/hm", res.Url);
+            Assert.AreEqual("/api/projects/lalala/content/hm", res.Url);
             Assert.IsTrue(res.NewResource);
 
             res = _kotori.UpsertDocumentType("dev", "lalala", Enums.DocumentType.Content, "hm");
             Assert.AreEqual("hm", res.Id);
-            Assert.AreEqual("/api/projects/lalala/content/document-types/hm", res.Url);
+            Assert.AreEqual("/api/projects/lalala/content/hm", res.Url);
             Assert.IsFalse(res.NewResource);
 
             var dt = _kotori.GetDocumentType("dev", "lalala", Enums.DocumentType.Content, "hm");
@@ -104,7 +104,7 @@ namespace KotoriCore.Tests
 
             res = _kotori.CreateDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
             Assert.AreEqual("hm", res.Id);
-            Assert.AreEqual("/api/projects/lalala/content/document-types/hm/transformations", res.Url);
+            Assert.AreEqual("/api/projects/lalala/content/hm/transformations", res.Url);
             Assert.IsTrue(res.NewResource);
 
             var dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm");
@@ -113,7 +113,7 @@ namespace KotoriCore.Tests
 
             res = _kotori.UpsertDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm", @"[{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]");
             Assert.AreEqual("hm", res.Id);
-            Assert.AreEqual("/api/projects/lalala/content/document-types/hm/transformations", res.Url);
+            Assert.AreEqual("/api/projects/lalala/content/hm/transformations", res.Url);
             Assert.IsFalse(res.NewResource);
 
             dtt = _kotori.GetDocumentTypeTransformations("dev", "lalala", Enums.DocumentType.Content, "hm");
@@ -698,7 +698,7 @@ test: {i}
 
             var r1 = _kotori.UpsertDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a", null, "hello", null, false);
             Assert.AreEqual("a", r1.Id);
-            Assert.AreEqual("/api/projects/drnodr/content/document-types/x/documents/a", r1.Url);
+            Assert.AreEqual("/api/projects/drnodr/content/x/documents/a", r1.Url);
             Assert.IsFalse(r1.NewResource);
 
             var d1 = _kotori.GetDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a");
@@ -708,7 +708,7 @@ test: {i}
 
             var r2 = _kotori.UpsertDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a", null, "hello");
             Assert.AreEqual("a", r2.Id);
-            Assert.AreEqual("/api/projects/drnodr/content/document-types/x/documents/a", r2.Url);
+            Assert.AreEqual("/api/projects/drnodr/content/x/documents/a", r2.Url);
             Assert.IsFalse(r2.NewResource);
 
             var d2 = _kotori.GetDocument("dev", "drnodr", Enums.DocumentType.Content, "x", "a");
@@ -740,7 +740,7 @@ approved: !!bool false
 ---";
             var res = await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, c);
             Assert.AreEqual("2", res.Id);
-            Assert.AreEqual("/api/projects/mrdata/data/document-types/newgame/indices/2", res.Url);
+            Assert.AreEqual("/api/projects/mrdata/data/newgame/indices/2", res.Url);
             Assert.IsTrue(res.NewResource);
 
             var doc = _kotori.GetDocument("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1);
@@ -929,7 +929,7 @@ approved: !!bool false
 
             var res = _kotori.CreateDocument("dev", "data-woho", Enums.DocumentType.Data, "newgame", c);
             Assert.AreEqual("2", res.Id);
-            Assert.AreEqual("/api/projects/data-woho/data/document-types/newgame/indices/2", res.Url);
+            Assert.AreEqual("/api/projects/data-woho/data/newgame/indices/2", res.Url);
             Assert.IsTrue(res.NewResource);
 
             var n = _kotori.CountDocuments("dev", "data-woho", Enums.DocumentType.Data, "newgame", null, false, false);
@@ -1609,12 +1609,12 @@ girl: "" Aoba ""
 ";
             var res = await _kotori.CreateDocumentTypeAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame");
             Assert.AreEqual("newgame", res.Id);
-            Assert.AreEqual("/api/projects/doctdel/data/document-types/newgame", res.Url);
+            Assert.AreEqual("/api/projects/doctdel/data/newgame", res.Url);
             Assert.IsTrue(res.NewResource);
 
             res = await _kotori.UpsertDocumentTypeAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame");
             Assert.AreEqual("newgame", res.Id);
-            Assert.AreEqual("/api/projects/doctdel/data/document-types/newgame", res.Url);
+            Assert.AreEqual("/api/projects/doctdel/data/newgame", res.Url);
             Assert.IsFalse(res.NewResource);
 
             await _kotori.CreateDocumentAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", c);
@@ -1876,7 +1876,7 @@ Matrix has you!";
 
             var res2 = _kotori.CreateDocument("dev", res.Id, Enums.DocumentType.Content, "movies", GetContent(RawDocument.Matrix));
             Assert.IsNotNull(res2.Id);
-            Assert.AreEqual($"/api/projects/{res.Id}/content/document-types/movies/documents/{res2.Id}", res2.Url);
+            Assert.AreEqual($"/api/projects/{res.Id}/content/movies/documents/{res2.Id}", res2.Url);
             Assert.IsTrue(res2.NewResource);
         }
 
