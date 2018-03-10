@@ -311,11 +311,6 @@ namespace KotoriCore.Database.DocumentDb
             return count;
         }
 
-        async Task<Entities.Project> CreateProjectAsync(Entities.Project project)
-        {
-            return await _repoProject.CreateAsync(project);
-        }
-
         async Task<Entities.Project> UpsertProjectAsync(Entities.Project project)
         {
             return await _repoProject.UpsertAsync(project);
