@@ -458,52 +458,28 @@ namespace KotoriCore
             return (await ProcessAsync(new UpsertProject(false, instance, projectId, name)) as CommandResult<OperationResult>).Record;
         }
 
-        /// <summary>
-        /// Creates the project key.
-        /// </summary>
-        /// <returns>Operation result.</returns>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="projectKey">Project key.</param>
-        public OperationResult CreateProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey)
+        // TOO
+        public OperationResult CreateProjectKey(string instance, string projectId, string projectKey, bool isReadonly = false)
         {
-            return AsyncTools.RunSync(() => CreateProjectKeyAsync(instance, projectId, projectKey));
+            return AsyncTools.RunSync(() => CreateProjectKeyAsync(instance, projectId, projectKey, isReadonly));
         }
 
-        /// <summary>
-        /// Creates the project key.
-        /// </summary>
-        /// <returns>Operation result.</returns>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="projectKey">Project key.</param>
-        public async Task<OperationResult> CreateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey)
+        // TODO
+        public async Task<OperationResult> CreateProjectKeyAsync(string instance, string projectId, string projectKey, bool isReadonly = false)
         {
-            return (await ProcessAsync(new UpsertProjectKey(true, instance, projectId, projectKey)) as CommandResult<OperationResult>).Record;
+            return (await ProcessAsync(new UpsertProjectKey(true, instance, projectId, projectKey, isReadonly)) as CommandResult<OperationResult>).Record;
         }
 
-        /// <summary>
-        /// Upserts the project key.
-        /// </summary>
-        /// <returns>Operation result.</returns>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="projectKey">Project key.</param>
-        public OperationResult UpsertProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey)
+        // TODO
+        public OperationResult UpsertProjectKey(string instance, string projectId, string projectKey, bool isReadonly = false)
         {
-            return AsyncTools.RunSync(() => UpsertProjectKeyAsync(instance, projectId, projectKey));
+            return AsyncTools.RunSync(() => UpsertProjectKeyAsync(instance, projectId, projectKey, isReadonly));
         }
 
-        /// <summary>
-        /// Upserts the project key.
-        /// </summary>
-        /// <returns>Operation result.</returns>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="projectKey">Project key.</param>
-        public async Task<OperationResult> UpsertProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey)
+        // TODO
+        public async Task<OperationResult> UpsertProjectKeyAsync(string instance, string projectId, string projectKey, bool isReadonly = false)
         {
-            return (await ProcessAsync(new UpsertProjectKey(false, instance, projectId, projectKey)) as CommandResult<OperationResult>).Record;
+            return (await ProcessAsync(new UpsertProjectKey(false, instance, projectId, projectKey, isReadonly)) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>

@@ -80,7 +80,7 @@ namespace KotoriCore.Tests
         public async Task FailToCreateProjectBadKeys2()
         {
             await _kotori.UpsertProjectAsync("dev", "aobababa", "hm");
-            await _kotori.CreateProjectKeyAsync("dev", "aobababa", new ProjectKey("oh no", true));
+            await _kotori.CreateProjectKeyAsync("dev", "aobababa", "oh no", true);
         }
 
         [TestMethod]
@@ -459,7 +459,7 @@ namespace KotoriCore.Tests
 
             foreach (var k in keys)
             {
-                var r = _kotori.CreateProjectKey("dev", "rude", k);
+                var r = _kotori.CreateProjectKey("dev", "rude", k.Key, k.IsReadonly);
 
                 Assert.AreEqual(k.Key, r.Id);
                 Assert.AreEqual($"/api/projects/rude/project-keys/{k.Key}", r.Url);
@@ -482,7 +482,7 @@ namespace KotoriCore.Tests
 
             for (int i = 0; i < Constants.MaxProjectKeys + 10; i++)
             {
-                var r = _kotori.CreateProjectKey("dev", "rudenude", new ProjectKey($"key-{i}"));
+                var r = _kotori.CreateProjectKey("dev", "rudenude", $"key-{i}");
             }
 
             var projectKeys = _kotori.GetProjectKeys("dev", "rudenude");
@@ -542,9 +542,9 @@ namespace KotoriCore.Tests
         {
             var result = _kotori.UpsertProject("dev", "cpkf0", "foo");
 
-            _kotori.CreateProjectKey("dev", "cpkf0", new ProjectKey(null));
             _kotori.CreateProjectKey("dev", "cpkf0", null);
-            _kotori.CreateProjectKey("dev", "cpkf0", new ProjectKey(null, true));
+            _kotori.CreateProjectKey("dev", "cpkf0", null);
+            _kotori.CreateProjectKey("dev", "cpkf0", null, true);
 
             var keys = _kotori.GetProjectKeys("dev", "cpkf0");
 
@@ -559,8 +559,8 @@ namespace KotoriCore.Tests
         {
             var result = _kotori.UpsertProject("dev", "cpkf1", "foo");
 
-            _kotori.CreateProjectKey("dev", "cpkf1", new ProjectKey("bar"));
-            _kotori.CreateProjectKey("dev", "cpkf1", new ProjectKey("bar"));
+            _kotori.CreateProjectKey("dev", "cpkf1", "bar");
+            _kotori.CreateProjectKey("dev", "cpkf1", "bar");
         }
 
         [TestMethod]
@@ -580,14 +580,14 @@ namespace KotoriCore.Tests
             var kkk = new List<ProjectKey> { new ProjectKey("aaa", true), new ProjectKey("bbb", false) };
 
             foreach (var k in kkk)
-                _kotori.CreateProjectKey("dev", "cpkeys", k);
+                _kotori.CreateProjectKey("dev", "cpkeys", k.Key, k.IsReadonly);
                 
-            var res = _kotori.CreateProjectKey("dev", "cpkeys", new ProjectKey("ccc", true));
+            var res = _kotori.CreateProjectKey("dev", "cpkeys", "ccc", true);
             Assert.AreEqual("ccc", res.Id);
             Assert.AreEqual("/api/projects/cpkeys/project-keys/ccc", res.Url);
             Assert.IsTrue(res.NewResource);
 
-            _kotori.CreateProjectKey("dev", "cpkeys", new ProjectKey("ddd", false));
+            _kotori.CreateProjectKey("dev", "cpkeys", "ddd", false);
 
             var keys = _kotori.GetProjectKeys("dev", "cpkeys").Items.ToList();
 
@@ -601,7 +601,7 @@ namespace KotoriCore.Tests
             Assert.AreEqual("ddd", keys[3].Key);
             Assert.AreEqual(false, keys[3].IsReadonly);
 
-            res = _kotori.UpsertProjectKey("dev", "cpkeys", new ProjectKey("aaa", false));
+            res = _kotori.UpsertProjectKey("dev", "cpkeys", "aaa", false);
             Assert.AreEqual("aaa", res.Id);
             Assert.AreEqual("/api/projects/cpkeys/project-keys/aaa", res.Url);
             Assert.IsFalse(res.NewResource);

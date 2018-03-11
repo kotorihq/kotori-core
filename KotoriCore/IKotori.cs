@@ -42,10 +42,10 @@ namespace KotoriCore
         Task<ComplexCountResult<Domains.ProjectKey>> GetProjectKeysAsync(string instance, string projectId);
         OperationResult UpsertProject(string instance, string projectId, string name);
         Task<OperationResult> UpsertProjectAsync(string instance, string projectId, string name);
-        OperationResult CreateProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey);
-        Task<OperationResult> CreateProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey);
-        OperationResult UpsertProjectKey(string instance, string projectId, Configurations.ProjectKey projectKey);
-        Task<OperationResult> UpsertProjectKeyAsync(string instance, string projectId, Configurations.ProjectKey projectKey);
+        OperationResult CreateProjectKey(string instance, string projectId, string projectKey, bool isReadonly);
+        Task<OperationResult> CreateProjectKeyAsync(string instance, string projectId, string projectKey, bool isReadonly);
+        OperationResult UpsertProjectKey(string instance, string projectId, string projectKey, bool isReadonly);
+        Task<OperationResult> UpsertProjectKeyAsync(string instance, string projectId, string projectKey, bool isReadonly);
         void DeleteProjectKey(string instance, string projectId, string projectKey);
         Task DeleteProjectKeyAsync(string instance, string projectId, string projectKey);
         ComplexCountResult<SimpleDocumentVersion> GetDocumentVersions(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index = null);

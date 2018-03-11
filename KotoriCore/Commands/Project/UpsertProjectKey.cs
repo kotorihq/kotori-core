@@ -29,19 +29,15 @@ namespace KotoriCore.Commands
         /// </summary>
         public readonly bool CreateOnly;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpdateProjectKey"/> class.
-        /// </summary>
-        /// <param name="createOnly">Create only.</param>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="projectKey">Project key.</param>
-        public UpsertProjectKey(bool createOnly, string instance, string projectId, ProjectKey projectKey)
+        // TODO
+        public UpsertProjectKey(bool createOnly, string instance, string projectId, string projectKey, bool isReadonly)
         {
             CreateOnly = createOnly;
             Instance = instance;
             ProjectId = projectId;
-            ProjectKey = projectKey;
+
+            if (!string.IsNullOrEmpty(projectKey))
+                ProjectKey = new ProjectKey(projectKey, isReadonly);
 
             if (CreateOnly &&
                 ProjectKey == null)
@@ -54,6 +50,9 @@ namespace KotoriCore.Commands
             {
                 ProjectKey.Key = RandomGenerator.GetId();
             }
+
+            if (ProjectKey != null)
+                ProjectKey.IsReadonly = isReadonly;
         }
 
         /// <summary>

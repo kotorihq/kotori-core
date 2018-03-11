@@ -3,10 +3,11 @@
 KotoriCore.userprefs
 KotoriCore/bin/
 KotoriCore/obj/
-/.vs/KotoriCore/v15
+/.vs
 KotoriCore.Tests/bin/
 KotoriCore.Tests/obj/
 KotoriCore.Cmd/bin/
 KotoriCore.Cmd/obj/
 KotoriCore.Cli/bin/
 KotoriCore.Cli/obj/
+/.vscode
