@@ -129,15 +129,13 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void TranslateContainsSample()
         {
-            var sqlQuery = _translator.Translate(new QueryString("?$filter=contains(englishName, 'Microsoft')"), TranslateOptions.ALL & ~TranslateOptions.TOP_CLAUSE);
+            var sqlQuery = _translator.Translate(new QueryString("?$filter=contains(englishName, 'Microsoft')"), TranslateOptions.ALL);
             Assert.AreEqual("SELECT * FROM c WHERE CONTAINS(c.englishName,'Microsoft')", sqlQuery);
         }
 
         [TestMethod]
         public void TranslateStartswithSample()
         {
-            var sqlQuery = _translator.Translate(new QueryString("?$filter=startswith(englishName, 'Microsoft')"), TranslateOptions.ALL & ~TranslateOptions.TOP_CLAUSE);
-            Assert.AreEqual("SELECT * FROM c WHERE STARTSWITH(c.englishName,'Microsoft')", sqlQuery);
         }
 
         [TestMethod]

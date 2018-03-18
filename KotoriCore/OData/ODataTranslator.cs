@@ -76,7 +76,7 @@ namespace KotoriCore.OData
             oDataToSqlTranslator = new ODataToSqlTranslator(new SQLQueryFormatter());
         }
 
-        public string Translate(QueryString queryString, TranslateOptions translateOptions, string additionalWhereClause = null)
+        public string Translate(QueryString queryString, TranslateOptions translateOptions = TranslateOptions.ALL, string additionalWhereClause = null)
         {
             httpRequestMessage.QueryString = queryString;
             var oDataQueryOptions = new ODataQueryOptions(oDataQueryContext, httpRequestMessage);
