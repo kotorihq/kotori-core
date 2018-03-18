@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
-namespace KotoriCore.Tests
+namespace KotoriCore.Tests.HelperClasses
 {
     public class DefaultQueryCollection : IQueryCollection
     {

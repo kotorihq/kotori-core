@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using Microsoft.Azure.Documents;
 using Newtonsoft.Json;
 
-namespace KotoriCore.Tests
+namespace KotoriCore.Tests.HelperClasses
 {
     [DataContract]
     public enum MockEnum

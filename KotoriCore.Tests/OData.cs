@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.AspNet.OData.Formatter.Serialization;
 using Microsoft.AspNet.OData.Query;
+using KotoriCore.Tests.HelperClasses;
 
 namespace KotoriCore.Tests
 {
@@ -37,6 +38,7 @@ namespace KotoriCore.Tests
             services.AddMvcCore();
             services.AddOptions();
       
+            services.AddSingleton<ILoggerFactory, LoggerFactory>();
             services.AddSingleton<DiagnosticSource>(f => new DiagnosticListener("Microsoft.AspNetCore.Mvc"));
             services.AddSingleton<ODataUriResolver>( f => new UnqualifiedODataUriResolver());
             services.AddSingleton<Microsoft.AspNet.OData.Query.Validators.ODataQueryValidator>();
@@ -213,7 +215,7 @@ namespace KotoriCore.Tests
         public void TranslateWhereWithEnumSample()
         {
             httpRequestMessage.Path = new PathString("");
-            httpRequestMessage.QueryString = new QueryString("?$filter=enumNumber eq azure_documentdb_odata_sql_tests.MockEnum'ONE' and intField le 5");
+            httpRequestMessage.QueryString = new QueryString("?$filter=enumNumber eq KotoriCore.Tests.HelperClasses.MockEnum'ONE' and intField le 5");
             var oDataQueryOptions = new ODataQueryOptions(oDataQueryContext, httpRequestMessage);
 
             var oDataToSqlTranslator = new ODataToSqlTranslator(new SQLQueryFormatter());
@@ -393,7 +395,7 @@ namespace KotoriCore.Tests
         public void TranslateMasterSample()
         {
             httpRequestMessage.Path = new PathString("/Post");
-            httpRequestMessage.QueryString = new QueryString("?$select=id, englishName&$filter=title eq 'title1' and property/field ne 'val' or viewedCount ge 5 and (likedCount ne 3 or enumNumber eq azure_documentdb_odata_sql_tests.MockEnum'TWO')&$orderby=_lastClientEditedDateTime asc, createdDateTime desc&$top=30");
+            httpRequestMessage.QueryString = new QueryString("?$select=id, englishName&$filter=title eq 'title1' and property/field ne 'val' or viewedCount ge 5 and (likedCount ne 3 or enumNumber eq KotoriCore.Tests.HelperClasses.MockEnum'TWO')&$orderby=_lastClientEditedDateTime asc, createdDateTime desc&$top=30");
             var oDataQueryOptions = new ODataQueryOptions(oDataQueryContext, httpRequestMessage);
 
             var oDataToSqlTranslator = new ODataToSqlTranslator(new SQLQueryFormatter());
