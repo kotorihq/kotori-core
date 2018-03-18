@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using Microsoft.Azure.Documents;
 using Newtonsoft.Json;
 
-namespace KotoriCore.Tests.HelperClasses
+namespace KotoriCore.OData
 {
     [DataContract]
     public class MockOpenType : Document
