@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using KotoriCore.Helpers;
+using KotoriCore.Helpers.RandomGenerator;
 
 namespace KotoriCore.Commands
 {
@@ -52,7 +53,8 @@ namespace KotoriCore.Commands
             if (CreateOnly &&
                 string.IsNullOrEmpty(documentTypeId))
             {
-                DocumentTypeId = RandomGenerator.GetId();
+                // TODO: FHK
+                DocumentTypeId = new IdGenerator().GetId();
             }
         }
 

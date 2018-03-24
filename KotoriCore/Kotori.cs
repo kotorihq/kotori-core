@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using KotoriCore.Domains;
 using Sushi2;
 using KotoriCore.Helpers;
+using KotoriCore.Helpers.RandomGenerator;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace KotoriCore
 {
@@ -23,7 +25,8 @@ namespace KotoriCore
         /// <value>The configuration.</value>
         public IKotoriConfiguration Configuration { get; }
 
-        IDatabase _database { get; }
+        IDatabase _database;
+        IServiceProvider _serviceProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Kotori"/> class.
@@ -31,6 +34,13 @@ namespace KotoriCore
         /// <param name="configuration">Configuration.</param>
         public Kotori(KotoriConfiguration configuration)
         {
+            _serviceProvider = new ServiceCollection()
+                // helpers
+                .AddSingleton<IRandomGenerator, IdGenerator>()
+                // commands
+                .AddTransient<IUpsertProjectKey, UpsertProjectKey>()
+                .BuildServiceProvider();
+            
             Configuration = configuration;
 
             if (Configuration.Database is DocumentDbConfiguration documentDbConfiguration)
@@ -467,7 +477,9 @@ namespace KotoriCore
         // TODO
         public async Task<OperationResult> CreateProjectKeyAsync(string instance, string projectId, string projectKey, bool isReadonly = false)
         {
-            return (await ProcessAsync(new UpsertProjectKey(true, instance, projectId, projectKey, isReadonly)) as CommandResult<OperationResult>).Record;
+            var command = _serviceProvider.GetService<IUpsertProjectKey>();
+            command.Init(true, instance, projectId, projectKey, isReadonly);
+            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
         }
 
         // TODO
@@ -479,7 +491,9 @@ namespace KotoriCore
         // TODO
         public async Task<OperationResult> UpsertProjectKeyAsync(string instance, string projectId, string projectKey, bool isReadonly = false)
         {
-            return (await ProcessAsync(new UpsertProjectKey(false, instance, projectId, projectKey, isReadonly)) as CommandResult<OperationResult>).Record;
+            var command = _serviceProvider.GetService<IUpsertProjectKey>();
+            command.Init(false, instance, projectId, projectKey, isReadonly);
+            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>

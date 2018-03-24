@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using KotoriCore.Helpers;
+using KotoriCore.Helpers.RandomGenerator;
 
 namespace KotoriCore.Commands
 {
@@ -85,9 +86,10 @@ namespace KotoriCore.Commands
             Index = index;
             Content = content;
 
+            // TODO: FHK
             if (CreateOnly &&
                DocumentType == Enums.DocumentType.Content)
-                DocumentId = RandomGenerator.GetId();
+                DocumentId = new IdGenerator().GetId();
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using KotoriCore.Helpers;
+using KotoriCore.Helpers.RandomGenerator;
 
 namespace KotoriCore.Commands
 {
@@ -45,7 +46,8 @@ namespace KotoriCore.Commands
             if (CreateOnly &&
                 string.IsNullOrEmpty(projectId))
             {
-                ProjectId = RandomGenerator.GetId();
+                // TODO: FHK
+                ProjectId = new IdGenerator().GetId();
             }
         }
 

@@ -1,23 +1,21 @@
 ﻿using System.Collections.Generic;
 using KotoriCore.Configurations;
 using KotoriCore.Helpers;
+using KotoriCore.Helpers.RandomGenerator;
 
 namespace KotoriCore.Commands
 {
     /// <summary>
     /// Upsert project key command.
     /// </summary>
-    public class UpsertProjectKey : Command
+    public class UpsertProjectKey : Command, IUpsertProjectKey
     {
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public readonly string Instance;
+        public string Instance { get; private set; }
 
         /// <summary>
         /// The project identifier.
         /// </summary>
-        public readonly string ProjectId;
+        public string ProjectId { get; private set; }
 
         /// <summary>
         /// The project key.
@@ -27,10 +25,18 @@ namespace KotoriCore.Commands
         /// <summary>
         /// The create only flag.
         /// </summary>
-        public readonly bool CreateOnly;
+        public bool CreateOnly { get; private set; }
+
+        IRandomGenerator _randomGenerator;
 
         // TODO
-        public UpsertProjectKey(bool createOnly, string instance, string projectId, string projectKey, bool isReadonly)
+        public UpsertProjectKey(IRandomGenerator randomGenerator)
+        {
+            _randomGenerator = randomGenerator;
+        }
+
+        // TODO
+        public void Init(bool createOnly, string instance, string projectId, string projectKey, bool isReadonly)
         {
             CreateOnly = createOnly;
             Instance = instance;
@@ -42,13 +48,15 @@ namespace KotoriCore.Commands
             if (CreateOnly &&
                 ProjectKey == null)
             {
-                ProjectKey = new ProjectKey(RandomGenerator.GetId());
+                var id = _randomGenerator.GetId();
+                ProjectKey = new ProjectKey(id);
             }
 
             if (CreateOnly &&
                 string.IsNullOrEmpty(ProjectKey.Key))
             {
-                ProjectKey.Key = RandomGenerator.GetId();
+                var id = _randomGenerator.GetId();
+                ProjectKey.Key = id;
             }
 
             if (ProjectKey != null)
@@ -66,7 +74,7 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Project Id must be set.");
-            
+
             if (ProjectKey == null ||
                 string.IsNullOrEmpty(ProjectKey.Key))
             {
