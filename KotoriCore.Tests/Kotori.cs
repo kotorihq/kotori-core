@@ -1372,7 +1372,7 @@ girl: Umiko
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "Changing of meta field type was allowed.")]
+        [ExpectedException(typeof(KotoriValidationException))]
         public async Task ChangingMetaTypeFail()
         {
             var result = await _kotori.UpsertProjectAsync("dev", "f-a-i-l", "f-a-i-l");
@@ -1385,7 +1385,7 @@ girl: Umiko
         }
 
         [TestMethod]
-        [ExpectedException(typeof(KotoriValidationException), "Changing of meta field type was allowed.")]
+        [ExpectedException(typeof(KotoriValidationException))]
         public async Task ChangingMetaTypeFail2()
         {
             var result = await _kotori.UpsertProjectAsync("dev", "f-a-i-l2", "f-a-i-l2");
@@ -1464,6 +1464,14 @@ haha";
 
             Assert.AreEqual(Constants.MaxProjects, projects.Items.Count());
             Assert.AreEqual(Constants.MaxProjects + 10, projects.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KotoriDocumentTypeException))]
+        public async Task FailCreatingDocumentType()
+        {
+            await _kotori.CreateProjectAsync("dev", "fa-fa", null);
+            await _kotori.CreateDocumentTypeAsync("dev", "fa-fa", Enums.DocumentType.Content, "x/y");
         }
 
         [TestMethod]
