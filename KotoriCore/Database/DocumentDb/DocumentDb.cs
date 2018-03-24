@@ -471,11 +471,6 @@ namespace KotoriCore.Database.DocumentDb
             return await _repoDocument.ReplaceAsync(document);
         }
 
-        async Task<Entities.DocumentType> CreateDocumentTypeAsync(Entities.DocumentType documentType)
-        {
-            return await _repoDocumentType.CreateAsync(documentType);
-        }
-
         async Task<Entities.DocumentVersion> CreateDocumentVersionAsync(Entities.DocumentVersion documentVersion)
         {
             return await _repoDocumentVersion.CreateAsync(documentVersion);
