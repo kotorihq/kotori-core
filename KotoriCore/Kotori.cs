@@ -41,6 +41,7 @@ namespace KotoriCore
                 .AddTransient<IUpsertProjectKey, UpsertProjectKey>()
                 .AddTransient<IUpsertDocument, UpsertDocument>()
                 .AddTransient<IUpsertDocumentType, UpsertDocumentType>()
+                .AddTransient<IUpsertProject, UpsertProject>()
                 .AddSingleton<IKotoriConfiguration>(configuration);                
                 
             Configuration = configuration;
@@ -167,7 +168,9 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> CreateProjectAsync(string instance, string projectId, string name)
         {
-            return (await ProcessAsync(new UpsertProject(true, instance, projectId, name)) as CommandResult<OperationResult>).Record;
+            var command = _serviceProvider.GetService<IUpsertProject>();
+            command.Init(true, instance, projectId, name);
+            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -472,7 +475,9 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> UpsertProjectAsync(string instance, string projectId, string name)
         {
-            return (await ProcessAsync(new UpsertProject(false, instance, projectId, name)) as CommandResult<OperationResult>).Record;
+            var command = _serviceProvider.GetService<IUpsertProject>();
+            command.Init(false, instance, projectId, name);
+            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
         }
 
         // TOO

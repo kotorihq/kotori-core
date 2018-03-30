@@ -7,36 +7,38 @@ namespace KotoriCore.Commands
     /// <summary>
     /// Upsert project command.
     /// </summary>
-    public class UpsertProject : Command
+    public class UpsertProject : Command, IUpsertProject
     {
+        IRandomGenerator _randomGenerator;
+
         /// <summary>
         /// The instance.
         /// </summary>
-        public readonly string Instance;
+        public string Instance { get; set; }
 
         /// <summary>
         /// The project identifier.
         /// </summary>
-        public readonly string ProjectId;
+        public string ProjectId { get; set; }
 
         /// <summary>
         /// The name.
         /// </summary>
-        public readonly string Name;
+        public string Name { get; set; }
 
         /// <summary>
         /// The create only flag.
         /// </summary>
-        public readonly bool CreateOnly;
+        public bool CreateOnly { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpdateProject"/> class.
-        /// </summary>
-        /// <param name="createOnly">Create only.</param>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="name">Name.</param>
-        public UpsertProject(bool createOnly, string instance, string projectId, string name)
+        // TODO
+        public UpsertProject(IRandomGenerator randomGenerator)
+        {
+            _randomGenerator = randomGenerator;
+        }
+        
+        // TODO
+        public void Init(bool createOnly, string instance, string projectId, string name)
         {
             CreateOnly = createOnly;
             Instance = instance;
@@ -46,8 +48,7 @@ namespace KotoriCore.Commands
             if (CreateOnly &&
                 string.IsNullOrEmpty(projectId))
             {
-                // TODO: FHK
-                ProjectId = new IdGenerator().GetId();
+                ProjectId = _randomGenerator.GetId();
             }
         }
 
