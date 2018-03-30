@@ -8,72 +8,68 @@ namespace KotoriCore.Commands
     /// <summary>
     /// Upsert document command.
     /// </summary>
-    public class UpsertDocument : Command
+    public class UpsertDocument : Command, IUpsertDocument
     {
+        private IRandomGenerator _randomGenerator;
+
         /// <summary>
         /// The instance.
         /// </summary>
-        public readonly string Instance;
+        public string Instance { get; set; }
 
         /// <summary>
         /// The project identifier.
         /// </summary>
-        public readonly string ProjectId;
+        public string ProjectId { get; set; }
 
         /// <summary>
         /// The create only flag.
         /// </summary>
-        public readonly bool CreateOnly;
+        public bool CreateOnly { get; set; }
 
         /// <summary>
         /// The type of the document.
         /// </summary>
-        public readonly Enums.DocumentType DocumentType;
+        public Enums.DocumentType DocumentType { get; set; }
 
         /// <summary>
         /// The document type identifier.
         /// </summary>
-        public readonly string DocumentTypeId;
+        public string DocumentTypeId { get; set; }
 
         /// <summary>
         /// The document identifier.
         /// </summary>
-        public readonly string DocumentId;
+        public string DocumentId { get; set; }
 
         /// <summary>
         /// The content.
         /// </summary>
-        public readonly string Content;
+        public string Content { get; set; }
 
         /// <summary>
         /// The index.
         /// </summary>
-        public readonly long? Index;
+        public long? Index { get; set; }
 
         /// <summary>
         /// The date.
         /// </summary>
-        public readonly DateTime? Date;
+        public DateTime? Date { get; set; }
 
         /// <summary>
         /// The draft flag.
         /// </summary>
-        public readonly bool? Draft;
+        public bool? Draft { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.UpsertDocument"/> class.
-        /// </summary>
-        /// <param name="createOnly">Create only flag.</param>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="documentType">Document type.</param>
-        /// <param name="documentTypeId">Document type id.</param>
-        /// <param name="documentId">Document identifier.</param>
-        /// <param name="index">Document index.</param>
-        /// <param name="content">Content.</param>
-        /// <param name="date">Date.</param>
-        /// <param name="draft">Draft flag.</param>
-        public UpsertDocument(bool createOnly, string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? date, bool? draft)
+        // TODO
+        public UpsertDocument(IRandomGenerator randomGenerator)
+        {
+            _randomGenerator = randomGenerator;
+        }
+
+        // TODO
+        public void Init(bool createOnly, string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? date, bool? draft)
         {
             Draft = draft;
             Date = date;
@@ -88,8 +84,8 @@ namespace KotoriCore.Commands
 
             // TODO: FHK
             if (CreateOnly &&
-               DocumentType == Enums.DocumentType.Content)
-                DocumentId = new IdGenerator().GetId();
+                DocumentType == Enums.DocumentType.Content)
+                DocumentId = _randomGenerator.GetId();
         }
 
         /// <summary>

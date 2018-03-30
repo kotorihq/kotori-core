@@ -42,9 +42,11 @@ namespace KotoriCore.Database.DocumentDb
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.DocumentDb"/> class.
         /// </summary>
         /// <param name="configuration">Configuration.</param>
-        internal DocumentDb(DocumentDbConfiguration configuration)
+        public DocumentDb(IDatabaseConfiguration configuration)
         {
-            _connection = new Connection(configuration.Endpoint, configuration.AuthorizationKey, configuration.Database, configuration.Collection);
+            var dbConfig = configuration as DocumentDbConfiguration;
+
+            _connection = new Connection(dbConfig.Endpoint, dbConfig.AuthorizationKey, dbConfig.Database, dbConfig.Collection);
             _repoProject = new Repository<Entities.Project>(_connection);
             _repoDocumentType = new Repository<Entities.DocumentType>(_connection);
             _repoDocument = new Repository<Entities.Document>(_connection);
@@ -610,19 +612,16 @@ namespace KotoriCore.Database.DocumentDb
 
                         await UpsertDocumentHelperAsync
                         (
-                            new UpsertDocument
-                            (
-                                false,
-                                instance,
-                                documentTypeId.ProjectId,
-                                documentType.Type,
-                                documentTypeId.DocumentTypeId,
-                                documentToken.DocumentId,
-                                documentToken.Index,
-                                document.ToOriginalJsonString(),
-                                document.Date?.DateTime,
-                                document.Draft
-                            )
+                            false,
+                            instance,
+                            documentTypeId.ProjectId,
+                            documentType.Type,
+                            documentTypeId.DocumentTypeId,
+                            documentToken.DocumentId,
+                            documentToken.Index,
+                            document.ToOriginalJsonString(),
+                            document.Date?.DateTime,
+                            document.Draft
                         );
                     }
                 }

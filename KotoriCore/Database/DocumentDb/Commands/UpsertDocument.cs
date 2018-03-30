@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Database.DocumentDb.Helpers;
@@ -26,7 +27,19 @@ namespace KotoriCore.Database.DocumentDb
 
             if (command.DocumentType == Enums.DocumentType.Content)
             {
-                var result = await UpsertDocumentHelperAsync(command);
+                var result = await UpsertDocumentHelperAsync
+                (
+                    command.CreateOnly,
+                    command.Instance,
+                    command.ProjectId,
+                    command.DocumentType,
+                    command.DocumentTypeId,
+                    command.DocumentId,
+                    command.Index,                            
+                    command.Content,
+                    command.Date,
+                    command.Draft
+                );
 
                 return result;
             }
@@ -71,21 +84,16 @@ namespace KotoriCore.Database.DocumentDb
                     var finalIndex = idx == null ? dc : idx + dc;                       
 
                     lastResult = await UpsertDocumentHelperAsync(
-                    (
-                        new UpsertDocument
-                        (
-                            command.CreateOnly,
-                            command.Instance,
-                            command.ProjectId,
-                            command.DocumentType,
-                            command.DocumentTypeId,
-                            command.DocumentId,
-                            finalIndex,                            
-                            doc,
-                            command.Date,
-                            command.Draft
-                           )
-                        )
+                        command.CreateOnly,
+                        command.Instance,
+                        command.ProjectId,
+                        command.DocumentType,
+                        command.DocumentTypeId,
+                        command.DocumentId,
+                        finalIndex,                            
+                        doc,
+                        command.Date,
+                        command.Draft
                     );
                 }
 
@@ -95,50 +103,50 @@ namespace KotoriCore.Database.DocumentDb
             throw new KotoriDocumentException(command.DocumentId, "Unknown document type.");
         }
 
-        async Task<CommandResult<OperationResult>> UpsertDocumentHelperAsync(UpsertDocument command)
+        async Task<CommandResult<OperationResult>> UpsertDocumentHelperAsync(bool createOnly, string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? date, bool? draft)
         {
-            var projectUri = command.ProjectId.ToKotoriProjectUri();
-            var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
-            var documentUri = command.ProjectId.ToKotoriDocumentUri(command.DocumentType, command.DocumentTypeId, command.DocumentId, command.Index);
-            var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
-            var transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier().DocumentTypeId, documentType?.Transformations);
-            var document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), command.Content, transformation, command.Date, command.Draft);
-            var documentTypeId = documentTypeUri.ToKotoriDocumentTypeIdentifier();
+            var projectUri = projectId.ToKotoriProjectUri();
+            var documentTypeUri = projectId.ToKotoriDocumentTypeUri(documentType, documentTypeId);
+            var documentUri = projectId.ToKotoriDocumentUri(documentType, documentTypeId, documentId, index);
+            var documentType2 = await FindDocumentTypeAsync(instance, projectUri, documentTypeUri);
+            var transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier().DocumentTypeId, documentType2?.Transformations);
+            var document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), content, transformation, date, draft);
+            var documentTypeId2 = documentTypeUri.ToKotoriDocumentTypeIdentifier();
 
             IDocumentResult documentResult = null;
 
             documentResult = document.Process();
 
-            if (command.DocumentType == Enums.DocumentType.Content)
+            if (documentType == Enums.DocumentType.Content)
             {
-                var slug = await FindDocumentBySlugAsync(command.Instance, projectUri, documentResult.Slug, documentUri);
+                var slug = await FindDocumentBySlugAsync(instance, projectUri, documentResult.Slug, documentUri);
 
                 if (slug != null)
-                    throw new KotoriDocumentException(command.DocumentId, $"Slug '{documentResult.Slug}' is already being used for another document.");
+                    throw new KotoriDocumentException(documentId, $"Slug '{documentResult.Slug}' is already being used for another document.");
             }
 
-            documentType = await UpsertDocumentTypeAsync
+            documentType2 = await UpsertDocumentTypeAsync
             (
-               command.Instance,
-               documentTypeId,
+               instance,
+               documentTypeId2,
                new UpdateToken<dynamic>(DocumentHelpers.CleanUpMeta(documentResult.Meta), false),
                new UpdateToken<string>(null, true)
             );
 
-            transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier().DocumentTypeId, documentType.Transformations);
-            document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), command.Content, transformation, command.Date, command.Draft);
+            transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier().DocumentTypeId, documentType2.Transformations);
+            document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), content, transformation, date, draft);
             documentResult = document.Process();
 
-            var d = await FindDocumentByIdAsync(command.Instance, projectUri, documentUri, null);
+            var d = await FindDocumentByIdAsync(instance, projectUri, documentUri, null);
             var isNew = d == null;
             var id = d?.Id;
 
             if (!isNew)
             {
-                if (command.CreateOnly &&
-                   command.DocumentType == Enums.DocumentType.Content)
+                if (createOnly &&
+                   documentType == Enums.DocumentType.Content)
                 {
-                    throw new KotoriDocumentException(command.DocumentId, "Document cannot be created. It already exists.");    
+                    throw new KotoriDocumentException(documentId, "Document cannot be created. It already exists.");    
                 }
             }
 
@@ -149,7 +157,7 @@ namespace KotoriCore.Database.DocumentDb
 
             d = new Entities.Document
             (
-                command.Instance,
+                instance,
                 projectUri.ToString(),
                 documentUri.ToString(),
                 documentTypeUri.ToString(),

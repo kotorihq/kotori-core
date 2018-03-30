@@ -10,24 +10,19 @@ namespace KotoriCore.Commands
     /// </summary>
     public class UpsertProjectKey : Command, IUpsertProjectKey
     {
+        IRandomGenerator _randomGenerator;
+
+        // TODO
         public string Instance { get; private set; }
 
-        /// <summary>
-        /// The project identifier.
-        /// </summary>
+        // TODO
         public string ProjectId { get; private set; }
 
-        /// <summary>
-        /// The project key.
-        /// </summary>
+        // TODO
         public ProjectKey ProjectKey;
 
-        /// <summary>
-        /// The create only flag.
-        /// </summary>
+        // TODO
         public bool CreateOnly { get; private set; }
-
-        IRandomGenerator _randomGenerator;
 
         // TODO
         public UpsertProjectKey(IRandomGenerator randomGenerator)

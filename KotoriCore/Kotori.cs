@@ -11,6 +11,7 @@ using Sushi2;
 using KotoriCore.Helpers;
 using KotoriCore.Helpers.RandomGenerator;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace KotoriCore
 {
@@ -25,7 +26,6 @@ namespace KotoriCore
         /// <value>The configuration.</value>
         public IKotoriConfiguration Configuration { get; }
 
-        IDatabase _database;
         IServiceProvider _serviceProvider;
 
         /// <summary>
@@ -34,20 +34,22 @@ namespace KotoriCore
         /// <param name="configuration">Configuration.</param>
         public Kotori(KotoriConfiguration configuration)
         {
-            _serviceProvider = new ServiceCollection()
+            var services = new ServiceCollection()
                 // helpers
                 .AddSingleton<IRandomGenerator, IdGenerator>()
                 // commands
                 .AddTransient<IUpsertProjectKey, UpsertProjectKey>()
-                .BuildServiceProvider();
-            
+                .AddTransient<IUpsertDocument, UpsertDocument>()
+                .AddSingleton<IKotoriConfiguration>(configuration);                
+                
             Configuration = configuration;
 
             if (Configuration.Database is DocumentDbConfiguration documentDbConfiguration)
             {
                 try
                 {
-                    _database = new DocumentDb(documentDbConfiguration);
+                    services.AddSingleton<IDatabaseConfiguration>(documentDbConfiguration);
+                    services.AddSingleton<IDatabase, DocumentDb>();
                 }
                 catch(Exception ex)
                 {
@@ -55,10 +57,10 @@ namespace KotoriCore
                 }                
             }
 
-            if (_database == null)
-            {
+            if (services.All(s => s.ServiceType != typeof(IDatabase)))
                 throw new Exceptions.KotoriException("No database initialized.");
-            }
+
+            _serviceProvider = services.BuildServiceProvider();
         }
 
         /// <summary>
@@ -104,7 +106,9 @@ namespace KotoriCore
         public async Task<OperationResult> UpsertDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, 
                                                       string documentId, long? index, string content, DateTime? date = null, bool? draft = null)
         {
-            return (await ProcessAsync(new UpsertDocument(false, instance, projectId, documentType, documentTypeId, documentId, index, content, date, draft)) as CommandResult<OperationResult>).Record;
+            var command = _serviceProvider.GetService<IUpsertDocument>();
+            command.Init(false, instance, projectId, documentType, documentTypeId, documentId, index, content, date, draft);
+            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -136,7 +140,9 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> CreateDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? date = null, bool? draft = null)
         {
-            return (await ProcessAsync(new UpsertDocument(true, instance, projectId, documentType, documentTypeId, null, null, content, date, draft)) as CommandResult<OperationResult>).Record;
+            var command = _serviceProvider.GetService<IUpsertDocument>();
+            command.Init(true, instance, projectId, documentType, documentTypeId, null, null, content, date, draft);
+            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -717,7 +723,8 @@ namespace KotoriCore
         /// <param name="command">Command.</param>
         async Task<ICommandResult> ProcessAsync(ICommand command)
         {
-            return await _database.HandleAsync(command);
+            var database = _serviceProvider.GetService<IDatabase>();
+            return await database.HandleAsync(command);
         }
     }
 }
