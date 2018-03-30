@@ -12,6 +12,7 @@ using KotoriCore.Helpers;
 using KotoriCore.Helpers.RandomGenerator;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+using KotoriCore.Helpers.Vocabulary;
 
 namespace KotoriCore
 {
@@ -37,6 +38,7 @@ namespace KotoriCore
             var services = new ServiceCollection()
                 // helpers
                 .AddSingleton<IRandomGenerator, IdGenerator>()
+                .AddSingleton<IVocabulary, EnglishVocabulary>()
                 // commands
                 .AddTransient<IUpsertProjectKey, UpsertProjectKey>()
                 .AddTransient<IUpsertDocument, UpsertDocument>()
