@@ -40,6 +40,7 @@ namespace KotoriCore
                 // commands
                 .AddTransient<IUpsertProjectKey, UpsertProjectKey>()
                 .AddTransient<IUpsertDocument, UpsertDocument>()
+                .AddTransient<IUpsertDocumentType, UpsertDocumentType>()
                 .AddSingleton<IKotoriConfiguration>(configuration);                
                 
             Configuration = configuration;
@@ -663,7 +664,9 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> CreateDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            return (await ProcessAsync(new UpsertDocumentType(true, instance, projectId, documentType, documentTypeId)) as CommandResult<OperationResult>).Record;
+            var command = _serviceProvider.GetService<IUpsertDocumentType>();
+            command.Init(true, instance, projectId, documentType, documentTypeId);
+            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -689,7 +692,9 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> UpsertDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            return (await ProcessAsync(new UpsertDocumentType(false, instance, projectId, documentType, documentTypeId)) as CommandResult<OperationResult>).Record;
+            var command = _serviceProvider.GetService<IUpsertDocumentType>();
+            command.Init(false, instance, projectId, documentType, documentTypeId);
+            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
