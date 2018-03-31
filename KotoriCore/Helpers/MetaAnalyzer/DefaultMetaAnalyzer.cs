@@ -101,13 +101,11 @@ namespace KotoriCore.Helpers.MetaAnalyzer
 
                     var aidx = availables.Where(x => indexes2.All(xx => xx.To != x) && result.All(xx => xx.To != x));
 
-                    // we are not lucky, no available free index
                     if (!aidx.Any())
-                    {
-                        continue;
-                    }
+                        aidx = null;
 
-                    result.Add(new DocumentTypeIndex(key, aidx.First()));
+                    // FHK
+                    result.Add(new DocumentTypeIndex(key, aidx?.First(), Enums.MetaType.Null));
                 }
             }
             else

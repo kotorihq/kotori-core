@@ -23,18 +23,18 @@ namespace KotoriCore.Domains
         /// Gets or sets "to" index.
         /// </summary>
         /// <value>"To" index.</value>
-        public Shushu.Enums.IndexField To { get; set; }
+        public Shushu.Enums.IndexField? To { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.DocumentTypeIndex"/> class.
         /// </summary>
-        // public DocumentTypeIndex()
-        // {
-        // }
+        public DocumentTypeIndex()
+        {
+        }
 
         // TODO
         // FHK
-        public DocumentTypeIndex(string from, Shushu.Enums.IndexField to, Enums.MetaType type = Enums.MetaType.Null, bool isRequired = false)
+        public DocumentTypeIndex(string from, Shushu.Enums.IndexField? to, Enums.MetaType type, bool isRequired = false)
         {
             From = from;
             To = to;
