@@ -11,8 +11,7 @@ namespace KotoriCore.Helpers.MetaAnalyzer
     // TODO
     public class DefaultMetaAnalyzer : IMetaAnalyzer
     {
-        // TODO
-        public Enums.MetaType GetMetaType(object o)
+        Enums.MetaType GetMetaType(object o)
         {
             if (o == null)
                 return Enums.MetaType.Null;
@@ -61,6 +60,22 @@ namespace KotoriCore.Helpers.MetaAnalyzer
             return Enums.MetaType.Object;
         }
 
+        bool AreTypesCompatible(Enums.MetaType from, Enums.MetaType to)
+        {
+            if (from == to)
+                return true;
+
+             if (from == Enums.MetaType.Null ||
+                to == Enums.MetaType.Null)
+                return true;
+
+            if (from == Enums.MetaType.Integer ||
+                to == Enums.MetaType.Number)
+                return true;
+
+            return false;   
+        }
+
         /// <summary>
         /// Gets the updated document type indexes.
         /// </summary>
@@ -90,12 +105,16 @@ namespace KotoriCore.Helpers.MetaAnalyzer
 
                     // key's been indexed already - check type compatibility
                     var ex = indexes2.FirstOrDefault(x => x.From.Equals(key, StringComparison.OrdinalIgnoreCase));
+                    var mt = GetMetaType(v);
 
                     if (ex != null)
                     {
+                        if (!AreTypesCompatible(ex.Type, mt))
+                            throw new KotoriValidationException($"Meta property '{key}' is not acceptable because type '{mt} cannot be converted to {ex.Type}.");
+
                         if (availables.All(x => x != ex.To))
                             throw new KotoriValidationException($"Meta property '{key}' cannot be mapped because it has been alreade mapped to '{ex.To}'.");
-                        
+
                         continue;
                     }
 
@@ -105,7 +124,7 @@ namespace KotoriCore.Helpers.MetaAnalyzer
                         aidx = null;
 
                     // FHK
-                    result.Add(new DocumentTypeIndex(key, aidx?.First(), Enums.MetaType.Null));
+                    result.Add(new DocumentTypeIndex(key, aidx?.First(), mt));
                 }
             }
             else
