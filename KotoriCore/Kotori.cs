@@ -22,12 +22,6 @@ namespace KotoriCore
     /// </summary>
     public class Kotori : IKotori
     {
-        /// <summary>
-        /// Gets the configuration.
-        /// </summary>
-        /// <value>The configuration.</value>
-        public IKotoriConfiguration Configuration { get; }
-
         IServiceProvider _serviceProvider;
 
         /// <summary>
@@ -47,10 +41,8 @@ namespace KotoriCore
                 .AddTransient<IUpsertDocumentType, UpsertDocumentType>()
                 .AddTransient<IUpsertProject, UpsertProject>()
                 .AddSingleton<IKotoriConfiguration>(configuration);                
-                
-            Configuration = configuration;
 
-            if (Configuration.Database is DocumentDbConfiguration documentDbConfiguration)
+            if (configuration.Database is DocumentDbConfiguration documentDbConfiguration)
             {
                 try
                 {
