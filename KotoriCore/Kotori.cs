@@ -13,6 +13,7 @@ using KotoriCore.Helpers.RandomGenerator;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using KotoriCore.Helpers.Vocabulary;
+using KotoriCore.Helpers.MetaAnalyzer;
 
 namespace KotoriCore
 {
@@ -39,7 +40,8 @@ namespace KotoriCore
                 // helpers
                 .AddSingleton<IRandomGenerator, IdGenerator>()
                 .AddSingleton<IVocabulary, EnglishVocabulary>()
-                // commands
+                .AddSingleton<IMetaAnalyzer, DefaultMetaAnalyzer>()
+                // commands                
                 .AddTransient<IUpsertProjectKey, UpsertProjectKey>()
                 .AddTransient<IUpsertDocument, UpsertDocument>()
                 .AddTransient<IUpsertDocumentType, UpsertDocumentType>()

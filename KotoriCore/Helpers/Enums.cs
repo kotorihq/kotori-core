@@ -128,14 +128,23 @@ namespace KotoriCore.Helpers
         [JsonConverter(typeof(StringEnumConverter))]
         public enum MetaType
         {
+            // String
             String = 10,
+            // Date
             Date = 20,
+            // Number
             Number = 30,
+            // Integer
             Integer = 40,
             Object = 50,
+            // Array
             Array = 60,
+            // Tags
             Tags = 70,
-            Boolean = 80
+            // Boolean
+            Boolean = 80,
+            // Null
+            Null = 90
         }
     }
 }

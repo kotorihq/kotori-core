@@ -10,10 +10,10 @@ using static KotoriCore.Database.DocumentDb.Helpers.DocumentDbHelpers;
 using KotoriCore.Helpers;
 using System.Collections.Generic;
 using KotoriCore.Domains;
-using KotoriCore.Search;
 using Newtonsoft.Json.Linq;
 using KotoriCore.Documents.Transformation;
 using KotoriCore.Database.DocumentDb.Helpers;
+using KotoriCore.Helpers.MetaAnalyzer;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -33,6 +33,8 @@ namespace KotoriCore.Database.DocumentDb
         readonly Repository<dynamic> _repoDynamic;
         readonly Connection _connection;
 
+        readonly IMetaAnalyzer _metaAnalyzer;
+
         internal const string ProjectEntity = "kotori/project";
         internal const string DocumentTypeEntity = "kotori/document-type";
         internal const string DocumentEntity = "kotori/document";
@@ -42,11 +44,13 @@ namespace KotoriCore.Database.DocumentDb
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.DocumentDb"/> class.
         /// </summary>
         /// <param name="configuration">Configuration.</param>
-        public DocumentDb(IDatabaseConfiguration configuration)
+        public DocumentDb(IDatabaseConfiguration configuration, IMetaAnalyzer metaAnalyzer)
         {
             var dbConfig = configuration as DocumentDbConfiguration;
 
             _connection = new Connection(dbConfig.Endpoint, dbConfig.AuthorizationKey, dbConfig.Database, dbConfig.Collection);
+            _metaAnalyzer = metaAnalyzer;
+
             _repoProject = new Repository<Entities.Project>(_connection);
             _repoDocumentType = new Repository<Entities.DocumentType>(_connection);
             _repoDocument = new Repository<Entities.Document>(_connection);
@@ -541,7 +545,7 @@ namespace KotoriCore.Database.DocumentDb
                 var indexes = new List<DocumentTypeIndex>();
 
                 if (!meta.Ignore)
-                    indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta.Value);
+                    indexes = _metaAnalyzer.GetUpdatedDocumentTypeIndexes(indexes, meta.Value);
                 
                 var trans = new List<DocumentTypeTransformation>();
 
@@ -569,7 +573,7 @@ namespace KotoriCore.Database.DocumentDb
                 var indexes = documentType.Indexes ?? new List<DocumentTypeIndex>();
 
                 if (!meta.Ignore)
-                    indexes = SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta.Value);
+                    indexes = _metaAnalyzer.GetUpdatedDocumentTypeIndexes(indexes, meta.Value);
 
                 documentType.Indexes = indexes;
 

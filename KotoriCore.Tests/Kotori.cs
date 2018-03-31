@@ -13,6 +13,7 @@ using KotoriCore.Database.DocumentDb;
 using Newtonsoft.Json;
 using KotoriCore.Configurations;
 using KotoriCore.Helpers;
+using KotoriCore.Helpers.MetaAnalyzer;
 
 namespace KotoriCore.Tests
 {
@@ -46,7 +47,7 @@ namespace KotoriCore.Tests
                 AuthorizationKey = appSettings["Kotori:DocumentDb:AuthorizationKey"], 
                 Database = appSettings["Kotori:DocumentDb:Database"],
                 Collection = appSettings["Kotori:DocumentDb:Collection"]
-            });
+            }, new DefaultMetaAnalyzer());
                                     
             _con.CreateCollection();
 

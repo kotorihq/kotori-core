@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using KotoriCore.Domains;
+using KotoriCore.Helpers.MetaAnalyzer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace KotoriCore.Tests
@@ -12,6 +13,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void GetUpdatedDocumentTypeIndexes0()
         {
+            var search = new DefaultMetaAnalyzer();
             var indexes = new List<DocumentTypeIndex>();
             var meta = new
             {
@@ -19,7 +21,7 @@ namespace KotoriCore.Tests
                 b = 2
             };
 
-            var indexes2 = Search.SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta).ToList();
+            var indexes2 = search.GetUpdatedDocumentTypeIndexes(indexes, meta).ToList();
 
             Assert.AreEqual(2, indexes2.Count);
             Assert.AreEqual("a", indexes2[0].From);
@@ -31,6 +33,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void GetUpdatedDocumentTypeIndexes1()
         {
+            var search = new DefaultMetaAnalyzer();
             var indexes = new List<DocumentTypeIndex>();
             var meta = new
             {
@@ -40,7 +43,7 @@ namespace KotoriCore.Tests
                 }
             };
 
-            var indexes2 = Search.SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta).ToList();
+            var indexes2 = search.GetUpdatedDocumentTypeIndexes(indexes, meta).ToList();
 
             Assert.AreEqual(1, indexes2.Count);
             Assert.AreEqual("food", indexes2[0].From);
@@ -50,6 +53,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public void GetUpdatedDocumentTypeIndexes2()
         {
+            var search = new DefaultMetaAnalyzer();
             var indexes = new List<DocumentTypeIndex>();
             var meta = new
             {
@@ -58,7 +62,7 @@ namespace KotoriCore.Tests
                 clever = true
             };
 
-            var indexes2 = Search.SearchTools.GetUpdatedDocumentTypeIndexes(indexes, meta).ToList();
+            var indexes2 = search.GetUpdatedDocumentTypeIndexes(indexes, meta).ToList();
 
             Assert.AreEqual(3, indexes2.Count);
             Assert.AreEqual("born", indexes2[0].From);

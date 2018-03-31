@@ -1,4 +1,6 @@
-﻿namespace KotoriCore.Domains
+﻿using KotoriCore.Helpers;
+
+namespace KotoriCore.Domains
 {
     /// <summary>
     /// Document type index.
@@ -12,6 +14,9 @@
         public string From { get; set; }
 
         // TODO
+        public Enums.MetaType Type { get; set;}
+        
+        // TODO
         public bool IsRequired { get; set; } = false;
 
         /// <summary>
@@ -23,19 +28,18 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.DocumentTypeIndex"/> class.
         /// </summary>
-        public DocumentTypeIndex()
-        {
-        }
+        // public DocumentTypeIndex()
+        // {
+        // }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.DocumentTypeIndex"/> class.
-        /// </summary>
-        /// <param name="from">"From" property.</param>
-        /// <param name="to">"To" index.</param>
-        public DocumentTypeIndex(string from, Shushu.Enums.IndexField to)
+        // TODO
+        // FHK
+        public DocumentTypeIndex(string from, Shushu.Enums.IndexField to, Enums.MetaType type = Enums.MetaType.Null, bool isRequired = false)
         {
             From = from;
             To = to;
+            Type = type;
+            IsRequired = isRequired;
         }
     }
 }
