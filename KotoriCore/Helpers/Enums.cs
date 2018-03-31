@@ -123,5 +123,19 @@ namespace KotoriCore.Helpers
             [EnumMember(Value = "epoch")]
             Epoch = 5,
         }
+
+        // TODO
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum MetaType
+        {
+            String = 10,
+            Date = 20,
+            Number = 30,
+            Integer = 40,
+            Object = 50,
+            Array = 60,
+            Tags = 70,
+            Boolean = 80
+        }
     }
 }
