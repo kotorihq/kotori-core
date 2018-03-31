@@ -54,7 +54,6 @@ namespace KotoriCore.Commands
             if (CreateOnly &&
                 string.IsNullOrEmpty(documentTypeId))
             {
-                // TODO: FHK
                 DocumentTypeId = _randomGenerator.GetId();
             }
         }

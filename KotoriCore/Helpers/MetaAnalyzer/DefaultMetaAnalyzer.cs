@@ -123,7 +123,6 @@ namespace KotoriCore.Helpers.MetaAnalyzer
                     if (!aidx.Any())
                         aidx = null;
 
-                    // FHK
                     result.Add(new DocumentTypeIndex(key, aidx?.First(), mt));
                 }
             }

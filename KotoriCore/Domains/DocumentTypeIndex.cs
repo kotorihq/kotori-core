@@ -33,7 +33,6 @@ namespace KotoriCore.Domains
         }
 
         // TODO
-        // FHK
         public DocumentTypeIndex(string from, Shushu.Enums.IndexField? to, Enums.MetaType type, bool isRequired = false)
         {
             From = from;

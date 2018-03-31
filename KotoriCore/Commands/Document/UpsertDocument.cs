@@ -82,7 +82,6 @@ namespace KotoriCore.Commands
             Index = index;
             Content = content;
 
-            // TODO: FHK
             if (CreateOnly &&
                 DocumentType == Enums.DocumentType.Content)
                 DocumentId = _randomGenerator.GetId();
