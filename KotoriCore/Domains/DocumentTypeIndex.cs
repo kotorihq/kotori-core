@@ -11,6 +11,9 @@
         /// <value>"From" property.</value>
         public string From { get; set; }
 
+        // TODO
+        public bool IsRequired { get; set; } = false;
+
         /// <summary>
         /// Gets or sets "to" index.
         /// </summary>
