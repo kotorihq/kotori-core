@@ -8,7 +8,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<OperationResult>> HandleAsync(UpsertDocumentType command)
+        public async Task<OperationResult> UpsertDocumentTypeAsync(IUpsertDocumentType command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
@@ -30,7 +30,7 @@ namespace KotoriCore.Database.DocumentDb
                 new UpdateToken<string>(null, true)
             );
 
-            return new CommandResult<OperationResult>(new OperationResult(documentType, isNew));
+            return new OperationResult(documentType, isNew);
         }
     }
 }

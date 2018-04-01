@@ -673,8 +673,11 @@ namespace KotoriCore
         public async Task<OperationResult> CreateDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
             var command = _serviceProvider.GetService<IUpsertDocumentType>();
+            var database = _serviceProvider.GetService<IDatabase>();
+
             command.Init(true, instance, projectId, documentType, documentTypeId);
-            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
+            
+            return await ProcessOperationAsync(command, database.UpsertDocumentTypeAsync(command));
         }
 
         /// <summary>
@@ -701,8 +704,11 @@ namespace KotoriCore
         public async Task<OperationResult> UpsertDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
             var command = _serviceProvider.GetService<IUpsertDocumentType>();
+            var database = _serviceProvider.GetService<IDatabase>();
+
             command.Init(false, instance, projectId, documentType, documentTypeId);
-            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
+
+            return await ProcessOperationAsync(command, database.UpsertDocumentTypeAsync(command));
         }
 
         /// <summary>
