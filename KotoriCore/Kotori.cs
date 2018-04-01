@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using KotoriCore.Helpers.Vocabulary;
 using KotoriCore.Helpers.MetaAnalyzer;
+using KotoriCore.Exceptions;
 
 namespace KotoriCore
 {
@@ -109,7 +110,7 @@ namespace KotoriCore
 
             command.Init(false, instance, projectId, documentType, documentTypeId, documentId, index, content, date, draft);
 
-            return await database.UpsertDocumentAsync(command);
+            return await ProcessOperationAsync(command, database.UpsertDocumentAsync(command));
         }
 
         /// <summary>
@@ -146,7 +147,7 @@ namespace KotoriCore
 
             command.Init(true, instance, projectId, documentType, documentTypeId, null, null, content, date, draft);
 
-            return await database.UpsertDocumentAsync(command);
+            return await ProcessOperationAsync(command, database.UpsertDocumentAsync(command));
         }
 
         /// <summary>
@@ -737,6 +738,31 @@ namespace KotoriCore
         {
             var database = _serviceProvider.GetService<IDatabase>();
             return await database.HandleAsync(command);
+        }
+
+        async Task<OperationResult> ProcessOperationAsync(ICommand command, Task<OperationResult> operation)
+        {
+            try
+            {
+                var validationResults = command.Validate();
+
+                if (validationResults != null &&
+                    validationResults.Any())
+                    throw new KotoriValidationException(validationResults);
+
+                return await operation;
+            }
+            catch(KotoriException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (ex?.InnerException is KotoriException ke)
+                    throw ex.InnerException;
+                
+                throw new KotoriException(ex.Message);
+            }
         }
     }
 }
