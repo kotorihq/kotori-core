@@ -24,5 +24,8 @@ namespace KotoriCore.Database
 
         // TODO
         Task<OperationResult> UpsertProjectAsync(IUpsertProject command);
+
+        // TODO
+        Task<OperationResult> UpsertProjectKeyAsync(IUpsertProjectKey command);
     }
 }

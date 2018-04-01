@@ -498,9 +498,12 @@ namespace KotoriCore
         // TODO
         public async Task<OperationResult> CreateProjectKeyAsync(string instance, string projectId, string projectKey, bool isReadonly = false)
         {
+            var database = _serviceProvider.GetService<IDatabase>();
             var command = _serviceProvider.GetService<IUpsertProjectKey>();
+
             command.Init(true, instance, projectId, projectKey, isReadonly);
-            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
+
+            return await ProcessOperationAsync(command, database.UpsertProjectKeyAsync(command));
         }
 
         // TODO
@@ -512,9 +515,12 @@ namespace KotoriCore
         // TODO
         public async Task<OperationResult> UpsertProjectKeyAsync(string instance, string projectId, string projectKey, bool isReadonly = false)
         {
+            var database = _serviceProvider.GetService<IDatabase>();
             var command = _serviceProvider.GetService<IUpsertProjectKey>();
+
             command.Init(false, instance, projectId, projectKey, isReadonly);
-            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
+
+            return await ProcessOperationAsync(command, database.UpsertProjectKeyAsync(command));
         }
 
         /// <summary>

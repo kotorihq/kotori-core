@@ -100,8 +100,6 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(getProject);
                 else if (command is GetProjectKeys getProjectKeys)
                     result = await HandleAsync(getProjectKeys);
-                else if (command is UpsertProjectKey upsertProjectKey)
-                    result = await HandleAsync(upsertProjectKey);
                 else if (command is DeleteProjectKey deleteProjectKey)
                     result = await HandleAsync(deleteProjectKey);
                 else if (command is GetDocumentVersions getDocumentVersions)
