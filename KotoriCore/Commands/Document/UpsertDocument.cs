@@ -8,59 +8,29 @@ namespace KotoriCore.Commands
     /// <summary>
     /// Upsert document command.
     /// </summary>
-    public class UpsertDocument : Command, IUpsertDocument
+    public class UpsertDocument : ICommand, IUpsertDocument
     {
         private IRandomGenerator _randomGenerator;
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public string Instance { get; set; }
+        public string Instance { get; internal set; }
 
-        /// <summary>
-        /// The project identifier.
-        /// </summary>
-        public string ProjectId { get; set; }
+        public string ProjectId { get; internal set; }
 
-        /// <summary>
-        /// The create only flag.
-        /// </summary>
-        public bool CreateOnly { get; set; }
+        public bool CreateOnly { get; internal set; }
 
-        /// <summary>
-        /// The type of the document.
-        /// </summary>
-        public Enums.DocumentType DocumentType { get; set; }
+        public Enums.DocumentType DocumentType { get; internal set; }
 
-        /// <summary>
-        /// The document type identifier.
-        /// </summary>
-        public string DocumentTypeId { get; set; }
+        public string DocumentTypeId { get; internal set; }
 
-        /// <summary>
-        /// The document identifier.
-        /// </summary>
-        public string DocumentId { get; set; }
+        public string DocumentId { get; internal set; }
 
-        /// <summary>
-        /// The content.
-        /// </summary>
-        public string Content { get; set; }
+        public string Content { get; internal set; }
 
-        /// <summary>
-        /// The index.
-        /// </summary>
-        public long? Index { get; set; }
+        public long? Index { get; internal set; }
 
-        /// <summary>
-        /// The date.
-        /// </summary>
-        public DateTime? Date { get; set; }
+        public DateTime? Date { get; internal set; }
 
-        /// <summary>
-        /// The draft flag.
-        /// </summary>
-        public bool? Draft { get; set; }
+        public bool? Draft { get; internal set; }
 
         // TODO
         public UpsertDocument(IRandomGenerator randomGenerator)
@@ -91,7 +61,7 @@ namespace KotoriCore.Commands
         /// Validates the command.
         /// </summary>
         /// <returns>The validation results.</returns>
-        public override IEnumerable<ValidationResult> Validate()
+        public IEnumerable<ValidationResult> Validate()
         {
             if (string.IsNullOrEmpty(Instance))
                 yield return new ValidationResult("Instance must be set.");

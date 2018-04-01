@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using KotoriCore.Commands;
+using KotoriCore.Domains;
 
 namespace KotoriCore.Database
 {
@@ -14,5 +15,8 @@ namespace KotoriCore.Database
         /// <returns>The command result.</returns>
         /// <param name="command">Command.</param>
         Task<ICommandResult> HandleAsync(ICommand command);
+
+        // TODO
+        Task<OperationResult> UpsertDocumentAsync(IUpsertDocument command);
     }
 }

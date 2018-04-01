@@ -14,7 +14,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<OperationResult>> HandleAsync(UpsertDocument command)
+        public async Task<OperationResult> UpsertDocumentAsync(IUpsertDocument command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
@@ -73,7 +73,7 @@ namespace KotoriCore.Database.DocumentDb
                     throw new KotoriDocumentException(command.DocumentId, $"When creating data document at a particular index, your index must be 0 - {count}.");
                 }
 
-                CommandResult<OperationResult> lastResult = null;
+                OperationResult lastResult = null;
 
                 for (var dc = 0; dc < documents.Count; dc++)
                 {
@@ -103,7 +103,7 @@ namespace KotoriCore.Database.DocumentDb
             throw new KotoriDocumentException(command.DocumentId, "Unknown document type.");
         }
 
-        async Task<CommandResult<OperationResult>> UpsertDocumentHelperAsync(bool createOnly, string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? date, bool? draft)
+        async Task<OperationResult> UpsertDocumentHelperAsync(bool createOnly, string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? date, bool? draft)
         {
             var projectUri = projectId.ToKotoriProjectUri();
             var documentTypeUri = projectId.ToKotoriDocumentTypeUri(documentType, documentTypeId);
@@ -176,7 +176,7 @@ namespace KotoriCore.Database.DocumentDb
 
             var newDocument = await UpsertDocumentAsync(d);
 
-            var result = new CommandResult<OperationResult>(new OperationResult(newDocument, isNew));
+            var result = new OperationResult(newDocument, isNew);
 
             return result;
         }
