@@ -1823,6 +1823,14 @@ Matrix has you!";
         }
 
         [TestMethod]
+        [ExpectedException(typeof(KotoriCore.Exceptions.KotoriException))]
+        public async Task NoDbConfigured()
+        {
+            var kotori = new Kotori(new KotoriConfiguration("nodb", "dev", null, null, null));
+            var result = await kotori.UpsertProjectAsync("dev", "something", "MrData");
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(KotoriDocumentException))]
         public async Task DataWithContentYaml()
         {
