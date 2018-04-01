@@ -80,8 +80,6 @@ namespace KotoriCore.Database.DocumentDb
                     validationResults.Any())
                     throw new KotoriValidationException(validationResults);
 
-                if (command is UpsertProject upsertProject)
-                    result = await HandleAsync(upsertProject);
                 else if (command is GetProjects getProjects)
                     result = await HandleAsync(getProjects);
                 else if (command is DeleteProject deleteProject)
@@ -629,5 +627,5 @@ namespace KotoriCore.Database.DocumentDb
                 return documentType;
             }
         }
-     }
+    }
 }

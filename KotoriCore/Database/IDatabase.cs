@@ -21,5 +21,8 @@ namespace KotoriCore.Database
 
         // TODO
         Task<OperationResult> UpsertDocumentTypeAsync(IUpsertDocumentType command);
+
+        // TODO
+        Task<OperationResult> UpsertProjectAsync(IUpsertProject command);
     }
 }

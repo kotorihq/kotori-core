@@ -151,32 +151,6 @@ namespace KotoriCore
         }
 
         /// <summary>
-        /// Creates project.
-        /// </summary>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="name">Project name.</param>
-        /// <returns>Operation result.</returns>
-        public OperationResult CreateProject(string instance, string projectId, string name)
-        {
-            return AsyncTools.RunSync(() => CreateProjectAsync(instance, projectId, name));
-        }
-
-        /// <summary>
-        /// Creates project.
-        /// </summary>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="name">Project name.</param>
-        /// <returns>Operation result.</returns>
-        public async Task<OperationResult> CreateProjectAsync(string instance, string projectId, string name)
-        {
-            var command = _serviceProvider.GetService<IUpsertProject>();
-            command.Init(true, instance, projectId, name);
-            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
-        }
-
-        /// <summary>
         /// Deletes project.
         /// </summary>
         /// <param name="instance">Instance.</param>
@@ -478,9 +452,41 @@ namespace KotoriCore
         /// <returns>Operation result.</returns>
         public async Task<OperationResult> UpsertProjectAsync(string instance, string projectId, string name)
         {
+            var database = _serviceProvider.GetService<IDatabase>();
             var command = _serviceProvider.GetService<IUpsertProject>();
+
             command.Init(false, instance, projectId, name);
-            return (await ProcessAsync(command) as CommandResult<OperationResult>).Record;
+
+            return await ProcessOperationAsync(command, database.UpsertProjectAsync(command));
+        }
+
+        /// <summary>
+        /// Creates project.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="name">Project name.</param>
+        /// <returns>Operation result.</returns>
+        public OperationResult CreateProject(string instance, string projectId, string name)
+        {
+            return AsyncTools.RunSync(() => CreateProjectAsync(instance, projectId, name));
+        }
+
+        /// <summary>
+        /// Creates project.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="projectId">Project identifier.</param>
+        /// <param name="name">Project name.</param>
+        /// <returns>Operation result.</returns>
+        public async Task<OperationResult> CreateProjectAsync(string instance, string projectId, string name)
+        {
+            var database = _serviceProvider.GetService<IDatabase>();
+            var command = _serviceProvider.GetService<IUpsertProject>();
+
+            command.Init(true, instance, projectId, name);
+
+            return await ProcessOperationAsync(command, database.UpsertProjectAsync(command));
         }
 
         // TOO

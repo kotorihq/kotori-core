@@ -8,7 +8,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<OperationResult>> HandleAsync(UpsertProject command)
+        public async Task<OperationResult> UpsertProjectAsync(IUpsertProject command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
 
@@ -31,7 +31,7 @@ namespace KotoriCore.Database.DocumentDb
             }
 
             var project = await UpsertProjectAsync(p);
-            var result = new CommandResult<OperationResult>(new OperationResult(project, isNew));
+            var result = new OperationResult(project, isNew);
 
             return result;
         }

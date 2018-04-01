@@ -7,29 +7,17 @@ namespace KotoriCore.Commands
     /// <summary>
     /// Upsert project command.
     /// </summary>
-    public class UpsertProject : Command, IUpsertProject
+    public class UpsertProject : ICommand, IUpsertProject
     {
         IRandomGenerator _randomGenerator;
 
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public string Instance { get; set; }
+        public string Instance { get; internal set; }
 
-        /// <summary>
-        /// The project identifier.
-        /// </summary>
-        public string ProjectId { get; set; }
+        public string ProjectId { get; internal set; }
 
-        /// <summary>
-        /// The name.
-        /// </summary>
-        public string Name { get; set; }
+        public string Name { get; internal set; }
 
-        /// <summary>
-        /// The create only flag.
-        /// </summary>
-        public bool CreateOnly { get; set; }
+        public bool CreateOnly { get; internal set; }
 
         // TODO
         public UpsertProject(IRandomGenerator randomGenerator)
@@ -56,7 +44,7 @@ namespace KotoriCore.Commands
         /// Validates the command.
         /// </summary>
         /// <returns>The validation results.</returns>
-        public override IEnumerable<ValidationResult> Validate()
+        public IEnumerable<ValidationResult> Validate()
         {
             if (string.IsNullOrEmpty(Instance))
                 yield return new ValidationResult("Instance must be set.");
