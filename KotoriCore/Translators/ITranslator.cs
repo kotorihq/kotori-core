@@ -5,6 +5,6 @@ namespace KotoriCore.Translators
 {
     public interface ITranslator
     {
-        string Translate(QueryString queryString, TranslateOptions translateOptions = TranslateOptions.ALL, string additionalWhereClause = null);
+        string Translate(ComplexQuery query);
     }
 }

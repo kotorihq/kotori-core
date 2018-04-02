@@ -86,5 +86,27 @@ namespace KotoriCore.Translators.OData
 
             return sql;
         }
+
+        public string Translate(ComplexQuery query)
+        {
+            var q = new QueryString();
+
+            if (query != null)
+            {
+                if (query.Select != null)
+                    q = q.Add("$select", query.Select);
+
+                if (query.Filter != null)
+                    q = q.Add("$filter", query.Filter);
+
+                if (query.OrderBy != null)
+                    q = q.Add("$orderby", query.OrderBy);
+
+                if (query.Top != null)
+                    q = q.Add("$top", query.Top.ToString());
+            }
+
+            return Translate(q, TranslateOptions.ALL, query?.AdditionalFilter);
+        }
     }
 }

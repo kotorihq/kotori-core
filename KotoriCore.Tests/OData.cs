@@ -23,6 +23,7 @@ using Microsoft.AspNet.OData.Formatter.Serialization;
 using Microsoft.AspNet.OData.Query;
 using KotoriCore.Tests.HelperClasses;
 using KotoriCore.Translators.OData;
+using KotoriCore.Translators;
 
 namespace KotoriCore.Tests
 {
@@ -191,6 +192,15 @@ namespace KotoriCore.Tests
         public void TranslateMasterSample()
         {
             var sqlQuery = _translator.Translate(new QueryString("?$select=id, englishName&$filter=title eq 'title1' and property/field ne 'val' or viewedCount ge 5 and (likedCount ne 3 or enumNumber eq 3)&$orderby=_lastClientEditedDateTime asc, createdDateTime desc&$top=30"), TranslateOptions.ALL, "c._t = 'dataType'");
+            Assert.AreEqual("SELECT TOP 30 c.id, c.englishName FROM c WHERE c._t = 'dataType' AND c.title = 'title1' AND c.property.field != 'val' OR c.viewedCount >= 5 AND (c.likedCount != 3 OR c.enumNumber = 3) ORDER BY c._lastClientEditedDateTime ASC, c.createdDateTime DESC ", sqlQuery);
+        }
+
+        [TestMethod]
+        public void TranslateMasterSample2()
+        {
+            var query = new ComplexQuery("id, englishName", "title eq 'title1' and property/field ne 'val' or viewedCount ge 5 and (likedCount ne 3 or enumNumber eq 3)",
+                30, null, "_lastClientEditedDateTime asc, createdDateTime desc", "c._t = 'dataType'");
+            var sqlQuery = _translator.Translate(query);
             Assert.AreEqual("SELECT TOP 30 c.id, c.englishName FROM c WHERE c._t = 'dataType' AND c.title = 'title1' AND c.property.field != 'val' OR c.viewedCount >= 5 AND (c.likedCount != 3 OR c.enumNumber = 3) ORDER BY c._lastClientEditedDateTime ASC, c.createdDateTime DESC ", sqlQuery);
         }
     }
