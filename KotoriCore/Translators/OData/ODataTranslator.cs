@@ -84,6 +84,9 @@ namespace KotoriCore.Translators.OData
             var oDataToSqlTranslator = new ODataToSqlTranslator(new SQLQueryFormatter());
             var sql = oDataToSqlTranslator.Translate(oDataQueryOptions, translateOptions, additionalWhereClause);
 
+            // TODO: mega ugly hack - new version ADCCure.Azure.Documents.ODataCore.Sql should support $count=true, let's wait
+            sql = sql.Replace("c.count(1)", "count(1)");
+
             return sql;
         }
 
@@ -94,15 +97,24 @@ namespace KotoriCore.Translators.OData
             if (query != null)
             {
                 if (query.Select != null)
-                    q = q.Add("$select", query.Select);
+                {
+                    if (query.Count)
+                        q = q.Add("$select", "count(1)");
+                    else
+                        q = q.Add("$select", query.Select);
+                }
 
                 if (query.Filter != null)
                     q = q.Add("$filter", query.Filter);
 
                 if (query.OrderBy != null)
-                    q = q.Add("$orderby", query.OrderBy);
+                {
+                    if (!query.Count)
+                        q = q.Add("$orderby", query.OrderBy);
+                }
 
-                if (query.Top != null)
+                if (query.Top != null &&
+                    !query.Count)
                     q = q.Add("$top", query.Top.ToString());
             }
 

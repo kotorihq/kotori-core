@@ -9,8 +9,9 @@ namespace KotoriCore.Translators
         public int? Skip { get; set; }
         public string OrderBy { get; set; }
         public string AdditionalFilter { get; set; }
+        public bool Count { get; set; }
 
-        public ComplexQuery(string select, string filter, int? top, int? skip, string orderBy, string additionalFilter)
+        public ComplexQuery(string select, string filter, int? top, int? skip, string orderBy, string additionalFilter, bool count = false)
         {
             Select = select;
             Filter = filter;
@@ -18,6 +19,7 @@ namespace KotoriCore.Translators
             Skip = skip;
             OrderBy = orderBy;
             AdditionalFilter = additionalFilter;
+            Count = count;
         }
     }
 }

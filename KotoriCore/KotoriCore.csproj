@@ -49,6 +49,6 @@
     <PackageReference Include="shortid" Version="1.0.4"/>
     <PackageReference Include="Sushi2" Version="1.2.2"/>
     <PackageReference Include="YamlDotNet" Version="4.3.1"/>
-    <PackageReference Include="ADCCure.Azure.Documents.ODataCore.Sql" Version="3.0.1"/>
+    <PackageReference Include="ADCCure.Azure.Documents.ODataCore.Sql" Version="3.0.2"/>
   </ItemGroup>
 </Project>
