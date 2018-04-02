@@ -6,18 +6,12 @@ namespace KotoriCore.Commands
     /// <summary>
     /// Get projects command.
     /// </summary>
-    public class GetProjects : Command
+    public class GetProjects : ICommand, IGetProjects
     {
-        /// <summary>
-        /// The instance.
-        /// </summary>
-        public readonly string Instance;
+        public string Instance { get; private set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetProjects"/> class.
-        /// </summary>
-        /// <param name="instance">Instance.</param>
-        public GetProjects(string instance)
+        // TODO
+        public void Init(string instance)
         {
             Instance = instance;            
         }
@@ -26,7 +20,7 @@ namespace KotoriCore.Commands
         /// Validates the command.
         /// </summary>
         /// <returns>The validation result.</returns>
-        public override IEnumerable<ValidationResult> Validate()
+        public IEnumerable<ValidationResult> Validate()
         {
             if (string.IsNullOrEmpty(Instance))
                 yield return new ValidationResult("Instance must be set.");

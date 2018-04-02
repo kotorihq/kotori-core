@@ -10,7 +10,7 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<ComplexCountResult<SimpleProject>>> HandleAsync(GetProjects command)
+        public async Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(IGetProjects command)
         {
             var q = new DynamicQuery
                 (
@@ -37,7 +37,7 @@ namespace KotoriCore.Database.DocumentDb
             var projects = await GetProjectsAsync(q);
             var simpleProjects = projects.Select(p => new SimpleProject(p.Name, new Uri(p.Identifier).ToKotoriProjectIdentifier()));
 
-            return new CommandResult<ComplexCountResult<SimpleProject>>(new ComplexCountResult<SimpleProject>(count, simpleProjects));
+            return new ComplexCountResult<SimpleProject>(count, simpleProjects);
         }
     }
 }

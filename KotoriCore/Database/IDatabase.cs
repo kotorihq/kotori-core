@@ -27,5 +27,8 @@ namespace KotoriCore.Database
 
         // TODO
         Task<OperationResult> UpsertProjectKeyAsync(IUpsertProjectKey command);
+
+        // TODO
+        Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(IGetProjects command);
     }
 }

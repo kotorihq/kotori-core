@@ -41,7 +41,9 @@ namespace KotoriCore
                 .AddTransient<IUpsertDocument, UpsertDocument>()
                 .AddTransient<IUpsertDocumentType, UpsertDocumentType>()
                 .AddTransient<IUpsertProject, UpsertProject>()
-                .AddSingleton<IKotoriConfiguration>(configuration);                
+                .AddTransient<IGetProjects, GetProjects>()
+                // configuration
+                .AddSingleton<IKotoriConfiguration>(configuration);              
 
             if (configuration.Database is DocumentDbConfiguration documentDbConfiguration)
             {
@@ -187,9 +189,12 @@ namespace KotoriCore
         /// <returns>Result.</returns>
         public async Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(string instance)
         {
-            var result = await ProcessAsync(new GetProjects(instance));
-            var projects = result as CommandResult<ComplexCountResult<SimpleProject>>;
-            return projects.Record;
+            var command = _serviceProvider.GetService<IGetProjects>();
+            var database = _serviceProvider.GetService<IDatabase>();
+
+            command.Init(instance);
+
+            return await ProcessOperationAsync(command, database.GetProjectsAsync(command));
         }
 
         /// <summary>
@@ -759,6 +764,31 @@ namespace KotoriCore
         }
 
         async Task<OperationResult> ProcessOperationAsync(ICommand command, Task<OperationResult> operation)
+        {
+            try
+            {
+                var validationResults = command.Validate();
+
+                if (validationResults != null &&
+                    validationResults.Any())
+                    throw new KotoriValidationException(validationResults);
+
+                return await operation;
+            }
+            catch(KotoriException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (ex?.InnerException is KotoriException ke)
+                    throw ex.InnerException;
+                
+                throw new KotoriException(ex.Message);
+            }
+        }
+
+        async Task<ComplexCountResult<T>> ProcessOperationAsync<T>(ICommand command, Task<ComplexCountResult<T>> operation) where T: IDomain
         {
             try
             {
