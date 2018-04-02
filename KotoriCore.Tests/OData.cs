@@ -22,7 +22,7 @@ using Microsoft.AspNetCore.Builder.Internal;
 using Microsoft.AspNet.OData.Formatter.Serialization;
 using Microsoft.AspNet.OData.Query;
 using KotoriCore.Tests.HelperClasses;
-using KotoriCore.OData;
+using KotoriCore.Translators.OData;
 
 namespace KotoriCore.Tests
 {

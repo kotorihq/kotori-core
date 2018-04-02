@@ -12,9 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.OData.UriParser;
 
-namespace KotoriCore.OData
+namespace KotoriCore.Translators.OData
 {
-    public class ODataTranslator
+    public class ODataTranslator : ITranslator
     {
         static ODataQueryContext oDataQueryContext { get; set; }
         static IApplicationBuilder app { get; set; }

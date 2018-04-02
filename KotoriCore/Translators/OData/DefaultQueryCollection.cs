@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
-namespace KotoriCore.OData
+namespace KotoriCore.Translators.OData
 {
     public class DefaultQueryCollection : IQueryCollection
     {

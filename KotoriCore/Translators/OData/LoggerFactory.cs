@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.Logging;
 
-namespace KotoriCore.OData
+namespace KotoriCore.Translators.OData
 {
     public class Logger : Microsoft.Extensions.Logging.ILogger
     {
