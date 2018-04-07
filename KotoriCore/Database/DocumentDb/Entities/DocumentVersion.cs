@@ -7,9 +7,11 @@ namespace KotoriCore.Database.DocumentDb.Entities
     /// <summary>
     /// Document version.
     /// </summary>
-    [EntityType("entity", DocumentDb.DocumentVersionEntity)]
-    public class DocumentVersion
+    [EntityType("entity", Entity)]
+    public class DocumentVersion: IEntity
     {
+        internal const string Entity = "kotori/document-version";
+
         /// <summary>
         /// Gets or sets the identifier (documentdb pk).
         /// </summary>

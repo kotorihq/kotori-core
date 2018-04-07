@@ -7,9 +7,11 @@ namespace KotoriCore.Database.DocumentDb.Entities
     /// <summary>
     /// Project entity.
     /// </summary>
-    [EntityType("entity", DocumentDb.ProjectEntity)]
-    public class Project 
+    [EntityType("entity", Entity)]
+    public class Project : IEntity
     {
+        internal const string Entity = "kotori/project";
+        
         /// <summary>
         /// Gets or sets the identifier (documentdb pk).
         /// </summary>

@@ -32,7 +32,7 @@ namespace KotoriCore.Database.DocumentDb
                     "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
                     new 
                     {
-                        entity = DocumentVersionEntity,
+                        entity = Entities.DocumentVersion.Entity,
                         instance = command.Instance,
                         projectId = projectUri.ToString(),
                         documentId = d.Identifier,
@@ -46,7 +46,7 @@ namespace KotoriCore.Database.DocumentDb
                     "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
                     new
                     {
-                        entity = DocumentVersionEntity,
+                        entity = Entities.DocumentVersion.Entity,
                         instance = command.Instance,
                         projectId = projectUri.ToString(),
                         documentId = d.Identifier

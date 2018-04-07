@@ -17,7 +17,7 @@ namespace KotoriCore.Database.DocumentDb
                     "select top @maxProjects * from c where c.entity = @entity and c.instance = @instance",
                     new
                     {
-                        entity = ProjectEntity,
+                        entity = Entities.Project.Entity,
                         instance = command.Instance,
                         maxProjects = Constants.MaxProjects
                     }
@@ -28,7 +28,7 @@ namespace KotoriCore.Database.DocumentDb
                     "select count(1) as number from c where c.entity = @entity and c.instance = @instance",
                     new
                     {
-                        entity = ProjectEntity,
+                        entity = Entities.Project.Entity,
                         instance = command.Instance
                     }
                 );

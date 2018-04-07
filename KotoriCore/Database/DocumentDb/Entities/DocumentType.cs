@@ -9,9 +9,11 @@ namespace KotoriCore.Database.DocumentDb.Entities
     /// <summary>
     /// Document type.
     /// </summary>
-    [EntityType("entity", DocumentDb.DocumentTypeEntity)]
-    public class DocumentType
+    [EntityType("entity", Entity)]
+    public class DocumentType: IEntity
     {
+        internal const string Entity = "kotori/document-type";
+
         /// <summary>
         /// Gets or sets the identifier (documentdb pk).
         /// </summary>

@@ -24,7 +24,7 @@ namespace KotoriCore.Database.DocumentDb
                     "select top @maxDocumentTypes * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId",
                     new
                     {
-                        entity = DocumentTypeEntity,
+                        entity = Entities.DocumentType.Entity,
                         instance = command.Instance,
                         projectId = projectUri.ToString(),
                         maxDocumentTypes = Constants.MaxDocumentTypes
@@ -36,7 +36,7 @@ namespace KotoriCore.Database.DocumentDb
                     "select count(1) as number from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId",
                     new
                     {
-                        entity = DocumentTypeEntity,
+                        entity = Entities.DocumentType.Entity,
                         instance = command.Instance,
                         projectId = projectUri.ToString()
                     }

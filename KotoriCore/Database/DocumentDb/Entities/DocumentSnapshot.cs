@@ -6,7 +6,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
     /// <summary>
     /// Document snapshot.
     /// </summary>
-    public class DocumentSnapshot
+    public class DocumentSnapshot: IEntity
     {
         /// <summary>
         /// Gets or sets the slug.

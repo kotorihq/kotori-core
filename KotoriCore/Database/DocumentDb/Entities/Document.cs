@@ -8,10 +8,12 @@ namespace KotoriCore.Database.DocumentDb.Entities
     /// <summary>
     /// Document.
     /// </summary>
-    [EntityType("entity", DocumentDb.DocumentEntity)]
-    [ClassMapping(Shushu.Enums.IndexField.Entity, DocumentDb.DocumentEntity)]
-    public class Document
+    [EntityType("entity", Entity)]
+    [ClassMapping(Shushu.Enums.IndexField.Entity, Entity)]
+    public class Document : IEntity
     {
+        internal const string Entity = "kotori/document";
+
         /// <summary>
         /// Gets or sets the identifier (documentdb pk).
         /// </summary>

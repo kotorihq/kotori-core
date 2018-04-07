@@ -20,7 +20,7 @@ namespace KotoriCore.Database.DocumentDb
     /// <summary>
     /// Document Db.
     /// </summary>
-    partial class DocumentDb : IDatabase
+    partial class DocumentDb : IDatabase, IDocumentDb
     {
         readonly Repository<Entities.Project> _repoProject;
         readonly Repository<Entities.DocumentType> _repoDocumentType;
@@ -31,14 +31,11 @@ namespace KotoriCore.Database.DocumentDb
         readonly Repository<Count> _repoDocumentTypeCount;
         readonly Repository<Count> _repoDocumentVersionCount;
         readonly Repository<dynamic> _repoDynamic;
-        readonly Connection _connection;
+
+        // TODO
+        public Connection Connection { get; private set; }
 
         readonly IMetaAnalyzer _metaAnalyzer;
-
-        internal const string ProjectEntity = "kotori/project";
-        internal const string DocumentTypeEntity = "kotori/document-type";
-        internal const string DocumentEntity = "kotori/document";
-        internal const string DocumentVersionEntity = "kotori/document-version";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.DocumentDb"/> class.
@@ -48,18 +45,19 @@ namespace KotoriCore.Database.DocumentDb
         {
             var dbConfig = configuration as DocumentDbConfiguration;
 
-            _connection = new Connection(dbConfig.Endpoint, dbConfig.AuthorizationKey, dbConfig.Database, dbConfig.Collection);
+            Connection = new Connection(dbConfig.Endpoint, dbConfig.AuthorizationKey, dbConfig.Database, dbConfig.Collection);
+
             _metaAnalyzer = metaAnalyzer;
 
-            _repoProject = new Repository<Entities.Project>(_connection);
-            _repoDocumentType = new Repository<Entities.DocumentType>(_connection);
-            _repoDocument = new Repository<Entities.Document>(_connection);
-            _repoDocumentVersion = new Repository<Entities.DocumentVersion>(_connection);
-            _repoDocumentVersionCount = new Repository<Count>(_connection);
-            _repoDocumentCount = new Repository<Count>(_connection);
-            _repoProjectCount = new Repository<Count>(_connection);
-            _repoDynamic = new Repository<dynamic>(_connection);
-            _repoDocumentTypeCount = new Repository<Count>(_connection);
+            _repoProject = new Repository<Entities.Project>(Connection);
+            _repoDocumentType = new Repository<Entities.DocumentType>(Connection);
+            _repoDocument = new Repository<Entities.Document>(Connection);
+            _repoDocumentVersion = new Repository<Entities.DocumentVersion>(Connection);
+            _repoDocumentVersionCount = new Repository<Count>(Connection);
+            _repoDocumentCount = new Repository<Count>(Connection);
+            _repoProjectCount = new Repository<Count>(Connection);
+            _repoDynamic = new Repository<dynamic>(Connection);
+            _repoDocumentTypeCount = new Repository<Count>(Connection);
         }
 
         /// <summary>
@@ -149,7 +147,7 @@ namespace KotoriCore.Database.DocumentDb
                     "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
                     new
                     {
-                        entity = DocumentEntity,
+                        entity = Entities.Document.Entity,
                         instance,
                         projectId = projectId.ToString(),
                         identifier = documentId.ToString()
@@ -167,7 +165,7 @@ namespace KotoriCore.Database.DocumentDb
                     "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.documentId = @identifier and c.version = @version",
                     new
                     {
-                        entity = DocumentVersionEntity,
+                        entity = Entities.DocumentVersion.Entity,
                         instance,
                         projectId = projectId.ToString(),
                         identifier = documentId.ToString(),
@@ -208,7 +206,7 @@ namespace KotoriCore.Database.DocumentDb
                 "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.slug = @slug and c.identifier <> @documentId",
                 new
                 {
-                    entity = DocumentEntity,
+                    entity = Entities.Document.Entity,
                     instance,
                     projectId = projectId.ToString(),
                     slug,
@@ -228,7 +226,7 @@ namespace KotoriCore.Database.DocumentDb
                 "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
                 new
                 {
-                    entity = DocumentTypeEntity,
+                    entity = Entities.DocumentType.Entity,
                     instance,
                     projectId = projectId.ToString(),
                     identifier = documentTypeId.ToString()
@@ -247,7 +245,7 @@ namespace KotoriCore.Database.DocumentDb
                     "select * from c where c.entity = @entity and c.instance = @instance and c.identifier = @id",
                     new
                     {
-                        entity = ProjectEntity,
+                        entity = Entities.Project.Entity,
                         instance,
                         id = projectUri.ToString()
                     }
@@ -331,7 +329,7 @@ namespace KotoriCore.Database.DocumentDb
                             $"and c.projectId = @projectId and is_defined(c.meta[\"{key}\"])",
                     new
                     {
-                        entity = DocumentEntity,
+                        entity = Entities.Document.Entity,
                         instance = document.Instance,
                         projectId = document.ProjectId
                     }
@@ -374,7 +372,7 @@ namespace KotoriCore.Database.DocumentDb
                     "and c.projectId = @projectId and c.documentId = @documentId",
                     new
                     {
-                        entity = DocumentVersionEntity,
+                        entity = Entities.DocumentVersion.Entity,
                         instance = document.Instance,
                         projectId = document.ProjectId,
                         documentId = document.Identifier
@@ -441,7 +439,7 @@ namespace KotoriCore.Database.DocumentDb
                    "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
                    new
                    {
-                       entity = DocumentVersionEntity,
+                       entity = Entities.DocumentVersion.Entity,
                        instance = document.Instance,
                        projectId = document.ProjectId,
                        documentId = document.Identifier
@@ -485,7 +483,7 @@ namespace KotoriCore.Database.DocumentDb
                 "select * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId and c.identifier = @identifier",
                 new
                 {
-                    entity = DocumentTypeEntity,
+                    entity = Entities.DocumentType.Entity,
                     instance,
                     projectId = projectId.ToString(),
                     identifier = documentTypeId.ToString()

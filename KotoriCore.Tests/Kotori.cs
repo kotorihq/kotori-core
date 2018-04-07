@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using KotoriCore.Configurations;
 using KotoriCore.Helpers;
 using KotoriCore.Helpers.MetaAnalyzer;
+using KotoriCore.Database.DocumentDb.Entities;
 
 namespace KotoriCore.Tests
 {
@@ -670,7 +671,7 @@ test: {i}
                     "select c.id from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId",
                     new
                     {
-                        entity = DocumentDb.DocumentVersionEntity,
+                        entity = DocumentVersion.Entity,
                         instance = "dev",
                         projectId = "vnum2".ToKotoriProjectUri().ToString()
                     }
@@ -1187,7 +1188,7 @@ x: b
                     "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
                     new
                     {
-                        entity = DocumentDb.DocumentVersionEntity,
+                        entity = DocumentVersion.Entity,
                         instance = "dev",
                         projectId = Helpers.Router.ToKotoriProjectUri("cversions").ToString(),
                         documentId = Helpers.Router.ToKotoriDocumentUri("cversions", Enums.DocumentType.Content, "x", "foo", null).ToString()
@@ -1236,7 +1237,7 @@ x: b
                     "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
                     new
                     {
-                        entity = DocumentDb.DocumentVersionEntity,
+                        entity = DocumentVersion.Entity,
                         instance = "dev",
                         projectId = Helpers.Router.ToKotoriProjectUri("dversions").ToString(),
                         documentId = Helpers.Router.ToKotoriDocumentUri("dversions", Enums.DocumentType.Data, "x", null, 0).ToString()

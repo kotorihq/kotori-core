@@ -45,7 +45,7 @@ namespace KotoriCore.Database.DocumentDb.Helpers
             sql += (select ?? "*") + " from c where ";
 
             sql += " (c.entity = '" +
-                DocumentDb.DocumentEntity +
+                Entities.Document.Entity +
                 "' and c.instance = '" +
                 instance +
                 "'";
