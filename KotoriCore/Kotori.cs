@@ -182,17 +182,13 @@ namespace KotoriCore
             return AsyncTools.RunSync(() => GetProjectsAsync(instance, query));
         }
 
-        /// <summary>
-        /// Gets projects.
-        /// </summary>
-        /// <param name="instance">Instance.</param>
-        /// <returns>Result.</returns>
+        // TODO
         public async Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(string instance, ComplexQuery query = null)
         {
             var command = _serviceProvider.GetService<IGetProjects>();
             var database = _serviceProvider.GetService<IDatabase>();
 
-            command.Init(instance);
+            command.Init(instance, query);
 
             return await ProcessOperationAsync(command, database.GetProjectsAsync(command));
         }
@@ -752,6 +748,7 @@ namespace KotoriCore
             await ProcessAsync(new DeleteDocumentType(instance, projectId, documentType, documentTypeId));
         }
 
+        // TODO: remove
         /// <summary>
         /// Processes the command.
         /// </summary>

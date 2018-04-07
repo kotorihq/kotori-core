@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using KotoriCore.Helpers;
+using KotoriCore.Translators;
 
 namespace KotoriCore.Commands
 {
@@ -9,11 +10,13 @@ namespace KotoriCore.Commands
     public class GetProjects : ICommand, IGetProjects
     {
         public string Instance { get; private set; }
+        public ComplexQuery Query { get; private set; }
 
         // TODO
-        public void Init(string instance)
+        public void Init(string instance, ComplexQuery query)
         {
-            Instance = instance;            
+            Instance = instance;
+            Query = query;
         }
 
         /// <summary>
