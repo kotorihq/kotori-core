@@ -177,18 +177,18 @@ namespace KotoriCore
         }
 
         // TODO
-        public ComplexCountResult<SimpleProject> GetProjects(string instance, ComplexQuery query = null)
+        public ComplexCountResult<SimpleProject> GetProjects(string instance, Query query = null)
         {
             return AsyncTools.RunSync(() => GetProjectsAsync(instance, query));
         }
 
         // TODO
-        public async Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(string instance, ComplexQuery query = null)
+        public async Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(string instance, Query query = null)
         {
             var command = _serviceProvider.GetService<IGetProjects>();
             var database = _serviceProvider.GetService<IDatabase>();
 
-            command.Init(instance, query);
+            command.Init(instance, new ComplexQuery(query));
 
             return await ProcessOperationAsync(command, database.GetProjectsAsync(command));
         }

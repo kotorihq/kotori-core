@@ -494,6 +494,20 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
+        public async Task GetProjectsSearch()
+        {
+            await _kotori.UpsertProjectAsync("dev", "envy1", "Envy1");
+            await _kotori.UpsertProjectAsync("dev", "envy2", "Envy2");
+            await _kotori.UpsertProjectAsync("dev", "envy3", "Envy3");
+
+            //var projects = _kotori.GetProjects("dev", new Translators.Query(null, "startswith(name, 'Envy') eq true", null, null, "name desc"));
+            var projects = _kotori.GetProjects("dev", new Translators.Query(null, "name eq 'Envy2'", null, null, "name desc"));
+
+            Assert.AreEqual(3, projects.Count);
+            Assert.AreEqual(3, projects.Items.Count());
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(KotoriProjectException), "Non existent project was inappropriately accepted.")]
         public void GetProjectKeysFail()
         {
