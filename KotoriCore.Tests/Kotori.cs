@@ -1936,12 +1936,19 @@ approved: !!bool false
             await _kotori.UpsertProjectAsync("dev", "envy2", "Envy2");
             await _kotori.UpsertProjectAsync("dev", "envy3", "Envy3");
 
-            //var projects = _kotori.GetProjects("dev", new Translators.Query(null, "startswith(name, 'Envy') eq true", null, null, "name desc"));
-            var projects = _kotori.GetProjects("dev", new Translators.Query(null, "name eq 'Envy2'", null, null, null));
+            // var projects = _kotori.GetProjects("dev", new Translators.Query(null, "name eq 'Envy2'", null, null, null));
 
-            Assert.AreEqual(1, projects.Count);
-            Assert.AreEqual(1, projects.Items.Count());
-            Assert.AreEqual("envy2", projects.Items.First().Identifier);
+            // Assert.AreEqual(1, projects.Count);
+            // Assert.AreEqual(1, projects.Items.Count());
+            // Assert.AreEqual("envy2", projects.Items.First().Identifier);
+
+            // projects = _kotori.GetProjects("dev", new Translators.Query(null, "name eq 'Envy2'", null, null, null, true));
+            // Assert.AreEqual(1, projects.Count);
+            // Assert.IsNull(projects.Items);
+
+            var projects = _kotori.GetProjects("dev", new Translators.Query("name", "substring(name, 0, 4) eq 'Envy'", null, null, "name", false));
+            Assert.AreEqual(3, projects.Count);
+            Assert.AreEqual(3, projects.Items.Count());
         }
 
         enum RawDocument
