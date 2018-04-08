@@ -205,6 +205,15 @@ namespace KotoriCore.Tests
         }
 
         [TestMethod]
+        public void TranslateCountSample2()
+        {
+            var query = new ComplexQuery(null, "title eq 'title1' and property/field ne 'val' or viewedCount ge 5 and (likedCount ne 3 or enumNumber eq 3)",
+                30, null, "_lastClientEditedDateTime asc, createdDateTime desc", "c._t = 'dataType'", true);
+            var sqlQuery = _translator.Translate(query);
+            Assert.AreEqual("SELECT count(1) FROM c WHERE c._t = 'dataType' AND c.title = 'title1' AND c.property.field != 'val' OR c.viewedCount >= 5 AND (c.likedCount != 3 OR c.enumNumber = 3)", sqlQuery);
+        }
+
+        [TestMethod]
         public void TranslateMasterSample2()
         {
             var query = new ComplexQuery("id, englishName", "title eq 'title1' and property/field ne 'val' or viewedCount ge 5 and (likedCount ne 3 or enumNumber eq 3)",

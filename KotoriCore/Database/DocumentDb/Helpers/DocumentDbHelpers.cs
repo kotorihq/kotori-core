@@ -3,14 +3,26 @@ using Sushi2;
 using KotoriCore.Helpers;
 using Newtonsoft.Json;
 using KotoriCore.Exceptions;
+using Oogi2;
+using KotoriCore.Configurations;
 
 namespace KotoriCore.Database.DocumentDb.Helpers
 {
     /// <summary>
     /// Document db helpers.
     /// </summary>
-    static class DocumentDbHelpers
+    internal static class DocumentDbHelpers
     {
+        // TODO
+        internal static IConnection ToConnection(this IDatabaseConfiguration configuration)
+        {
+            var dbConfig = configuration as DocumentDbConfiguration;
+
+            var connection = new Connection(dbConfig.Endpoint, dbConfig.AuthorizationKey, dbConfig.Database, dbConfig.Collection);
+
+            return connection;
+        }
+
         /// <summary>
         /// Helper class for count sql command.
         /// </summary>

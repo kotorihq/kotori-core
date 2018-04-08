@@ -17,6 +17,7 @@ using KotoriCore.Helpers.MetaAnalyzer;
 using KotoriCore.Exceptions;
 using KotoriCore.Translators;
 using KotoriCore.Translators.OData;
+using KotoriCore.Database.DocumentDb.Repositories;
 
 namespace KotoriCore
 {
@@ -26,6 +27,11 @@ namespace KotoriCore
     public class Kotori : IKotori
     {
         IServiceProvider _serviceProvider;
+
+        internal T GetService<T>()
+        {
+            return _serviceProvider.GetService<T>();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:KotoriCore.Kotori"/> class.
@@ -55,6 +61,8 @@ namespace KotoriCore
                 {
                     services.AddSingleton<IDatabaseConfiguration>(documentDbConfiguration);
                     services.AddSingleton<IDatabase, DocumentDb>();
+                    services.AddSingleton<IDocumentDb, DocumentDb>();
+                    services.AddSingleton<IProjectRepository, ProjectRepository>();
                 }
                 catch(Exception ex)
                 {
@@ -62,7 +70,7 @@ namespace KotoriCore
                 }                
             }
 
-            if (services.All(s => s.ServiceType != typeof(IDatabase)))
+            if (services.All(s => s.ServiceType != typeof(IDocumentDb)))
                 throw new Exceptions.KotoriException("No database initialized.");
 
             _serviceProvider = services.BuildServiceProvider();

@@ -12,32 +12,36 @@ namespace KotoriCore.Database.DocumentDb
     {
         public async Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(IGetProjects command)
         {
-            var q = new DynamicQuery
-                (
-                    "select top @maxProjects * from c where c.entity = @entity and c.instance = @instance",
-                    new
-                    {
-                        entity = Entities.Project.Entity,
-                        instance = command.Instance,
-                        maxProjects = Constants.MaxProjects
-                    }
-                );
+            var projects = await _projectRepository.GetProjectsAsync(command.Instance, command.Query);
+            var simpleProjects = projects.Items?.Select(p => new SimpleProject(p.Name, new Uri(p.Identifier).ToKotoriProjectIdentifier()));
+            return new ComplexCountResult<SimpleProject>(projects.Count, simpleProjects);
 
-            var q2 = new DynamicQuery
-                (
-                    "select count(1) as number from c where c.entity = @entity and c.instance = @instance",
-                    new
-                    {
-                        entity = Entities.Project.Entity,
-                        instance = command.Instance
-                    }
-                );
+            // var q = new DynamicQuery
+            //     (
+            //         "select top @maxProjects * from c where c.entity = @entity and c.instance = @instance",
+            //         new
+            //         {
+            //             entity = Entities.Project.Entity,
+            //             instance = command.Instance,
+            //             maxProjects = Constants.MaxProjects
+            //         }
+            //     );
 
-            var count = await CountProjectsAsync(q2);
-            var projects = await GetProjectsAsync(q);
-            var simpleProjects = projects.Select(p => new SimpleProject(p.Name, new Uri(p.Identifier).ToKotoriProjectIdentifier()));
+            // var q2 = new DynamicQuery
+            //     (
+            //         "select count(1) as number from c where c.entity = @entity and c.instance = @instance",
+            //         new
+            //         {
+            //             entity = Entities.Project.Entity,
+            //             instance = command.Instance
+            //         }
+            //     );
 
-            return new ComplexCountResult<SimpleProject>(count, simpleProjects);
+            // var count = await CountProjectsAsync(q2);
+            // var projects = await GetProjectsAsync(q);
+            // var simpleProjects = projects.Select(p => new SimpleProject(p.Name, new Uri(p.Identifier).ToKotoriProjectIdentifier()));
+
+            // return new ComplexCountResult<SimpleProject>(count, simpleProjects);
         }
     }
 }

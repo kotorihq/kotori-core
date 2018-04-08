@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using KotoriCore.Configurations;
 using KotoriCore.Database.DocumentDb.Entities;
 using KotoriCore.Database.DocumentDb.HelperEntities;
 using KotoriCore.Domains;
@@ -7,21 +8,21 @@ using KotoriCore.Helpers;
 using KotoriCore.Translators;
 using Oogi2;
 using Oogi2.Queries;
+using KotoriCore.Database.DocumentDb.Helpers;
+using System;
 
 namespace KotoriCore.Database.DocumentDb.Repositories
 {
     public class ProjectRepository : Repository<Entities.Project>, IProjectRepository
     {
-        private readonly IDocumentDb _documentDb;
         private readonly ITranslator _translator;
         private readonly Repository<Counter> _repoCounter;
 
-        public ProjectRepository(IDocumentDb documentDb,
-            ITranslator translator) : base(documentDb.Connection)
+        public ProjectRepository(IDatabaseConfiguration configuration,
+            ITranslator translator) : base(configuration.ToConnection())
         {
-            _documentDb = documentDb;
             _translator = translator;
-            _repoCounter = new Repository<Counter>(documentDb.Connection);
+            _repoCounter = new Repository<Counter>(configuration.ToConnection());
         }
 
         public async Task<DocumentDbResult<Entities.Project>> GetProjectsAsync(string instance, ComplexQuery query)
@@ -59,8 +60,8 @@ namespace KotoriCore.Database.DocumentDb.Repositories
                 return new DocumentDbResult<Entities.Project>(count.Sum(x => x.Number), null);
             }
 
-            var result = await GetListAsync(fin);
 
+            var result = await GetListAsync(fin);
             return new DocumentDbResult<Entities.Project>(result.Count, result);
         }
     }

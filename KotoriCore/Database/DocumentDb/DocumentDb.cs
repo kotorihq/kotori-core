@@ -14,6 +14,7 @@ using Newtonsoft.Json.Linq;
 using KotoriCore.Documents.Transformation;
 using KotoriCore.Database.DocumentDb.Helpers;
 using KotoriCore.Helpers.MetaAnalyzer;
+using KotoriCore.Database.DocumentDb.Repositories;
 
 namespace KotoriCore.Database.DocumentDb
 {
@@ -32,6 +33,8 @@ namespace KotoriCore.Database.DocumentDb
         readonly Repository<Count> _repoDocumentVersionCount;
         readonly Repository<dynamic> _repoDynamic;
 
+        readonly IProjectRepository _projectRepository;
+
         // TODO
         public Connection Connection { get; private set; }
 
@@ -41,7 +44,9 @@ namespace KotoriCore.Database.DocumentDb
         /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.DocumentDb"/> class.
         /// </summary>
         /// <param name="configuration">Configuration.</param>
-        public DocumentDb(IDatabaseConfiguration configuration, IMetaAnalyzer metaAnalyzer)
+        public DocumentDb(IDatabaseConfiguration configuration, 
+            IMetaAnalyzer metaAnalyzer,
+            IProjectRepository projectRepository)
         {
             var dbConfig = configuration as DocumentDbConfiguration;
 
@@ -58,6 +63,8 @@ namespace KotoriCore.Database.DocumentDb
             _repoProjectCount = new Repository<Count>(Connection);
             _repoDynamic = new Repository<dynamic>(Connection);
             _repoDocumentTypeCount = new Repository<Count>(Connection);
+
+            _projectRepository = projectRepository;
         }
 
         /// <summary>

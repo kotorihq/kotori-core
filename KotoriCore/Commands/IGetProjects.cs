@@ -6,6 +6,8 @@ namespace KotoriCore.Commands
     public interface IGetProjects : ICommand
     {
         string Instance { get; }
+        ComplexQuery Query { get; }
+        
         void Init(string instance, ComplexQuery query);
     }
 }

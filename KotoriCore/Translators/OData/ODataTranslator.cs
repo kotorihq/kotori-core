@@ -103,6 +103,10 @@ namespace KotoriCore.Translators.OData
                     else
                         q = q.Add("$select", query.Select);
                 }
+                else if (query.Count)
+                {
+                    q = q.Add("$select", "count(1)");
+                }
 
                 if (query.Filter != null)
                     q = q.Add("$filter", query.Filter);

@@ -15,6 +15,7 @@ using KotoriCore.Configurations;
 using KotoriCore.Helpers;
 using KotoriCore.Helpers.MetaAnalyzer;
 using KotoriCore.Database.DocumentDb.Entities;
+using KotoriCore.Database.DocumentDb.Repositories;
 
 namespace KotoriCore.Tests
 {
@@ -35,7 +36,8 @@ namespace KotoriCore.Tests
                 .AddEnvironmentVariables()
                 .Build();
 
-            _kotori = new Kotori(appSettings);
+            _kotori = new Kotori(new KotoriConfiguration(appSettings));
+            
             _con = new Connection
                 (
                     appSettings["Kotori:DocumentDb:Endpoint"], 
@@ -44,11 +46,13 @@ namespace KotoriCore.Tests
                     appSettings["Kotori:DocumentDb:Collection"]
                 );
 
-            _documentDb = new DocumentDb(new DocumentDbConfiguration { Endpoint = appSettings["Kotori:DocumentDb:Endpoint"],
-                AuthorizationKey = appSettings["Kotori:DocumentDb:AuthorizationKey"], 
-                Database = appSettings["Kotori:DocumentDb:Database"],
-                Collection = appSettings["Kotori:DocumentDb:Collection"]
-            }, new DefaultMetaAnalyzer());
+            _documentDb = _kotori.GetService<IDocumentDb>() as DocumentDb;
+             
+            // _documentDb = new DocumentDb(new DocumentDbConfiguration { Endpoint = appSettings["Kotori:DocumentDb:Endpoint"],
+            //     AuthorizationKey = appSettings["Kotori:DocumentDb:AuthorizationKey"], 
+            //     Database = appSettings["Kotori:DocumentDb:Database"],
+            //     Collection = appSettings["Kotori:DocumentDb:Collection"]
+            // }, new DefaultMetaAnalyzer(), null);
                                     
             _con.CreateCollection();
 
@@ -491,20 +495,6 @@ namespace KotoriCore.Tests
 
             Assert.AreEqual(Constants.MaxProjectKeys + 10, projectKeys.Count);
             Assert.AreEqual(Constants.MaxProjectKeys, projectKeys.Items.Count());
-        }
-
-        [TestMethod]
-        public async Task GetProjectsSearch()
-        {
-            await _kotori.UpsertProjectAsync("dev", "envy1", "Envy1");
-            await _kotori.UpsertProjectAsync("dev", "envy2", "Envy2");
-            await _kotori.UpsertProjectAsync("dev", "envy3", "Envy3");
-
-            //var projects = _kotori.GetProjects("dev", new Translators.Query(null, "startswith(name, 'Envy') eq true", null, null, "name desc"));
-            var projects = _kotori.GetProjects("dev", new Translators.Query(null, "name eq 'Envy2'", null, null, "name desc"));
-
-            Assert.AreEqual(3, projects.Count);
-            Assert.AreEqual(3, projects.Items.Count());
         }
 
         [TestMethod]
@@ -1937,6 +1927,21 @@ approved: !!bool false
          
             await _kotori.UpsertDocumentAsync("dev", "mrdatabinx", Enums.DocumentType.Data, "newgame", null, null, c);
             _kotori.GetDocument("dev", "mrdatabinx", Enums.DocumentType.Data, "newgame", null, -1);
+        }
+
+        [TestMethod]
+        public async Task GetProjectsSearch()
+        {
+            await _kotori.UpsertProjectAsync("dev", "envy1", "Envy1");
+            await _kotori.UpsertProjectAsync("dev", "envy2", "Envy2");
+            await _kotori.UpsertProjectAsync("dev", "envy3", "Envy3");
+
+            //var projects = _kotori.GetProjects("dev", new Translators.Query(null, "startswith(name, 'Envy') eq true", null, null, "name desc"));
+            var projects = _kotori.GetProjects("dev", new Translators.Query(null, "name eq 'Envy2'", null, null, null));
+
+            Assert.AreEqual(1, projects.Count);
+            Assert.AreEqual(1, projects.Items.Count());
+            Assert.AreEqual("envy2", projects.Items.First().Identifier);
         }
 
         enum RawDocument
