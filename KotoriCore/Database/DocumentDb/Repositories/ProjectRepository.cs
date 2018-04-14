@@ -60,9 +60,13 @@ namespace KotoriCore.Database.DocumentDb.Repositories
                 return new DocumentDbResult<Entities.Project>(count.Sum(x => x.Number), null);
             }
 
+            query.Count = true;
+            var finc = _translator.Translate(query);
+            var count2 = (await _repoCounter.GetListAsync(finc)).Sum(x => x.Number);
 
+            query.Count = false;
             var result = await GetListAsync(fin);
-            return new DocumentDbResult<Entities.Project>(result.Count, result);
+            return new DocumentDbResult<Entities.Project>(count2, result);
         }
     }
 }

@@ -1932,23 +1932,25 @@ approved: !!bool false
         [TestMethod]
         public async Task GetProjectsSearch()
         {
-            await _kotori.UpsertProjectAsync("dev", "envy1", "Envy1");
-            await _kotori.UpsertProjectAsync("dev", "envy2", "Envy2");
-            await _kotori.UpsertProjectAsync("dev", "envy3", "Envy3");
+            await _kotori.UpsertProjectAsync("dev2", "envy1", "Envy1");
+            await _kotori.UpsertProjectAsync("dev2", "envy2", "Envy2");
+            await _kotori.UpsertProjectAsync("dev2", "envy3", "Envy3");
 
-            var projects = _kotori.GetProjects("dev", new Translators.Query(null, "name eq 'Envy2'", null, null, null));
+            var projects = _kotori.GetProjects("dev2", new Translators.Query(null, "name eq 'Envy2'", null, null, null));
 
             Assert.AreEqual(1, projects.Count);
             Assert.AreEqual(1, projects.Items.Count());
             Assert.AreEqual("envy2", projects.Items.First().Identifier);
 
-            projects = _kotori.GetProjects("dev", new Translators.Query(null, "name eq 'Envy2'", null, null, null, true));
+            // TODO: identification should be id
+            projects = _kotori.GetProjects("dev2", new Translators.Query("name", "name eq 'Envy3'", null, null, "identification", true));
             Assert.AreEqual(1, projects.Count);
             Assert.IsNull(projects.Items);
-
-            projects = _kotori.GetProjects("dev", new Translators.Query("name", "substring(name, 0, 4) eq 'Envy'", null, null, "identification", false));
+            
+            projects = _kotori.GetProjects("dev2", new Translators.Query(null, null, null, null, "name desc", false));
             Assert.AreEqual(3, projects.Count);
             Assert.AreEqual(3, projects.Items.Count());
+            Assert.AreEqual("Envy3", projects.Items.First().Name);
         }
 
         enum RawDocument
