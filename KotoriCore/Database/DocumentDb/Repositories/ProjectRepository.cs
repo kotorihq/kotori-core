@@ -15,11 +15,11 @@ namespace KotoriCore.Database.DocumentDb.Repositories
 {
     public class ProjectRepository : Repository<Entities.Project>, IProjectRepository
     {
-        private readonly ITranslator _translator;
+        private readonly ITranslator<Entities.Project> _translator;
         private readonly Repository<Counter> _repoCounter;
 
         public ProjectRepository(IDatabaseConfiguration configuration,
-            ITranslator translator) : base(configuration.ToConnection())
+            ITranslator<Entities.Project> translator) : base(configuration.ToConnection())
         {
             _translator = translator;
             _repoCounter = new Repository<Counter>(configuration.ToConnection());

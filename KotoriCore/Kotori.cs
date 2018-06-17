@@ -16,7 +16,6 @@ using KotoriCore.Helpers.Vocabulary;
 using KotoriCore.Helpers.MetaAnalyzer;
 using KotoriCore.Exceptions;
 using KotoriCore.Translators;
-using KotoriCore.Translators.OData;
 using KotoriCore.Database.DocumentDb.Repositories;
 
 namespace KotoriCore
@@ -51,7 +50,7 @@ namespace KotoriCore
                 .AddTransient<IUpsertProject, UpsertProject>()
                 .AddTransient<IGetProjects, GetProjects>()
                 // translators
-                .AddSingleton<ITranslator, ODataTranslator>()
+                .AddSingleton(typeof(ITranslator<>), typeof(ProjectTranslator))
                 // configuration
                 .AddSingleton<IKotoriConfiguration>(configuration);              
 
