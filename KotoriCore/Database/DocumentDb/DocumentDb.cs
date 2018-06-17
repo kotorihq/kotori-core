@@ -85,33 +85,33 @@ namespace KotoriCore.Database.DocumentDb
                     validationResults.Any())
                     throw new KotoriValidationException(validationResults);
                 else if (command is DeleteProject deleteProject)
-                    result = await HandleAsync(deleteProject);
+                    result = await HandleAsync(deleteProject).ConfigureAwait(false);
                 else if (command is GetDocument getDocument)
-                    result = await HandleAsync(getDocument);
+                    result = await HandleAsync(getDocument).ConfigureAwait(false);
                 else if (command is FindDocuments findDocuments)
-                    result = await HandleAsync(findDocuments);
+                    result = await HandleAsync(findDocuments).ConfigureAwait(false);
                 else if (command is DeleteDocument deleteDocument)
-                    result = await HandleAsync(deleteDocument);
+                    result = await HandleAsync(deleteDocument).ConfigureAwait(false);
                 else if (command is CountDocuments countDocuments)
-                    result = await HandleAsync(countDocuments);
+                    result = await HandleAsync(countDocuments).ConfigureAwait(false);
                 else if (command is GetDocumentType getDocumentType)
-                    result = await HandleAsync(getDocumentType);
+                    result = await HandleAsync(getDocumentType).ConfigureAwait(false);
                 else if (command is GetDocumentTypes getDocumentTypes)
-                    result = await HandleAsync(getDocumentTypes);
+                    result = await HandleAsync(getDocumentTypes).ConfigureAwait(false);
                 else if (command is GetProject getProject)
-                    result = await HandleAsync(getProject);
+                    result = await HandleAsync(getProject).ConfigureAwait(false);
                 else if (command is GetProjectKeys getProjectKeys)
-                    result = await HandleAsync(getProjectKeys);
+                    result = await HandleAsync(getProjectKeys).ConfigureAwait(false);
                 else if (command is DeleteProjectKey deleteProjectKey)
-                    result = await HandleAsync(deleteProjectKey);
+                    result = await HandleAsync(deleteProjectKey).ConfigureAwait(false);
                 else if (command is GetDocumentVersions getDocumentVersions)
-                    result = await HandleAsync(getDocumentVersions);
+                    result = await HandleAsync(getDocumentVersions).ConfigureAwait(false);
                 else if (command is GetDocumentTypeTransformations getDocumentTypeTransformations)
-                    result = await HandleAsync(getDocumentTypeTransformations);
+                    result = await HandleAsync(getDocumentTypeTransformations).ConfigureAwait(false);
                 else if (command is DeleteDocumentType deleteDocumentType)
-                    result = await HandleAsync(deleteDocumentType);
+                    result = await HandleAsync(deleteDocumentType).ConfigureAwait(false);
                 else if (command is UpsertDocumentTypeTransformations upsertDocumentTypeTransformations)
-                    result = await HandleAsync(upsertDocumentTypeTransformations);
+                    result = await HandleAsync(upsertDocumentTypeTransformations).ConfigureAwait(false);
                 else
                     throw new KotoriException($"No handler defined for command {command.GetType()}.");
 
@@ -161,7 +161,7 @@ namespace KotoriCore.Database.DocumentDb
                     }
                 );
 
-                var document = await _repoDocument.GetFirstOrDefaultAsync(q);
+                var document = await _repoDocument.GetFirstOrDefaultAsync(q).ConfigureAwait(false);
 
                 return document;
             }
@@ -182,7 +182,7 @@ namespace KotoriCore.Database.DocumentDb
 
             var x = q2.ToSqlQuerySpec().ToSqlQuery();
 
-            var documentVersion = await _repoDocumentVersion.GetFirstOrDefaultAsync(q2);
+            var documentVersion = await _repoDocumentVersion.GetFirstOrDefaultAsync(q2).ConfigureAwait(false);
 
             if (documentVersion == null)
                 return null;
@@ -240,7 +240,7 @@ namespace KotoriCore.Database.DocumentDb
                 }
             );
 
-            var documentType = await _repoDocumentType.GetFirstOrDefaultAsync(q);
+            var documentType = await _repoDocumentType.GetFirstOrDefaultAsync(q).ConfigureAwait(false);
 
             return documentType;
         }
@@ -258,14 +258,14 @@ namespace KotoriCore.Database.DocumentDb
                     }
             );
 
-            var project = await _repoProject.GetFirstOrDefaultAsync(q);
+            var project = await _repoProject.GetFirstOrDefaultAsync(q).ConfigureAwait(false);
 
             return project;
         }
 
         async Task<long> CountDocumentsAsync(string sql)
         {
-            var documents = await _repoDocumentCount.GetListAsync(sql);
+            var documents = await _repoDocumentCount.GetListAsync(sql).ConfigureAwait(false);
 
             long count = 0;
 
@@ -277,7 +277,7 @@ namespace KotoriCore.Database.DocumentDb
 
         async Task<long> CountProjectsAsync(DynamicQuery q)
         {
-            var projects = await _repoProjectCount.GetListAsync(q);
+            var projects = await _repoProjectCount.GetListAsync(q).ConfigureAwait(false);
 
             long count = 0;
 
@@ -289,7 +289,7 @@ namespace KotoriCore.Database.DocumentDb
 
         async Task<long> CountDocumentVersionsAsync(DynamicQuery q)
         {
-            var documentVersions = await _repoDocumentVersionCount.GetListAsync(q);
+            var documentVersions = await _repoDocumentVersionCount.GetListAsync(q).ConfigureAwait(false);
 
             long count = 0;
 
@@ -301,7 +301,7 @@ namespace KotoriCore.Database.DocumentDb
 
         async Task<long> CountDocumentTypesAsync(DynamicQuery q)
         {
-            var documentTypes = await _repoDocumentTypeCount.GetListAsync(q);
+            var documentTypes = await _repoDocumentTypeCount.GetListAsync(q).ConfigureAwait(false);
 
             long count = 0;
 
@@ -313,7 +313,7 @@ namespace KotoriCore.Database.DocumentDb
 
         async Task<Entities.Project> UpsertProjectAsync(Entities.Project project)
         {
-            return await _repoProject.UpsertAsync(project);
+            return await _repoProject.UpsertAsync(project).ConfigureAwait(false);
         }
 
         async Task<bool> DeleteDocumentAsync(Entities.Document document)
@@ -323,7 +323,7 @@ namespace KotoriCore.Database.DocumentDb
 
             await DeleteDocumentVersionsAsync(document);
 
-            var result = await _repoDocument.DeleteAsync(document.Id);
+            var result = await _repoDocument.DeleteAsync(document.Id).ConfigureAwait(false);
             var nonIndexedFields = new List<string>();
 
             if (meta2 != null)
@@ -344,7 +344,7 @@ namespace KotoriCore.Database.DocumentDb
 
                     var sql = q.ToSqlQuery();
 
-                    var counts = await _repoDocumentCount.GetListAsync(q);
+                    var counts = await _repoDocumentCount.GetListAsync(q).ConfigureAwait(false);
                     var n = counts.Sum(x => x.Number);
 
                     if (n == 0)
@@ -353,7 +353,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 if (nonIndexedFields.Any())
                 {
-                    var docType = await FindDocumentTypeAsync(document.Instance, new Uri(document.ProjectId), new Uri(document.DocumentTypeId));
+                    var docType = await FindDocumentTypeAsync(document.Instance, new Uri(document.ProjectId), new Uri(document.DocumentTypeId)).ConfigureAwait(false);
 
                     if (docType != null)
                     {
@@ -363,7 +363,7 @@ namespace KotoriCore.Database.DocumentDb
 
                         docType.Indexes = indexes;
 
-                        await _repoDocumentType.ReplaceAsync(docType);
+                        await _repoDocumentType.ReplaceAsync(docType).ConfigureAwait(false);
                     }
                 }
             }
@@ -386,56 +386,56 @@ namespace KotoriCore.Database.DocumentDb
                     }
                 );
 
-            var items = await _repoDynamic.GetListAsync(q);
+            var items = await _repoDynamic.GetListAsync(q).ConfigureAwait(false);
 
             foreach (var item in items)
-                await _repoDynamic.DeleteAsync(item.Id);
+                await _repoDynamic.DeleteAsync(item.Id).ConfigureAwait(false);
 
             return true;
         }
 
         async Task<bool> DeleteDocumentTypeAsync(string id)
         {
-            return await _repoDocumentType.DeleteAsync(id);
+            return await _repoDocumentType.DeleteAsync(id).ConfigureAwait(false);
         }
 
         async Task<bool> DeleteProjectAsync(string id)
         {
-            return await _repoProject.DeleteAsync(id);
+            return await _repoProject.DeleteAsync(id).ConfigureAwait(false);
         }
 
         async Task<Entities.DocumentType> GetFirstOrDefaultDocumentTypeAsync(DynamicQuery q)
         {
-            var documentType = await _repoDocumentType.GetFirstOrDefaultAsync(q);
+            var documentType = await _repoDocumentType.GetFirstOrDefaultAsync(q).ConfigureAwait(false);
             return documentType;
         }
 
         async Task<IList<Entities.Document>> GetDocumentsAsync(string sql)
         {
-            var documents = await _repoDocument.GetListAsync(sql);
+            var documents = await _repoDocument.GetListAsync(sql).ConfigureAwait(false);
 
             return documents;
         }
 
         async Task<IList<Entities.DocumentType>> GetDocumentTypesAsync(DynamicQuery q)
         {
-            var documentTypes = await _repoDocumentType.GetListAsync(q);
+            var documentTypes = await _repoDocumentType.GetListAsync(q).ConfigureAwait(false);
 
             return documentTypes;
         }
 
         async Task<IList<Entities.Project>> GetProjectsAsync(DynamicQuery q)
         {
-            var projects = await _repoProject.GetListAsync(q);
+            var projects = await _repoProject.GetListAsync(q).ConfigureAwait(false);
 
             return projects;
         }
 
         async Task<Entities.Document> UpsertDocumentAsync(Entities.Document document)
         {
-            await CreateDocumentVersionAsync(document);
+            await CreateDocumentVersionAsync(document).ConfigureAwait(false);
 
-            return await _repoDocument.UpsertAsync(document);
+            return await _repoDocument.UpsertAsync(document).ConfigureAwait(false);
         }
 
         async Task<Entities.Document> ReindexDocumentAsync(Entities.Document document, long index)
@@ -453,7 +453,7 @@ namespace KotoriCore.Database.DocumentDb
                    }
                );
 
-            var documentVersions = await GetDocumentVersionsAsync(q);
+            var documentVersions = await GetDocumentVersionsAsync(q).ConfigureAwait(false);
             var docv = new List<Task>();
             var di = new Uri(document.Identifier).ToKotoriDocumentIdentifier();
             var docId = di.ProjectId.ToKotoriDocumentUri(di.DocumentType, di.DocumentTypeId, di.DocumentId, index).ToString();
@@ -468,17 +468,17 @@ namespace KotoriCore.Database.DocumentDb
 
             document.Identifier = docId;
 
-            return await _repoDocument.ReplaceAsync(document);
+            return await _repoDocument.ReplaceAsync(document).ConfigureAwait(false);
         }
 
         async Task<Entities.DocumentVersion> CreateDocumentVersionAsync(Entities.DocumentVersion documentVersion)
         {
-            return await _repoDocumentVersion.CreateAsync(documentVersion);
+            return await _repoDocumentVersion.CreateAsync(documentVersion).ConfigureAwait(false);
         }
 
         async Task<IList<Entities.DocumentVersion>> GetDocumentVersionsAsync(DynamicQuery q)
         {
-            var documentVersions = await _repoDocumentVersion.GetListAsync(q);
+            var documentVersions = await _repoDocumentVersion.GetListAsync(q).ConfigureAwait(false);
 
             return documentVersions;
         }
@@ -497,7 +497,7 @@ namespace KotoriCore.Database.DocumentDb
                 }
             );
 
-            var documentType = await GetFirstOrDefaultDocumentTypeAsync(q);
+            var documentType = await GetFirstOrDefaultDocumentTypeAsync(q).ConfigureAwait(false);
 
             return documentType;
         }
@@ -527,12 +527,12 @@ namespace KotoriCore.Database.DocumentDb
             var projectUri = documentTypeId.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = documentTypeId.ProjectId.ToKotoriDocumentTypeUri(documentTypeId.DocumentType, documentTypeId.DocumentTypeId);
 
-            var project = await FindProjectAsync(instance, projectUri);
+            var project = await FindProjectAsync(instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(documentTypeId.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
-            var documentType = await FindDocumentTypeAsync(instance, projectUri, documentTypeUri);
+            var documentType = await FindDocumentTypeAsync(instance, projectUri, documentTypeUri).ConfigureAwait(false);
 
             if (documentType == null)
             {
@@ -558,7 +558,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 dt.Hash = dt.ToHash();
 
-                dt = await _repoDocumentType.CreateAsync(dt);
+                dt = await _repoDocumentType.CreateAsync(dt).ConfigureAwait(false);
 
                 return dt;
             }
@@ -584,7 +584,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 documentType.Hash = documentType.ToHash();
 
-                documentType = await _repoDocumentType.ReplaceAsync(documentType);
+                documentType = await _repoDocumentType.ReplaceAsync(documentType).ConfigureAwait(false);
 
                 // new transformations, update all documents because of new transformations
                 if (!oldTransformationsHash.Equals(newTransformationsHash))
@@ -602,7 +602,7 @@ namespace KotoriCore.Database.DocumentDb
                         true
                     );
 
-                    var documents = await GetDocumentsAsync(sql);
+                    var documents = await GetDocumentsAsync(sql).ConfigureAwait(false);
 
                     foreach(var document in documents)
                     {

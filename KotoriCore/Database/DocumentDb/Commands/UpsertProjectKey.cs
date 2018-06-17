@@ -14,7 +14,7 @@ namespace KotoriCore.Database.DocumentDb
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
 
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -41,7 +41,7 @@ namespace KotoriCore.Database.DocumentDb
             project.Identifier = projectUri.ToString();
             project.ProjectKeys = keys;
 
-            var newProject = await UpsertProjectAsync(project);
+            var newProject = await UpsertProjectAsync(project).ConfigureAwait(false);
 
             var result = new Domains.OperationResult(command.ProjectKey.Key, projectUri.AddRelativePath($"/project-keys/{command.ProjectKey.Key}").ToAbsoluteUri(), isNew);
 
