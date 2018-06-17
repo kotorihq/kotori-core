@@ -71,22 +71,22 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Create project request was inappropriately validated as ok.")]
         public async Task FailToCreateProjectFirst()
         {
-            await _kotori.CreateProjectAsync("", "", "");
+            await _kotori.CreateProjectAsync("", "", "").ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriProjectException))]
         public async Task FailToCreateProjectSecond()
         {
-            await _kotori.UpsertProjectAsync("dev", "x x", "bar");
+            await _kotori.UpsertProjectAsync("dev", "x x", "bar").ConfigureAwait(false);;
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException))]
         public async Task FailToCreateProjectBadKeys2()
         {
-            await _kotori.UpsertProjectAsync("dev", "aobababa", "hm");
-            await _kotori.CreateProjectKeyAsync("dev", "aobababa", "oh no", true);
+            await _kotori.UpsertProjectAsync("dev", "aobababa", "hm").ConfigureAwait(false);;
+            await _kotori.CreateProjectKeyAsync("dev", "aobababa", "oh no", true).ConfigureAwait(false);;
         }
 
         [TestMethod]
@@ -171,30 +171,30 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriProjectException), "Project has been deleted even if it does not exist.")]
         public async Task FailToDeleteProject()
         {
-            await _kotori.DeleteProjectAsync("dev", "nothing");
+            await _kotori.DeleteProjectAsync("dev", "nothing").ConfigureAwait(false);;
         }
 
         [TestMethod]
         public async Task Complex()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-main", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-main", "Nenecchi").ConfigureAwait(false);
 
             Assert.AreEqual("nenecchi-main", result.Id);
             Assert.AreEqual("/api/projects/nenecchi-main", result.Url);
             Assert.IsTrue(result.NewResource);
 
-            var projects = await _kotori.GetProjectsAsync("dev");
+            var projects = await _kotori.GetProjectsAsync("dev").ConfigureAwait(false);
 
             Assert.AreEqual("Nenecchi", projects.Items.First().Name);
 
-            await _kotori.DeleteProjectAsync("dev", "nenecchi-main");
+            await _kotori.DeleteProjectAsync("dev", "nenecchi-main").ConfigureAwait(false);
 
-            projects = await _kotori.GetProjectsAsync("dev");
+            projects = await _kotori.GetProjectsAsync("dev").ConfigureAwait(false);
 
             var c = GetContent(RawDocument.Matrix);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-stable", Enums.DocumentType.Content, "movie", "matrix", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-stable", Enums.DocumentType.Content, "movie", "matrix", null, c).ConfigureAwait(false);
 
-            var d = await _kotori.GetDocumentAsync("dev", "nenecchi-stable", Enums.DocumentType.Content, "movie", "matrix", null);
+            var d = await _kotori.GetDocumentAsync("dev", "nenecchi-stable", Enums.DocumentType.Content, "movie", "matrix", null).ConfigureAwait(false);
 
             Assert.AreEqual("matrix", d.Identifier);
             Assert.AreEqual("matrix", d.Slug);
@@ -214,13 +214,13 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task TooManyDocuments()
         {
-            await _kotori.UpsertProjectAsync("dev", "toomuch", "Nenecchi");
+            await _kotori.UpsertProjectAsync("dev", "toomuch", "Nenecchi").ConfigureAwait(false);;
 
             var c = GetContent(RawDocument.Matrix);
 
             for (var i = 0; i < Constants.MaxDocuments + 10; i++)
             {
-                await _kotori.CreateDocumentAsync("dev", "toomuch", Enums.DocumentType.Content, "x", c);    
+                await _kotori.CreateDocumentAsync("dev", "toomuch", Enums.DocumentType.Content, "x", c).ConfigureAwait(false);  
             }
 
             var result = _kotori.FindDocuments("dev", "toomuch", Enums.DocumentType.Content, "x", null, null, null, null, true, true, null);
@@ -233,23 +233,23 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Dupe slug was inappropriately validated as ok.")]
         public async Task DupeSlugs()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-dupe", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-dupe", "Nenecchi").ConfigureAwait(false);
 
             var c = GetContent(RawDocument.FlyingWitch);
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", Enums.DocumentType.Content, "movies", c);
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", Enums.DocumentType.Content, "movies", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", Enums.DocumentType.Content, "movies", c).ConfigureAwait(false);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dupe", Enums.DocumentType.Content, "movies", c).ConfigureAwait(false);
         }
 
         [TestMethod]
         public async Task FindDocuments()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-find", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-find", "Nenecchi").ConfigureAwait(false);
 
             var c = GetContent(RawDocument.FlyingWitch);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", "2017-05-06-flying-witch", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", "2017-05-06-flying-witch", null, c).ConfigureAwait(false);
 
             c = GetContent(RawDocument.FlipFlappers);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", "2017-08-12-flip-flappers", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", "2017-08-12-flip-flappers", null, c).ConfigureAwait(false);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-find", Enums.DocumentType.Content, "tv", 1, null, null, null, false, false, null);
             Assert.AreEqual(1, docs.Count);
@@ -277,11 +277,11 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task FindDocuments2()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-find2", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-find2", "Nenecchi").ConfigureAwait(false);
 
             var c = @"aloha";
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", Enums.DocumentType.Content, "tv", c);
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", Enums.DocumentType.Content, "tv", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", Enums.DocumentType.Content, "tv", c).ConfigureAwait(false);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-find2", Enums.DocumentType.Content, "tv", c).ConfigureAwait(false);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-find2", Enums.DocumentType.Content, "tv", 2, null, null, null, false, false, null);
             Assert.AreEqual(2, docs.Count);
@@ -290,13 +290,13 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task DeleteDocument()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-del", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-del", "Nenecchi").ConfigureAwait(false);
 
             var c = GetContent(RawDocument.FlipFlappers);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", "2017-05-06-flip-flappers", null, c);
+            _kotori.UpsertDocument("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", "2017-05-06-flip-flappers", null, c);
 
             c = GetContent(RawDocument.FlyingWitch);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", "2017-05-06-flying-witch", null, c);
+            _kotori.UpsertDocument("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", "2017-05-06-flying-witch", null, c);
 
             var docs = _kotori.FindDocuments("dev", "nenecchi-del", Enums.DocumentType.Content, "tv", null, null, null, null, false, false, null);
 
@@ -313,7 +313,7 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException))]
         public async Task DeleteDocumentThatDoesntExist()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-del2", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-del2", "Nenecchi").ConfigureAwait(false);
 
             _kotori.DeleteDocument("dev", "nenecchi-del2", Enums.DocumentType.Content, "tv", "2017-05-06-flying-witchxxx", null);
         }
@@ -321,13 +321,13 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task CountDocuments()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-count", "Nenecchi");
+            var result = _kotori.UpsertProject("dev", "nenecchi-count", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-count", Enums.DocumentType.Content, "tv", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-count", Enums.DocumentType.Content, "tv", c).ConfigureAwait(false);
 
             c = GetContent(RawDocument.FlyingWitch);
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-count", Enums.DocumentType.Content, "tv", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-count", Enums.DocumentType.Content, "tv", c).ConfigureAwait(false);
 
             var docs = _kotori.CountDocuments("dev", "nenecchi-count", Enums.DocumentType.Content, "tv", null, false, false);
 
@@ -340,30 +340,30 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task Drafts()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-drafts", "Nenecchi");
+            var result = _kotori.UpsertProject("dev", "nenecchi-drafts", "Nenecchi");
 
             var c = GetContent(RawDocument.FlipFlappers);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", "flip-flappers", null, c, new DateTime(2037, 5, 6));
+            _kotori.UpsertDocument("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", "flip-flappers", null, c, new DateTime(2037, 5, 6));
 
             c = GetContent(RawDocument.FlyingWitch);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", "flying-witch", null, c, new DateTime(2017, 5, 6), true);
+            _kotori.UpsertDocument("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", "flying-witch", null, c, new DateTime(2017, 5, 6), true);
 
-            var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", "flip-flappers", null);
+            var futureDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", "flip-flappers", null).ConfigureAwait(false);
             Assert.AreEqual(false, futureDoc.Draft);
 
-            var draftDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", "flying-witch", null);
+            var draftDoc = await _kotori.GetDocumentAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", "flying-witch", null).ConfigureAwait(false);
             Assert.AreEqual(true, draftDoc.Draft);
 
-            var count0 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, false, false);
+            var count0 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, false, false).ConfigureAwait(false);
             Assert.AreEqual(0, count0.Count);
 
-            var count1 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, true, false);
+            var count1 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, true, false).ConfigureAwait(false);
             Assert.AreEqual(1, count1.Count);
 
-            var count2 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, false, true);
+            var count2 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, false, true).ConfigureAwait(false);
             Assert.AreEqual(1, count2.Count);
 
-            var count3 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, true, true);
+            var count3 = await _kotori.CountDocumentsAsync("dev", "nenecchi-drafts", Enums.DocumentType.Content, "tv", null, true, true).ConfigureAwait(false);
             Assert.AreEqual(2, count3.Count);
         }
 
@@ -371,35 +371,35 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriDocumentException), "Get non-existent document inappropriately processed.")]
         public async Task GetDocumentBadId()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-dn", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-dn", "Nenecchi").ConfigureAwait(false);
 
             var c = GetContent(RawDocument.FlipFlappers);
-            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dn", Enums.DocumentType.Content, "tv", "2117-05-06-flip-flappers", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "nenecchi-dn", Enums.DocumentType.Content, "tv", "2117-05-06-flip-flappers", null, c).ConfigureAwait(false);
 
-            await _kotori.GetDocumentAsync("dev", "nenecchi-dn", Enums.DocumentType.Content, "tv", "2217-05-06-flip-flappers", null);
+            await _kotori.GetDocumentAsync("dev", "nenecchi-dn", Enums.DocumentType.Content, "tv", "2217-05-06-flip-flappers", null).ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriDocumentTypeException))]
         public async Task GetDocumentTypeBadId()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-dty", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-dty", "Nenecchi").ConfigureAwait(false);
 
             var c = GetContent(RawDocument.FlipFlappers);
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-dty", Enums.DocumentType.Content, "tvx", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dty", Enums.DocumentType.Content, "tvx", c).ConfigureAwait(false);
 
-            var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty", Enums.DocumentType.Content, "tvxxx");
+            var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty", Enums.DocumentType.Content, "tvxxx").ConfigureAwait(false);
         }
 
         [TestMethod]
         public async Task GetDocumentType()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-dty2", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "nenecchi-dty2", "Nenecchi").ConfigureAwait(false);
 
             var c = GetContent(RawDocument.FlipFlappers);
-            await _kotori.CreateDocumentAsync("dev", "nenecchi-dty2", Enums.DocumentType.Content, "tv", c);
+            await _kotori.CreateDocumentAsync("dev", "nenecchi-dty2", Enums.DocumentType.Content, "tv", c).ConfigureAwait(false);
 
-            var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty2", Enums.DocumentType.Content, "tv");
+            var dt = await _kotori.GetDocumentTypeAsync("dev", "nenecchi-dty2", Enums.DocumentType.Content, "tv").ConfigureAwait(false);
 
             Assert.AreEqual("content", dt.Type);
             Assert.AreEqual("tv", dt.Identifier);
@@ -409,23 +409,23 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriValidationException), "Null document inappropriately processed.")]
         public async Task CreateInvalidDocument()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "inv", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "inv", "Nenecchi").ConfigureAwait(false);
 
-            await _kotori.CreateDocumentAsync("dev", "inv", Enums.DocumentType.Content, "tv", null);
+            await _kotori.CreateDocumentAsync("dev", "inv", Enums.DocumentType.Content, "tv", null).ConfigureAwait(false);
         }
 
         [TestMethod]
         public async Task DocumentTypes()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "doctypes", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "doctypes", "Nenecchi").ConfigureAwait(false);
 
             var c = GetContent(RawDocument.FlipFlappers);
-            await _kotori.CreateDocumentAsync("dev", "doctypes", Enums.DocumentType.Content, "tv", c);
-            await _kotori.CreateDocumentAsync("dev", "doctypes", Enums.DocumentType.Content, "tv1", c);
-            await _kotori.CreateDocumentAsync("dev", "doctypes", Enums.DocumentType.Content, "tv2", c);
-            await _kotori.CreateDocumentAsync("dev", "doctypes", Enums.DocumentType.Content, "tv", c);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", Enums.DocumentType.Content, "tv", c).ConfigureAwait(false);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", Enums.DocumentType.Content, "tv1", c).ConfigureAwait(false);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", Enums.DocumentType.Content, "tv2", c).ConfigureAwait(false);
+            await _kotori.CreateDocumentAsync("dev", "doctypes", Enums.DocumentType.Content, "tv", c).ConfigureAwait(false);
 
-            var docTypes = await _kotori.GetDocumentTypesAsync("dev", "doctypes");
+            var docTypes = await _kotori.GetDocumentTypesAsync("dev", "doctypes").ConfigureAwait(false);
 
             Assert.AreEqual(3, docTypes.Count);
             Assert.AreEqual(3, docTypes.Items.Count());
@@ -439,17 +439,17 @@ namespace KotoriCore.Tests
         [ExpectedException(typeof(KotoriProjectException))]
         public async Task ProjectDeleteFail()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "immortal", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "immortal", "Nenecchi").ConfigureAwait(false);
 
             var c = GetContent(RawDocument.FlipFlappers);
-            await _kotori.CreateDocumentAsync("dev", "immortal", Enums.DocumentType.Content, "tv", c);
-            await _kotori.DeleteProjectAsync("dev", "immortal");
+            await _kotori.CreateDocumentAsync("dev", "immortal", Enums.DocumentType.Content, "tv", c).ConfigureAwait(false);
+            await _kotori.DeleteProjectAsync("dev", "immortal").ConfigureAwait(false);
         }
 
         [TestMethod]
         public async Task GetProject()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "fantomas", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "fantomas", "Nenecchi").ConfigureAwait(false);
             // TODO: use real result
             //Assert.AreEqual("Project has been created.", result);
             var project = _kotori.GetProject("dev", "fantomas");
@@ -460,7 +460,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task GetProjectKeys()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "rude", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "rude", "Nenecchi").ConfigureAwait(false);
             var keys = new List<ProjectKey> { new ProjectKey("sakura-nene"), new ProjectKey("aoba", true) };
 
             foreach (var k in keys)
@@ -484,7 +484,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task GetProjectKeysLimit()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "rudenude", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "rudenude", "Nenecchi").ConfigureAwait(false);
 
             for (int i = 0; i < Constants.MaxProjectKeys + 10; i++)
             {
@@ -507,7 +507,7 @@ namespace KotoriCore.Tests
         [TestMethod]
         public async Task UpdateProject()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "raw", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "raw", "Nenecchi").ConfigureAwait(false);
             // TODO: use real result
             //Assert.AreEqual("Project has been created.", result);
 
@@ -726,7 +726,7 @@ test: {i}
         [TestMethod]
         public async Task ComplexData()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "mrdata", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "mrdata", "MrData").ConfigureAwait(false);
 
             var c = @"---
 girl: Aoba
@@ -744,7 +744,7 @@ position: head programmer
 stars: !!int 3
 approved: !!bool false
 ---";
-            var res = await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, c);
+            var res = await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, c).ConfigureAwait(false);
             Assert.AreEqual("2", res.Id);
             Assert.AreEqual("/api/projects/mrdata/data/newgame/indices/2", res.Url);
             Assert.IsTrue(res.NewResource);
@@ -762,7 +762,7 @@ approved: !!bool true
 ---
 ";
 
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1, c);
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1, c).ConfigureAwait(false);
             doc = _kotori.GetDocument("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1);
             Assert.IsNotNull(doc);
             Assert.AreEqual(1, doc.Version);
@@ -796,7 +796,7 @@ stars: !!int 2
 approved: !!bool false
 ---";
 
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1, c);
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1, c).ConfigureAwait(false);
 
             docs = _kotori.FindDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(2, docs.Count);
@@ -808,7 +808,7 @@ position: programmer
 stars: !!int 4
 approved: !!bool true
 ---";
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1, c);
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, 1, c).ConfigureAwait(false);
 
             docs = _kotori.FindDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(2, docs.Count);
@@ -826,7 +826,7 @@ approved: !!bool true
 fake: no
 ---";
 
-            await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, c);
+            await _kotori.UpsertDocumentAsync("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, c).ConfigureAwait(false);
 
             docs = _kotori.FindDocuments("dev", "mrdata", Enums.DocumentType.Data, "newgame", null, null, null, "c.identifier", false, false, null);
             Assert.AreEqual(3, docs.Count);
@@ -999,12 +999,12 @@ approved: !!bool false
         [TestMethod]
         public async Task WeirdDataDocument()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "mrdataf", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "mrdataf", "MrData").ConfigureAwait(false);
 
             var c = @"---
 foo: bar
 ";
-            await _kotori.CreateDocumentAsync("dev", "mrdataf", Enums.DocumentType.Data, "newgame", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf", Enums.DocumentType.Data, "newgame", c).ConfigureAwait(false);
             var docs = _kotori.FindDocuments("dev", "mrdataf", Enums.DocumentType.Data, "newgame", null, null, null, null, false, false, null);
             Assert.AreEqual(1, docs.Count);
             Assert.AreEqual(new JValue("bar"), docs.Items.First().Meta.foo);
@@ -1013,12 +1013,12 @@ foo: bar
         [TestMethod]
         public async Task WeirdDataDocument2()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "mrdataf2", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "mrdataf2", "MrData").ConfigureAwait(false);
 
             var c = @"
 foo: bar
 ";
-            await _kotori.CreateDocumentAsync("dev", "mrdataf2", Enums.DocumentType.Data, "newgame", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf2", Enums.DocumentType.Data, "newgame", c).ConfigureAwait(false);
             var docs = _kotori.FindDocuments("dev", "mrdataf2", Enums.DocumentType.Data, "newgame", null, null, null, null, false, false, null);
             Assert.AreEqual(1, docs.Count);
             Assert.AreEqual(new JValue("bar"), docs.Items.First().Meta.foo);
@@ -1028,39 +1028,39 @@ foo: bar
         [ExpectedException(typeof(KotoriDocumentException), "Invalid yaml data inappropriately accepted.")]
         public async Task BadDataDocumentYaml()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "mrdataf3", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "mrdataf3", "MrData").ConfigureAwait(false);
 
             var c = @"---
 ---
 ";
-            await _kotori.CreateDocumentAsync("dev", "mrdataf3", Enums.DocumentType.Data, "newgame", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf3", Enums.DocumentType.Data, "newgame", c).ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriDocumentException), "Invalid json data inappropriately accepted.")]
         public async Task BadDataDocumentJson()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "mrdataf4", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "mrdataf4", "MrData").ConfigureAwait(false);
 
             var c = @"[
 { ""test"": true },
 {}
 ]
 ";
-            await _kotori.CreateDocumentAsync("dev", "mrdataf4", Enums.DocumentType.Data, "newgame", c);
+            await _kotori.CreateDocumentAsync("dev", "mrdataf4", Enums.DocumentType.Data, "newgame", c).ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException))]
         public async Task DocumentWithBadDate()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "bad-bat", "Nenecchi");
+            var result = await _kotori.UpsertProjectAsync("dev", "bad-bat", "Nenecchi").ConfigureAwait(false);
 
             var c = @"---
 mr: x
 $date: 2017-11-31
 ---";
-            await _kotori.UpsertDocumentAsync("dev", "bad-bat", Enums.DocumentType.Content, "tv",  "bad-date", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "bad-bat", Enums.DocumentType.Content, "tv",  "bad-date", null, c).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -1351,13 +1351,13 @@ b: 35
         [ExpectedException(typeof(KotoriDocumentException), "Bad index when upserting data documents was accepted.")]
         public async Task CreateOverExistingData()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "exicond", "Data");
+            var result = await _kotori.UpsertProjectAsync("dev", "exicond", "Data").ConfigureAwait(false);
 
             var c = @"---
 girl: Aoba
 ---
 ";
-            await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, null, c);
+            await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, null, c).ConfigureAwait(false);
 
             c = @"---
 girl: Nene
@@ -1365,54 +1365,54 @@ girl: Nene
 girl: Umiko
 ---
 ";
-            await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, null, c);
+            await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, null, c).ConfigureAwait(false);
             var n = _kotori.CountDocuments("dev", "exicond", Enums.DocumentType.Data, "newgame", null, false, false);
             Assert.AreEqual(3, n.Count);
 
-            await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, 2, c);
+            await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, 2, c).ConfigureAwait(false);
 
             n = _kotori.CountDocuments("dev", "exicond", Enums.DocumentType.Data, "newgame", null, false, false);
             Assert.AreEqual(4, n.Count);
 
-            await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, 5, c);
+            await _kotori.UpsertDocumentAsync("dev", "exicond", Enums.DocumentType.Data, "newgame", null, 5, c).ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException))]
         public async Task ChangingMetaTypeFail()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "f-a-i-l", "f-a-i-l");
+            var result = await _kotori.UpsertProjectAsync("dev", "f-a-i-l", "f-a-i-l").ConfigureAwait(false);
 
             var c = @"girl: Aoba";
-            await _kotori.UpsertDocumentAsync("dev", "f-a-i-l", Enums.DocumentType.Data, "newgame", "girls", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "f-a-i-l", Enums.DocumentType.Data, "newgame", "girls", null, c).ConfigureAwait(false);
 
             c = @"girl: !!bool true";
-            await _kotori.CreateDocumentAsync("dev", "f-a-i-l", Enums.DocumentType.Data, "newgame", c);
+            await _kotori.CreateDocumentAsync("dev", "f-a-i-l", Enums.DocumentType.Data, "newgame", c).ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriValidationException))]
         public async Task ChangingMetaTypeFail2()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "f-a-i-l2", "f-a-i-l2");
+            var result = await _kotori.UpsertProjectAsync("dev", "f-a-i-l2", "f-a-i-l2").ConfigureAwait(false);
 
             var c = @"---
 girl: Aoba
 ---
 haha";
-            await _kotori.CreateDocumentAsync("dev", "f-a-i-l2", Enums.DocumentType.Content, "newgame", c);
+            await _kotori.CreateDocumentAsync("dev", "f-a-i-l2", Enums.DocumentType.Content, "newgame", c).ConfigureAwait(false);
 
             c = @"---
 girl: !!int 6502
 ---
 haha";
-            await _kotori.CreateDocumentAsync("dev", "f-a-i-l2", Enums.DocumentType.Content, "newgame", c);
+            await _kotori.CreateDocumentAsync("dev", "f-a-i-l2", Enums.DocumentType.Content, "newgame", c).ConfigureAwait(false);
         }
 
         [TestMethod]
         public async Task CreateProject()
         {
-            var result = await _kotori.CreateProjectAsync("dev", null, "HI HI");
+            var result = await _kotori.CreateProjectAsync("dev", null, "HI HI").ConfigureAwait(false);
             var projects = _kotori.GetProjects("dev");
 
             Assert.AreEqual(1, projects.Items.Count(x => x.Identifier.Length == 16));
@@ -1421,25 +1421,25 @@ haha";
         [TestMethod]
         public async Task AutoDeleteIndex()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "f", "f-a-i-l2");
+            var result = await _kotori.UpsertProjectAsync("dev", "f", "f-a-i-l2").ConfigureAwait(false);
 
             var c = @"---
 girl: Aoba
 cute: !!bool true
 ---
 haha";
-            await _kotori.UpsertDocumentAsync("dev", "f", Enums.DocumentType.Content, "newgame", "item0", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "f", Enums.DocumentType.Content, "newgame", "item0", null, c).ConfigureAwait(false);
 
-            var dt = await _kotori.GetDocumentTypeAsync("dev", "f", Enums.DocumentType.Content, "newgame");
+            var dt = await _kotori.GetDocumentTypeAsync("dev", "f", Enums.DocumentType.Content, "newgame").ConfigureAwait(false);
             Assert.AreEqual(2, dt.Fields.Count());
 
             c = @"---
 girl: Nene
 ---
 haha";
-            await _kotori.UpsertDocumentAsync("dev", "f", Enums.DocumentType.Content, "newgame", "item1", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "f", Enums.DocumentType.Content, "newgame", "item1", null, c).ConfigureAwait(false);
 
-            dt = await _kotori.GetDocumentTypeAsync("dev", "f", Enums.DocumentType.Content, "newgame");
+            dt = await _kotori.GetDocumentTypeAsync("dev", "f", Enums.DocumentType.Content, "newgame").ConfigureAwait(false);
             Assert.AreEqual(2, dt.Fields.Count());
 
             c = @"---
@@ -1447,14 +1447,14 @@ wonder: !!int 6592
 disaster: earthquake
 ---
 haha";
-            await _kotori.UpsertDocumentAsync("dev", "f", Enums.DocumentType.Content, "newgame", "item2", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "f", Enums.DocumentType.Content, "newgame", "item2", null, c).ConfigureAwait(false);
 
-            dt = await _kotori.GetDocumentTypeAsync("dev", "f", Enums.DocumentType.Content, "newgame");
+            dt = await _kotori.GetDocumentTypeAsync("dev", "f", Enums.DocumentType.Content, "newgame").ConfigureAwait(false);
             Assert.AreEqual(4, dt.Fields.Count());
 
-            await _kotori.DeleteDocumentAsync("dev", "f", Enums.DocumentType.Content, "newgame", "item0");
+            await _kotori.DeleteDocumentAsync("dev", "f", Enums.DocumentType.Content, "newgame", "item0").ConfigureAwait(false);
 
-            dt = await _kotori.GetDocumentTypeAsync("dev", "f", Enums.DocumentType.Content, "newgame");
+            dt = await _kotori.GetDocumentTypeAsync("dev", "f", Enums.DocumentType.Content, "newgame").ConfigureAwait(false);
             Assert.AreEqual(3, dt.Fields.Count());
         }
 
@@ -1463,10 +1463,10 @@ haha";
         {
             for (var i = 0; i < Constants.MaxProjects + 10; i++)
             {
-                await _kotori.CreateProjectAsync("kong", null, null);
+                await _kotori.CreateProjectAsync("kong", null, null).ConfigureAwait(false);
             }
 
-            var projects = await _kotori.GetProjectsAsync("kong");
+            var projects = await _kotori.GetProjectsAsync("kong").ConfigureAwait(false);
 
             Assert.AreEqual(Constants.MaxProjects, projects.Items.Count());
             Assert.AreEqual(Constants.MaxProjects + 10, projects.Count);
@@ -1476,21 +1476,21 @@ haha";
         [ExpectedException(typeof(KotoriDocumentTypeException))]
         public async Task FailCreatingDocumentType()
         {
-            await _kotori.CreateProjectAsync("dev", "fa-fa", null);
-            await _kotori.CreateDocumentTypeAsync("dev", "fa-fa", Enums.DocumentType.Content, "x/y");
+            await _kotori.CreateProjectAsync("dev", "fa-fa", null).ConfigureAwait(false);
+            await _kotori.CreateDocumentTypeAsync("dev", "fa-fa", Enums.DocumentType.Content, "x/y").ConfigureAwait(false);
         }
 
         [TestMethod]
         public async Task CountDocumentTypes()
         {
-            await _kotori.CreateProjectAsync("dev", "countdt1", null);
+            await _kotori.CreateProjectAsync("dev", "countdt1", null).ConfigureAwait(false);
 
             for (var i = 0; i < Constants.MaxDocumentTypes + 10; i++)
             {
-                await _kotori.CreateDocumentTypeAsync("dev", "countdt1", Enums.DocumentType.Data, null);
+                await _kotori.CreateDocumentTypeAsync("dev", "countdt1", Enums.DocumentType.Data, null).ConfigureAwait(false);
             }
 
-            var documentTypes = await _kotori.GetDocumentTypesAsync("dev", "countdt1");
+            var documentTypes = await _kotori.GetDocumentTypesAsync("dev", "countdt1").ConfigureAwait(false);
 
             Assert.AreEqual(Constants.MaxDocumentTypes, documentTypes.Items.Count());
             Assert.AreEqual(Constants.MaxDocumentTypes + 10, documentTypes.Count);
@@ -1499,13 +1499,13 @@ haha";
         [TestMethod]
         public async Task CreateAndGetDocumentTypeTransformations()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "trans001", "Data");
+            var result = await _kotori.UpsertProjectAsync("dev", "trans001", "Data").ConfigureAwait(false);
 
             var c = @"---
 girl: Aoba
 ---
 ";
-            await _kotori.UpsertDocumentAsync("dev", "trans001", Enums.DocumentType.Data, "newgame", null, null, c);
+            await _kotori.UpsertDocumentAsync("dev", "trans001", Enums.DocumentType.Data, "newgame", null, null, c).ConfigureAwait(false);
 
             _kotori.UpsertDocumentTypeTransformations("dev", "trans001", Enums.DocumentType.Data, "newgame", @"
 [
@@ -1536,7 +1536,7 @@ girl: Aoba
         [TestMethod]
         public async Task DocumentTransformations()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "trans002", "Data");
+            var result = await _kotori.UpsertProjectAsync("dev", "trans002", "Data").ConfigureAwait(false);
 
             var c = @"---
 girl: "" Aoba ""
@@ -1549,8 +1549,8 @@ girl: "" Nene ""
 module: "" bar ""
 ---
 ";
-            await _kotori.UpsertDocumentAsync("dev", "trans002", Enums.DocumentType.Data, "newgame", null, null, c);
-            await _kotori.UpsertDocumentAsync("dev", "trans002", Enums.DocumentType.Data, "newgame", null, null, c2);
+            await _kotori.UpsertDocumentAsync("dev", "trans002", Enums.DocumentType.Data, "newgame", null, null, c).ConfigureAwait(false);
+            await _kotori.UpsertDocumentAsync("dev", "trans002", Enums.DocumentType.Data, "newgame", null, null, c2).ConfigureAwait(false);
 
             _kotori.UpsertDocumentTypeTransformations("dev", "trans002", Enums.DocumentType.Data, "newgame", @"
 [
@@ -1570,8 +1570,8 @@ module: "" bar ""
             Assert.AreEqual(new JValue("nene"), metaObj2["girl2"]);
             Assert.AreEqual(new JValue("BAR"), metaObj2["module"]);
 
-            await _kotori.UpsertDocumentAsync("dev", "trans002", Enums.DocumentType.Data, "newgame", null, 0, c);
-            await _kotori.UpsertDocumentAsync("dev", "trans002", Enums.DocumentType.Data, "newgame", null, 1, c2);
+            await _kotori.UpsertDocumentAsync("dev", "trans002", Enums.DocumentType.Data, "newgame", null, 0, c).ConfigureAwait(false);
+            await _kotori.UpsertDocumentAsync("dev", "trans002", Enums.DocumentType.Data, "newgame", null, 1, c2).ConfigureAwait(false);
 
             d = _kotori.GetDocument("dev", "trans002", Enums.DocumentType.Data, "newgame", null, 0);
             d2 = _kotori.GetDocument("dev", "trans002", Enums.DocumentType.Data, "newgame", null, 1);
@@ -1585,7 +1585,7 @@ module: "" bar ""
             Assert.AreEqual(new JValue("nene"), metaObj2["girl2"]);
             Assert.AreEqual(new JValue("BAR"), metaObj2["module"]);
 
-            var dd = await _documentDb.FindDocumentByIdAsync("dev", "trans002".ToKotoriProjectUri(), "trans002".ToKotoriDocumentUri(Enums.DocumentType.Data, "newgame", null, 0), null);
+            var dd = await _documentDb.FindDocumentByIdAsync("dev", "trans002".ToKotoriProjectUri(), "trans002".ToKotoriDocumentUri(Enums.DocumentType.Data, "newgame", null, 0), null).ConfigureAwait(false);
 
             Assert.IsNotNull(dd);
 
@@ -1615,27 +1615,27 @@ module: "" bar ""
         [TestMethod]
         public async Task DocumentTypeHash()
         {
-            await _kotori.UpsertProjectAsync("dev", "doctdel", "Data");
+            await _kotori.UpsertProjectAsync("dev", "doctdel", "Data").ConfigureAwait(false);
 
             var c = @"---
 girl: "" Aoba ""
 ---
 ";
-            var res = await _kotori.CreateDocumentTypeAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame");
+            var res = await _kotori.CreateDocumentTypeAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame").ConfigureAwait(false);
             Assert.AreEqual("newgame", res.Id);
             Assert.AreEqual("/api/projects/doctdel/data/newgame", res.Url);
             Assert.IsTrue(res.NewResource);
 
-            res = await _kotori.UpsertDocumentTypeAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame");
+            res = await _kotori.UpsertDocumentTypeAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame").ConfigureAwait(false);
             Assert.AreEqual("newgame", res.Id);
             Assert.AreEqual("/api/projects/doctdel/data/newgame", res.Url);
             Assert.IsFalse(res.NewResource);
 
-            await _kotori.CreateDocumentAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", c);
+            await _kotori.CreateDocumentAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", c).ConfigureAwait(false);
 
             var docType = _kotori.GetDocumentType("dev", "doctdel", Enums.DocumentType.Data, "newgame");
 
-            var firstHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", "doctdel".ToKotoriProjectUri(), "doctdel".ToKotoriDocumentTypeUri(Enums.DocumentType.Data, "newgame"));
+            var firstHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", "doctdel".ToKotoriProjectUri(), "doctdel".ToKotoriDocumentTypeUri(Enums.DocumentType.Data, "newgame")).ConfigureAwait(false);
 
             Assert.IsNotNull(firstHashD);
             Assert.IsNotNull(docType);
@@ -1644,9 +1644,9 @@ girl: "" Aoba ""
 
             await _kotori.UpsertDocumentTypeTransformationsAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", @"
 [{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]
-");
+").ConfigureAwait(false);
 
-            var secondHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", "doctdel".ToKotoriProjectUri(), "doctdel".ToKotoriDocumentTypeUri(Enums.DocumentType.Data, "newgame"));
+            var secondHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", "doctdel".ToKotoriProjectUri(), "doctdel".ToKotoriDocumentTypeUri(Enums.DocumentType.Data, "newgame")).ConfigureAwait(false);
 
             Assert.IsNotNull(secondHashD);
 
@@ -1654,9 +1654,9 @@ girl: "" Aoba ""
 
             Assert.AreNotEqual(firstHash, secondHash);
 
-            await _kotori.UpsertDocumentTypeTransformationsAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", "");
+            await _kotori.UpsertDocumentTypeTransformationsAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", "").ConfigureAwait(false);
 
-            var thirdHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", "doctdel".ToKotoriProjectUri(), "doctdel".ToKotoriDocumentTypeUri(Enums.DocumentType.Data, "newgame"));
+            var thirdHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", "doctdel".ToKotoriProjectUri(), "doctdel".ToKotoriDocumentTypeUri(Enums.DocumentType.Data, "newgame")).ConfigureAwait(false);
 
             Assert.IsNotNull(thirdHashD);
 
@@ -1666,10 +1666,10 @@ girl: "" Aoba ""
 
             await _kotori.UpsertDocumentTypeTransformationsAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", @"
 [{ ""from"": ""girl"", ""to"": ""girl2"", ""transformations"": [ ""trim"", ""lowercase"" ] }]
-");
-            await _kotori.UpsertDocumentTypeTransformationsAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", "");
+").ConfigureAwait(false);
+            await _kotori.UpsertDocumentTypeTransformationsAsync("dev", "doctdel", Enums.DocumentType.Data, "newgame", "").ConfigureAwait(false);
 
-            var fourthHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", "doctdel".ToKotoriProjectUri(), "doctdel".ToKotoriDocumentTypeUri(Enums.DocumentType.Data, "newgame"));
+            var fourthHashD = await _documentDb.FindDocumentTypeByIdAsync("dev", "doctdel".ToKotoriProjectUri(), "doctdel".ToKotoriDocumentTypeUri(Enums.DocumentType.Data, "newgame")).ConfigureAwait(false);
 
             Assert.IsNotNull(fourthHashD);
             Assert.AreNotEqual(fourthHashD, thirdHash);
@@ -1679,7 +1679,7 @@ girl: "" Aoba ""
         [ExpectedException(typeof(KotoriDocumentException))]
         public async Task MultipleFields()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "mulfi", "haha");
+            var result = await _kotori.UpsertProjectAsync("dev", "mulfi", "haha").ConfigureAwait(false);
 
             var c = @"---
 girl: Aoba
@@ -1690,14 +1690,14 @@ $Slug: ab
 $slug: ab
 ---
 ";
-            await _kotori.UpsertDocumentAsync("dev", "mulfi", Enums.DocumentType.Content, "newgame", "girls", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "mulfi", Enums.DocumentType.Content, "newgame", "girls", null, c).ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriDocumentException))]
         public async Task MultipleFields2()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "mulfi3", "haha");
+            var result = await _kotori.UpsertProjectAsync("dev", "mulfi3", "haha").ConfigureAwait(false);
 
             var c = @"---
 girl: Aoba
@@ -1707,14 +1707,14 @@ approved: !!bool true
 Stars: !!int 4
 ---
 ";
-            await _kotori.UpsertDocumentAsync("dev", "mulfi3", Enums.DocumentType.Data, "newgame", null, null, c);
+            await _kotori.UpsertDocumentAsync("dev", "mulfi3", Enums.DocumentType.Data, "newgame", null, null, c).ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriDocumentException))]
         public async Task MultipleFields2More()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "mulfi3more", "haha");
+            var result = await _kotori.UpsertProjectAsync("dev", "mulfi3more", "haha").ConfigureAwait(false);
 
             var c = @"---
 girl: Aoba
@@ -1729,7 +1729,7 @@ approved: !!bool false
 Stars: !!int 4
 ---
 ";
-            await _kotori.UpsertDocumentAsync("dev", "mulfi3more", Enums.DocumentType.Data, "newgame", null, null, c);
+            await _kotori.UpsertDocumentAsync("dev", "mulfi3more", Enums.DocumentType.Data, "newgame", null, null, c).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -1737,7 +1737,7 @@ Stars: !!int 4
         // NewtonSoft.Json unfortunately auto-fix multiple props and uses the last one
         public async Task MultipleFields3()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "mulfi4", "haha");
+            var result = await _kotori.UpsertProjectAsync("dev", "mulfi4", "haha").ConfigureAwait(false);
 
             var c = @"[{
 ""girl"": ""Aoba"",
@@ -1746,26 +1746,26 @@ Stars: !!int 4
 ""approved"": true,
 ""Stars"": 4
 }]";
-            await _kotori.UpsertDocumentAsync("dev", "mulfi4", Enums.DocumentType.Data, "newgame", null, null, c);
+            await _kotori.UpsertDocumentAsync("dev", "mulfi4", Enums.DocumentType.Data, "newgame", null, null, c).ConfigureAwait(false);
         }
 
         [TestMethod]
         public async Task DraftFlag()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "draftpr", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "draftpr", "MrData").ConfigureAwait(false);
 
             var c = @"---
 test: abc
 ---
 Matrix has you!";
             
-            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c).ConfigureAwait(false);
             var d = _kotori.GetDocument("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix");
 
             Assert.IsNotNull(d);
             Assert.AreEqual(false, d.Draft);
 
-            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c, null, true);
+            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c, null, true).ConfigureAwait(false);
             d = _kotori.GetDocument("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix");
 
             Assert.IsNotNull(d);
@@ -1777,13 +1777,13 @@ $draft: !!bool false
 ---
 Matrix has you!";
             
-            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c, null);
+            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c, null).ConfigureAwait(false);
             d = _kotori.GetDocument("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix");
 
             Assert.IsNotNull(d);
             Assert.AreEqual(false, d.Draft);
 
-            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c, null, true);
+            await _kotori.UpsertDocumentAsync("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix", null, c, null, true).ConfigureAwait(false);
             d = _kotori.GetDocument("dev", "draftpr", Enums.DocumentType.Content, "movie", "matrix");
 
             Assert.IsNotNull(d);
@@ -1794,7 +1794,7 @@ Matrix has you!";
         [ExpectedException(typeof(KotoriDocumentException))]
         public async Task InvalidSlugType()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "invslg", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "invslg", "MrData").ConfigureAwait(false);
 
             var c = @"---
 test: abc
@@ -1802,14 +1802,14 @@ $slug: !!int 13456
 ---
 Matrix has you!";
 
-            await _kotori.UpsertDocumentAsync("dev", "invslg", Enums.DocumentType.Content, "movie", "matrix", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "invslg", Enums.DocumentType.Content, "movie", "matrix", null, c).ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriDocumentException))]
         public async Task BadDraftFlag()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "baddrr", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "baddrr", "MrData").ConfigureAwait(false);
 
             var c = @"---
 test: abc
@@ -1817,14 +1817,14 @@ $draft: ""xoxo""
 ---
 Matrix has you!";
 
-            await _kotori.UpsertDocumentAsync("dev", "baddrr", Enums.DocumentType.Content, "movie", "matrix", null, c);
+            await _kotori.UpsertDocumentAsync("dev", "baddrr", Enums.DocumentType.Content, "movie", "matrix", null, c).ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriProjectException))]
         public async Task BadProjectId()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "baddrr/2", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "baddrr/2", "MrData").ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -1832,35 +1832,35 @@ Matrix has you!";
         public async Task NoDbConfigured()
         {
             var kotori = new Kotori(new KotoriConfiguration("nodb", "dev", null, null, null));
-            var result = await kotori.UpsertProjectAsync("dev", "something", "MrData");
+            var result = await kotori.UpsertProjectAsync("dev", "something", "MrData").ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriDocumentException))]
         public async Task DataWithContentYaml()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "datacont", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "datacont", "MrData").ConfigureAwait(false);
 
             var c = @"---
 test: abc
 ---
 Matrix has you!";
 
-            await _kotori.UpsertDocumentAsync("dev", "datacont", Enums.DocumentType.Data, "movie", null, null, c);
+            await _kotori.UpsertDocumentAsync("dev", "datacont", Enums.DocumentType.Data, "movie", null, null, c).ConfigureAwait(false);
         }
 
         [TestMethod]
         [ExpectedException(typeof(KotoriException))]
         public async Task DataWithContentJson()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "datacont2", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "datacont2", "MrData").ConfigureAwait(false);
 
             var c = @"[{
 ""test"": ""abc""
 }, { xxx }]
 ";
 
-            await _kotori.UpsertDocumentAsync("dev", "datacont2", Enums.DocumentType.Data, "movie", null, null, c);
+            await _kotori.UpsertDocumentAsync("dev", "datacont2", Enums.DocumentType.Data, "movie", null, null, c).ConfigureAwait(false);
         }
 
         [TestMethod]
@@ -1872,7 +1872,7 @@ Matrix has you!";
             Assert.AreEqual("/api/projects/guruguru", result.Url);
             Assert.IsTrue(result.NewResource);
 
-            var p = await _kotori.GetProjectAsync("dev", "guruguru");
+            var p = await _kotori.GetProjectAsync("dev", "guruguru").ConfigureAwait(false);;
 
             Assert.AreEqual("guruguru", p.Identifier);
             Assert.AreEqual("Guru !", p.Name);
@@ -1882,7 +1882,7 @@ Matrix has you!";
         public async Task CreateProjectWithNoName()
         {
             _kotori.CreateProject("dev", "guruguru2", null);
-            var p = await _kotori.GetProjectAsync("dev", "guruguru2");
+            var p = await _kotori.GetProjectAsync("dev", "guruguru2").ConfigureAwait(false);;
 
             Assert.AreEqual("guruguru2", p.Identifier);
             Assert.IsNull(p.Name);
@@ -1891,7 +1891,7 @@ Matrix has you!";
         [TestMethod]
         public async Task CreateProjectWithGeneratedId()
         {
-            var res = await _kotori.CreateProjectAsync("dev", null, null);
+            var res = await _kotori.CreateProjectAsync("dev", null, null).ConfigureAwait(false);;
             Assert.IsNotNull(res.Id);
             Assert.AreEqual($"/api/projects/{res.Id}", res.Url);
             Assert.IsTrue(res.NewResource);
@@ -1906,7 +1906,7 @@ Matrix has you!";
         [ExpectedException(typeof(KotoriDocumentException))]
         public async Task FindDataAtBadIndex()
         {
-            var result = await _kotori.UpsertProjectAsync("dev", "mrdatabinx", "MrData");
+            var result = await _kotori.UpsertProjectAsync("dev", "mrdatabinx", "MrData").ConfigureAwait(false);;
 
             var c = @"---
 girl: Aoba
@@ -1925,16 +1925,16 @@ stars: !!int 3
 approved: !!bool false
 ---";
          
-            await _kotori.UpsertDocumentAsync("dev", "mrdatabinx", Enums.DocumentType.Data, "newgame", null, null, c);
+            await _kotori.UpsertDocumentAsync("dev", "mrdatabinx", Enums.DocumentType.Data, "newgame", null, null, c).ConfigureAwait(false);
             _kotori.GetDocument("dev", "mrdatabinx", Enums.DocumentType.Data, "newgame", null, -1);
         }
 
         [TestMethod]
         public async Task GetProjectsSearch()
         {
-            await _kotori.UpsertProjectAsync("dev2", "envy1", "Envy1");
-            await _kotori.UpsertProjectAsync("dev2", "envy2", "Envy2");
-            await _kotori.UpsertProjectAsync("dev2", "envy3", "Envy3");
+            await _kotori.UpsertProjectAsync("dev2", "envy1", "Envy1").ConfigureAwait(false);;
+            await _kotori.UpsertProjectAsync("dev2", "envy2", "Envy2").ConfigureAwait(false);;
+            await _kotori.UpsertProjectAsync("dev2", "envy3", "Envy3").ConfigureAwait(false);;
 
             var projects = _kotori.GetProjects("dev2", new Translators.Query(null, "name eq 'Envy2'", null, null, null));
 
