@@ -10,7 +10,7 @@ namespace KotoriCore.Database.DocumentDb.Entities
     /// Document type.
     /// </summary>
     [EntityType("entity", Entity)]
-    public class DocumentType: IEntity
+    public class DocumentType : IEntity
     {
         internal const string Entity = "kotori/document-type";
 
@@ -64,21 +64,21 @@ namespace KotoriCore.Database.DocumentDb.Entities
         public string Hash { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.DocumentType"/> class.
+        /// Initializes a new instance of the DocumentType class.
         /// </summary>
         public DocumentType()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.Entities.DocumentType"/> class.
+        /// Initializes a new instance of the DocumentType class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="identifier">Identifier.</param>
         /// <param name="projectId">Project identifier.</param>
         /// <param name="type">Type.</param>
         /// <param name="indexes">Indexes.</param>
-        public DocumentType(string instance, string identifier, string projectId, Enums.DocumentType type, IList<DocumentTypeIndex> indexes, 
+        public DocumentType(string instance, string identifier, string projectId, Enums.DocumentType type, IList<DocumentTypeIndex> indexes,
                             IList<DocumentTypeTransformation> transformations)
         {
             Instance = instance;

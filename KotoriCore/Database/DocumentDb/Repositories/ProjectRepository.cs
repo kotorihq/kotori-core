@@ -55,17 +55,17 @@ namespace KotoriCore.Database.DocumentDb.Repositories
 
             if (query.Count)
             {
-                var count = await _repoCounter.GetListAsync(fin);
+                var count = await _repoCounter.GetListAsync(fin).ConfigureAwait(false);
 
                 return new DocumentDbResult<Entities.Project>(count.Sum(x => x.Number), null);
             }
 
             query.Count = true;
             var finc = _translator.Translate(query);
-            var count2 = (await _repoCounter.GetListAsync(finc)).Sum(x => x.Number);
+            var count2 = (await _repoCounter.GetListAsync(finc).ConfigureAwait(false)).Sum(x => x.Number);
 
             query.Count = false;
-            var result = await GetListAsync(fin);
+            var result = await GetListAsync(fin).ConfigureAwait(false);
             return new DocumentDbResult<Entities.Project>(count2, result);
         }
     }

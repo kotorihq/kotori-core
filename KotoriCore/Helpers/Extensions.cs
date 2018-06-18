@@ -9,7 +9,7 @@ using KotoriCore.Domains;
 using KotoriCore.Exceptions;
 
 namespace KotoriCore.Helpers
-{    
+{
     /// <summary>
     /// Extensions.
     /// </summary>
@@ -29,7 +29,7 @@ namespace KotoriCore.Helpers
 
             if (content.StartsWith("---", StringComparison.OrdinalIgnoreCase))
                 content = content.Substring(3).Trim();
-            
+
             if ((content.StartsWith("{", StringComparison.OrdinalIgnoreCase) && content.EndsWith("}", StringComparison.OrdinalIgnoreCase)) ||
                 (content.StartsWith("[", StringComparison.OrdinalIgnoreCase) && content.EndsWith("]", StringComparison.OrdinalIgnoreCase)))
             {
@@ -58,12 +58,12 @@ namespace KotoriCore.Helpers
             if (identifier == null)
                 throw new ArgumentNullException(nameof(identifier));
 
-            var id = identifier.ToLower();
+            var id = identifier.ToLower(Cultures.Invariant);
 
             if (!Constants.DocumentTypes.ContainsKey(id))
                 throw new KotoriException($"Type {identifier} has not been identified as a valid document type.");
 
-            return Constants.DocumentTypes[identifier.ToLower()];
+            return Constants.DocumentTypes[identifier.ToLower(Cultures.Invariant)];
         }
 
         /// <summary>
@@ -76,19 +76,19 @@ namespace KotoriCore.Helpers
             if (result == null)
                 throw new ArgumentNullException(nameof(result));
 
-            var c = (result.Content?.ToString() ?? string.Empty) +
-                (result.Date == null ? "(none)" : result.Date.Value.ToEpoch().ToString()) +
+            var c = (result.Content?.ToString(Cultures.Invariant) ?? string.Empty) +
+                (result.Date == null ? "(none)" : result.Date.Value.ToEpoch().ToString(Cultures.Invariant)) +
                 (result.Slug ?? "(none)") +
                 (result.Draft) +
                 (result.DocumentIdentifier.ProjectId ?? "(none)") +
                 (result.DocumentIdentifier.DocumentType.ToString() ?? "(none)") +
                 (result.DocumentIdentifier.DocumentTypeId ?? "(none)") +
                 (result.DocumentIdentifier.DocumentId ?? "(none)") +
-                ((result.DocumentIdentifier.Index ?? 0).ToString());
+                ((result.DocumentIdentifier.Index ?? 0).ToString(Cultures.Invariant));
 
             if (result.OriginalMeta != null)
                 c += JsonConvert.SerializeObject(result.OriginalMeta);
-            
+
             if (result.Meta != null)
                 c += JsonConvert.SerializeObject(result.Meta);
 
@@ -106,7 +106,7 @@ namespace KotoriCore.Helpers
                 throw new ArgumentNullException(nameof(documentType));
 
             var c = documentType.Type +
-                documentType.Indexes?.Select(i => i.From + "-" + (i.To == null ? "null" : ((int)i.To).ToString()) + "-" + i.IsRequired + "-" + i.Type).ToImplodedString() +
+                documentType.Indexes?.Select(i => i.From + "-" + (i.To == null ? "null" : ((int)i.To).ToString(Cultures.Invariant)) + "-" + i.IsRequired + "-" + i.Type).ToImplodedString() +
                 documentType.Transformations?.Select(t => t.From + "-" + t.To + "-" + t.Transformations.Select(t2 => t2.ToString())?.ToImplodedString())?.ToImplodedString();
 
             return HashTools.GetHash(c, HashTools.HashType.SHA1);
@@ -121,7 +121,7 @@ namespace KotoriCore.Helpers
         {
             if (transformations == null)
                 throw new ArgumentNullException(nameof(transformations));
-            
+
             var c = transformations?.Select(t => t.From + "-" + t.To + "-" + t.Transformations.Select(t2 => t2.ToString())?.ToImplodedString())?.ToImplodedString();
 
             return HashTools.GetHash(c, HashTools.HashType.SHA1);
@@ -149,7 +149,7 @@ namespace KotoriCore.Helpers
         {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
-            
+
             if (starting)
             {
                 while (text.StartsWith("/", StringComparison.Ordinal) && text.Length > 1)

@@ -14,14 +14,14 @@ namespace KotoriCore.Exceptions
         public virtual HttpStatusCode StatusCode { get; set; } = HttpStatusCode.BadRequest;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriServer.Exceptions.KotoriException"/> class.
+        /// Initializes a new instance of the KotoriException class.
         /// </summary>
         public KotoriException()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriServer.Exceptions.KotoriException"/> class.
+        /// Initializes a new instance of the KotoriException class.
         /// </summary>
         /// <param name="message">Message.</param>
         public KotoriException(string message) : base(message)
@@ -29,10 +29,19 @@ namespace KotoriCore.Exceptions
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Exceptions.KotoriException"/> class.
+        /// Initializes a new instance of the KotoriException class.
         /// </summary>
         /// <param name="messages">Messages.</param>
         public KotoriException(IEnumerable<string> messages) : base(messages?.Where(m => m != null).ToImplodedString(" "))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the KotoriException class.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="innerException">Inner exception.</param>
+        public KotoriException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }

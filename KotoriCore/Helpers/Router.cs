@@ -44,7 +44,7 @@ namespace KotoriCore.Helpers
 
             if (!projectId.IsValidSlug())
                 throw new KotoriProjectException(projectId, $"Project slug {projectId} is not valid.");
-            
+
             return new Uri(UriScheme + "api/projects/" + projectId);
         }
 
@@ -59,7 +59,7 @@ namespace KotoriCore.Helpers
         {
             if (documentTypeId == null)
                 throw new ArgumentNullException(nameof(documentTypeId));
-            
+
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
 
@@ -68,8 +68,8 @@ namespace KotoriCore.Helpers
 
             if (!documentTypeId.IsValidSlug())
                 throw new KotoriDocumentTypeException(projectId, $"Document type slug {documentTypeId} is not valid.");
-            
-            return new Uri(UriScheme + "api/projects/" + projectId + "/" + documentType.ToString().ToLower() + "/" + documentTypeId);
+
+            return new Uri(UriScheme + "api/projects/" + projectId + "/" + documentType.ToString().ToLower(Cultures.Invariant) + "/" + documentTypeId);
         }
 
         /// <summary>
@@ -90,10 +90,10 @@ namespace KotoriCore.Helpers
             if (documentType == Enums.DocumentType.Data &&
                 !string.IsNullOrEmpty(documentId))
                 throw new ArgumentException("Document Id cannot be set for data documents.", nameof(documentId));
-            
+
             if (documentTypeId == null)
                 throw new ArgumentNullException(nameof(documentTypeId));
-            
+
             if (projectId == null)
                 throw new ArgumentNullException(nameof(projectId));
 
@@ -114,12 +114,12 @@ namespace KotoriCore.Helpers
             string uri = string.Empty;
 
             if (documentType == Enums.DocumentType.Content)
-                uri = UriScheme + "api/projects/" + projectId + "/" + documentType.ToString().ToLower() + "/" + documentTypeId + "/documents/" + documentId;
+                uri = UriScheme + "api/projects/" + projectId + "/" + documentType.ToString().ToLower(Cultures.Invariant) + "/" + documentTypeId + "/documents/" + documentId;
             else if (documentType == Enums.DocumentType.Data)
-                uri = UriScheme + "api/projects/" + projectId + "/" + documentType.ToString().ToLower() + "/" + documentTypeId + "/indices/" + index;
+                uri = UriScheme + "api/projects/" + projectId + "/" + documentType.ToString().ToLower(Cultures.Invariant) + "/" + documentTypeId + "/indices/" + index;
             else
                 throw new KotoriException($"Uri scheme generator is not defined for document type {documentType}.");
-            
+
             return new Uri(uri);
         }
 
@@ -132,7 +132,7 @@ namespace KotoriCore.Helpers
         {
             if (uri == null)
                 throw new KotoriValidationException("Identifier (null) is not valid Uri string.");
-            
+
             var u = uri.ToString();
 
             var r = new Regex($@"^kotori:\/\/api\/projects\/(?<id>{OneSlug})", RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -157,7 +157,7 @@ namespace KotoriCore.Helpers
 
             var u = uri.ToString();
 
-            var r = new Regex($@"^kotori:\/\/api\/projects\/(?<projectid>{OneSlug})\/(?<documenttype>{OneSlug})\/(?<id>{OneSlug})", 
+            var r = new Regex($@"^kotori:\/\/api\/projects\/(?<projectid>{OneSlug})\/(?<documenttype>{OneSlug})\/(?<id>{OneSlug})",
                               RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             var match = r.Match(u);
@@ -168,7 +168,7 @@ namespace KotoriCore.Helpers
 
                 if (!documentType.HasValue)
                     throw new KotoriException($"Uri {uri} cannot be converted to document type identifier.");
-                
+
                 return new DocumentTypeIdentifierToken
                 (
                     match.Groups["projectid"].Value.RemoveTrailingSlashes(true, true),
@@ -192,7 +192,7 @@ namespace KotoriCore.Helpers
 
             var u = uri.ToString();
 
-            var r = new Regex($@"^kotori:\/\/api\/projects\/(?<projectid>{OneSlug})\/content\/(?<documenttype>{OneSlug})\/documents\/(?<id>{OneSlug})", 
+            var r = new Regex($@"^kotori:\/\/api\/projects\/(?<projectid>{OneSlug})\/content\/(?<documenttype>{OneSlug})\/documents\/(?<id>{OneSlug})",
                               RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             var match = r.Match(u);
@@ -275,7 +275,7 @@ namespace KotoriCore.Helpers
 
             var u = uri.ToString();
 
-            u += (u.EndsWith("/") ? (path.StartsWith("/") ? path.Substring(1) : path) : (path.StartsWith("/") ? path : "/" + path));
+            u += (u.EndsWith("/", StringComparison.OrdinalIgnoreCase) ? (path.StartsWith("/", StringComparison.OrdinalIgnoreCase) ? path.Substring(1) : path) : (path.StartsWith("/", StringComparison.OrdinalIgnoreCase) ? path : "/" + path));
 
             return new Uri(u);
         }

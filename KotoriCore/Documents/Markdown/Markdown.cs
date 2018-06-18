@@ -74,11 +74,11 @@ namespace KotoriCore.Documents
             var meta = new StringBuilder();
             var body = new StringBuilder();
 
-            while ((line = await tr.ReadLineAsync()) != null)
+            while ((line = await tr.ReadLineAsync().ConfigureAwait(false)) != null)
             {
                 counter++;
 
-                if (line.Equals("---"))
+                if (line.Equals("---", StringComparison.OrdinalIgnoreCase))
                 {
                     if (!frontMatterStart.HasValue)
                     {
@@ -183,7 +183,7 @@ namespace KotoriCore.Documents
 
             if (result.Meta != null)
                 metaObj = JObject.FromObject(result.Meta);
-            
+
             Dictionary<string, object> meta = metaObj?.ToObject<Dictionary<string, object>>();
             var usedPropertyTypes = new List<Enums.DocumentPropertyType>();
 
@@ -200,14 +200,14 @@ namespace KotoriCore.Documents
                     {
                         if (documentType == Enums.DocumentType.Data)
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Date is not allowed for data documents.");
-                        
+
                         if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Date))
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is used more than once.");
 
                         if (meta[key].GetType() != typeof(string) &&
                             meta[key].GetType() != typeof(DateTime))
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Date is not valid string/date.");
-                        
+
                         result.Date = meta[key].ToString().ToDateTime();
 
                         usedPropertyTypes.Add(Enums.DocumentPropertyType.Date);
@@ -217,16 +217,16 @@ namespace KotoriCore.Documents
                     {
                         if (documentType == Enums.DocumentType.Data)
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Slug is not allowed for data documents.");
-                        
+
                         if (usedPropertyTypes.Any(x => x == Enums.DocumentPropertyType.Slug))
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document parsing error. Property {key} is used more than once.");
 
                         if (meta[key].GetType() != typeof(string))
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Slug is not valid string.");
-                        
+
                         if (!meta[key].ToString().IsValidSlug())
                             throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"$Slug is not valid.");
-                        
+
                         result.Slug = meta[key].ToString();
 
                         usedPropertyTypes.Add(Enums.DocumentPropertyType.Slug);
@@ -264,14 +264,14 @@ namespace KotoriCore.Documents
                 }
 
                 // set original meta
-                foreach(var key in dictionary.Keys)
+                foreach (var key in dictionary.Keys)
                 {
                     originalDictionary.Add(key, dictionary[key]);
                 }
 
                 if (_transformation != null)
                 {
-                    foreach(var t in _transformation.Transformations)
+                    foreach (var t in _transformation.Transformations)
                     {
                         var from = t.From.ToCamelCase();
                         var to = t.To.ToCamelCase();
@@ -319,7 +319,7 @@ namespace KotoriCore.Documents
             {
                 if (!DocumentIdentifier.DocumentId.IsValidSlug())
                     throw new KotoriDocumentException(DocumentIdentifier.DocumentId, $"Document identifier {DocumentIdentifier.DocumentId} is not valid as a slug.");
-                
+
                 result.Slug = DocumentIdentifier.DocumentId;
             }
 
@@ -369,7 +369,7 @@ namespace KotoriCore.Documents
 
             if (content != null)
                 result += content;
-            
+
             return result;
         }
 
@@ -404,16 +404,16 @@ namespace KotoriCore.Documents
             if (originalMeta == null &&
                 newMeta == null)
                 return new Dictionary<string, object>();
-            
+
             if (originalMeta == null)
                 return new Dictionary<string, object>(newMeta.Where(x => x.Value != null));
 
             if (newMeta == null)
                 return new Dictionary<string, object>(newMeta.Where(x => x.Value != null));
-            
+
             var combined = new Dictionary<string, object>();
 
-            foreach(var o in originalMeta)
+            foreach (var o in originalMeta)
             {
                 var k = newMeta.Keys.FirstOrDefault(x => x == o.Key);
 
@@ -433,7 +433,7 @@ namespace KotoriCore.Documents
             }
 
             // add fresh new keys:values
-            foreach(var n in newMeta)
+            foreach (var n in newMeta)
             {
                 if (originalMeta.Keys.All(x => x != n.Key))
                     combined.Add(n.Key, n.Value);

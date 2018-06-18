@@ -48,7 +48,7 @@
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="shortid" Version="2.0.0" />
-    <PackageReference Include="Sushi2" Version="1.2.8" />
+    <PackageReference Include="Sushi2" Version="1.2.9" />
     <PackageReference Include="YamlDotNet" Version="4.3.2" />
     <PackageReference Include="ADCCure.Azure.Documents.ODataCore.Sql" Version="3.0.2" />
   </ItemGroup>

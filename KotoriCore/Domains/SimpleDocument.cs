@@ -10,46 +10,46 @@ namespace KotoriCore.Domains
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>
-        public readonly string Identifier;
+        internal readonly string Identifier;
 
         /// <summary>
         /// Gets or sets the slug.
         /// </summary>
-        public readonly string Slug;
+        internal readonly string Slug;
 
         /// <summary>
         /// Gets or sets the meta.
         /// </summary>
-        public readonly dynamic Meta;
+        internal readonly dynamic Meta;
 
         /// <summary>
         /// Gets or sets the content.
         /// </summary>
-        public readonly string Content;
+        internal readonly string Content;
 
         /// <summary>
         /// Gets or sets the date.
         /// </summary>
-        public readonly DateTime? Date;
+        internal readonly DateTime? Date;
 
         /// <summary>
         /// Gets or sets the date of last modification.
         /// </summary>
-        public readonly DateTime? Modified;
+        internal readonly DateTime? Modified;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="T:KotoriCore.Domains.SimpleDocument"/> is draft.
+        /// Gets or sets a value indicating whether it is draft.
         /// </summary>
         /// <value><c>true</c> if draft; otherwise, <c>false</c>.</value>
-        public readonly bool? Draft;
+        internal readonly bool? Draft;
 
         /// <summary>
         /// The version.
         /// </summary>
-        public readonly long Version;
+        internal readonly long Version;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocument"/> class.
+        /// Initializes a new instance of the SimpleDocument class.
         /// </summary>
         /// <param name="identifier">Identifier.</param>
         /// <param name="slug">Slug.</param>

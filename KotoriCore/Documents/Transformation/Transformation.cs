@@ -30,7 +30,7 @@ namespace KotoriCore.Documents.Transformation
 
         void Check()
         {
-            foreach(var t in Transformations)
+            foreach (var t in Transformations)
             {
                 if (string.IsNullOrEmpty(t.From))
                     throw new KotoriDocumentTypeException(Identifier, "The FROM field cannot be null/empty in transformations.");
@@ -73,32 +73,38 @@ namespace KotoriCore.Documents.Transformation
         {
             if (val == null)
                 return null;
-            
+
             try
             {
                 switch (transformation)
                 {
                     case Enums.Transformation.Lowercase:
-                        return val.ToString().ToLower();
+                        return val.ToString().ToLower(Cultures.Invariant);
+
                     case Enums.Transformation.Trim:
                         return val.ToString().Trim();
+
                     case Enums.Transformation.Uppercase:
-                        return val.ToString().ToUpper();
+                        return val.ToString().ToUpper(Cultures.Invariant);
+
                     case Enums.Transformation.Normalize:
                         return val.ToString().ToNormalizedString();
+
                     case Enums.Transformation.Search:
                         return val.ToString().ToSortedString();
+
                     case Enums.Transformation.Epoch:
                         return val.ToDateTime().Value.ToEpoch();
+
                     default:
-                        throw new KotoriDocumentTypeException(Identifier, $"Transformation of type '{transformation.ToString().ToLower()}' is not supported.");
+                        throw new KotoriDocumentTypeException(Identifier, $"Transformation of type '{transformation.ToString().ToLower(Cultures.Invariant)}' is not supported.");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 if (ex is KotoriDocumentTypeException)
                     throw;
-                
+
                 throw new KotoriDocumentTypeException(Identifier, $"Transformation of field '{field}' failed. Message: {ex.Message}");
             }
         }

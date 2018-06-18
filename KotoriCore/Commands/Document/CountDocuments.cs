@@ -11,40 +11,40 @@ namespace KotoriCore.Commands
         /// <summary>
         /// The instance.
         /// </summary>
-        public readonly string Instance;
+        internal readonly string Instance;
 
         /// <summary>
         /// The project identifier.
         /// </summary>
-        public readonly string ProjectId;
+        internal readonly string ProjectId;
 
         /// <summary>
         /// The type of the document.
         /// </summary>
-        public readonly Enums.DocumentType DocumentType;
+        internal readonly Enums.DocumentType DocumentType;
 
         /// <summary>
         /// The document type identifier.
         /// </summary>
-        public readonly string DocumentTypeId;
+        internal readonly string DocumentTypeId;
 
         /// <summary>
         /// The filter.
         /// </summary>
-        public readonly string Filter;
+        internal readonly string Filter;
 
         /// <summary>
         /// The drafts.
         /// </summary>
-        public readonly bool Drafts;
+        internal readonly bool Drafts;
 
         /// <summary>
         /// The future.
         /// </summary>
-        public readonly bool Future;
+        internal readonly bool Future;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.CountDocuments"/> class.
+        /// Initializes a new instance of the CountDocuments class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>

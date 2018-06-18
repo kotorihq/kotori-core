@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace KotoriCore.Domains
 {
     public class SimpleDocumentVersion : IDomain
@@ -6,20 +7,20 @@ namespace KotoriCore.Domains
         /// <summary>
         /// Gets or sets the version.
         /// </summary>
-        public readonly long Version;
+        internal readonly long Version;
 
         /// <summary>
         /// Gets or sets the hash.
         /// </summary>
-        public readonly string Hash;
+        internal readonly string Hash;
 
         /// <summary>
         /// Gets or sets the date.
         /// </summary>
-        public readonly DateTime Date;
+        internal readonly DateTime Date;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocumentVersion"/> class.
+        /// Initializes a new instance of the SimpleDocumentVersion class.
         /// </summary>
         /// <param name="version">Version.</param>
         /// <param name="hash">Hash.</param>

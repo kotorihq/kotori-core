@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using KotoriCore.Helpers;
+using Sushi2;
 
 namespace KotoriCore.Domains
 {
@@ -11,20 +12,20 @@ namespace KotoriCore.Domains
         /// <summary>
         /// Gets the identifier.
         /// </summary>
-        public readonly string Identifier;
+        internal readonly string Identifier;
 
         /// <summary>
         /// Gets the type.
         /// </summary>
-        public readonly string Type;
+        internal readonly string Type;
 
         /// <summary>
         /// Gets or sets the fields.
         /// </summary>
-        public IEnumerable<string> Fields { get; set; }
+        internal IEnumerable<string> Fields { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Domains.SimpleDocumentType"/> class.
+        /// Initializes a new instance of the SimpleDocumentType class.
         /// </summary>
         /// <param name="identifier">Identifier.</param>
         /// <param name="type">Document type.</param>
@@ -32,8 +33,8 @@ namespace KotoriCore.Domains
         public SimpleDocumentType(string identifier, Enums.DocumentType type, IEnumerable<string> fields)
         {
             Identifier = identifier;
-            Type = type.ToString().ToLower();
+            Type = type.ToString().ToLower(Cultures.Invariant);
             Fields = fields;
         }
-}
+    }
 }

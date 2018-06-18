@@ -35,7 +35,7 @@ namespace KotoriCore.Database.DocumentDb
                     command.DocumentType,
                     command.DocumentTypeId,
                     command.DocumentId,
-                    command.Index,                            
+                    command.Index,
                     command.Content,
                     command.Date,
                     command.Draft
@@ -81,7 +81,7 @@ namespace KotoriCore.Database.DocumentDb
                     var dic = jo.ToObject<Dictionary<string, object>>();
                     var doc = Markdown.ConstructDocument(dic, null);
 
-                    var finalIndex = idx == null ? dc : idx + dc;                       
+                    var finalIndex = idx == null ? dc : idx + dc;
 
                     lastResult = await UpsertDocumentHelperAsync(
                         command.CreateOnly,
@@ -90,7 +90,7 @@ namespace KotoriCore.Database.DocumentDb
                         command.DocumentType,
                         command.DocumentTypeId,
                         command.DocumentId,
-                        finalIndex,                            
+                        finalIndex,
                         doc,
                         command.Date,
                         command.Draft
@@ -146,7 +146,7 @@ namespace KotoriCore.Database.DocumentDb
                 if (createOnly &&
                    documentType == Enums.DocumentType.Content)
                 {
-                    throw new KotoriDocumentException(documentId, "Document cannot be created. It already exists.");    
+                    throw new KotoriDocumentException(documentId, "Document cannot be created. It already exists.");
                 }
             }
 
