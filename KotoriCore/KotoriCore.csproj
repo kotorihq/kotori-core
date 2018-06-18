@@ -17,6 +17,11 @@
     <PackageIconUrl>https://raw.githubusercontent.com/kotorihq/kotori-core/master/KotoriCore/kotori-icon.png</PackageIconUrl>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Search\**" />
+    <EmbeddedResource Remove="Search\**" />
+    <None Remove="Search\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Configurations\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Helpers\" />
@@ -27,7 +32,6 @@
     <Folder Include="Documents\" />
     <Folder Include="Documents\Markdown\" />
     <Folder Include="Documents\Deserializers\" />
-    <Folder Include="Search\" />
     <Folder Include="Commands\Document\" />
     <Folder Include="Database\DocumentDb\Commands\" />
     <Folder Include="Database\DocumentDb\Helpers\" />
