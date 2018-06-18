@@ -15,7 +15,7 @@ namespace KotoriCore.Database.DocumentDb
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
             var documentTypeId = documentTypeUri.ToKotoriDocumentTypeIdentifier();
 
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -25,7 +25,7 @@ namespace KotoriCore.Database.DocumentDb
                 command.Instance,
                 projectUri,
                 documentTypeUri
-            );
+            ).ConfigureAwait(false);
 
             if (docType == null)
                 throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -44,7 +44,7 @@ namespace KotoriCore.Database.DocumentDb
                 documentTypeId,
                 new UpdateToken<dynamic>(null, true),
                 new UpdateToken<string>(command.Transformations, false)
-            );
+            ).ConfigureAwait(false);
 
             var result = new OperationResult(documentTypeId.DocumentTypeId, documentTypeUri.AddRelativePath("/transformations").ToAbsoluteUri(), isNew);
 

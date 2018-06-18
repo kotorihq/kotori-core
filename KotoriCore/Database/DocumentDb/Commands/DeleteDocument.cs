@@ -15,7 +15,7 @@ namespace KotoriCore.Database.DocumentDb
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentUri = command.ProjectId.ToKotoriDocumentUri(command.DocumentType, command.DocumentTypeId, command.DocumentId, command.Index);
 
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -28,11 +28,11 @@ namespace KotoriCore.Database.DocumentDb
 
             var document = await FindDocumentByIdAsync
                 (
-                    command.Instance, 
+                    command.Instance,
                     projectUri,
-                    documentUri, 
+                    documentUri,
                     null
-                );
+                ).ConfigureAwait(false);
 
             if (document == null)
                 throw new KotoriDocumentException(command.DocumentId, "Document does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -51,23 +51,23 @@ namespace KotoriCore.Database.DocumentDb
                    true,
                    true
                 );
-                
-                var count = await CountDocumentsAsync(sql);
 
-                var result = await DeleteDocumentAsync(document);
+                var count = await CountDocumentsAsync(sql).ConfigureAwait(false);
+
+                var result = await DeleteDocumentAsync(document).ConfigureAwait(false);
 
                 if (!result)
                     throw new KotoriDocumentException(command.DocumentId, "Document has not been deleted.");
-                
+
                 if (command.Index.HasValue &&
-                   command.Index.Value != count - 1)    
+                   command.Index.Value != count - 1)
                 {
                     var reindexTasks = new List<Task>();
 
                     for (var i = command.Index.Value + 1; i < count; i++)
                     {
                         var durl = command.ProjectId.ToKotoriDocumentUri(command.DocumentType, command.DocumentTypeId, command.DocumentId, i);
-                        var d = await FindDocumentByIdAsync(command.Instance, projectUri, durl, null);
+                        var d = await FindDocumentByIdAsync(command.Instance, projectUri, durl, null).ConfigureAwait(false);
 
                         if (d != null)
                         {
@@ -83,7 +83,7 @@ namespace KotoriCore.Database.DocumentDb
             }
             else
             {
-                if (await DeleteDocumentAsync(document))
+                if (await DeleteDocumentAsync(document).ConfigureAwait(false))
                 {
                     var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
                     (

@@ -13,31 +13,31 @@ namespace KotoriCore.Database.DocumentDb
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
 
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
-            var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
+            var documentType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri).ConfigureAwait(false);
 
             if (documentType == null)
                 throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
             var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
             (
-                command.Instance, 
+                command.Instance,
                 projectUri,
-                documentTypeUri, 
-                null, 
-                "count(1) as number", 
-                command.Filter, 
+                documentTypeUri,
+                null,
+                "count(1) as number",
+                command.Filter,
                 null,
                 command.Drafts,
                 command.Future
             );
 
-            var count = await CountDocumentsAsync(sql);
+            var count = await CountDocumentsAsync(sql).ConfigureAwait(false);
 
             return new CommandResult<CountResult>(new CountResult(count));
         }

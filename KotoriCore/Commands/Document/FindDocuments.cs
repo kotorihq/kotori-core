@@ -11,65 +11,65 @@ namespace KotoriCore.Commands
         /// <summary>
         /// The instance.
         /// </summary>
-        public readonly string Instance;
+        protected internal readonly string Instance;
 
         /// <summary>
         /// The project identifier.
         /// </summary>
-        public readonly string ProjectId;
+        internal readonly string ProjectId;
 
         /// <summary>
         /// The document type identifier.
         /// </summary>
-        public readonly string DocumentTypeId;
+        internal readonly string DocumentTypeId;
 
         /// <summary>
         /// The select.
         /// </summary>
-        public readonly string Select;
+        internal readonly string Select;
 
         /// <summary>
         /// The top.
         /// </summary>
-        public readonly int? Top;
+        internal readonly int? Top;
 
         /// <summary>
         /// The filter.
         /// </summary>
-        public readonly string Filter;
+        internal readonly string Filter;
 
         /// <summary>
         /// The order by.
         /// </summary>
-        public readonly string OrderBy;
+        internal readonly string OrderBy;
 
         /// <summary>
         /// The drafts.
         /// </summary>
-        public readonly bool Drafts;
+        internal readonly bool Drafts;
 
         /// <summary>
         /// The future.
         /// </summary>
-        public readonly bool Future;
+        internal readonly bool Future;
 
         /// <summary>
         /// The skip.
         /// </summary>
-        public readonly int? Skip;
+        internal readonly int? Skip;
 
         /// <summary>
         /// The format.
         /// </summary>
-        public readonly Enums.DocumentFormat Format;
+        internal readonly Enums.DocumentFormat Format;
 
         /// <summary>
         /// The type of the document.
         /// </summary>
-        public readonly Enums.DocumentType DocumentType;
+        internal readonly Enums.DocumentType DocumentType;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.FindDocuments"/> class.
+        /// Initializes a new instance of the FindDocuments class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
@@ -83,7 +83,7 @@ namespace KotoriCore.Commands
         /// <param name="future">If set to <c>true</c> future.</param>
         /// <param name="skip">Skip.</param>
         /// <param name="format">Format.</param>
-        public FindDocuments(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, int? top, string select, 
+        public FindDocuments(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, int? top, string select,
                              string filter, string orderBy, bool drafts, bool future, int? skip, Enums.DocumentFormat format)
         {
             Format = format;

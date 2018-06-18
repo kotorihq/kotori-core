@@ -13,10 +13,10 @@ namespace KotoriCore
     /// </summary>
     public interface IKotori
     {
-        OperationResult UpsertDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? date, bool? draft);
-        Task<OperationResult> UpsertDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? date, bool? draft);
-        OperationResult CreateDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? date, bool? draft);
-        Task<OperationResult> CreateDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? date, bool? draft);
+        OperationResult UpsertDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? dateTime, bool? draft);
+        Task<OperationResult> UpsertDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, string content, DateTime? dateTime, bool? draft);
+        OperationResult CreateDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? dateTime, bool? draft);
+        Task<OperationResult> CreateDocumentAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string content, DateTime? dateTime, bool? draft);
         OperationResult CreateProject(string instance, string projectId, string name);
         Task<OperationResult> CreateProjectAsync(string instance, string projectId, string name);
         void DeleteProject(string instance, string projectId);

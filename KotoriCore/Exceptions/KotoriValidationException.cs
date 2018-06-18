@@ -40,5 +40,23 @@ namespace KotoriCore.Exceptions
         {
             Messages = new List<string> { message ?? UnknownErrorMessage };
         }
+
+        /// <summary>
+        /// Initializes a new instance of the KotoriValidationException class.
+        /// </summary>
+
+        public KotoriValidationException()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the KotoriValidationException class.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="innerException">Inner exception.</param>
+        public KotoriValidationException(string message, System.Exception innerException) : base(message, innerException)
+        {
+            Messages = new List<string> { message ?? UnknownErrorMessage };
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace KotoriCore.Database.DocumentDb
     {
         public async Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(IGetProjects command)
         {
-            var projects = await _projectRepository.GetProjectsAsync(command.Instance, command.Query);
+            var projects = await _projectRepository.GetProjectsAsync(command.Instance, command.Query).ConfigureAwait(false);
             var simpleProjects = projects.Items?.Select(p => new SimpleProject(p.Name, new Uri(p.Identifier).ToKotoriProjectIdentifier()));
             return new ComplexCountResult<SimpleProject>(projects.Count, simpleProjects);
         }

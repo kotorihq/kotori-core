@@ -20,7 +20,7 @@ namespace KotoriCore.Database.DocumentDb
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
             var documentUri = command.ProjectId.ToKotoriDocumentUri(command.DocumentType, command.DocumentTypeId, command.DocumentId, command.Index);
 
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -39,7 +39,7 @@ namespace KotoriCore.Database.DocumentDb
                     command.Content,
                     command.Date,
                     command.Draft
-                );
+                ).ConfigureAwait(false);
 
                 return result;
             }
@@ -63,7 +63,7 @@ namespace KotoriCore.Database.DocumentDb
                    true
                 );
 
-                var count = await CountDocumentsAsync(sql);
+                var count = await CountDocumentsAsync(sql).ConfigureAwait(false);
 
                 if (idx == null)
                     idx = count;
@@ -108,7 +108,7 @@ namespace KotoriCore.Database.DocumentDb
             var projectUri = projectId.ToKotoriProjectUri();
             var documentTypeUri = projectId.ToKotoriDocumentTypeUri(documentType, documentTypeId);
             var documentUri = projectId.ToKotoriDocumentUri(documentType, documentTypeId, documentId, index);
-            var documentType2 = await FindDocumentTypeAsync(instance, projectUri, documentTypeUri);
+            var documentType2 = await FindDocumentTypeAsync(instance, projectUri, documentTypeUri).ConfigureAwait(false);
             var transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier().DocumentTypeId, documentType2?.Transformations);
             var document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), content, transformation, date, draft);
             var documentTypeId2 = documentTypeUri.ToKotoriDocumentTypeIdentifier();
@@ -119,7 +119,7 @@ namespace KotoriCore.Database.DocumentDb
 
             if (documentType == Enums.DocumentType.Content)
             {
-                var slug = await FindDocumentBySlugAsync(instance, projectUri, documentResult.Slug, documentUri);
+                var slug = await FindDocumentBySlugAsync(instance, projectUri, documentResult.Slug, documentUri).ConfigureAwait(false);
 
                 if (slug != null)
                     throw new KotoriDocumentException(documentId, $"Slug '{documentResult.Slug}' is already being used for another document.");
@@ -131,13 +131,13 @@ namespace KotoriCore.Database.DocumentDb
                documentTypeId2,
                new UpdateToken<dynamic>(DocumentHelpers.CleanUpMeta(documentResult.Meta), false),
                new UpdateToken<string>(null, true)
-            );
+            ).ConfigureAwait(false);
 
             transformation = new Transformation(documentTypeUri.ToKotoriDocumentTypeIdentifier().DocumentTypeId, documentType2.Transformations);
             document = new Markdown(documentUri.ToKotoriDocumentIdentifier(), content, transformation, date, draft);
             documentResult = document.Process();
 
-            var d = await FindDocumentByIdAsync(instance, projectUri, documentUri, null);
+            var d = await FindDocumentByIdAsync(instance, projectUri, documentUri, null).ConfigureAwait(false);
             var isNew = d == null;
             var id = d?.Id;
 
@@ -174,7 +174,7 @@ namespace KotoriCore.Database.DocumentDb
                 Id = id
             };
 
-            var newDocument = await UpsertDocumentAsync(d);
+            var newDocument = await UpsertDocumentAsync(d).ConfigureAwait(false);
 
             var result = new OperationResult(newDocument, isNew);
 

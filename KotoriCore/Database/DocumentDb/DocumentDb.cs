@@ -41,10 +41,10 @@ namespace KotoriCore.Database.DocumentDb
         readonly IMetaAnalyzer _metaAnalyzer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Database.DocumentDb.DocumentDb"/> class.
+        /// Initializes a new instance of the DocumentDb class.
         /// </summary>
         /// <param name="configuration">Configuration.</param>
-        public DocumentDb(IDatabaseConfiguration configuration, 
+        public DocumentDb(IDatabaseConfiguration configuration,
             IMetaAnalyzer metaAnalyzer,
             IProjectRepository projectRepository)
         {
@@ -129,7 +129,7 @@ namespace KotoriCore.Database.DocumentDb
             {
                 throw;
             }
-            catch(KotoriProjectException)
+            catch (KotoriProjectException)
             {
                 throw;
             }
@@ -137,7 +137,7 @@ namespace KotoriCore.Database.DocumentDb
             {
                 if (ex?.InnerException is KotoriException ke)
                     throw ex.InnerException;
-                
+
                 message += $" Message: {ex.Message}";
             }
 
@@ -221,7 +221,7 @@ namespace KotoriCore.Database.DocumentDb
                 }
             );
 
-            var document = await _repoDocument.GetFirstOrDefaultAsync(q);
+            var document = await _repoDocument.GetFirstOrDefaultAsync(q).ConfigureAwait(false);
 
             return document;
         }
@@ -321,7 +321,7 @@ namespace KotoriCore.Database.DocumentDb
             var metaObj = JObject.FromObject(document.Meta);
             Dictionary<string, object> meta2 = metaObj.ToObject<Dictionary<string, object>>();
 
-            await DeleteDocumentVersionsAsync(document);
+            await DeleteDocumentVersionsAsync(document).ConfigureAwait(false);
 
             var result = await _repoDocument.DeleteAsync(document.Id).ConfigureAwait(false);
             var nonIndexedFields = new List<string>();
@@ -458,7 +458,7 @@ namespace KotoriCore.Database.DocumentDb
             var di = new Uri(document.Identifier).ToKotoriDocumentIdentifier();
             var docId = di.ProjectId.ToKotoriDocumentUri(di.DocumentType, di.DocumentTypeId, di.DocumentId, index).ToString();
 
-            foreach(var dv in documentVersions)
+            foreach (var dv in documentVersions)
             {
                 dv.DocumentId = docId;
                 docv.Add(_repoDocumentVersion.UpsertAsync(dv));
@@ -514,13 +514,13 @@ namespace KotoriCore.Database.DocumentDb
         {
             if (transformations == null)
                 throw new ArgumentNullException(nameof(transformations));
-            
+
             if (meta == null)
                 throw new ArgumentNullException(nameof(meta));
-            
+
             if (documentTypeId == null)
                 throw new ArgumentNullException(nameof(documentTypeId));
-            
+
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
 
@@ -540,7 +540,7 @@ namespace KotoriCore.Database.DocumentDb
 
                 if (!meta.Ignore)
                     indexes = _metaAnalyzer.GetUpdatedDocumentTypeIndexes(indexes, meta.Value);
-                
+
                 var trans = new List<DocumentTypeTransformation>();
 
                 if (!transformations.Ignore)
@@ -577,7 +577,7 @@ namespace KotoriCore.Database.DocumentDb
                     trans = new Transformation(documentTypeId.DocumentTypeId, transformations.Value).Transformations;
 
                 var oldTransformationsHash = documentType.Transformations.ToHash();
-                    
+
                 documentType.Transformations = trans;
 
                 var newTransformationsHash = documentType.Transformations.ToHash();
@@ -587,7 +587,7 @@ namespace KotoriCore.Database.DocumentDb
                 documentType = await _repoDocumentType.ReplaceAsync(documentType).ConfigureAwait(false);
 
                 // new transformations, update all documents because of new transformations
-                if (!oldTransformationsHash.Equals(newTransformationsHash))
+                if (!oldTransformationsHash.Equals(newTransformationsHash, StringComparison.Ordinal))
                 {
                     var sql = CreateDynamicQueryForDocumentSearch
                     (
@@ -604,7 +604,7 @@ namespace KotoriCore.Database.DocumentDb
 
                     var documents = await GetDocumentsAsync(sql).ConfigureAwait(false);
 
-                    foreach(var document in documents)
+                    foreach (var document in documents)
                     {
                         var documentToken = new Uri(document.Identifier).ToKotoriDocumentIdentifier();
 
@@ -620,7 +620,7 @@ namespace KotoriCore.Database.DocumentDb
                             document.ToOriginalJsonString(),
                             document.Date?.DateTime,
                             document.Draft
-                        );
+                        ).ConfigureAwait(false);
                     }
                 }
 

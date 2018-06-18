@@ -16,12 +16,12 @@ namespace KotoriCore.Database.DocumentDb
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
             var documentUri = command.ProjectId.ToKotoriDocumentUri(command.DocumentType, command.DocumentTypeId, command.DocumentId, command.Index);
 
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
-            
-            var d = await FindDocumentByIdAsync(command.Instance, projectUri, documentUri, null);
+
+            var d = await FindDocumentByIdAsync(command.Instance, projectUri, documentUri, null).ConfigureAwait(false);
 
             if (d == null)
                 throw new KotoriDocumentException(command.DocumentId, "Document not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -30,7 +30,7 @@ namespace KotoriCore.Database.DocumentDb
                 (
                     "select top @maxDocumentVersions c.version, c.hash, c.date from c where c.entity = @entity and c.instance = @instance " +
                     "and c.projectId = @projectId and c.documentId = @documentId order by c.date.epoch desc",
-                    new 
+                    new
                     {
                         entity = Entities.DocumentVersion.Entity,
                         instance = command.Instance,
@@ -53,8 +53,8 @@ namespace KotoriCore.Database.DocumentDb
                     }
                 );
 
-            var documentVersions = await GetDocumentVersionsAsync(q);
-            var count = await CountDocumentVersionsAsync(q2);
+            var documentVersions = await GetDocumentVersionsAsync(q).ConfigureAwait(false);
+            var count = await CountDocumentVersionsAsync(q2).ConfigureAwait(false);
 
             var simpleDocumentVersions = documentVersions.Select(dv => new SimpleDocumentVersion(dv.Version, dv.Hash, dv.Date.DateTime));
 

@@ -17,7 +17,7 @@ namespace KotoriCore.Documents
         readonly string _identifier;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Documents.Data"/> class.
+        /// Initializes a new instance of the Data class.
         /// </summary>
         /// <param name="identifier">Identifier.</param>
         /// <param name="content">Content.</param>
@@ -39,7 +39,7 @@ namespace KotoriCore.Documents
             {
                 var items = JsonConvert.DeserializeObject<List<dynamic>>(_content);
 
-                foreach(var i in items)
+                foreach (var i in items)
                 {
                     var f2 = i.ToObject<Dictionary<string, object>>();
 
@@ -49,7 +49,7 @@ namespace KotoriCore.Documents
 
                 if (!items.Any())
                     throw new KotoriDocumentException(_identifier, "Data contains no document.");
-                
+
                 return items.ToList();
             }
 
@@ -61,20 +61,20 @@ namespace KotoriCore.Documents
 
                 items.RemoveAll(x => x.Trim() == string.Empty);
 
-                if (items.Any(x => string.IsNullOrWhiteSpace(x.Replace("\r", "").Replace("\n", "").Replace(" ", ""))))
+                if (items.Any(x => string.IsNullOrWhiteSpace(x.Replace("\r", "", StringComparison.OrdinalIgnoreCase).Replace("\n", "", StringComparison.OrdinalIgnoreCase).Replace(" ", "", StringComparison.OrdinalIgnoreCase))))
                     throw new KotoriDocumentException(_identifier, "Data contains document with no meta fields.");
 
                 List<dynamic> items2 = new List<dynamic>();
                 var c = 0;
 
-                foreach(var i in items)
+                foreach (var i in items)
                 {
                     try
                     {
                         var d = des.Deserialize(i);
                         items2.Add(d);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         throw new KotoriDocumentException(_identifier, $"Deserialization of data document at index {c} failed with a message: {ex.Message}");
                     }

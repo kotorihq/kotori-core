@@ -5,7 +5,6 @@ using KotoriCore.Database.DocumentDb;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using KotoriCore.Domains;
 using Sushi2;
 using KotoriCore.Helpers;
@@ -65,18 +64,18 @@ namespace KotoriCore
                 }
                 catch (Exception ex)
                 {
-                    throw new Exceptions.KotoriException("Error initializing connection to DocumentDb. Message: " + ex.Message);
+                    throw new KotoriException("Error initializing connection to DocumentDb. Message: " + ex.Message);
                 }
             }
 
             if (services.All(s => s.ServiceType != typeof(IDocumentDb)))
-                throw new Exceptions.KotoriException("No database initialized.");
+                throw new KotoriException("No database initialized.");
 
             _serviceProvider = services.BuildServiceProvider();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Kotori"/> class.
+        /// Initializes a new instance of the Kotori class.
         /// </summary>
         /// <param name="configuration">Configuration.</param>
         public Kotori(IConfiguration configuration) : this(new KotoriConfiguration(configuration))
@@ -580,7 +579,7 @@ namespace KotoriCore
         public async Task<ComplexCountResult<SimpleDocumentVersion>> GetDocumentVersionsAsync(string instance, string projectId, Enums.DocumentType documentType,
                                                                                        string documentTypeId, string documentId, long? index = null)
         {
-            var result = await ProcessAsync(new GetDocumentVersions(instance, projectId, documentType, documentTypeId, documentId, index));
+            var result = await ProcessAsync(new GetDocumentVersions(instance, projectId, documentType, documentTypeId, documentId, index)).ConfigureAwait(false);
             var documentVersions = result as CommandResult<ComplexCountResult<SimpleDocumentVersion>>;
             return documentVersions.Record;
         }
@@ -608,7 +607,7 @@ namespace KotoriCore
         /// <param name="documentTypeId">Document type identifier.</param>
         public async Task<ComplexCountResult<DocumentTypeTransformation>> GetDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            var result = await ProcessAsync(new GetDocumentTypeTransformations(instance, projectId, documentType, documentTypeId));
+            var result = await ProcessAsync(new GetDocumentTypeTransformations(instance, projectId, documentType, documentTypeId)).ConfigureAwait(false);
             var transformations = result as CommandResult<ComplexCountResult<DocumentTypeTransformation>>;
 
             return transformations.Record;
@@ -639,7 +638,7 @@ namespace KotoriCore
         /// <param name="transformations">Transformations.</param>
         public async Task<OperationResult> CreateDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
         {
-            return (await ProcessAsync(new UpsertDocumentTypeTransformations(true, instance, projectId, documentType, documentTypeId, transformations)) as CommandResult<OperationResult>).Record;
+            return (await ProcessAsync(new UpsertDocumentTypeTransformations(true, instance, projectId, documentType, documentTypeId, transformations)).ConfigureAwait(false) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -667,7 +666,7 @@ namespace KotoriCore
         /// <param name="transformations">Transformations.</param>
         public async Task<OperationResult> UpsertDocumentTypeTransformationsAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string transformations)
         {
-            return (await ProcessAsync(new UpsertDocumentTypeTransformations(false, instance, projectId, documentType, documentTypeId, transformations)) as CommandResult<OperationResult>).Record;
+            return (await ProcessAsync(new UpsertDocumentTypeTransformations(false, instance, projectId, documentType, documentTypeId, transformations)).ConfigureAwait(false) as CommandResult<OperationResult>).Record;
         }
 
         /// <summary>
@@ -697,7 +696,7 @@ namespace KotoriCore
 
             command.Init(true, instance, projectId, documentType, documentTypeId);
 
-            return await ProcessOperationAsync(command, database.UpsertDocumentTypeAsync(command));
+            return await ProcessOperationAsync(command, database.UpsertDocumentTypeAsync(command)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -728,7 +727,7 @@ namespace KotoriCore
 
             command.Init(false, instance, projectId, documentType, documentTypeId);
 
-            return await ProcessOperationAsync(command, database.UpsertDocumentTypeAsync(command));
+            return await ProcessOperationAsync(command, database.UpsertDocumentTypeAsync(command)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -752,7 +751,7 @@ namespace KotoriCore
         /// <param name="documentTypeId">Document type identifier.</param>
         public async Task DeleteDocumentTypeAsync(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId)
         {
-            await ProcessAsync(new DeleteDocumentType(instance, projectId, documentType, documentTypeId));
+            await ProcessAsync(new DeleteDocumentType(instance, projectId, documentType, documentTypeId)).ConfigureAwait(false);
         }
 
         // TODO: remove
@@ -777,7 +776,7 @@ namespace KotoriCore
                     validationResults.Any())
                     throw new KotoriValidationException(validationResults);
 
-                return await operation;
+                return await operation.ConfigureAwait(false);
             }
             catch (KotoriException)
             {

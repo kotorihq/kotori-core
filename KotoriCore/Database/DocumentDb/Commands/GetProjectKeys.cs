@@ -12,11 +12,11 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<ComplexCountResult<ProjectKey>>> HandleAsync(GetProjectKeys command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
-            var p = await FindProjectAsync(command.Instance, projectUri);
+            var p = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (p == null)
                 throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
-            
+
             var projectKeys = p.ProjectKeys.Select(k => new ProjectKey(k.Key, k.IsReadonly));
             var count = projectKeys.Count();
             var filteredProjectKeys = projectKeys.Take(Constants.MaxProjectKeys);

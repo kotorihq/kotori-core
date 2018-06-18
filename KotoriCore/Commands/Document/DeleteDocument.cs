@@ -11,35 +11,35 @@ namespace KotoriCore.Commands
         /// <summary>
         /// The instance.
         /// </summary>
-        public readonly string Instance;
+        internal readonly string Instance;
 
         /// <summary>
         /// The project identifier.
         /// </summary>
-        public readonly string ProjectId;
+        internal readonly string ProjectId;
 
         /// <summary>
         /// The document identifier.
         /// </summary>
-        public readonly string DocumentId;
+        internal readonly string DocumentId;
 
         /// <summary>
         /// The type of the document.
         /// </summary>
-        public readonly Enums.DocumentType DocumentType;
+        internal readonly Enums.DocumentType DocumentType;
 
         /// <summary>
         /// The document type identifier.
         /// </summary>
-        public readonly string DocumentTypeId;
+        internal readonly string DocumentTypeId;
 
         /// <summary>
         /// The index.
         /// </summary>
-        public readonly long? Index;
+        internal readonly long? Index;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.DeleteDocument"/> class.
+        /// Initializes a new instance of the DeleteDocument class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
@@ -68,7 +68,7 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(DocumentTypeId))
                 yield return new ValidationResult("Document type Id must be set.");
-            
+
             if (DocumentType == Enums.DocumentType.Content &&
                 string.IsNullOrEmpty(DocumentId))
                 yield return new ValidationResult("Document Id must be set.");

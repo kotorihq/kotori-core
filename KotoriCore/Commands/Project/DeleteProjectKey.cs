@@ -11,20 +11,20 @@ namespace KotoriCore.Commands
         /// <summary>
         /// The instance.
         /// </summary>
-        public readonly string Instance;
+        internal readonly string Instance;
 
         /// <summary>
         /// The project identifier.
         /// </summary>
-        public readonly string ProjectId;
+        internal readonly string ProjectId;
 
         /// <summary>
         /// The project key.
         /// </summary>
-        public readonly string ProjectKey;
+        internal readonly string ProjectKey;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.DeleteProjectKey"/> class.
+        /// Initializes a new instance of the DeleteProjectKey class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
@@ -47,7 +47,7 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(ProjectId))
                 yield return new ValidationResult("Project Id must be set.");
-            
+
             if (string.IsNullOrEmpty(ProjectKey))
                 yield return new ValidationResult("Project key must be set.");
         }

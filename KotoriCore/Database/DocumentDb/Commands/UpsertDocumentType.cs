@@ -13,7 +13,7 @@ namespace KotoriCore.Database.DocumentDb
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
             var documentTypeId = documentTypeUri.ToKotoriDocumentTypeIdentifier();
-            var docType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri);
+            var docType = await FindDocumentTypeAsync(command.Instance, projectUri, documentTypeUri).ConfigureAwait(false);
             var isNew = docType == null;
 
             if (command.CreateOnly &&
@@ -28,7 +28,7 @@ namespace KotoriCore.Database.DocumentDb
                 documentTypeId,
                 new UpdateToken<dynamic>(null, true),
                 new UpdateToken<string>(null, true)
-            );
+            ).ConfigureAwait(false);
 
             return new OperationResult(documentType, isNew);
         }

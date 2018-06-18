@@ -14,7 +14,7 @@ namespace KotoriCore.Database.DocumentDb
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
 
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -29,14 +29,14 @@ namespace KotoriCore.Database.DocumentDb
 
             if (keys.All(key => key.Key != command.ProjectKey))
                 throw new KotoriProjectException(command.ProjectId, $"Project key '{command.ProjectKey}' does not exists.") { StatusCode = System.Net.HttpStatusCode.NotFound };
-            
+
             keys.RemoveAll(key => key.Key == command.ProjectKey);
 
             project.Identifier = projectUri.ToString();
             project.ProjectKeys = keys;
 
             // TODO: inspect - instead of replacing we use upserting
-            await UpsertProjectAsync(project);
+            await UpsertProjectAsync(project).ConfigureAwait(false);
 
             return new CommandResult();
         }

@@ -14,7 +14,7 @@ namespace KotoriCore.Database.DocumentDb
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -24,7 +24,7 @@ namespace KotoriCore.Database.DocumentDb
                     command.Instance,
                     projectUri,
                     documentTypeUri
-                );
+                ).ConfigureAwait(false);
 
             if (docType == null)
                 throw new KotoriDocumentTypeException(command.DocumentTypeId, "Document type not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };

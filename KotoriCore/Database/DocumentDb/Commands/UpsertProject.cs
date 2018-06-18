@@ -12,7 +12,7 @@ namespace KotoriCore.Database.DocumentDb
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
 
-            var p = await FindProjectAsync(command.Instance, projectUri);
+            var p = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
             var isNew = p == null;
 
             if (p != null &&
@@ -30,7 +30,7 @@ namespace KotoriCore.Database.DocumentDb
                 p.Name = command.Name;
             }
 
-            var project = await UpsertProjectAsync(p);
+            var project = await UpsertProjectAsync(p).ConfigureAwait(false);
             var result = new OperationResult(project, isNew);
 
             return result;

@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using KotoriCore.Documents;
-using Sushi2;
-
-namespace KotoriCore.Exceptions
+﻿namespace KotoriCore.Exceptions
 {
     /// <summary>
     /// Kotori document exception.
@@ -19,13 +14,36 @@ namespace KotoriCore.Exceptions
         public string Identifier { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Exceptions.KotoriDocumentException"/> class.
+        /// Initializes a new instance of the KotoriDocumentException class.
         /// </summary>
         /// <param name="identifier">Identifier.</param>
         /// <param name="message">Message.</param>
         public KotoriDocumentException(string identifier, string message) : base(message ?? UnknownErrorMessage)
         {
             Identifier = identifier;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the KotoriDocumentException class.
+        /// </summary>
+        public KotoriDocumentException()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the KotoriDocumentException class.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        public KotoriDocumentException(string message) : base(message ?? UnknownErrorMessage)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the KotoriDocumentException class.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        public KotoriDocumentException(string message, System.Exception innerException) : base(message ?? UnknownErrorMessage, innerException)
+        {
         }
     }
 }

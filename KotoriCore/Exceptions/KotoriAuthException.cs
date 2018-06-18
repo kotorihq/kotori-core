@@ -14,13 +14,13 @@ namespace KotoriCore.Exceptions
         public Enums.ClaimType ClaimType { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this <see cref="T:KotoriCore.Exceptions.KotoriAuthException"/> has empty key.
+        /// Gets a value indicating whether this KotoriAuthException has empty key.
         /// </summary>
         /// <value><c>true</c> if empty key; otherwise, <c>false</c>.</value>
         public bool EmptyKey { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Exceptions.KotoriAuthException"/> class.
+        /// Initializes a new instance of the KotoriAuthException class.
         /// </summary>
         /// <param name="claimType">Claim type.</param>
         /// <param name="message">Message.</param>
@@ -29,6 +29,30 @@ namespace KotoriCore.Exceptions
         {
             EmptyKey = emptyKey;
             ClaimType = claimType;
-        }        
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the KotoriAuthException class.
+        /// </summary>
+        public KotoriAuthException()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the KotoriAuthException class.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        public KotoriAuthException(string message) : base(message)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the KotoriAuthException class.
+        /// </summary>
+        /// <param name="message">Message.</param>
+        /// <param name="innerException">Inner exception.</param>
+        public KotoriAuthException(string message, System.Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }

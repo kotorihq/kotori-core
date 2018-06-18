@@ -19,21 +19,20 @@ namespace KotoriCore.Tests.HelperClasses
         {
         }
     }
-    public class LoggerFactory : Microsoft.Extensions.Logging.ILoggerFactory
+
+    public sealed class LoggerFactory : ILoggerFactory
     {
         public void AddProvider(ILoggerProvider provider)
         {
-         
         }
 
-        public Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName)
+        public ILogger CreateLogger(string categoryName)
         {
             return new Logger();
         }
 
         public void Dispose()
         {
-          
         }
     }
 }

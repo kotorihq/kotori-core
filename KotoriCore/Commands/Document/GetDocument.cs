@@ -11,45 +11,45 @@ namespace KotoriCore.Commands
         /// <summary>
         /// The instance.
         /// </summary>
-        public readonly string Instance;
+        internal readonly string Instance;
 
         /// <summary>
         /// The project identifier.
         /// </summary>
-        public readonly string ProjectId;
+        internal readonly string ProjectId;
 
         /// <summary>
         /// The type of the document.
         /// </summary>
-        public readonly Enums.DocumentType DocumentType;
+        internal readonly Enums.DocumentType DocumentType;
 
         /// <summary>
         /// The document type identifier.
         /// </summary>
-        public readonly string DocumentTypeId;
+        internal readonly string DocumentTypeId;
 
         /// <summary>
         /// The document identifier.
         /// </summary>
-        public readonly string DocumentId;
+        internal readonly string DocumentId;
 
         /// <summary>
         /// The index.
         /// </summary>
-        public readonly long? Index;
+        internal readonly long? Index;
 
         /// <summary>
         /// The version.
         /// </summary>
-        public readonly long? Version;
+        internal readonly long? Version;
 
         /// <summary>
         /// The format.
         /// </summary>
-        public readonly Enums.DocumentFormat Format;
+        internal readonly Enums.DocumentFormat Format;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetDocument"/> class.
+        /// Initializes a new instance of the GetDocument class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
@@ -60,7 +60,7 @@ namespace KotoriCore.Commands
         /// <param name="version">Version.</param>
         /// <param name="format">Format.</param>
         public GetDocument(string instance, string projectId, Enums.DocumentType documentType, string documentTypeId, string documentId, long? index, long? version, Enums.DocumentFormat format)
-        {            
+        {
             Instance = instance;
             ProjectId = projectId;
             DocumentType = documentType;
@@ -85,7 +85,7 @@ namespace KotoriCore.Commands
 
             if (string.IsNullOrEmpty(DocumentTypeId))
                 yield return new ValidationResult("Document type Id must be set.");
-            
+
             if (DocumentType == Enums.DocumentType.Content &&
                 string.IsNullOrEmpty(DocumentId))
                 yield return new ValidationResult("Document Id must be set.");

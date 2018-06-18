@@ -2,7 +2,6 @@
 using KotoriCore.Commands;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
-using KotoriCore.Domains;
 using KotoriCore.Database.DocumentDb.Helpers;
 
 namespace KotoriCore.Database.DocumentDb
@@ -13,7 +12,7 @@ namespace KotoriCore.Database.DocumentDb
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
 
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -31,17 +30,17 @@ namespace KotoriCore.Database.DocumentDb
                 true
             );
 
-            var count = await CountDocumentsAsync(sql);
+            var count = await CountDocumentsAsync(sql).ConfigureAwait(false);
 
             if (count > 0)
                 throw new KotoriProjectException(command.ProjectId, "Project contains documents.");
-            
-            var documentTypes = (await HandleAsync(new GetDocumentTypes(command.Instance, command.ProjectId))).Record;
+
+            var documentTypes = (await HandleAsync(new GetDocumentTypes(command.Instance, command.ProjectId)).ConfigureAwait(false)).Record;
 
             if (documentTypes.Count > 0)
                 throw new KotoriProjectException(command.ProjectId, "Project contains document types.");
 
-            await DeleteProjectAsync(project.Id);
+            await DeleteProjectAsync(project.Id).ConfigureAwait(false);
 
             return new CommandResult();
         }

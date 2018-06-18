@@ -18,11 +18,11 @@ namespace KotoriCore.Database.DocumentDb
             var projectUri = command.ProjectId.ToKotoriProjectUri();
             var documentTypeUri = command.ProjectId.ToKotoriDocumentTypeUri(command.DocumentType, command.DocumentTypeId);
 
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
-            
+
             var top = command.Top;
 
             if (command.Skip.HasValue &&
@@ -33,18 +33,18 @@ namespace KotoriCore.Database.DocumentDb
 
             var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
             (
-                command.Instance, 
-                projectUri, 
-                documentTypeUri, 
-                top, 
-                command.Select, 
-                command.Filter, 
-                command.OrderBy, 
-                command.Drafts, 
+                command.Instance,
+                projectUri,
+                documentTypeUri,
+                top,
+                command.Select,
+                command.Filter,
+                command.OrderBy,
+                command.Drafts,
                 command.Future
             );
 
-            var documents = await GetDocumentsAsync(sql);
+            var documents = await GetDocumentsAsync(sql).ConfigureAwait(false);
 
             var simpleDocuments = documents.Select(d => new SimpleDocument
                 (
@@ -62,7 +62,7 @@ namespace KotoriCore.Database.DocumentDb
             {
                 var skip = command.Skip.Value;
 
-                if (skip >= simpleDocuments.Count()) 
+                if (skip >= simpleDocuments.Count())
                     return new CommandResult<ComplexCountResult<SimpleDocument>>(new ComplexCountResult<SimpleDocument>(0, new List<SimpleDocument>()));
 
                 if (top.HasValue)

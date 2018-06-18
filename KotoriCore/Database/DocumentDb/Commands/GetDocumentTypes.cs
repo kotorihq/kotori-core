@@ -14,11 +14,11 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<ComplexCountResult<SimpleDocumentType>>> HandleAsync(GetDocumentTypes command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
-            var project = await FindProjectAsync(command.Instance, projectUri);
+            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
-            
+
             var q = new DynamicQuery
                 (
                     "select top @maxDocumentTypes * from c where c.entity = @entity and c.instance = @instance and c.projectId = @projectId",
@@ -42,9 +42,9 @@ namespace KotoriCore.Database.DocumentDb
                     }
                 );
 
-            var documentTypes = await GetDocumentTypesAsync(q);
-            var count = await CountDocumentTypesAsync(q2);
-                                
+            var documentTypes = await GetDocumentTypesAsync(q).ConfigureAwait(false);
+            var count = await CountDocumentTypesAsync(q2).ConfigureAwait(false);
+
             var simpleDocumentTypes = documentTypes.Select
             (
                 p => new SimpleDocumentType

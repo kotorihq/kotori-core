@@ -12,7 +12,7 @@ namespace KotoriCore.Database.DocumentDb
         async Task<CommandResult<SimpleProject>> HandleAsync(GetProject command)
         {
             var projectUri = command.ProjectId.ToKotoriProjectUri();
-            var p = await FindProjectAsync(command.Instance, projectUri);
+            var p = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
 
             if (p == null)
                 throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };

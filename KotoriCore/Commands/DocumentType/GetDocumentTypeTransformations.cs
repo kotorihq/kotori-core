@@ -11,25 +11,25 @@ namespace KotoriCore.Commands
         /// <summary>
         /// The instance.
         /// </summary>
-        public readonly string Instance;
+        internal readonly string Instance;
 
         /// <summary>
         /// The project identifier.
         /// </summary>
-        public readonly string ProjectId;
+        internal readonly string ProjectId;
 
         /// <summary>
         /// The type of the document.
         /// </summary>
-        public readonly Enums.DocumentType DocumentType;
+        internal readonly Enums.DocumentType DocumentType;
 
         /// <summary>
         /// The document type identifier.
         /// </summary>
-        public readonly string DocumentTypeId;
+        internal readonly string DocumentTypeId;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KotoriCore.Commands.GetDocumentTypeTransformations"/> class.
+        /// Initializes a new instance of the GetDocumentTypeTransformations class.
         /// </summary>
         /// <param name="instance">Instance.</param>
         /// <param name="projectId">Project identifier.</param>
