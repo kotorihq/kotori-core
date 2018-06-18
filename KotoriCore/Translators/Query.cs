@@ -12,7 +12,7 @@ namespace KotoriCore.Translators
         public Query()
         {
         }
-        
+
         public Query(string select, string filter, int? top, int? skip, string orderBy, bool count = false)
         {
             Select = select;

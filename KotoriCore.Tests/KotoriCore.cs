@@ -1939,8 +1939,7 @@ approved: !!bool false
             Assert.AreEqual(1, projects.Items.Count());
             Assert.AreEqual("envy2", projects.Items.First().Identifier);
 
-            // TODO: identification should be id
-            projects = _kotori.GetProjects("dev2", new Translators.Query("name", "name eq 'Envy3'", null, null, "identification", true));
+            projects = _kotori.GetProjects("dev2", new Translators.Query("name", "name eq 'Envy3'", null, null, "id", true));
             Assert.AreEqual(1, projects.Count);
             Assert.IsNull(projects.Items);
 

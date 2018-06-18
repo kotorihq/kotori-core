@@ -1,26 +1,25 @@
 namespace KotoriCore.Translators
 {
-    // TODO
     public class ComplexQuery : Query
     {
-        public string AdditionalFilter { get; set; }
-        
+        public string Instance { get; private set; }
+
         public ComplexQuery()
         {
         }
-        
-        public ComplexQuery(string select, string filter, int? top, int? skip, string orderBy, string additionalFilter, bool count = false)
+
+        public ComplexQuery(string select, string filter, int? top, int? skip, string orderBy, string instance, bool count = false)
         {
             Select = select;
             Filter = filter;
             Top = top;
             Skip = skip;
             OrderBy = orderBy;
-            AdditionalFilter = additionalFilter;
+            Instance = instance;
             Count = count;
         }
 
-        public ComplexQuery(Query query)
+        public ComplexQuery(Query query, string instance)
         {
             if (query != null)
             {
@@ -30,6 +29,7 @@ namespace KotoriCore.Translators
                 Skip = query.Skip;
                 OrderBy = query.OrderBy;
                 Count = query.Count;
+                Instance = instance;
             }
         }
     }

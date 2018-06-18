@@ -194,7 +194,7 @@ namespace KotoriCore
             var command = _serviceProvider.GetService<IGetProjects>();
             var database = _serviceProvider.GetService<IDatabase>();
 
-            command.Init(instance, new ComplexQuery(query));
+            command.Init(instance, new ComplexQuery(query, instance));
 
             return await ProcessOperationAsync(command, database.GetProjectsAsync(command)).ConfigureAwait(false);
         }
