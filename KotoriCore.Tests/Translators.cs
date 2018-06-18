@@ -1,0 +1,89 @@
+using KotoriCore.Translators;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace KotoriCore.Tests
+{
+    [TestClass]
+    public class Translators
+    {
+        [TestMethod]
+        public void ProjectCountSample()
+        {
+            var query = new ComplexQuery(
+                "id, englishName",
+                "title eq 'moeta' and property/field ne 'val' or number ge 5 and (likes ne 3 or special lt 3)",
+                30,
+                null,
+                "_created asc, createdDateTime desc",
+                "dev",
+                true);
+            var projectTranslator = new ProjectTranslator();
+            var sqlQuery = projectTranslator.Translate(query);
+            Assert.AreEqual("select count(1)  where c.title = 'moeta' and c.property.field <> 'val' or c.number >= 5 and (c.likes <> 3 or c.special < 3) and c.entity = 'kotori/project' and c.instance = 'dev' order by c._created , c.createdDateTime desc", sqlQuery);
+        }
+
+        [TestMethod]
+        public void ProjectSelectSample()
+        {
+            var query = new ComplexQuery(
+                "id, robot",
+                "title eq 'moeta'",
+                30,
+                null,
+                null,
+                "dev",
+                false);
+            var projectTranslator = new ProjectTranslator();
+            var sqlQuery = projectTranslator.Translate(query);
+            Assert.AreEqual("select top 30 c.identification, c.robot where c.title = 'moeta' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+        }
+
+        [TestMethod]
+        public void ProjectSelectSample2()
+        {
+            var query = new ComplexQuery(
+                null,
+                null,
+                30,
+                null,
+                null,
+                "dev",
+                false);
+            var projectTranslator = new ProjectTranslator();
+            var sqlQuery = projectTranslator.Translate(query);
+            Assert.AreEqual("select top 30 * where c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+        }
+
+        [TestMethod]
+        public void ProjectSelectSample3()
+        {
+            var query = new ComplexQuery(
+                "a,b,c",
+                null,
+                null,
+                null,
+                null,
+                "dev",
+                false);
+            var projectTranslator = new ProjectTranslator();
+            var sqlQuery = projectTranslator.Translate(query);
+            Assert.AreEqual("select c.a,c.b,c.c where c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+        }
+
+        [TestMethod]
+        public void ProjectSelectSampleWithTransformation()
+        {
+            var query = new ComplexQuery(
+                "",
+                "id eq 'yuri-yuri'",
+                null,
+                null,
+                null,
+                "dev",
+                false);
+            var projectTranslator = new ProjectTranslator();
+            var sqlQuery = projectTranslator.Translate(query);
+            Assert.AreEqual("select * where c.identification = 'kotori://api/projects/yuri-yuri' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+        }
+    }
+}

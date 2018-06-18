@@ -29,7 +29,7 @@ namespace KotoriCore.Translators
 
             if (query != null)
             {
-                if (query.Select != null)
+                if (!string.IsNullOrWhiteSpace(query.Select))
                 {
                     if (query.Count)
                     {
@@ -41,34 +41,41 @@ namespace KotoriCore.Translators
 
                         if (query.Top != null &&
                             !query.Count)
-                            sb.Append($"top {query.Count} ");
+                            sb.Append($"top {query.Top} ");
 
                         var select = new KotoriQuery.Translator.DocumentDbSelect(query.Select, fieldTransformations);
-                        select.GetTranslatedQuery();
-                        sb.Append(select);
+                        sb.Append(select.GetTranslatedQuery());
                     }
                 }
                 else if (query.Count)
                 {
-                    sb.Append("select count(1) ");
+                    sb.Append("select count(1)");
+                }
+                else
+                {
+                    sb.Append("select ");
+
+                    if (query.Top != null &&
+                            !query.Count)
+                        sb.Append($"top {query.Top} ");
+
+                    sb.Append("*");
                 }
 
-                sb.Append("where ");
+                sb.Append(" where ");
 
                 if (!string.IsNullOrWhiteSpace(query.Filter))
                 {
                     var filter = query.Filter;
                     filter += $" and entity eq '{entity}' and instance eq '{query.Instance}' ";
 
-                    var select = new KotoriQuery.Translator.DocumentDbFilter(query.Filter, fieldTransformations);
-                    select.GetTranslatedQuery();
-                    sb.Append(select);
+                    var select = new KotoriQuery.Translator.DocumentDbFilter(filter, fieldTransformations);
+                    sb.Append(select.GetTranslatedQuery());
                 }
                 else
                 {
                     var select = new KotoriQuery.Translator.DocumentDbFilter($"entity eq '{entity}' and instance eq '{query.Instance}' ", fieldTransformations);
-                    select.GetTranslatedQuery();
-                    sb.Append(select);
+                    sb.Append(select.GetTranslatedQuery());
                 }
 
                 if (!string.IsNullOrWhiteSpace(query.OrderBy))
@@ -76,8 +83,7 @@ namespace KotoriCore.Translators
                     sb.Append("order by ");
 
                     var select = new KotoriQuery.Translator.DocumentDbOrderBy(query.OrderBy, fieldTransformations);
-                    select.GetTranslatedQuery();
-                    sb.Append(select);
+                    sb.Append(select.GetTranslatedQuery());
                 }
             }
 

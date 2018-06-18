@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using KotoriCore.Configurations;
 using KotoriCore.Helpers;
 using KotoriCore.Database.DocumentDb.Entities;
+using KotoriCore.Translators;
 
 namespace KotoriCore.Tests
 {
@@ -1933,17 +1934,17 @@ approved: !!bool false
             await _kotori.UpsertProjectAsync("dev2", "envy2", "Envy2").ConfigureAwait(false);
             await _kotori.UpsertProjectAsync("dev2", "envy3", "Envy3").ConfigureAwait(false);
 
-            var projects = _kotori.GetProjects("dev2", new Translators.Query(null, "name eq 'Envy2'", null, null, null));
+            var projects = _kotori.GetProjects("dev2", new Query(null, "name eq 'Envy2'", null, null, null));
 
             Assert.AreEqual(1, projects.Count);
             Assert.AreEqual(1, projects.Items.Count());
             Assert.AreEqual("envy2", projects.Items.First().Identifier);
 
-            projects = _kotori.GetProjects("dev2", new Translators.Query("name", "name eq 'Envy3'", null, null, "id", true));
+            projects = _kotori.GetProjects("dev2", new Query("name", "name eq 'Envy3'", null, null, "id", true));
             Assert.AreEqual(1, projects.Count);
             Assert.IsNull(projects.Items);
 
-            projects = _kotori.GetProjects("dev2", new Translators.Query(null, null, null, null, "name desc", false));
+            projects = _kotori.GetProjects("dev2", new Query(null, null, null, null, "name desc", false));
             Assert.AreEqual(3, projects.Count);
             Assert.AreEqual(3, projects.Items.Count());
             Assert.AreEqual("Envy3", projects.Items.First().Name);

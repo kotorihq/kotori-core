@@ -1,4 +1,5 @@
 using KotoriCore.Database.DocumentDb.Entities;
+using KotoriCore.Helpers;
 using KotoriQuery.Helpers;
 using System.Collections.Generic;
 
@@ -8,7 +9,9 @@ namespace KotoriCore.Translators
     {
         readonly List<FieldTransformation> _fieldTransformations = new List<FieldTransformation>
             {
-                new FieldTransformation("id", "identification"),
+                new FieldTransformation("id", "identification", (v) => {
+                    return v.ToKotoriProjectUri().ToString();
+                })
             };
 
         public string Translate(ComplexQuery query)
