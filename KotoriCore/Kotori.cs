@@ -496,7 +496,7 @@ namespace KotoriCore
             return await ProcessOperationAsync(command, database.UpsertProjectAsync(command)).ConfigureAwait(false);
         }
 
-        // TOO
+        // TODO
         public OperationResult CreateProjectKey(string instance, string projectId, string projectKey, bool isReadonly = false)
         {
             return AsyncTools.RunSync(() => CreateProjectKeyAsync(instance, projectId, projectKey, isReadonly));

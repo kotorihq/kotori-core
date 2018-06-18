@@ -59,7 +59,7 @@ namespace KotoriCore.Documents
 
                 var items = _content.Split("---", StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                items.RemoveAll(x => x.Trim() == string.Empty);
+                items.RemoveAll(x => string.IsNullOrEmpty(x.Trim()));
 
                 if (items.Any(x => string.IsNullOrWhiteSpace(x.Replace("\r", "", StringComparison.OrdinalIgnoreCase).Replace("\n", "", StringComparison.OrdinalIgnoreCase).Replace(" ", "", StringComparison.OrdinalIgnoreCase))))
                     throw new KotoriDocumentException(_identifier, "Data contains document with no meta fields.");
