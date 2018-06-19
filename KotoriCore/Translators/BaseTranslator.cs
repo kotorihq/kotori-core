@@ -62,7 +62,7 @@ namespace KotoriCore.Translators
                     sb.Append("*");
                 }
 
-                sb.Append(" where ");
+                sb.Append(" from c where ");
 
                 if (!string.IsNullOrWhiteSpace(query.Filter))
                 {

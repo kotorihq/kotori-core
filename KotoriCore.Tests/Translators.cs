@@ -19,7 +19,7 @@ namespace KotoriCore.Tests
                 true);
             var projectTranslator = new ProjectTranslator();
             var sqlQuery = projectTranslator.Translate(query);
-            Assert.AreEqual("select count(1)  where c.title = 'moeta' and c.property.field <> 'val' or c.number >= 5 and (c.likes <> 3 or c.special < 3) and c.entity = 'kotori/project' and c.instance = 'dev' order by c._created , c.createdDateTime desc", sqlQuery);
+            Assert.AreEqual("select count(1)  from c where c.title = 'moeta' and c.property.field <> 'val' or c.number >= 5 and (c.likes <> 3 or c.special < 3) and c.entity = 'kotori/project' and c.instance = 'dev' order by c._created , c.createdDateTime desc", sqlQuery);
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace KotoriCore.Tests
                 false);
             var projectTranslator = new ProjectTranslator();
             var sqlQuery = projectTranslator.Translate(query);
-            Assert.AreEqual("select top 30 c.identification, c.robot where c.title = 'moeta' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+            Assert.AreEqual("select top 30 c.identification, c.robot from c where c.title = 'moeta' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
         }
 
         [TestMethod]
@@ -51,7 +51,7 @@ namespace KotoriCore.Tests
                 false);
             var projectTranslator = new ProjectTranslator();
             var sqlQuery = projectTranslator.Translate(query);
-            Assert.AreEqual("select top 30 * where c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+            Assert.AreEqual("select top 30 * from c where c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace KotoriCore.Tests
                 false);
             var projectTranslator = new ProjectTranslator();
             var sqlQuery = projectTranslator.Translate(query);
-            Assert.AreEqual("select c.a,c.b,c.c where c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+            Assert.AreEqual("select c.a,c.b,c.c from c where c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace KotoriCore.Tests
                 false);
             var projectTranslator = new ProjectTranslator();
             var sqlQuery = projectTranslator.Translate(query);
-            Assert.AreEqual("select * where c.identification = 'kotori://api/projects/yuri-yuri' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+            Assert.AreEqual("select * from c where c.identification = 'kotori://api/projects/yuri-yuri' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
         }
     }
 }

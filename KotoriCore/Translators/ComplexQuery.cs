@@ -29,8 +29,9 @@ namespace KotoriCore.Translators
                 Skip = query.Skip;
                 OrderBy = query.OrderBy;
                 Count = query.Count;
-                Instance = instance;
             }
+
+            Instance = instance;
         }
     }
 }
