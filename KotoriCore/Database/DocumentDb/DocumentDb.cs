@@ -424,13 +424,6 @@ namespace KotoriCore.Database.DocumentDb
             return documentTypes;
         }
 
-        async Task<IList<Entities.Project>> GetProjectsAsync(DynamicQuery q)
-        {
-            var projects = await _repoProject.GetListAsync(q).ConfigureAwait(false);
-
-            return projects;
-        }
-
         async Task<Entities.Document> UpsertDocumentAsync(Entities.Document document)
         {
             await CreateDocumentVersionAsync(document).ConfigureAwait(false);

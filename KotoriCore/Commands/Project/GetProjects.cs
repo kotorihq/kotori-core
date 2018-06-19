@@ -7,12 +7,16 @@ namespace KotoriCore.Commands
     /// <summary>
     /// Get projects command.
     /// </summary>
-    public class GetProjects : ICommand, IGetProjects
+    public class GetProjects : IGetProjects
     {
         public string Instance { get; private set; }
         public ComplexQuery Query { get; private set; }
 
-        // TODO
+        /// <summary>
+        /// Initialize properties.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
+        /// <param name="query">Query.</param>
         public void Init(string instance, ComplexQuery query)
         {
             Instance = instance;
