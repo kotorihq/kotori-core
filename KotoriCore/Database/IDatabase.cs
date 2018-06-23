@@ -9,6 +9,7 @@ namespace KotoriCore.Database
     /// </summary>
     interface IDatabase
     {
+        // TODO: delete this one after DI-fication
         /// <summary>
         /// Handle the specified command.
         /// </summary>
@@ -30,5 +31,7 @@ namespace KotoriCore.Database
 
         // TODO
         Task<ComplexCountResult<SimpleProject>> GetProjectsAsync(IGetProjects command);
+
+        Task<SimpleProject> GetProjectAsync(IGetProject command);
     }
 }

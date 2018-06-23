@@ -411,7 +411,12 @@ namespace KotoriCore
         /// <param name="projectId">Project identifier.</param>
         public async Task<SimpleProject> GetProjectAsync(string instance, string projectId)
         {
-            return (await ProcessAsync(new GetProject(instance, projectId)).ConfigureAwait(false) as CommandResult<SimpleProject>).Record;
+            var command = _serviceProvider.GetService<IGetProject>();
+            var database = _serviceProvider.GetService<IDatabase>();
+
+            command.Init(instance, projectId);
+
+            return await ProcessOperationAsync(command, database.GetProjectAsync(command)).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -792,6 +797,31 @@ namespace KotoriCore
         }
 
         async Task<ComplexCountResult<T>> ProcessOperationAsync<T>(ICommand command, Task<ComplexCountResult<T>> operation) where T : IDomain
+        {
+            try
+            {
+                var validationResults = command.Validate();
+
+                if (validationResults != null &&
+                    validationResults.Any())
+                    throw new KotoriValidationException(validationResults);
+
+                return await operation.ConfigureAwait(false);
+            }
+            catch (KotoriException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (ex?.InnerException is KotoriException ke)
+                    throw ex.InnerException;
+
+                throw new KotoriException(ex.Message);
+            }
+        }
+
+        async Task<T> ProcessOperationAsync<T>(ICommand command, Task<T> operation) where T : IDomain
         {
             try
             {

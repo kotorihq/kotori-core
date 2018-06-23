@@ -7,5 +7,6 @@ namespace KotoriCore.Database.DocumentDb.Repositories
     public interface IProjectRepository
     {
         Task<DocumentDbResult<Entities.Project>> GetProjectsAsync(ComplexQuery query);
+        Task<Entities.Project> GetProjectAsync(string instance, string id);
     }
 }

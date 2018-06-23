@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using KotoriCore.Commands;
 using KotoriCore.Domains;
@@ -9,22 +10,15 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult<SimpleProject>> HandleAsync(GetProject command)
+        public async Task<SimpleProject> GetProjectAsync(IGetProject command)
         {
-            var projectUri = command.ProjectId.ToKotoriProjectUri();
-            var p = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
+            var project = await _projectRepository.GetProjectAsync(command.Instance, command.ProjectId).ConfigureAwait(false);
 
-            if (p == null)
+            if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project not found.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
-            return new CommandResult<SimpleProject>
-            (
-                new SimpleProject
-                (
-                    p.Name,
-                    new Uri(p.Identifier).ToKotoriProjectIdentifier()
-                )
-            );
+            var simpleProject = new SimpleProject(project.Name, new Uri(project.Identifier).ToKotoriProjectIdentifier());
+            return simpleProject;
         }
     }
 }

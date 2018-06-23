@@ -7,6 +7,7 @@ using KotoriCore.Translators;
 using Oogi2;
 using KotoriCore.Database.DocumentDb.Helpers;
 using System;
+using Oogi2.Queries;
 
 namespace KotoriCore.Database.DocumentDb.Repositories
 {
@@ -49,6 +50,19 @@ namespace KotoriCore.Database.DocumentDb.Repositories
             query.Count = false;
             var result = await GetListAsync(fin).ConfigureAwait(false);
             return new DocumentDbResult<Entities.Project>(count2, result);
+        }
+
+        public async Task<Entities.Project> GetProjectAsync(string instance, string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return null;
+
+            var query = new DynamicQuery("id eq @id", new { id });
+            var complex = new ComplexQuery(null, query.ToSqlQuery(), 1, null, null, instance);
+            var fin = _translator.Translate(complex);
+            
+            var result = await GetFirstOrDefaultAsync(new DynamicQuery(fin)).ConfigureAwait(false);
+            return result;
         }
     }
 }
