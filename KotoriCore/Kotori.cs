@@ -48,6 +48,7 @@ namespace KotoriCore
                 .AddTransient<IUpsertDocumentType, UpsertDocumentType>()
                 .AddTransient<IUpsertProject, UpsertProject>()
                 .AddTransient<IGetProjects, GetProjects>()
+                .AddTransient<IGetProject, GetProject>()
                 // translators
                 .AddSingleton(typeof(ITranslator<Database.DocumentDb.Entities.Project>), typeof(ProjectTranslator))
                 // configuration

@@ -9,7 +9,7 @@ namespace KotoriCore.Translators
     {
         readonly List<FieldTransformation> _fieldTransformations = new List<FieldTransformation>
             {
-                new FieldTransformation("id", "identification", (v) => {
+                new FieldTransformation("id", "identifier", (v) => {
                     return v.ToKotoriProjectUri().ToString();
                 })
             };

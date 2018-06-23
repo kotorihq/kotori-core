@@ -35,7 +35,7 @@ namespace KotoriCore.Tests
                 false);
             var projectTranslator = new ProjectTranslator();
             var sqlQuery = projectTranslator.Translate(query);
-            Assert.AreEqual("select top 30 c.identification, c.robot from c where c.title = 'moeta' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+            Assert.AreEqual("select top 30 c.identifier, c.robot from c where c.title = 'moeta' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace KotoriCore.Tests
                 false);
             var projectTranslator = new ProjectTranslator();
             var sqlQuery = projectTranslator.Translate(query);
-            Assert.AreEqual("select * from c where c.identification = 'kotori://api/projects/yuri-yuri' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+            Assert.AreEqual("select * from c where c.identifier = 'kotori://api/projects/yuri-yuri' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
         }
     }
 }
