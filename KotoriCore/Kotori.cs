@@ -49,6 +49,7 @@ namespace KotoriCore
                 .AddTransient<IUpsertProject, UpsertProject>()
                 .AddTransient<IGetProjects, GetProjects>()
                 .AddTransient<IGetProject, GetProject>()
+                .AddTransient<IDeleteProject, DeleteProject>()
                 // translators
                 .AddSingleton(typeof(ITranslator<Database.DocumentDb.Entities.Project>), typeof(ProjectTranslator))
                 // configuration
@@ -180,7 +181,12 @@ namespace KotoriCore
         /// <param name="projectId">Project identifier.</param>
         public async Task DeleteProjectAsync(string instance, string projectId)
         {
-            await ProcessAsync(new DeleteProject(instance, projectId)).ConfigureAwait(false);
+            var command = _serviceProvider.GetService<IDeleteProject>();
+            var database = _serviceProvider.GetService<IDatabase>();
+
+            command.Init(instance, projectId);
+
+            await ProcessNoResultOperationAsync(command, database.DeleteProjectAsync(command)).ConfigureAwait(false);
         }
 
         // TODO
@@ -833,6 +839,31 @@ namespace KotoriCore
                     throw new KotoriValidationException(validationResults);
 
                 return await operation.ConfigureAwait(false);
+            }
+            catch (KotoriException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                if (ex?.InnerException is KotoriException ke)
+                    throw ex.InnerException;
+
+                throw new KotoriException(ex.Message);
+            }
+        }
+
+        async Task ProcessNoResultOperationAsync(ICommand command, Task operation)
+        {
+            try
+            {
+                var validationResults = command.Validate();
+
+                if (validationResults != null &&
+                    validationResults.Any())
+                    throw new KotoriValidationException(validationResults);
+
+                await operation.ConfigureAwait(false);
             }
             catch (KotoriException)
             {

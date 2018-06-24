@@ -1,22 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using KotoriCore.Commands;
+using KotoriCore.Database.DocumentDb.Helpers;
+using KotoriCore.Domains;
 using KotoriCore.Exceptions;
 using KotoriCore.Helpers;
-using KotoriCore.Database.DocumentDb.Helpers;
 
 namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult> HandleAsync(DeleteProject command)
+        public async Task DeleteProjectAsync(IDeleteProject command)
         {
+            var project = await _projectRepository.GetProjectAsync(command.Instance, command.ProjectId).ConfigureAwait(false);
             var projectUri = command.ProjectId.ToKotoriProjectUri();
-
-            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
-
+            
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
 
+            // TODO: use repository
             var sql = DocumentDbHelpers.CreateDynamicQueryForDocumentSearch
             (
                 command.Instance,
@@ -40,9 +43,7 @@ namespace KotoriCore.Database.DocumentDb
             if (documentTypes.Count > 0)
                 throw new KotoriProjectException(command.ProjectId, "Project contains document types.");
 
-            await DeleteProjectAsync(project.Id).ConfigureAwait(false);
-
-            return new CommandResult();
+            await _projectRepository.DeleteProjectAsync(project).ConfigureAwait(false);
         }
     }
 }

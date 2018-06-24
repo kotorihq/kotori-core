@@ -8,6 +8,7 @@ using Oogi2;
 using KotoriCore.Database.DocumentDb.Helpers;
 using System;
 using Oogi2.Queries;
+using KotoriCore.Database.DocumentDb.Entities;
 
 namespace KotoriCore.Database.DocumentDb.Repositories
 {
@@ -54,6 +55,9 @@ namespace KotoriCore.Database.DocumentDb.Repositories
 
         public async Task<Entities.Project> GetProjectAsync(string instance, string id)
         {
+            if (instance == null)
+                throw new ArgumentNullException(nameof(instance));
+
             if (string.IsNullOrEmpty(id))
                 return null;
 
@@ -63,6 +67,14 @@ namespace KotoriCore.Database.DocumentDb.Repositories
             
             var result = await GetFirstOrDefaultAsync(new DynamicQuery(fin)).ConfigureAwait(false);
             return result;
+        }
+
+        public async Task DeleteProjectAsync(Project project)
+        {
+            if (project == null)
+                throw new ArgumentNullException(nameof(project));
+
+            await DeleteAsync(project);
         }
     }
 }

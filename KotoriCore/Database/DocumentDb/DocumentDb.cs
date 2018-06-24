@@ -84,8 +84,6 @@ namespace KotoriCore.Database.DocumentDb
                 if (validationResults != null &&
                     validationResults.Any())
                     throw new KotoriValidationException(validationResults);
-                else if (command is DeleteProject deleteProject)
-                    result = await HandleAsync(deleteProject).ConfigureAwait(false);
                 else if (command is GetDocument getDocument)
                     result = await HandleAsync(getDocument).ConfigureAwait(false);
                 else if (command is FindDocuments findDocuments)
