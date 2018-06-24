@@ -96,8 +96,6 @@ namespace KotoriCore.Database.DocumentDb
                     result = await HandleAsync(getDocumentType).ConfigureAwait(false);
                 else if (command is GetDocumentTypes getDocumentTypes)
                     result = await HandleAsync(getDocumentTypes).ConfigureAwait(false);
-                else if (command is GetProjectKeys getProjectKeys)
-                    result = await HandleAsync(getProjectKeys).ConfigureAwait(false);
                 else if (command is DeleteProjectKey deleteProjectKey)
                     result = await HandleAsync(deleteProjectKey).ConfigureAwait(false);
                 else if (command is GetDocumentVersions getDocumentVersions)

@@ -50,6 +50,7 @@ namespace KotoriCore
                 .AddTransient<IGetProjects, GetProjects>()
                 .AddTransient<IGetProject, GetProject>()
                 .AddTransient<IDeleteProject, DeleteProject>()
+                .AddTransient<IGetProjectKeys, GetProjectKeys>()
                 // translators
                 .AddSingleton(typeof(ITranslator<Database.DocumentDb.Entities.Project>), typeof(ProjectTranslator))
                 // configuration
@@ -445,9 +446,12 @@ namespace KotoriCore
         /// <returns>Project keys.</returns>
         public async Task<ComplexCountResult<Domains.ProjectKey>> GetProjectKeysAsync(string instance, string projectId)
         {
-            var result = await ProcessAsync(new GetProjectKeys(instance, projectId)).ConfigureAwait(false);
-            var projectKeys = result as CommandResult<ComplexCountResult<Domains.ProjectKey>>;
-            return projectKeys.Record;
+            var command = _serviceProvider.GetService<IGetProjectKeys>();
+            var database = _serviceProvider.GetService<IDatabase>();
+
+            command.Init(instance, projectId);
+
+            return await ProcessOperationAsync(command, database.GetProjectKeysAsync(command)).ConfigureAwait(false);
         }
 
         /// <summary>
