@@ -74,7 +74,15 @@ namespace KotoriCore.Database.DocumentDb.Repositories
             if (project == null)
                 throw new ArgumentNullException(nameof(project));
 
-            await DeleteAsync(project);
+            await DeleteAsync(project).ConfigureAwait(false);
+        }
+
+        public async Task ReplaceProjectAsync(Project project)
+        {
+            if (project == null)
+                throw new ArgumentNullException(nameof(project));
+
+            await ReplaceAsync(project).ConfigureAwait(false);
         }
     }
 }

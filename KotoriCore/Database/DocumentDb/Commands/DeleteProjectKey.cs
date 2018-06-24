@@ -10,11 +10,9 @@ namespace KotoriCore.Database.DocumentDb
 {
     partial class DocumentDb
     {
-        async Task<CommandResult> HandleAsync(DeleteProjectKey command)
+        public async Task DeleteProjectKeyAsync(IDeleteProjectKey command)
         {
-            var projectUri = command.ProjectId.ToKotoriProjectUri();
-
-            var project = await FindProjectAsync(command.Instance, projectUri).ConfigureAwait(false);
+            var project = await _projectRepository.GetProjectAsync(command.Instance, command.ProjectId).ConfigureAwait(false);
 
             if (project == null)
                 throw new KotoriProjectException(command.ProjectId, "Project does not exist.") { StatusCode = System.Net.HttpStatusCode.NotFound };
@@ -32,13 +30,9 @@ namespace KotoriCore.Database.DocumentDb
 
             keys.RemoveAll(key => key.Key == command.ProjectKey);
 
-            project.Identifier = projectUri.ToString();
             project.ProjectKeys = keys;
 
-            // TODO: inspect - instead of replacing we use upserting
-            await UpsertProjectAsync(project).ConfigureAwait(false);
-
-            return new CommandResult();
+            await _projectRepository.ReplaceProjectAsync(project).ConfigureAwait(false);
         }
     }
 }

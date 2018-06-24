@@ -6,30 +6,24 @@ namespace KotoriCore.Commands
     /// <summary>
     /// Delete project key command.
     /// </summary>
-    public class DeleteProjectKey : Command
+    public class DeleteProjectKey : IDeleteProjectKey
     {
         /// <summary>
         /// The instance.
         /// </summary>
-        internal readonly string Instance;
+        public string Instance { get; set; }
 
         /// <summary>
         /// The project identifier.
         /// </summary>
-        internal readonly string ProjectId;
+        public string ProjectId { get; set; }
 
         /// <summary>
         /// The project key.
         /// </summary>
-        internal readonly string ProjectKey;
+        public string ProjectKey { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the DeleteProjectKey class.
-        /// </summary>
-        /// <param name="instance">Instance.</param>
-        /// <param name="projectId">Project identifier.</param>
-        /// <param name="projectKey">Project key.</param>
-        public DeleteProjectKey(string instance, string projectId, string projectKey)
+        public void Init(string instance, string projectId, string projectKey)
         {
             Instance = instance;
             ProjectId = projectId;
@@ -40,7 +34,7 @@ namespace KotoriCore.Commands
         /// Validates the command.
         /// </summary>
         /// <returns>The validate result.</returns>
-        public override IEnumerable<ValidationResult> Validate()
+        public IEnumerable<ValidationResult> Validate()
         {
             if (string.IsNullOrEmpty(Instance))
                 yield return new ValidationResult("Instance must be set.");

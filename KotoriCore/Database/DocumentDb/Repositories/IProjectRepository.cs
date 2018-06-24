@@ -10,5 +10,6 @@ namespace KotoriCore.Database.DocumentDb.Repositories
         Task<DocumentDbResult<Entities.Project>> GetProjectsAsync(ComplexQuery query);
         Task<Entities.Project> GetProjectAsync(string instance, string id);
         Task DeleteProjectAsync(Project project);
+        Task ReplaceProjectAsync(Project project);
     }
 }

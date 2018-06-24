@@ -37,5 +37,6 @@ namespace KotoriCore.Database
         Task DeleteProjectAsync(IDeleteProject command);
 
         Task<ComplexCountResult<ProjectKey>> GetProjectKeysAsync(IGetProjectKeys command);
+        Task DeleteProjectKeyAsync(IDeleteProjectKey command);
     }
 }

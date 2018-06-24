@@ -51,6 +51,7 @@ namespace KotoriCore
                 .AddTransient<IGetProject, GetProject>()
                 .AddTransient<IDeleteProject, DeleteProject>()
                 .AddTransient<IGetProjectKeys, GetProjectKeys>()
+                .AddTransient<IDeleteProjectKey, DeleteProjectKey>()
                 // translators
                 .AddSingleton(typeof(ITranslator<Database.DocumentDb.Entities.Project>), typeof(ProjectTranslator))
                 // configuration
@@ -565,7 +566,12 @@ namespace KotoriCore
         /// <param name="projectKey">Project key.</param>
         public async Task DeleteProjectKeyAsync(string instance, string projectId, string projectKey)
         {
-            await ProcessAsync(new DeleteProjectKey(instance, projectId, projectKey)).ConfigureAwait(false);
+            var command = _serviceProvider.GetService<IDeleteProjectKey>();
+            var database = _serviceProvider.GetService<IDatabase>();
+
+            command.Init(instance, projectId, projectKey);
+
+            await ProcessNoResultOperationAsync(command, database.DeleteProjectKeyAsync(command)).ConfigureAwait(false);
         }
 
         /// <summary>
