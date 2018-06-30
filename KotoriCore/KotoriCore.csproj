@@ -11,7 +11,7 @@
     <Summary>Kotori core library.</Summary>
     <Description>Kotori core library.</Description>
     <PackageTags>kotori</PackageTags>
-    <Copyright>Copyright (c) 2017 Goto10 s.r.o.</Copyright>
+    <Copyright>Copyright (c) 2018 Goto10 s.r.o.</Copyright>
     <Company>Goto10</Company>
     <RepositoryUrl>https://github.com/kotorihq/kotori-core</RepositoryUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/kotorihq/kotori-core/master/KotoriCore/kotori-icon.png</PackageIconUrl>
@@ -54,6 +54,5 @@
     <PackageReference Include="shortid" Version="2.0.0" />
     <PackageReference Include="Sushi2" Version="1.2.9" />
     <PackageReference Include="YamlDotNet" Version="4.3.2" />
-    <PackageReference Include="ADCCure.Azure.Documents.ODataCore.Sql" Version="3.0.2" />
   </ItemGroup>
 </Project>
