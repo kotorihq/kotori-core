@@ -26,11 +26,6 @@ namespace KotoriCore
     {
         IServiceProvider _serviceProvider;
 
-        internal T GetService<T>()
-        {
-            return _serviceProvider.GetService<T>();
-        }
-
         /// <summary>
         /// Initializes a new instance of the Kotori class.
         /// </summary>
@@ -886,6 +881,11 @@ namespace KotoriCore
 
                 throw new KotoriException(ex.Message);
             }
+        }
+
+        internal T GetService<T>()
+        {
+            return _serviceProvider.GetService<T>();
         }
     }
 }
