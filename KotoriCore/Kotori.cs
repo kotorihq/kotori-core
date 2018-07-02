@@ -24,7 +24,7 @@ namespace KotoriCore
     /// </summary>
     public class Kotori : IKotori
     {
-        IServiceProvider _serviceProvider;
+        readonly IServiceProvider _serviceProvider;
 
         /// <summary>
         /// Initializes a new instance of the Kotori class.
