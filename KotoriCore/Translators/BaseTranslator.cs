@@ -16,8 +16,9 @@ namespace KotoriCore.Translators
         /// <param name="query">Complex query.</param>
         /// <param name="entity">Entity name.</param>
         /// <param name="fieldTransformations">A collection fo field transformations.</param>
+        /// <param name="additionalWhereConditions">Additional where conditions</param>
         /// <returns>Translated query.</returns>
-        public static string Translate(ComplexQuery query, string entity, IEnumerable<FieldTransformation> fieldTransformations)
+        public static string Translate(ComplexQuery query, string entity, IEnumerable<FieldTransformation> fieldTransformations, string additionalWhereConditions)
         {
             if (entity == null)
                 throw new System.ArgumentNullException(nameof(entity));
@@ -78,7 +79,15 @@ namespace KotoriCore.Translators
                     sb.Append(select.GetTranslatedQuery());
                 }
 
-                if (!string.IsNullOrWhiteSpace(query.OrderBy))
+                if (!string.IsNullOrWhiteSpace(additionalWhereConditions))
+                {
+                    var awc = $" and {additionalWhereConditions.Trim()} ";
+                    var select = new KotoriQuery.Translator.DocumentDbFilter(awc, fieldTransformations);
+                    sb.Append(select.GetTranslatedQuery());
+                }
+
+                if (!string.IsNullOrWhiteSpace(query.OrderBy) &&
+                    !query.Count)
                 {
                     sb.Append("order by ");
 

@@ -16,7 +16,7 @@ namespace KotoriCore.Translators
 
         public string Translate(ComplexQuery query)
         {
-            return BaseTranslator.Translate(query, Project.Entity, _fieldTransformations);
+            return BaseTranslator.Translate(query, Project.Entity, _fieldTransformations, null);
         }
     }
 }

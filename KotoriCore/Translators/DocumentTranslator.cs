@@ -25,11 +25,19 @@ namespace KotoriCore.Translators
             var fieldTransformations = new List<FieldTransformation>
             {
                 new FieldTransformation("id", "identifier", (v) => {
-                    return _projectId.ToKotoriDocumentUri(_documentType, _documentTypeId, v, _index) .ToString();
+                    return _projectId.ToKotoriDocumentUri(_documentType, _documentTypeId, v, _index).ToString();
+                }),
+                new FieldTransformation("projectId", null, (v) => {
+                    return _projectId.ToKotoriProjectUri().ToString();
+                }),
+                new FieldTransformation("documentTypeId", null, (v) => {
+                    return _projectId.ToKotoriDocumentTypeUri(_documentType, _documentTypeId).ToString();
                 })
             };
 
-            return BaseTranslator.Translate(query, Project.Entity, fieldTransformations);
+            var additionalQueryClause = "projectId eq '' and documentTypeId eq ''";
+
+            return BaseTranslator.Translate(query, Document.Entity, fieldTransformations, additionalQueryClause);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace KotoriCore.Tests
                 true);
             var projectTranslator = new ProjectTranslator();
             var sqlQuery = projectTranslator.Translate(query);
-            Assert.AreEqual("select count(1)  from c where c.title = 'moeta' and c.property.field <> 'val' or c.number >= 5 and (c.likes <> 3 or c.special < 3) and c.entity = 'kotori/project' and c.instance = 'dev' order by c._created , c.createdDateTime desc", sqlQuery);
+            Assert.AreEqual("select count(1)  from c where c.title = 'moeta' and c.property.field <> 'val' or c.number >= 5 and (c.likes <> 3 or c.special < 3) and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
         }
 
         [TestMethod]
@@ -84,6 +84,22 @@ namespace KotoriCore.Tests
             var projectTranslator = new ProjectTranslator();
             var sqlQuery = projectTranslator.Translate(query);
             Assert.AreEqual("select * from c where c.identifier = 'kotori://api/projects/yuri-yuri' and c.entity = 'kotori/project' and c.instance = 'dev' ", sqlQuery);
+        }
+
+        [TestMethod]
+        public void DocumentCountSample()
+        {
+            var query = new ComplexQuery(
+                "id, englishName",
+                "title eq 'moeta' and property/field ne 'val' or number ge 5 and (likes ne 3 or special lt 3)",
+                30,
+                null,
+                "_created asc, createdDateTime desc",
+                "dev",
+                true);
+            var documentTranslator = new DocumentTranslator("testproject", Helpers.Enums.DocumentType.Content, "articles", null);
+            var sqlQuery = documentTranslator.Translate(query);
+            Assert.AreEqual("select count(1)  from c where c.title = 'moeta' and c.property.field <> 'val' or c.number >= 5 and (c.likes <> 3 or c.special < 3) and c.entity = 'kotori/document' and c.instance = 'dev'  and c.projectId = 'kotori://api/projects/testproject' and c.documentTypeId = 'kotori://api/projects/testproject/content/articles' ", sqlQuery);
         }
     }
 }
