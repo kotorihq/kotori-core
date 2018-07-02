@@ -1,9 +1,8 @@
-using KotoriCore.Database.DocumentDb;
-
 namespace KotoriCore.Translators
 {
-    public interface ITranslatorFactory<T> where T:IEntity
+    public interface ITranslatorFactory
     {
-        ITranslator<T> CreateTranslator();
+        ITranslator CreateProjectTranslator();
+        ITranslator CreateDocumentTranslator(string projectId, Helpers.Enums.DocumentType documentType, string documentTypeId, long? index = null);
     }
 }

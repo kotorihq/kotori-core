@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace KotoriCore.Translators
 {
-    public class DocumentTranslator : ITranslator<Document>
+    public class DocumentTranslator : ITranslator
     {
-        private readonly Enums.DocumentType _documentType;
-        private readonly string _documentTypeId;
-        private readonly long? _index;
-        private readonly string _projectId;
+        readonly Enums.DocumentType _documentType;
+        readonly string _documentTypeId;
+        readonly long? _index;
+        readonly string _projectId;
 
         public DocumentTranslator(string projectId, Enums.DocumentType documentType, string documentTypeId, long? index)
         {

@@ -47,8 +47,8 @@ namespace KotoriCore
                 .AddTransient<IDeleteProject, DeleteProject>()
                 .AddTransient<IGetProjectKeys, GetProjectKeys>()
                 .AddTransient<IDeleteProjectKey, DeleteProjectKey>()
-                // translators
-                .AddSingleton(typeof(ITranslator<Database.DocumentDb.Entities.Project>), typeof(ProjectTranslator))
+                // translator factory
+                .AddSingleton<ITranslatorFactory, TranslatorFactory>()
                 // configuration
                 .AddSingleton<IKotoriConfiguration>(configuration);
 

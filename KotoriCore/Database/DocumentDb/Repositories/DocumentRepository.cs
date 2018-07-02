@@ -1,26 +1,21 @@
-using System.Linq;
-using System.Threading.Tasks;
 using KotoriCore.Configurations;
 using KotoriCore.Database.DocumentDb.HelperEntities;
-using KotoriCore.Helpers;
-using KotoriCore.Translators;
 using Oogi2;
 using KotoriCore.Database.DocumentDb.Helpers;
-using System;
-using Oogi2.Queries;
-using KotoriCore.Database.DocumentDb.Entities;
+using KotoriCore.Translators;
 
 namespace KotoriCore.Database.DocumentDb.Repositories
 {
     public class DocumentRepository : Repository<Entities.Document>, IDocumentRepository
     {
-        readonly ITranslator<Entities.Document> _translator;
+        readonly ITranslatorFactory _translatorFactory;
         readonly Repository<Counter> _repoCounter;
 
         public DocumentRepository(IDatabaseConfiguration configuration,
-            ITranslator<Entities.Document> translator) : base(configuration.ToConnection())
+            ITranslatorFactory translatorFactory) : base(configuration.ToConnection())
         {
-            _translator = translator;
+            _translatorFactory = translatorFactory;
+            //_translator = translatorFactory.CreateDocumentTranslator()
             _repoCounter = new Repository<Counter>(configuration.ToConnection());
         }
     }

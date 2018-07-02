@@ -12,19 +12,19 @@ using KotoriCore.Database.DocumentDb.Entities;
 
 namespace KotoriCore.Database.DocumentDb.Repositories
 {
-    public class ProjectRepository : Repository<Entities.Project>, IProjectRepository
+    public class ProjectRepository : Repository<Project>, IProjectRepository
     {
-        readonly ITranslator<Entities.Project> _translator;
+        readonly ITranslator _translator;
         readonly Repository<Counter> _repoCounter;
 
         public ProjectRepository(IDatabaseConfiguration configuration,
-            ITranslator<Entities.Project> translator) : base(configuration.ToConnection())
+            ITranslatorFactory translatorFactory) : base(configuration.ToConnection())
         {
-            _translator = translator;
+            _translator = translatorFactory.CreateProjectTranslator();
             _repoCounter = new Repository<Counter>(configuration.ToConnection());
         }
 
-        public async Task<DocumentDbResult<Entities.Project>> GetProjectsAsync(ComplexQuery query)
+        public async Task<DocumentDbResult<Project>> GetProjectsAsync(ComplexQuery query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -41,7 +41,7 @@ namespace KotoriCore.Database.DocumentDb.Repositories
             {
                 var count = await _repoCounter.GetListAsync(fin).ConfigureAwait(false);
 
-                return new DocumentDbResult<Entities.Project>(count.Sum(x => x.Number), null);
+                return new DocumentDbResult<Project>(count.Sum(x => x.Number), null);
             }
 
             query.Count = true;
@@ -50,10 +50,10 @@ namespace KotoriCore.Database.DocumentDb.Repositories
 
             query.Count = false;
             var result = await GetListAsync(fin).ConfigureAwait(false);
-            return new DocumentDbResult<Entities.Project>(count2, result);
+            return new DocumentDbResult<Project>(count2, result);
         }
 
-        public async Task<Entities.Project> GetProjectAsync(string instance, string id)
+        public async Task<Project> GetProjectAsync(string instance, string id)
         {
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
@@ -64,7 +64,7 @@ namespace KotoriCore.Database.DocumentDb.Repositories
             var query = new DynamicQuery("id eq @id", new { id });
             var complex = new ComplexQuery(null, query.ToSqlQuery(), 1, null, null, instance);
             var fin = _translator.Translate(complex);
-            
+
             var result = await GetFirstOrDefaultAsync(new DynamicQuery(fin)).ConfigureAwait(false);
             return result;
         }

@@ -1,8 +1,6 @@
-using KotoriCore.Database.DocumentDb;
-
 namespace KotoriCore.Translators
 {
-    public interface ITranslator<T> where T:IEntity
+    public interface ITranslator
     {
         string Translate(ComplexQuery query);
     }

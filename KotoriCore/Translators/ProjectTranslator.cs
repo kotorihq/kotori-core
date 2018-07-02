@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace KotoriCore.Translators
 {
-    public class ProjectTranslator : ITranslator<Project>
+    public class ProjectTranslator : ITranslator
     {
         readonly List<FieldTransformation> _fieldTransformations = new List<FieldTransformation>
             {
